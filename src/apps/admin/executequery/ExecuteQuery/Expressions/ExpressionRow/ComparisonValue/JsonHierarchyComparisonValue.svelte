@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "$apps/admin/executequery/runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import { tryJsonParse } from "$ts/util/json";
 
-  const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
+  const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
   const { selectedSource, expressions } = process;
 </script>
 

@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import { ArcOSVersion, Env, Stack, State } from "$ts/env";
+  import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+  import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-  import type { AdvSysSetRuntime } from "../runtime";
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { userPreferences } = process;
   const userInfo = Daemon?.userInfo;
-  const appStore = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+  const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.buffer();
 </script>
 
 <div class="left">
@@ -40,6 +39,9 @@
       </li>
       <li>Process count: {Stack.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>
+      <li title={Object.keys(State?.store || {}).join(", ")}>
+        Server connectors: {Server.ConnectorAmount}
+      </li>
     </ul>
   </section>
 

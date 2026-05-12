@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { Daemon } from "$ts/daemon";
-  import { Fs } from "$ts/env";
-  import type { RecentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+  import { Daemon, Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import { onMount } from "svelte";
@@ -12,7 +11,7 @@
     service,
     process,
     selected = $bindable(),
-  }: { path: string; service: RecentFilesService; process: FileManagerRuntime; selected: string } = $props();
+  }: { path: string; service: IRecentFilesService; process: IFileManagerRuntime; selected: string } = $props();
 
   const icon = Daemon.icons?.getIconCached(Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon");
   const name = getItemNameFromPath(path);

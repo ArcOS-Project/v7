@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Component } from "svelte";
-  import type { ProcessManagerRuntime } from "./runtime";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 
-  const { process }: { process: ProcessManagerRuntime } = $props();
+  const { process }: { process: IProcessManagerRuntime } = $props();
   const { currentTab, selected } = process;
 
   let Tab: Component | undefined = $state(undefined);

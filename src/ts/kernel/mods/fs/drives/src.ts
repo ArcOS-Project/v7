@@ -1,10 +1,11 @@
+import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/fs";
 import type { GitFolder } from "$types/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";
-import { Daemon } from "$ts/daemon";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 
 export class SourceFilesystemDrive extends FilesystemDrive {
   override IDENTIFIES_AS: string = "src";
@@ -49,7 +50,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
     return !!enabled;
   }
 
-  private async getSourceFile(path: string): Promise<CommandResult<ArrayBuffer>> {
+  private async getSourceFile(path: string): Promise<ICommandResult<ArrayBuffer>> {
     try {
       const response = await this.rawClient.get(`/${this.GIT_REPO}/refs/heads/${this.GIT_BRANCH}/${path}`, {
         responseType: "arraybuffer",
@@ -62,7 +63,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
     }
   }
 
-  private async getSourceDirectory(path: string): Promise<CommandResult<GitFolder>> {
+  private async getSourceDirectory(path: string): Promise<ICommandResult<GitFolder>> {
     try {
       const response = await this.apiClient.get(`/repos/${this.GIT_REPO}/contents/${path}`, { responseType: "json" });
       if (response.status >= 400) throw "Invalid response type " + response.status;

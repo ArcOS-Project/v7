@@ -1,7 +1,7 @@
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
 import type { ContextMenuItem } from "$types/app";
-import type { CodRuntime } from "../runtime";
 
-export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
+export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
   return {
     caption: "Language",
     subItems: [

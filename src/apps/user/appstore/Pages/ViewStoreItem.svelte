@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import UserLink from "$lib/UserLink.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
@@ -6,10 +7,9 @@
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
-  import type { AppStoreRuntime } from "../runtime";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
 
-  const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem } = $props();
+  const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem } = $props();
 
   let readme = $state<string>("");
 

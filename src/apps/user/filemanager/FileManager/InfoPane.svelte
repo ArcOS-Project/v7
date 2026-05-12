@@ -1,18 +1,17 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import { Fs } from "$ts/env";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { Daemon, Fs } from "$ts/env";
+  import { Sleep } from "$ts/sleep";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../runtime";
   import type { QuotedDrive } from "../types";
   import Drive from "./InfoPane/Drive.svelte";
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
-  import { Sleep } from "$ts/sleep";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;
 
   let currentDrive: QuotedDrive | undefined = $state(undefined);
@@ -38,7 +37,7 @@
       lastSelection = v;
       update();
     });
-    
+
     contents.subscribe(update);
     drives.subscribe(update);
   });

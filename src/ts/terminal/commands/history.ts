@@ -1,6 +1,6 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { BRBLACK, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, RESET } from "../store";
 
 export class HistoryCommand extends TerminalProcess {
   public static keyword = "history";

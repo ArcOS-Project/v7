@@ -1,14 +1,13 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
   import { Env } from "$ts/env";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AppStore/Sidebar.svelte";
-  import type { AppStoreRuntime } from "./runtime";
   import { appStorePages } from "./store";
 
-  const { process }: { process: AppStoreRuntime } = $props();
+  const { process }: { process: IAppStoreRuntime } = $props();
   const { currentPage, pageProps, loadingPage, userPreferences } = process;
 
   let Page: Component<any> = $state<any>();
@@ -53,10 +52,7 @@
       <h1>Third-party apps</h1>
       <p>Sorry! You need to allow third-party apps to use the App Store.</p>
 
-      <button
-        class="suggested"
-        onclick={() => process.spawnApp("systemSettings", +Env.get("shell_pid"), "apps")}
-      >
+      <button class="suggested" onclick={() => process.spawnApp("systemSettings", +Env.get("shell_pid"), "apps")}>
         Take me there
       </button>
     </div>

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { HiddenUserPaths, UserPaths } from "$ts/user/store";
   import { onMount } from "svelte";
   import Item from "./UserPaths/Item.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { userPreferences } = process;
 
   onMount(() => {

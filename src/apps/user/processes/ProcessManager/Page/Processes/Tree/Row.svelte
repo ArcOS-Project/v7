@@ -1,15 +1,14 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
-  import type { IProcess } from "$interfaces/process";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcess } from "$interfaces/IProcess";
   import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/daemon";
-  import { Stack, SysDispatch } from "$ts/env";
+  import { Daemon, Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/process";
   import { onDestroy, onMount } from "svelte";
-  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
   import Row from "./Row.svelte";
 
   const {
@@ -17,7 +16,7 @@
     proc,
     process,
     orphan = false,
-  }: { pid: number; proc: IProcess; process: ProcessManagerRuntime; orphan?: boolean } = $props();
+  }: { pid: number; proc: IProcess; process: IProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
   const { focusedPid } = Stack.renderer!;

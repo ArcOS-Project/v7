@@ -1,7 +1,7 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -15,7 +15,7 @@ import { CodAltMenu } from "./altmenu";
 import { CodTranslations } from "./store";
 import type { CodLang } from "./types";
 
-export class CodRuntime extends AppProcess {
+export class CodRuntime extends AppProcess implements ICodRuntime {
   language = Store<CodLang>("plaintext");
   buffer = Store<string>("");
   openedFile = Store<string>("");

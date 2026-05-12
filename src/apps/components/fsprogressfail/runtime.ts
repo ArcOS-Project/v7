@@ -1,16 +1,17 @@
+import type { IFsProgressFailRuntime } from "$interfaces/runtimes/IFsProgressFailRuntime";
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/app";
-import type { FsProgressProc } from "../fsprogress/types";
 
-export class FsProgressFailRuntime extends AppProcess {
-  prog?: FsProgressProc;
+export class FsProgressFailRuntime extends AppProcess implements IFsProgressFailRuntime {
+  prog?: IFsProgressRuntime;
   errors: string[] = [];
   icon: string = "";
   title: string = "";
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, prog: FsProgressProc) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, prog: IFsProgressRuntime) {
     super(pid, parentPid, app);
 
     if (prog && prog?.app && prog?.Progress?.()) this.prog = prog;

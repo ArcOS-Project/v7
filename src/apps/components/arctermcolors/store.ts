@@ -1,4 +1,4 @@
-import { DefaultColors } from "$ts/terminal/store";
+import { DefaultColors } from "$ts/terminal/colors";
 import type { ArcTermColorPreset } from "./types";
 
 ///

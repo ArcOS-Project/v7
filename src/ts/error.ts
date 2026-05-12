@@ -1,4 +1,4 @@
-import type { IProcessHandler } from "$interfaces/modules/stack";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";

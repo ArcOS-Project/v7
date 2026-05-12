@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import ChangeUsername from "../Settings/Overlays/ChangeUsername.svelte";
 
 export const ChangeUsernameApp: App = {
@@ -26,7 +26,7 @@ export const ChangeUsernameApp: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: ChangeUsername as any,
   },
   overlay: true,

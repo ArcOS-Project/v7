@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { Daemon } from "$ts/env";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
 
   const { selection, drive } = process;
   const { cutList, copyList } = Daemon!;

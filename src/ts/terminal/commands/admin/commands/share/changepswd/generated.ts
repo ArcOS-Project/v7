@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 import { generate } from "generate-password-ts";
 
 export const AdminShareChangepswdGenerated: AdminCommandType = async (term, admin, [shareId]) => {

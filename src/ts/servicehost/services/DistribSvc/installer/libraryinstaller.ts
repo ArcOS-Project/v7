@@ -1,6 +1,6 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -8,7 +8,6 @@ import { tryJsonParse } from "$ts/util/json";
 import type { TpaLibrary } from "$types/libraries";
 import type { ArcPackage, StoreItem } from "$types/package";
 import type JSZip from "jszip";
-import type { DistributionServiceProcess } from "..";
 import { InstallerProcessBase } from "./base";
 
 export class LibraryInstallerProcess extends InstallerProcessBase implements IInstallerProcessBase {
@@ -91,7 +90,7 @@ export class LibraryInstallerProcess extends InstallerProcessBase implements IIn
     onStage?.("Getting installed package");
 
     const host = Daemon!.serviceHost;
-    const distrib = host?.getService<DistributionServiceProcess>("DistribSvc")!;
+    const distrib = host?.getService<IDistributionServiceProcess>("DistribSvc")!;
     const libraries = Daemon?.libraries!;
 
     await libraries.deleteLibrary(metadata.appId.replace("Library::", ""), onStage);

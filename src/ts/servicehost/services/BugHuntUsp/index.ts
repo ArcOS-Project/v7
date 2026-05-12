@@ -1,8 +1,7 @@
-import type { IBugHunt } from "$interfaces/modules/bughunt";
-import type { IBugHuntUserSpaceProcess } from "$interfaces/services/BugHuntUsp";
-import { Daemon } from "$ts/daemon";
-import { getKMod } from "$ts/env";
-import type { ServiceHost } from "$ts/servicehost";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
+import { Daemon, getKMod } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import type { BugReport, ReportOptions } from "$types/bughunt";
 import type { Service } from "$types/service";
@@ -17,7 +16,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.module = getKMod<IBugHunt>("bughunt");

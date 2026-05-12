@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IShareConnGuiRuntime } from "$interfaces/runtimes/IShareConnGuiRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { ShareConnGuiRuntime } from "./runtime";
 
-  const { process }: { process: ShareConnGuiRuntime } = $props();
+  const { process }: { process: IShareConnGuiRuntime } = $props();
   const { shareUsername, shareName, sharePassword } = process;
 </script>
 

@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
-  import { Env, Fs } from "$ts/env";
-  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+  import { Daemon, Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import type { UserQuota } from "$types/fs";
   import type { SharedDriveType } from "$types/shares";
@@ -31,7 +30,7 @@
   async function mountShare() {
     if (Fs.drives[share._id]) await Fs.umountDrive(share._id, true);
     else {
-      const drive = await Daemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!.mountShareById(share._id);
+      const drive = await Daemon!.serviceHost!.getService<IShareManager>("ShareMgmt")!.mountShareById(share._id);
       if (drive) process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
     }
 

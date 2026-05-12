@@ -5,9 +5,9 @@
   import Pill from "$lib/Window/ActionBar/ActionPill.svelte";
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { MessageComposerRuntime } from "../runtime";
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { title, body, recipients, sending, attachments } = process;
 </script>
 

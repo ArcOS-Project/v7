@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
+  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
   import { Stack } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";

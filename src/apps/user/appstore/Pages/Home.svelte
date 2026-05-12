@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
   interface Props {
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
     all: PartialStoreItem[];
     recentlyAdded: PartialStoreItem[];
     popular: PartialStoreItem[];

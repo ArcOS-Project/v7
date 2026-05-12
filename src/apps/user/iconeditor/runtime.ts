@@ -1,16 +1,16 @@
+import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env } from "$ts/env";
-import { IconService } from "$ts/servicehost/services/IconService";
+import { Daemon, Env } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class IconEditorRuntime extends AppProcess {
+export class IconEditorRuntime extends AppProcess implements IIconEditorRuntime {
   iconGroups = Store<Record<string, string[]>>({});
   icons = Store<Record<string, string>>({});
   filtered = Store<Record<string, string>>({});
-  iconService?: IconService;
+  iconService?: IIconService;
   selectedIcon = Store<string>("");
   selectedGroup = Store<string>("");
   hasChanges = Store<boolean>(false);
@@ -22,7 +22,7 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async start() {
-    this.iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
+    this.iconService = Daemon?.serviceHost?.getService<IIconService>("IconService");
     this.setGroups();
     this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.icons.subscribe(() => {

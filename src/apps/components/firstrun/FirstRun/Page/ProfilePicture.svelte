@@ -1,8 +1,5 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { FirstRunRuntime } from "../../runtime";
-
-  const { process }: { process: FirstRunRuntime } = $props();
 </script>
 
 <ProfilePicture height={84} />

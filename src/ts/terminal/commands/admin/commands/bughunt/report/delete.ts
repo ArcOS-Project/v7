@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminBugHuntReportDelete: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess(AdminScopes.adminBugHuntDelete)) return 2;

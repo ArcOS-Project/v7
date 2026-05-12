@@ -1,12 +1,13 @@
-import type { IAppProcess } from "$interfaces/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Stack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import { Plural } from "$ts/util";
+import { safeIsAppProc } from "$ts/util/apps";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class MasterOptionsRuntime extends AppProcess {
+export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRuntime {
   loading = Store<boolean>(false);
 
   //#region LIFECYCLE
@@ -47,9 +48,7 @@ export class MasterOptionsRuntime extends AppProcess {
   async killUserApps() {
     const userApps: IAppProcess[] = [...Stack.store()]
       .map(([_, v]) => v as IAppProcess)
-      .filter(
-        (proc) => proc instanceof AppProcess && !proc.app.data.core && proc.app.id !== "arcShell" && proc.app.id !== "wallpaper"
-      );
+      .filter((proc) => safeIsAppProc(proc) && !proc.app.data.core && proc.app.id !== "arcShell" && proc.app.id !== "wallpaper");
 
     for (const proc of userApps) {
       await Stack.kill(proc.pid, true);

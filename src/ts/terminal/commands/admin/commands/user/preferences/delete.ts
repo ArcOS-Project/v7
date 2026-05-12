@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { setJsonHierarchy } from "$ts/util/hierarchy";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminUserPreferencesDelete: AdminCommandType = async (term, admin, [username, path]) => {
   if (!admin.canAccess(AdminScopes.adminPreferencesGet, AdminScopes.adminPreferencesPut)) return 2;

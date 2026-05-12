@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import UrlWallpaperSvelte from "../Settings/Overlays/UrlWallpaper.svelte";
 
 export const UrlWallpaper: App = {
@@ -26,7 +26,7 @@ export const UrlWallpaper: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: UrlWallpaperSvelte as any,
   },
   overlay: true,

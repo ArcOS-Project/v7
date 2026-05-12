@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+  import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: IShareMgmtOverlayRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");
@@ -26,7 +26,7 @@
       return;
     }
 
-    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
     const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();

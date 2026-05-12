@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { LoggingRuntime } from "../../runtime";
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import Item from "./List/Item.svelte";
 
-  const { process }: { process: LoggingRuntime } = $props();
+  const { process }: { process: ILoggingRuntime } = $props();
   const { currentSource, selectedLevel, groups } = process;
 </script>
 

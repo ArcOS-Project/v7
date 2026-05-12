@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Sleep } from "$ts/sleep";
   import { Store } from "$ts/writable";
   import type { ContextMenuInstance } from "$types/app";
   import { onMount } from "svelte";
   import Item from "./ContextMenuRenderer/Item.svelte";
-  import { ContextMenuRuntime } from "./runtime";
 
-  const { process }: { process: ContextMenuRuntime } = $props();
+  const { process }: { process: IContextMenuRuntime } = $props();
   const { userPreferences } = process;
   let data: ContextMenuInstance | null = $state(null);
   let menu: HTMLDivElement;

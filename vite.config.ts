@@ -42,6 +42,9 @@ export default defineConfig({
     assetsInlineLimit: 1,
     minify: true,
   },
+  esbuild: {
+    keepNames: true,
+  },
   base: "",
 });
 function GenerateGlobalTypesPlugin(): Plugin {

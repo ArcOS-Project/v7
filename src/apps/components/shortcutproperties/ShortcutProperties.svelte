@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { ShortcutPropertiesRuntime } from "./runtime";
 
-  const { process }: { process: ShortcutPropertiesRuntime } = $props();
-  const { shortcutData, iconStore } = process;
+  const { process }: { process: IShortcutPropertiesRuntime } = $props();
+  const { shortcutData } = process;
 </script>
 
 {#if $shortcutData}

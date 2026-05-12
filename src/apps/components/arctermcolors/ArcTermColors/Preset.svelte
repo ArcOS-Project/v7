@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ArcTermColorsRuntime } from "../runtime";
+  import type { IArcTermColorsRuntime } from "$interfaces/runtimes/IArcTermColorsRuntime";
   import type { ArcTermColorPreset } from "../types";
 
   let {
     preset,
     selected = $bindable(),
     process,
-  }: { preset: ArcTermColorPreset; selected?: ArcTermColorPreset; process: ArcTermColorsRuntime } = $props();
+  }: { preset: ArcTermColorPreset; selected?: ArcTermColorPreset; process: IArcTermColorsRuntime } = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

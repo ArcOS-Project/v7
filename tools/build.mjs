@@ -1,11 +1,12 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import { program } from "commander";
 import { build } from "vite";
+import packageJson from "../package.json" with { type: "json" };
 import { checkParameters } from "./check-params.mjs";
 import { checkConsoleUsages } from "./console-usage.mjs";
+import { checkRuntimeInterfaces } from "./runtime-interfaces.mjs";
 import { checkTypeOutblow } from "./typeoutblow.mjs";
 import { validateRegions } from "./validate-regions.mjs";
-import packageJson from "../package.json" with { type: "json" };
 
 export const ASCII_ART = [
   "    _           ___  ___ ",
@@ -28,7 +29,7 @@ const flags = program
   .option("-h, --no-hash", "Skip obtaining the hash and writing it to the build file")
   .option("-m, --no-minify", "Don't minify the compiled JS")
   .option("-t, --build-types", "Build type definitions instead of building ArcOS")
-  .option("-b, --no-build", "Don't build ArcOS itself")
+  .option("-b, --no-build", "Skip building ArcOS itself")
   .parse()
   .opts();
 
@@ -82,7 +83,7 @@ async function doGitHash() {
 (async () => {
   EchoIntro();
 
-  console.log(`CHECKS ${runChecks} | TYPES ${buildTypes} | HASH ${getHash} | MINIFY ${minify}\n`)
+  console.log(`CHECKS ${runChecks} | TYPES ${buildTypes} | HASH ${getHash} | MINIFY ${minify}\n`);
 
   if (runChecks) {
     await runSvelteChecks();
@@ -90,6 +91,7 @@ async function doGitHash() {
     validateRegions();
     await checkParameters();
     await checkTypeOutblow();
+    checkRuntimeInterfaces();
   }
 
   if (buildTypes) return await doTypedefs();

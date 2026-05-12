@@ -1,4 +1,4 @@
-import type { FirstRunRuntime } from "./runtime";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 
 export interface FirstRunPage {
   name: string;
@@ -14,7 +14,7 @@ export interface Action {
   caption: string;
   suggested?: boolean;
   disabled?: boolean;
-  action: (process: FirstRunRuntime) => void;
+  action: (process: IFirstRunRuntime) => void;
 }
 
 export interface FirstRunTheme {

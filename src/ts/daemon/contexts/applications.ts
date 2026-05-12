@@ -1,13 +1,12 @@
-import type { IApplicationsUserContext } from "$interfaces/contexts/apps";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Env, Stack, SysDispatch } from "$ts/env";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { isPopulatable } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import type { App } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {
@@ -18,7 +17,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
   async spawnAutoload() {
     if (this._disposed) return;
 
-    const shares = this.serviceHost?.getService<ShareManager>("ShareMgmt");
+    const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
     const autoloadApps: string[] = [];
 
     this.Log(`Spawning autoload applications`);

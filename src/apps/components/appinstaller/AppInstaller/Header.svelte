@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AppInstallerRuntime } from "../runtime";
+  import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
 
-  const { process }: { process: AppInstallerRuntime } = $props();
+  const { process }: { process: IAppInstallerRuntime } = $props();
   const { completed, failReason, installing } = process.progress!;
   const { metadata, isLibrary } = process;
 </script>

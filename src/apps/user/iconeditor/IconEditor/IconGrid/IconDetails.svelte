@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { IconEditorRuntime } from "../../runtime";
+  import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
   import { IconIdTypeCaptions } from "../../store";
 
-  const { process }: { process: IconEditorRuntime } = $props();
+  const { process }: { process: IIconEditorRuntime } = $props();
   const { selectedIcon, icons } = process;
 
   let type = $state<string>();

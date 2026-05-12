@@ -1,15 +1,15 @@
-import { Daemon } from "$ts/daemon";
+import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import type { AppContextMenu, ContextMenuItem } from "$types/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { ReadableStore } from "$types/writable";
-import type { MessagingAppRuntime } from "./runtime";
 
-export function MessagesContextMenu(runtime: MessagingAppRuntime): AppContextMenu {
+export function MessagesContextMenu(runtime: IMessagingAppRuntime): AppContextMenu {
   return { "message-attachment": [AttachmentItems(runtime)] };
 }
 
-function AttachmentItems(runtime: MessagingAppRuntime): ContextMenuItem {
+function AttachmentItems(runtime: IMessagingAppRuntime): ContextMenuItem {
   return {
     caption: "Download",
     icon: "download",

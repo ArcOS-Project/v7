@@ -1,4 +1,4 @@
-import type { IShellRuntime } from "$interfaces/shell";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { AppKeyCombinations } from "$types/accelerator";
 
 export function ShellAccelerators(runtime: IShellRuntime): AppKeyCombinations {

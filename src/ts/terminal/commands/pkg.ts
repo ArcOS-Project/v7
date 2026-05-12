@@ -1,6 +1,6 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { Fs } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
@@ -8,7 +8,7 @@ import { ElevationLevel } from "$types/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
+import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../colors";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -20,7 +20,7 @@ const typeCaptions: Record<string, string> = {
 export class PkgCommand extends TerminalProcess {
   public static keyword: string = "pkg";
   public static description: string = "ArcOS package manager commandline";
-  private distrib?: DistributionServiceProcess;
+  private distrib?: IDistributionServiceProcess;
 
   //#region LIFECYCLE
 
@@ -33,7 +33,7 @@ export class PkgCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
-    this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = this.term!.daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
 
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");

@@ -1,10 +1,11 @@
+import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Fs } from "$ts/env";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class NewFileRuntime extends AppProcess {
+export class NewFileRuntime extends AppProcess implements INewFileRuntime{
   newFile = Store<string>();
   path: string;
 

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env } from "$ts/env";
 import type { FileHandler } from "$types/fs";
 

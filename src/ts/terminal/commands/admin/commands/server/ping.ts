@@ -1,10 +1,10 @@
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
-import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/store";
+import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/colors";
 import { sha256 } from "$ts/util";
 import type { ServerInfo } from "$types/server";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminServerPing: AdminCommandType = async (term, admin) => {
   try {

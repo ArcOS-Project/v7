@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { SqeletonRuntime } from "../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import Tab from "./Tabs/Tab.svelte";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { tabs } = process;
 </script>
 

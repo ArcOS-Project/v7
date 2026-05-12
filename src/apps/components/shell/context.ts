@@ -1,8 +1,7 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IProcess } from "$interfaces/process";
-import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
-import { Daemon } from "$ts/daemon";
-import { Stack } from "$ts/env";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
+import { Daemon, Stack } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import type { AppContextMenu } from "$types/app";
 

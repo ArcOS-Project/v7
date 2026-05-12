@@ -1,7 +1,8 @@
-import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/fs";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IFilesystem } from "$interfaces/modules/fs";
+import type { Constructs } from "$interfaces/common";
+import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { sha256, sliceIntoChunks } from "$ts/util";
@@ -48,9 +49,9 @@ export class Filesystem extends KernelModule implements IFilesystem {
     return this.drives[id];
   }
 
-  async mountDrive<T = IFilesystemDrive>(
+  async mountDrive<T extends IFilesystemDrive = IFilesystemDrive>(
     id: string,
-    supplier: typeof FilesystemDrive,
+    supplier: Constructs<T>,
     letter?: string,
     onProgress?: FilesystemProgressCallback,
     ...args: any[]

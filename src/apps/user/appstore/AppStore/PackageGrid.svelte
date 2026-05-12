@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { UUID } from "$ts/util/uuid";
   import type { PartialStoreItem } from "$types/package";
-  import type { AppStoreRuntime } from "../runtime";
   import PackageInstallAction from "./PackageInstallAction.svelte";
 
   interface Props {
@@ -10,7 +10,7 @@
     name: string;
     more?: () => void;
     className?: string;
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
   }
 
   const { items, name, more, className, process }: Props = $props();

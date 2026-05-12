@@ -1,6 +1,6 @@
+import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
+import { Daemon, Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -10,7 +10,7 @@ import type { RenderArgs } from "$types/process";
 import type { ArcShortcut } from "$types/shortcut";
 import type { ItemInfo } from "./types";
 
-export class ItemInfoRuntime extends AppProcess {
+export class ItemInfoRuntime extends AppProcess implements IItemInfoRuntime {
   info = Store<ItemInfo>();
   shortcut = Store<ArcShortcut>();
 

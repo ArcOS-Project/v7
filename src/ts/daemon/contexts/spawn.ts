@@ -1,9 +1,10 @@
 import type { Constructs } from "$interfaces/common";
-import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IProcess } from "$interfaces/process";
+import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -13,7 +14,6 @@ import { UUID } from "$ts/util/uuid";
 import type { App, AppProcessData, AppProcessSpawnOptions, TpaSpawnEntrypointResult } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 //
@@ -117,7 +117,12 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     return await this.spawnAppMeta(app, parentPid, options, ...args);
   }
 
-  async tpaEntrypoint(appId: string, ...args: any[]): Promise<CommandResult<TpaSpawnEntrypointResult>> {
+  async tpaEntrypoint(appId: string, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>> {
+    if (Daemon.safeMode) {
+      this.tpaError_safeMode();
+      return CommandResult.Ok({ returnValue: undefined });
+    }
+
     this.Log(`Invoking TPA Entrypoint for ${appId}`);
     if (this.tpaEntrypointCache[appId]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[appId] });
 
@@ -205,6 +210,21 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       +Env.get("shell_pid"),
       true
     );
+  }
+
+  tpaError_safeMode() {
+    if (Daemon!.autoLoadComplete)
+      MessageBox(
+        {
+          title: "Safe Mode",
+          message:
+            "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running ArcOS normally.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: "WarningIcon",
+        },
+        +Env.get("shell_pid"),
+        true
+      );
   }
 
   tpaError_noEnableThirdParty() {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Env, Stack } from "$ts/env";
   import { UUID } from "$ts/util/uuid";
   import type { ContextMenuItem } from "$types/app";
@@ -13,7 +13,7 @@
   let uuid = UUID();
 
   const contextMenuPid = Env.get("contextmenu_pid");
-  const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
+  const contextMenu = Stack.getProcess<IContextMenuRuntime>(+contextMenuPid);
 
   onMount(() => {
     contextMenu?.currentMenu.subscribe((v) => {

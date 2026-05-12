@@ -1,4 +1,4 @@
-import type { IFilesystemProxy } from "$interfaces/fs";
+import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
 
 export class FilesystemProxy implements IFilesystemProxy {

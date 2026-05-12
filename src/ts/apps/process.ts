@@ -1,15 +1,12 @@
-import type { IAppProcess } from "$interfaces/app";
 import type { Constructs } from "$interfaces/common";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IProcess } from "$interfaces/process";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IShellRuntime } from "$interfaces/shell";
-import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import { MessageBox } from "$ts/util/dialog";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { MaybePromise } from "$types/common";
 import { type ElevationData } from "$types/elevation";
@@ -23,7 +20,6 @@ import { type App, type AppContextMenu, type AppProcessData, type ContextMenuIte
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process implements IAppProcess {
@@ -34,7 +30,6 @@ export class AppProcess extends Process implements IAppProcess {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  shell: IShellRuntime | undefined;
   overridePopulatable: boolean = false;
   private toastTimeout?: NodeJS.Timeout;
   public toastMessage = Store<ToastMessage | undefined>();
@@ -65,7 +60,6 @@ export class AppProcess extends Process implements IAppProcess {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
     const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
@@ -131,7 +125,7 @@ export class AppProcess extends Process implements IAppProcess {
 
     this.STATE = "stopping";
 
-    this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
@@ -395,24 +389,6 @@ export class AppProcess extends Process implements IAppProcess {
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
     return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
-  }
-
-  notImplemented(what?: string) {
-    this.Log(`Not implemented: ${what || "<unknown>"}`);
-    MessageBox(
-      {
-        title: "Not implemented",
-        message: `${
-          what || "This feature"
-        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-          location.hostname
-        }</code>`,
-        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-        image: "BugReportIcon",
-        sound: "arcos.dialog.warning",
-      },
-      this.pid
-    );
   }
 
   appStore() {

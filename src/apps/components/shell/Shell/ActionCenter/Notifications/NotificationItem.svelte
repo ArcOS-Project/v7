@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IUserDaemon } from "$interfaces/daemon";
+  import type { IUserDaemon } from "$interfaces/IUserDaemon";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";

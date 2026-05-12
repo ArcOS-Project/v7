@@ -17,7 +17,7 @@ export const MediaPlayerApp: App = {
   },
   minSize: {
     w: 642,
-    h: 560, 
+    h: 560,
   },
   maxSize: {
     w: NaN,
@@ -56,7 +56,7 @@ export const MediaPlayerApp: App = {
       ".ogv",
       ".opus",
       ".wav",
-      ".webm"
+      ".webm",
     ],
   },
   position: { centered: true },

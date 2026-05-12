@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ICalculatorRuntime } from "$interfaces/runtimes/ICalculatorRuntime";
   import Function from "./Calculator/Function.svelte";
   import Key from "./Calculator/Key.svelte";
-  import type { CalculatorRuntime } from "./runtime";
 
-  const { process }: { process: CalculatorRuntime } = $props();
+  const { process }: { process: ICalculatorRuntime } = $props();
   const { Value } = process;
 </script>
 

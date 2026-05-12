@@ -1,14 +1,13 @@
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { UserTheme } from "$types/theme";
-import type { SettingsRuntime } from "./runtime";
 
-export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
+export function SettingsContext(runtime: ISettingsRuntime): AppContextMenu {
   return {
     "user-theme-option": [
       {

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import { Daemon } from "$ts/env";
   import { ElevationLevel } from "$types/elevation";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import type { ReadableStore } from "$types/writable";
-  import type { AppStoreRuntime } from "../../runtime";
 
   const {
     process,
@@ -12,7 +12,7 @@
     installed,
     compact = false,
   }: {
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
     installed: ReadableStore<StoreItem | undefined>;
     update: ReadableStore<UpdateInfo | false>;
     pkg: ReadableStore<StoreItem>;

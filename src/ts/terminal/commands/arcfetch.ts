@@ -1,5 +1,5 @@
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -7,7 +7,7 @@ import { authcode } from "$ts/util";
 import { formatBytes } from "$ts/util/fs";
 import { getDeviceInfo } from "../../kernel/device";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../colors";
 
 export class ArcFetchCommand extends TerminalProcess {
   static keyword: string = "arcfetch";

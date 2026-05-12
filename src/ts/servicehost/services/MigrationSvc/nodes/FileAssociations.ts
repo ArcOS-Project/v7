@@ -1,7 +1,7 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import type { FileAssocService } from "$ts/servicehost/services/FileAssocSvc";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
 import { DefaultFileDefinitions } from "../../FileAssocSvc/store";
 import { MigrationNode } from "../node";
@@ -15,8 +15,8 @@ export class FileAssociationsMigration extends MigrationNode {
   }
 
   async runMigration(cb?: MigrationStatusCallback): Promise<MigrationResult> {
-    const appStore = this.svc.host.getService<ApplicationStorage>("AppStorage");
-    const assoc = this.svc.host.getService<FileAssocService>("FileAssocSvc");
+    const appStore = this.svc.host.getService<IApplicationStorage>("AppStorage");
+    const assoc = this.svc.host.getService<IFileAssocService>("FileAssocSvc");
     const apps = await appStore?.get();
 
     if (!apps) return { result: "err_noop", successMessage: "Nothing to do." };

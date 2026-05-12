@@ -1,10 +1,10 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { State, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { logItemToStr } from "$ts/util";
 import { type LogItem } from "$types/logging";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
 
 export class ShutdownCommand extends TerminalProcess {
   public static keyword = "shutdown";

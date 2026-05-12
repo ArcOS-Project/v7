@@ -2,17 +2,17 @@ import {
   DummyFileProgress,
   type FileProgressMutator,
   type FsProgressOperation,
-  type FsProgressProc,
 } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { IFilesystemUserContext } from "$interfaces/contexts/files";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { ILegacyServerDrive } from "$interfaces/drives/legacy";
-import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
-import type { ITrashCanService } from "$interfaces/services/TrashSvc";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
+import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
+import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
+import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
@@ -27,7 +27,6 @@ import type { FileHandler, FileOpenerResult } from "$types/fs";
 import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {
@@ -124,7 +123,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
         errors: [],
       })
     );
-    let process: FsProgressProc | undefined;
+    let process: IFsProgressRuntime | undefined;
     let shown = false;
 
     this.Log(`Creating file progress '${uuid}': ${initialData.caption}`);
@@ -134,11 +133,11 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
       shown = true;
 
       if (!parentPid) {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, { asOverlay: true }, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", 0, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", parentPid, { asOverlay: true }, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", parentPid, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }

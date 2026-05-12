@@ -1,7 +1,7 @@
+import type { IBugHuntRuntime } from "$interfaces/runtimes/IBugHuntRuntime";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import type { BugHuntUserSpaceProcess } from "$ts/servicehost/services/BugHuntUsp";
+import { Daemon, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
@@ -12,12 +12,12 @@ import { BugReportsCreatorApp } from "../bughuntcreator/BugHuntCreator";
 import { BugHuntAltMenu } from "./context";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class BugHuntRuntime extends AppProcess {
+export class BugHuntRuntime extends AppProcess implements IBugHuntRuntime {
   loading = Store<boolean>(true);
   currentTab = Store<string>();
   store = Store<BugReport[]>([]);
   selectedReport = Store<string>();
-  bughunt: BugHuntUserSpaceProcess;
+  bughunt: IBugHuntUserSpaceProcess;
 
   protected overlayStore: Record<string, App> = {
     creator: BugReportsCreatorApp,
@@ -29,7 +29,7 @@ export class BugHuntRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.bughunt = Daemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<IBugHuntUserSpaceProcess>("BugHuntUsp")!;
     this.altMenu.set(BugHuntAltMenu(this));
 
     this.setSource(__SOURCE__);

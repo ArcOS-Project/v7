@@ -1,4 +1,4 @@
-import type { IMigrationNode } from "$interfaces/migration";
+import type { IMigrationNode } from "$interfaces/IMigrationNode";
 
 export interface MigrationStatusItem {
   caption: string;

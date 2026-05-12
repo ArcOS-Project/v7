@@ -7,10 +7,10 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { Fs } from "$ts/env";
 
-  const { process, dir }: { process: FileManagerRuntime; dir: FolderEntry } = $props();
+  const { process, dir }: { process: IFileManagerRuntime; dir: FolderEntry } = $props();
   const { selection } = process;
 
   let date = $state<string>();

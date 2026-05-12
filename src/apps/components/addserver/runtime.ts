@@ -1,3 +1,4 @@
+import type { IAddServerRuntime } from "$interfaces/runtimes/IAddServerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Server } from "$ts/env";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
@@ -7,9 +8,10 @@ import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import axios from "axios";
 
-export class AddServerRuntime extends AppProcess {
+export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
   loading = Store<boolean>(false);
   action = Store<string>("");
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
@@ -17,12 +19,6 @@ export class AddServerRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
-
-  async start() {}
-
-  async stop() {}
-
-  async render() {}
 
   //#endregion LIFECYCLE
 

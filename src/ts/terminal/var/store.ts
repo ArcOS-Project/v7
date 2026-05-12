@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -27,7 +27,7 @@ import {
   RESET,
   WHITE,
   YELLOW,
-} from "../store";
+} from "../colors";
 
 export function getArcTermStore(term: IArcTerminal): VariableStore {
   return {

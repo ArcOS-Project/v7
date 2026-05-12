@@ -1,8 +1,8 @@
 <script lang="ts">
   import backdrop from "$assets/sqeleton/backdrop.svg";
-  import type { SqeletonRuntime } from "../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { data: app } = process.app;
 </script>
 

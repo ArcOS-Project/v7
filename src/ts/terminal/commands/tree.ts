@@ -1,10 +1,10 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Plural } from "$ts/util";
 import { join } from "$ts/util/fs";
 import type { RecursiveDirectory } from "$types/fs";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLUE, BRGREEN, RESET } from "../colors";
 
 export class TreeCommand extends TerminalProcess {
   public static keyword = "tree";

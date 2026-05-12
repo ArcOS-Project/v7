@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "../runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import ExpressionRow from "./Expressions/ExpressionRow.svelte";
 
-  const { process }: { process: ExecuteQueryRuntime } = $props();
+  const { process }: { process: IExecuteQueryRuntime } = $props();
   const { expressions, selectedSource } = process;
 </script>
 

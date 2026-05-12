@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ImageViewerRuntime } from "./runtime";
+  import type { IImageViewerRuntime } from "$interfaces/runtimes/IImageViewerRuntime";
 
-  const { process }: { process: ImageViewerRuntime } = $props();
+  const { process }: { process: IImageViewerRuntime } = $props();
   const { imageUrl, openedFile } = process;
 </script>
 

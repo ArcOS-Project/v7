@@ -1,13 +1,13 @@
 import type { Constructs } from "$interfaces/common";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -27,7 +27,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.loadOrigin("injected", () => this.injected());
@@ -223,7 +223,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   /**
    * @deprecated This method is ancient and should not be used. Use `ApplicationStorage.getAppSynchronous` instead.
    */
-  async getAppById(id: string, fromBuffer = false): Promise<CommandResult<App>> {
+  async getAppById(id: string, fromBuffer = false): Promise<ICommandResult<App>> {
     if (this._disposed) return CommandResult.Error("The process is disposed");
 
     const apps = fromBuffer ? this.buffer() : await this.get();

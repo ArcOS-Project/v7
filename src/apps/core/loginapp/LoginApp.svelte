@@ -1,13 +1,13 @@
 <script lang="ts">
   import safeModeBg from "$assets/bg/safemode.png";
+  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
   import { Server } from "$ts/env";
   import type { AppComponentProps } from "$types/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
   import LoginForm from "./LoginForm.svelte";
-  import type { LoginAppRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<LoginAppRuntime> = $props();
+  const { process }: AppComponentProps<ILoginAppRuntime> = $props();
   const {
     loadingStatus,
     errorMessage,

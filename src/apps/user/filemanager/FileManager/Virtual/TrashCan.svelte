@@ -1,22 +1,22 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
-  import { Daemon } from "$ts/daemon";
-  import { TrashCanService } from "$ts/servicehost/services/TrashSvc";
+  import { Daemon } from "$ts/env";
   import { Plural } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
   import type { TrashIndexNode } from "$types/trash";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
-  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { selection } = process;
-  const trash = Daemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon?.serviceHost?.getService<ITrashCanService>("TrashSvc");
 
   let items = $state<[string, TrashIndexNode][]>([]);
 

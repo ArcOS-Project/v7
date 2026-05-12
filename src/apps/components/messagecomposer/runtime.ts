@@ -1,7 +1,7 @@
+import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
@@ -13,14 +13,14 @@ import type { MessageCreateData } from "$types/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
 
-export class MessageComposerRuntime extends AppProcess {
+export class MessageComposerRuntime extends AppProcess implements IMessageComposerRuntime {
   sending = Store<boolean>(false);
   recipients = Store<string[]>([]);
   attachments = Store<Attachment[]>([]);
   title = Store<string>("");
   body = Store<string>("");
   replyId: string | undefined;
-  service: MessagingInterface;
+  service: IMessagingInterface;
 
   //#region LIFECYCLE
 
@@ -35,7 +35,7 @@ export class MessageComposerRuntime extends AppProcess {
     }
     if (replyId) this.replyId = replyId;
 
-    this.service = Daemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon!.serviceHost!.getService<IMessagingInterface>("MessagingService")!;
 
     this.setSource(__SOURCE__);
   }

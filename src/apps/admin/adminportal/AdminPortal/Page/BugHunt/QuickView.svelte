@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import type { BugReport } from "$types/bughunt";
   import type { ReadableStore } from "$types/writable";

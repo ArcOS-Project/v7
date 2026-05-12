@@ -1,12 +1,14 @@
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IBugHunt } from "$interfaces/modules/bughunt";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { IFilesystem } from "$interfaces/modules/fs";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { ISoundbus } from "$interfaces/modules/soundbus";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IStateHandler } from "$interfaces/state";
+import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { IKernelModule } from "$interfaces/modules/IKernelModule";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { ISoundbus } from "$interfaces/modules/ISoundbus";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import packageJson from "../../package.json";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
@@ -45,8 +47,18 @@ export function SetKernelExports() {
   BugHunt = getKMod<IBugHunt>("bughunt");
 }
 
-export function getKMod<T = any>(id: string, dontCrash = false): T {
+export function getKMod<T extends IKernelModule>(id: string, dontCrash = false): T {
   const kernel = Kernel!;
 
   return kernel.getModule<T>(id, dontCrash) as T;
+}
+
+export function GetConnector<T extends IServerConnector>(name: string, token?: string): T {
+  return getKMod<IServerManager>("server").GetConn(name, token || "");
+}
+
+export let Daemon: IUserDaemon;
+
+export function SetDaemon(daemon: IUserDaemon) {
+  Daemon = daemon;
 }

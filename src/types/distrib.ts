@@ -1,4 +1,4 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { InstallStatus } from "./package";
 import type { ReadableStore } from "./writable";
 

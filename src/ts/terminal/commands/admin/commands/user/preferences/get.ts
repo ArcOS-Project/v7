@@ -1,7 +1,7 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonStringify } from "$ts/util/json";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminUserPreferencesGet: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess(AdminScopes.adminPreferencesGet)) return 2;

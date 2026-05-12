@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
   import type { FileEntry } from "$types/fs";
@@ -9,9 +10,8 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
 
-  const { process, file }: { process: FileManagerRuntime; file: FileEntry } = $props();
+  const { process, file }: { process: IFileManagerRuntime; file: FileEntry } = $props();
   const { selection, shortcuts } = process;
 
   let date = $state<string>();
@@ -39,7 +39,11 @@
 
     if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
 
-    if (info?.friendlyName === "Image file" && process.userPreferences().appPreferences.fileManager?.renderThumbnails)
+    if (
+      info?.friendlyName === "Image file" &&
+      process.userPreferences().appPreferences.fileManager?.renderThumbnails &&
+      !Daemon.safeMode
+    )
       thumbnail = await Daemon?.files?.getThumbnailFor(thisPath);
   });
 

@@ -1,16 +1,15 @@
-import type { IAccountUserContext } from "$interfaces/contexts/account";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import DeleteUser from "$lib/Daemon/DeleteUser.svelte";
-import { Env, Server, SysDispatch } from "$ts/env";
+import { Daemon, Env, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { CommandResult } from "$ts/result";
-import { authcode } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
-import { toForm } from "$ts/util/form";
 import { ElevationLevel } from "$types/elevation";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class AccountUserContext extends UserContext implements IAccountUserContext {
@@ -32,7 +31,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     }
   }
 
-  async getUserInfo(): Promise<CommandResult<UserInfo>> {
+  async getUserInfo(): Promise<ICommandResult<UserInfo>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 
     if (this.initialized) {
@@ -43,20 +42,13 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     try {
       const response = this.userInfo._id
-        ? {
-            status: 200,
-            data: this.userInfo,
-          }
-        : await Backend.get(`/user/self`, {
-            headers: { Authorization: `Bearer ${Daemon!.token}` },
-          });
+        ? CommandResult.Ok(this.userInfo)
+        : await Daemon.GetConnector<IUserConnector>("UserConnector").Self();
+      if (!response.success) return response;
 
-      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
-
-      if (!data) return CommandResult.Error(response.data?.e ?? "Failed to request user info");
+      const data = response.result as UserInfo;
 
       Daemon!.preferencesCtx?.preferences.set(data.preferences);
-
       Daemon!.preferencesCtx?.sanitizeUserPreferences();
 
       this.initialized = true;
@@ -64,7 +56,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       Env.set("currentuser", this.username);
       if (data.admin) Env.set("administrator", data.admin);
 
-      return CommandResult.Ok(response.data as UserInfo);
+      return response;
     } catch (e) {
       await Daemon!.killSelf();
       return CommandResult.AxiosError(e, "Unknown error while obtaining user information. Please try again.");
@@ -86,25 +78,17 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    try {
-      const response = await Backend.patch("/user/rename", toForm({ newUsername }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Rename(newUsername);
+    if (!result.success) return false;
 
-      if (response.status !== 200) return false;
+    this.username = newUsername;
+    SysDispatch.dispatch("change-username", [newUsername]);
+    Cookies.set("arcUsername", newUsername, {
+      expires: 14,
+      domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+    });
 
-      this.username = newUsername;
-      SysDispatch.dispatch("change-username", [newUsername]);
-
-      Cookies.set("arcUsername", newUsername, {
-        expires: 14,
-        domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
-      });
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   async changePassword(newPassword: string): Promise<boolean> {
@@ -122,30 +106,20 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
 
     if (!elevated) return false;
 
-    try {
-      const response = await Backend.post("/user/changepswd", toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").ChangePassword(newPassword);
+    if (!result.success) return false;
 
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
-    try {
-      const response = await Backend.get(`/user/info/${userId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const information = response.data as PublicUserInfo;
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Info(userId);
+    if (!result.success) return undefined;
 
-      information.profilePicture = `${Server.url}/user/pfp/${userId}${authcode()}`;
+    const information = result.result as PublicUserInfo;
+    information.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(userId);
 
-      return information;
-    } catch {
-      return undefined;
-    }
+    return information;
   }
 
   async deleteAccount() {

@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Server } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
   import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
-  import type { InitialSetupRuntime } from "../../runtime";
 
-  const { process }: { process: InitialSetupRuntime } = $props();
+  const { process }: { process: IInitialSetupRuntime } = $props();
   const { newUsername, password, confirm, email, displayName } = process;
 
   let enteredUsername = $state("");

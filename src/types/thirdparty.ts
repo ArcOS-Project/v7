@@ -1,9 +1,9 @@
-import type { IAppProcess } from "$interfaces/app";
 import type { Constructs } from "$interfaces/common";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IProcess } from "$interfaces/process";
-import type { IServiceHost } from "$interfaces/service";
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import type {
   arrayBufferToBlob,

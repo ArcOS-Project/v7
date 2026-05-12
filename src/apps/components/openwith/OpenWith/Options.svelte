@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { FileOpenerResult } from "$types/fs";
-  import type { OpenWithRuntime } from "../runtime";
+  import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
   import Option from "./Options/Option.svelte";
 
-  const { process, handlers: handlers }: { process: OpenWithRuntime; handlers: FileOpenerResult[] } = $props();
+  const { process, handlers: handlers }: { process: IOpenWithRuntime; handlers: FileOpenerResult[] } = $props();
   const { viewMode } = process;
 </script>
 

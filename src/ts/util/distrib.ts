@@ -1,5 +1,4 @@
-import { Daemon } from "$ts/daemon";
-import { Server } from "$ts/env";
+import { Daemon, Server } from "$ts/env";
 import { ComponentIcon } from "$ts/images/general";
 import { authcode } from "$ts/util";
 import type { PartialStoreItem, StoreItem } from "$types/package";

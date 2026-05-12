@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import SearchResult from "./SearchResults/SearchResult.svelte";
 

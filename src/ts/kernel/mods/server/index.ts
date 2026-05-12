@@ -1,12 +1,19 @@
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { ISystemDispatch } from "$interfaces/modules/dispatch";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { Constructs } from "$interfaces/common";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { getKMod } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
+import { StoreConnector } from "./connectors/StoreConnector";
+import { TotpConnector } from "./connectors/TotpConnector";
+import { TpaConnector } from "./connectors/TpaConnector";
+import { UserConnector } from "./connectors/UserConnector";
+import { ShareConnector } from "./connectors/ShareConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
@@ -23,6 +30,29 @@ export class ServerManager extends KernelModule implements IServerManager {
   public serverInfo: ServerInfo | undefined;
   public previewBranch?: string;
   public servers: ServerOption[] = [];
+
+  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector];
+  private _store: Record<"" | string, IServerConnector[]> = {};
+
+  public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {
+    this._store[token] ??= [];
+
+    let instance = this._store[token]?.find((i) => i.name === id) as T;
+    if (!instance) {
+      const constructor = this.STORE.find((c) => c.name === id) as Constructs<T> | undefined;
+      if (!constructor) throw new Error(`Tried to construct unknown ServerConnector ${id}`);
+
+      instance = new constructor(token || undefined);
+      this._store[token] ??= [];
+      this._store[token].push(instance);
+    }
+
+    return instance!;
+  }
+
+  public get ConnectorAmount() {
+    return this.STORE.length;
+  }
 
   get url() {
     return this.currentServer?.url;
@@ -100,26 +130,12 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   async checkUsernameAvailability(username: string) {
     this.isKmod();
-
-    try {
-      const response = await Backend.get(`/user/availability/username?name=${username}`);
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityUsername(username)).success;
   }
 
   async checkEmailAvailability(email: string) {
     this.isKmod();
-
-    try {
-      const response = await Backend.get(`/user/availability/email?email=${email}`);
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityEmail(email)).success;
   }
 
   private checkIfPreviewDeployment() {
@@ -150,6 +166,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       Backend.defaults.params = server.authCode ? { authcode: server.authCode } : {};
       Backend.defaults.baseURL = server.url;
+      this._store = {};
 
       if (!server.system) document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
       else document.title = "ArcOS";

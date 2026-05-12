@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import Options from "./OpenWith/Options.svelte";
-  import type { OpenWithRuntime } from "./runtime";
 
-  const { process }: { process: OpenWithRuntime } = $props();
+  const { process }: { process: IOpenWithRuntime } = $props();
   const { filename, viewMode, available, all, path, selectedId, apps } = process;
 </script>
 

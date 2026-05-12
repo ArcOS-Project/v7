@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { FirstRunRuntime } from "../../runtime";
-  const { process }: { process: FirstRunRuntime } = $props();
+  import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+  const { process }: { process: IFirstRunRuntime } = $props();
 </script>
 
 <img src={process.getIconCached("AppStoreIcon")} alt="" />

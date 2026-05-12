@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ILoadQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { LoadQueryOverlayRuntime } from "../LoadQuery/runtime";
 
-  const { process }: { process: LoadQueryOverlayRuntime } = $props();
+  const { process }: { process: ILoadQueryOverlayRuntime } = $props();
   const { queries, selectedQuery } = process;
 </script>
 

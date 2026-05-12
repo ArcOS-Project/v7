@@ -1,3 +1,5 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
 import { DefaultAppData } from "$ts/user/store";
 import type { App, RegisteredProcess } from "$types/app";
 
@@ -24,4 +26,12 @@ export function cloneAppMeta<T extends App>(app: T): T {
   const newApp = JSON.parse(JSON.stringify({ ...app, process: undefined, assets: undefined }));
 
   return { ...newApp, assets, process } as T;
+}
+
+export function safeIsAppProc(proc: IProcess | undefined) {
+  if (!proc) return false;
+
+  const appProc = proc as IAppProcess;
+
+  return !!appProc.app?.data?.id;
 }

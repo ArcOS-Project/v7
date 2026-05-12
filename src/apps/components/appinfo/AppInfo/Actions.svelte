@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
+  import { onMount } from "svelte";
 
-  const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
+  const { appId, process }: { appId: string; process: IAppInfoRuntime } = $props();
   const { userPreferences } = process;
 
   let disabled = $state(false);

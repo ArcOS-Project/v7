@@ -1,14 +1,14 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IDriveInfoRuntime } from "$interfaces/runtimes/IDriveInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { USERFS_UUID } from "$ts/env";
+import { Daemon, USERFS_UUID } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import type { AppProcessData } from "$types/app";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
 
-export class DriveInfoRuntime extends AppProcess {
+export class DriveInfoRuntime extends AppProcess implements IDriveInfoRuntime {
   drive?: IFilesystemDrive;
   isUserFs = false;
   usage?: CategorizedDiskUsage;

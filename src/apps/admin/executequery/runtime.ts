@@ -1,8 +1,8 @@
-import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
+import { Daemon, Fs } from "$ts/env";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
@@ -14,10 +14,17 @@ import type { ExpandedUserInfo } from "$types/user";
 import { ExecuteQueryAltMenu } from "./altmenu";
 import LoadQueryOverlayApp from "./LoadQuery/LoadQuery";
 import SaveQueryOverlayApp from "./SaveQuery/SaveQuery";
-import { QueryDesignations, QuerySources } from "./store";
-import type { QueryDesignationsType, QueryExpression, QueryExpressionsType, QuerySourceKey, SavedQuery } from "./types";
+import { QueryDesignations } from "./store";
+import {
+  QuerySources,
+  type QueryDesignationsType,
+  type QueryExpression,
+  type QueryExpressionsType,
+  type QuerySourceKey,
+  type SavedQuery,
+} from "./types";
 
-export class ExecuteQueryRuntime extends AppProcess {
+export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRuntime {
   result = Store<any[]>([]);
   dataSource = Store<any[]>([]);
   selectedSource = Store<QuerySourceKey>();
@@ -29,7 +36,7 @@ export class ExecuteQueryRuntime extends AppProcess {
   expressions = Store<QueryExpressionsType>(
     Object.fromEntries(QuerySources.map((s) => [s, [] as QueryExpression[]])) as QueryExpressionsType
   );
-  admin: AdminBootstrapper;
+  admin: IAdminBootstrapper;
   users: ExpandedUserInfo[] = [];
   readonly queryDesignations: QueryDesignationsType = QueryDesignations(this);
   protected override overlayStore: Record<string, App> = {
@@ -43,7 +50,7 @@ export class ExecuteQueryRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-    this.admin = Daemon.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper")!;
+    this.admin = Daemon.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper")!;
     this.altMenu.set(ExecuteQueryAltMenu(this));
   }
 
@@ -309,7 +316,7 @@ export class ExecuteQueryRuntime extends AppProcess {
 
     await Fs.writeFile(path, textToBlob(JSON.stringify(this.result(), null, 2)), undefined, false);
 
-    const proc = await Daemon.spawn?.spawnApp<FileManagerRuntime>("fileManager", this.parentPid, {}, getParentDirectory(path));
+    const proc = await Daemon.spawn?.spawnApp<IFileManagerRuntime>("fileManager", this.parentPid, {}, getParentDirectory(path));
 
     proc?.selection.set([path]);
   }
@@ -407,7 +414,7 @@ export class ExecuteQueryRuntime extends AppProcess {
   //#region UTILS
 
   findMostColumnsOf(input: any[]): string[] {
-    const columns = input.map((i) => Object.keys(i)) as string[][];
+    const columns = input.map((i) => Object.keys(i).filter((c) => c !== "__v")) as string[][];
     const lengths = columns.map((i) => i.length);
 
     let maxLength = 0;

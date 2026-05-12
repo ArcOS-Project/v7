@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
-  import type { NewFileRuntime } from "./runtime";
 
-  const { process }: { process: NewFileRuntime } = $props();
+  const { process }: { process: INewFileRuntime } = $props();
   const { newFile } = process;
 
   let icon = $state<string>(process.getIconCached("DefaultMimeIcon"));

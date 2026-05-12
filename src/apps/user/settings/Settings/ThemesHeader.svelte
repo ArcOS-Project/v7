@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IUserDaemon } from "$interfaces/daemon";
+  import type { IUserDaemon } from "$interfaces/IUserDaemon";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
   import type { Snippet } from "svelte";

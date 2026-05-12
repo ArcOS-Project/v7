@@ -1,16 +1,16 @@
 <script lang="ts">
+  import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Sleep } from "$ts/sleep";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Store } from "$ts/writable";
   import { draggable, type DragEventData } from "@neodrag/svelte";
   import { onMount } from "svelte";
-  import type { WallpaperRuntime } from "../runtime";
 
   let position = $state({ x: 0, y: 0 });
   let moving = Store<boolean>(false);
 
   interface Props {
-    process: WallpaperRuntime;
+    process: IWallpaperRuntime;
     caption: string;
     icon: string;
     identifier: string;

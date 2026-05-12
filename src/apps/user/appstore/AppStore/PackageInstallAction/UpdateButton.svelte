@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { MessageBox } from "$ts/util/dialog";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import type { ReadableStore } from "$types/writable";
   import { onMount } from "svelte";
-  import type { AppStoreRuntime } from "../../runtime";
 
   const {
     process,
@@ -11,7 +11,7 @@
     compact = false,
     update,
   }: {
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
     update: ReadableStore<UpdateInfo | false>;
     pkg: ReadableStore<StoreItem>;
     compact: boolean;

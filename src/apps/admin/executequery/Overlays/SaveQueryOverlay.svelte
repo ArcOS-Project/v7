@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISaveQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { SaveQueryOverlayRuntime } from "../SaveQuery/runtime";
 
-  const { process }: { process: SaveQueryOverlayRuntime } = $props();
+  const { process }: { process: ISaveQueryOverlayRuntime } = $props();
   const { queryName } = process;
 </script>
 

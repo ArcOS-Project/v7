@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import Header from "./IconPicker/Header.svelte";
   import Icon from "./IconPicker/Icon.svelte";
-  import type { IconPickerRuntime } from "./runtime";
   import { ICON_GROUP_CAPTIONS } from "./store";
 
-  const { process }: { process: IconPickerRuntime } = $props();
+  const { process }: { process: IIconPickerRuntime } = $props();
   const { groups, selected, defaultIcon } = process;
 </script>
 

@@ -1,6 +1,6 @@
-import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/store";
+import { BRBLACK, BRPURPLE, RESET } from "$ts/terminal/colors";
 import { getAllJsonPaths } from "$ts/util/hierarchy";
-import type { AdminCommandType } from "../../admin";
+import type { AdminCommandType } from "$types/terminal";
 import { AdminCommandStore } from "../store";
 
 export const AdminHelp: AdminCommandType = async (term, admin) => {

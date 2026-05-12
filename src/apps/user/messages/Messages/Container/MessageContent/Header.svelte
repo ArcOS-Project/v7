@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { CommandResult } from "$ts/result";
   import type { ExpandedMessage } from "$types/messaging";
@@ -10,7 +10,7 @@
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { message, process }: { message: ExpandedMessage; process: MessagingAppRuntime } = $props();
+  const { message, process }: { message: ExpandedMessage; process: IMessagingAppRuntime } = $props();
   const isSent = message?.authorId === Daemon.userInfo._id;
 
   let user = $state<PublicUserInfo>();

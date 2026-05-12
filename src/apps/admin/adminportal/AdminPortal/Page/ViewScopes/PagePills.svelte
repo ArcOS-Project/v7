@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { AdminScopeCaptions } from "$ts/servicehost/services/AdminBootstrapper/store";
   import { scopeToScopeCaption } from "$ts/util/admin";
   import { MessageBox } from "$ts/util/dialog";

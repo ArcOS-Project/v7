@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/user/store";
   import { sliceIntoChunks } from "$ts/util";

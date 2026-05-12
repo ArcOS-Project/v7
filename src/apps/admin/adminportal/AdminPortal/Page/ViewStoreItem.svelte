@@ -1,7 +1,6 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Daemon } from "$ts/daemon";
-  import { Env } from "$ts/env";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon, Env } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import { StoreItemIcon } from "$ts/util/distrib";
   import type { ViewStoreItemData } from "../../types";

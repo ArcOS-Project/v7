@@ -1,18 +1,17 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IMessagingInterface } from "$interfaces/services/MessagingService";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import { Daemon, Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
-import { authcode } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
 import type { Service } from "$types/service";
-import { GlobalDispatch } from "../GlobalDispatch";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
@@ -20,7 +19,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   }
 
   //#region LIFECYCLE
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -30,7 +29,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     this.initBroadcast?.("Starting messaging service");
 
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
-    const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
+    const dispatch = daemon.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: ExpandedMessage) => {
       daemon?.notifications?.sendNotification({
@@ -59,7 +58,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -77,7 +76,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -96,7 +95,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const response = await Backend.get("/messaging/inbox", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = (response.data as ExpandedMessage[]).map((message) => {
         if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
+          message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
         }
 
         return message;
@@ -168,7 +167,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       const data = response.data as ExpandedMessage;
 
       if (data && data.author) {
-        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}${authcode()}`;
+        data.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(data.authorId);
       }
 
       return response.data as ExpandedMessage;

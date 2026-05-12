@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AdvSysSetRuntime } from "../runtime";
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
   let newPayload = $state<string>();

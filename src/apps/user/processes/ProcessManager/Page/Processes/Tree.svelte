@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { IProcess } from "$interfaces/process";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import type { IProcess } from "$interfaces/IProcess";
   import { Stack } from "$ts/env";
   import { onMount } from "svelte";
-  import type { ProcessManagerRuntime } from "$apps/user/processes/runtime";
   import Row from "./Tree/Row.svelte";
 
-  const { process }: { process: ProcessManagerRuntime } = $props();
+  const { process }: { process: IProcessManagerRuntime } = $props();
   const { running } = process;
 
   let map = $state<Map<number, IProcess>>(new Map());
