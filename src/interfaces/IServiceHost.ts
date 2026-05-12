@@ -1,10 +1,12 @@
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { IProcess } from "./IProcess";
+import type { IServerConnector } from "./modules/IServerManager";
 
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;
   deactivate(broadcast?: (m: string) => void): Promise<void>;
+  GetConnector<T extends IServerConnector>(name: string): T;
 }
 
 export interface IServiceHost extends IProcess {

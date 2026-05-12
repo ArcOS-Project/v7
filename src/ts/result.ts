@@ -3,7 +3,7 @@ import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/r
 import { AxiosError, type AxiosResponse } from "axios";
 import { Log } from "./logging";
 
-export class CommandResult<T = string> implements ICommandResult<T> {
+export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;
   public error?: Error;
   public errorMessage?: string;

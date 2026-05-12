@@ -1,5 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { TerminalProcess } from "../process";
 
@@ -20,7 +21,7 @@ export class ExitCommand extends TerminalProcess {
   protected async main(term: IArcTerminal): Promise<number> {
     const proc = Stack.getProcess<IAppProcess>(term.parentPid);
 
-    if (!(proc as any).app.id) {
+    if (!(proc instanceof AppProcess)) {
       return 1;
     }
     await proc!.closeWindow();

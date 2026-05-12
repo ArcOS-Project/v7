@@ -44,6 +44,8 @@ export class ArcTermRuntime extends Process {
 
     if (!proc) return false;
 
+    console.log(proc)
+
     proc.app = this.app;
     proc.windowTitle.set("ArcTerm");
     proc.windowIcon.set(this.app.data.metadata.icon);

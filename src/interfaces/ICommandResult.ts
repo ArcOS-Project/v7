@@ -1,7 +1,7 @@
 import type { CommandResultOptions } from "$types/result";
 import type { Constructs } from "./common";
 
-export interface ICommandResult<T = string> {
+export interface ICommandResult<T = any> {
   result: T | undefined;
   error?: Error;
   errorMessage?: string;
