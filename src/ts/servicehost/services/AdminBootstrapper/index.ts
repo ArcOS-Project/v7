@@ -26,6 +26,7 @@ import type {
   AuditLog,
   FsAccess,
   FSItem,
+  IpAddress,
   PartialUserTotp,
   ServerLogItem,
   ServerStatistics,
@@ -1283,6 +1284,20 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return contents.data;
     } catch {
       return {};
+    }
+  }
+
+  async GetIpAddresses(): Promise<IpAddress[]> {
+    try {
+      const response = await Backend.get(`/admin/ip/list`, {
+        responseType: "json",
+        headers: { Authorization: `Bearer ${Daemon.token}` },
+      });
+      if (response.status !== 200) throw "";
+
+      return response.data;
+    } catch {
+      return [];
     }
   }
 }

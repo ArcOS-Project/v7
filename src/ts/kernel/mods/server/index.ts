@@ -49,6 +49,10 @@ export class ServerManager extends KernelModule implements IServerManager {
     return instance!;
   }
 
+  public get ConnectorAmount() {
+    return this.STORE.length;
+  }
+
   get url() {
     return this.currentServer?.url;
   }

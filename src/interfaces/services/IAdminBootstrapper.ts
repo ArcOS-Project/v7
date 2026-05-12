@@ -4,6 +4,7 @@ import type {
   Activity,
   AuditLog,
   FSItem,
+  IpAddress,
   PartialUserTotp,
   ServerLogItem,
   ServerStatistics,
@@ -110,4 +111,5 @@ export interface IAdminBootstrapper extends IBaseService {
   verifyStoreItem(id: string, note: string): Promise<boolean>;
   getRegisteredVersionFor(userId: string): Promise<string>;
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
+  GetIpAddresses(): Promise<IpAddress[]>;
 }

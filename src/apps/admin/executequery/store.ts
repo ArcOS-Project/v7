@@ -2,6 +2,7 @@ import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRun
 import type { QueryDesignation, QueryDesignationsType } from "./types";
 
 export const QueryUserColumns = ["userId", "authorId", "recipient", "repliesTo"];
+export const ConceiledColumns = ["users.passwordHash", "tokens.value"];
 
 export const EmptyQueryDesignation: QueryDesignation = { obtainer: () => [], scopes: [] };
 
@@ -43,6 +44,10 @@ export function QueryDesignations(runtime: IExecuteQueryRuntime): QueryDesignati
     auditlog: {
       obtainer: async () => await runtime.admin.getAuditLog(),
       scopes: ["admin.auditlog"],
+    },
+    ips: {
+      obtainer: async () => await runtime.admin.GetIpAddresses(),
+      scopes: ["admin.ip.list"],
     },
   };
 }

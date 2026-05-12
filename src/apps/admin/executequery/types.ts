@@ -31,6 +31,7 @@ export const QuerySources = [
   "activities",
   "logs",
   "auditlog",
+  "ips",
 ] as const;
 
 export const QueryComparisonTypes = [

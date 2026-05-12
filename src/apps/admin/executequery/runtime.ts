@@ -116,6 +116,8 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
     const expressions = this.expressions();
     const selectedSource = this.selectedSource();
 
+    console.log(expressions[selectedSource])
+
     this.truncated.set(false);
 
     let queryResult = this.dataSource().filter((item) => {
@@ -414,7 +416,7 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
   //#region UTILS
 
   findMostColumnsOf(input: any[]): string[] {
-    const columns = input.map((i) => Object.keys(i)) as string[][];
+    const columns = input.map((i) => Object.keys(i).filter((c) => c !== "__v")) as string[][];
     const lengths = columns.map((i) => i.length);
 
     let maxLength = 0;

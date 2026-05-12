@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
-  import { ArcOSVersion, Daemon, Env, Stack, State } from "$ts/env";
+  import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
@@ -39,6 +39,9 @@
       </li>
       <li>Process count: {Stack.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>
+      <li title={Object.keys(State?.store || {}).join(", ")}>
+        Server connectors: {Server.ConnectorAmount}
+      </li>
     </ul>
   </section>
 

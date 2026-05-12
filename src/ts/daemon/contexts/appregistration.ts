@@ -17,12 +17,12 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     super(id, daemon);
   }
 
+  // Essential entrypoint: ApplicationStorage calls this method to obtain the list of installed user applications.
   async getUserApps(): Promise<AppStorage> {
     try {
       if (!Daemon!.preferences()) return [];
 
       await this.modeUserAppsToFs();
-
       const bulk = Object.fromEntries(
         Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
@@ -52,13 +52,12 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
-    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
 
+    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
     if (!distrib) return false;
 
     const prog = await Daemon!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
-
     await prog.stop();
 
     return result;
@@ -73,7 +72,6 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
       const json = tryJsonParse<InstalledApp>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";
-
       if (!json.metadata || !json.entrypoint) return "missing properties";
 
       (json as any).thirdParty = true;
