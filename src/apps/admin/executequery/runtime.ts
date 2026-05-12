@@ -116,8 +116,6 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
     const expressions = this.expressions();
     const selectedSource = this.selectedSource();
 
-    console.log(expressions[selectedSource])
-
     this.truncated.set(false);
 
     let queryResult = this.dataSource().filter((item) => {

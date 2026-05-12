@@ -13,7 +13,6 @@ export abstract class ServerConnector implements IServerConnector {
 
   constructor(token?: string) {
     this.token = token;
-    console.log(this.constructor.name, this.token);
   }
 
   get server(): AxiosInstance {
