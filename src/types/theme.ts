@@ -32,3 +32,9 @@ export const UserThemeKeys = [
   "desktopAccent",
   "desktopTheme",
 ];
+
+export enum ExportLocalWallpaperResolution {
+  NoSave,
+  SaveLocal,
+  SaveWithoutLocal,
+}

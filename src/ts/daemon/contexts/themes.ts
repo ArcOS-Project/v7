@@ -1,9 +1,13 @@
+import type { SettingsRuntime } from "$apps/user/settings/runtime";
 import type { IThemesUserContext } from "$interfaces/contexts/themes";
 import type { IUserDaemon } from "$interfaces/daemon";
+import { Fs } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
-import { BuiltinThemes } from "$ts/user/store";
+import { BuiltinThemes, UserPaths } from "$ts/user/store";
+import { textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { LogLevel } from "$types/logging";
-import { UserThemeKeys, type UserTheme } from "$types/theme";
+import { ExportLocalWallpaperResolution, UserThemeKeys, type UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
 import { Daemon } from "..";
 import { UserContext } from "../context";
@@ -141,5 +145,67 @@ export class ThemesUserContext extends UserContext implements IThemesUserContext
 
       return udata;
     });
+  }
+
+  async exportTheme(theme: UserTheme, runtime: SettingsRuntime): Promise<void> {
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Choose where to save the theme",
+      isSave: true,
+      startDir: UserPaths.Documents,
+      icon: "ThemesIcon",
+      saveName: `${theme.name || "Untitled theme"}.arctheme`,
+    });
+
+    if (!path) return;
+
+    let saveOption = ExportLocalWallpaperResolution.NoSave;
+
+    // The reason for the odddly placed function is this was the best way I
+    // could think of to not repeat code, but also achieve the result I wanted.
+    async function exportTheme() {
+      if (saveOption === ExportLocalWallpaperResolution.SaveWithoutLocal) {
+        if (theme.desktopWallpaper.startsWith("@local:")) theme.desktopWallpaper = "img0";
+        if (theme.loginBackground?.startsWith("@local:")) theme.loginBackground = "img0";
+      }
+
+      await Fs.writeFile(path!, textToBlob(JSON.stringify(theme, null, 2)));
+    }
+
+    if (theme.loginBackground?.startsWith("@local:") || theme.desktopWallpaper.startsWith("@local:")) {
+      await MessageBox(
+        {
+          title: "Save with local wallpapers?",
+          message: `Seems this theme contains a wallpaper that uses a file only
+                      on your filesystem. If you plan to share this theme, it might
+                      be best to replace the wallpaper(s) with built-in ones. If you
+                      wish to continue anyways, you can.`,
+          image: "ImageViewerIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => {},
+            },
+            {
+              caption: "Save with local anyways",
+              action: () => {
+                saveOption = ExportLocalWallpaperResolution.SaveLocal;
+                exportTheme();
+              },
+            },
+            {
+              caption: "Replace with built-in",
+              action: () => {
+                saveOption = ExportLocalWallpaperResolution.SaveWithoutLocal;
+                exportTheme();
+              },
+              suggested: true,
+            },
+          ],
+        },
+        runtime.pid,
+        true
+      );
+    }
   }
 }

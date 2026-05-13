@@ -1,3 +1,4 @@
+import type { SettingsRuntime } from "$apps/user/settings/runtime";
 import type { IUserContext } from "$interfaces/daemon";
 import type { UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
@@ -10,4 +11,5 @@ export interface IThemesUserContext extends IUserContext {
   verifyTheme(data: UserTheme): string | undefined;
   checkCurrentThemeIdValidity(data: UserPreferences): UserPreferences;
   deleteUserTheme(id: string): void;
+  exportTheme(theme: UserTheme, runtime: SettingsRuntime): Promise<void>;
 }
