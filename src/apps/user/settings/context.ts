@@ -31,7 +31,59 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
 
           if (!path) return;
 
-          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          enum ExportResolution {
+            NoSave,
+            SaveLocal,
+            SaveWithoutLocal,
+          }
+          let saveOption = ExportResolution.NoSave;
+
+          // The reason for the odddly placed function is this was the best way I
+          // could think of to not repeat code, but also achieve the result I wanted.
+          async function exportTheme() {
+            if (saveOption === ExportResolution.SaveWithoutLocal) {
+              if (theme.desktopWallpaper.startsWith("@local:")) theme.desktopWallpaper = "img0";
+              if (theme.loginBackground?.startsWith("@local:")) theme.loginBackground = "img0";
+            }
+
+            await Fs.writeFile(path!, textToBlob(JSON.stringify(theme, null, 2)));
+          }
+
+          if (theme.loginBackground?.startsWith("@local:") || theme.desktopWallpaper.startsWith("@local:")) {
+            await MessageBox(
+              {
+                title: "Save with local wallpapers?",
+                message: `Seems this theme contains a wallpaper that uses a file only
+                  on your filesystem. If you plan to share this theme, it might
+                  be best to replace the wallpaper(s) with built-in ones. If you
+                  wish to continue anyways, you can.`,
+                image: "ImageViewerIcon",
+                buttons: [
+                  {
+                    caption: "Cancel",
+                    action: () => {},
+                  },
+                  {
+                    caption: "Save with local anyways",
+                    action: () => {
+                      saveOption = ExportResolution.SaveLocal;
+                      exportTheme();
+                    },
+                  },
+                  {
+                    caption: "Replace with built-in",
+                    action: () => {
+                      saveOption = ExportResolution.SaveWithoutLocal;
+                      exportTheme();
+                    },
+                    suggested: true,
+                  },
+                ],
+              },
+              runtime.pid,
+              true
+            );
+          }
         },
         icon: "save",
       },
