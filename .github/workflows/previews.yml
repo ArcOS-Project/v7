@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     branches: [main, development, beta]
   push:
-    branches: [main]
+    branches: [main, beta, development]
 
 jobs:
   deploy:
