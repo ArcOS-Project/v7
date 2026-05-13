@@ -10,4 +10,5 @@ export interface IThemesUserContext extends IUserContext {
   verifyTheme(data: UserTheme): string | undefined;
   checkCurrentThemeIdValidity(data: UserPreferences): UserPreferences;
   deleteUserTheme(id: string): void;
+  exportTheme(theme: UserTheme, runtime: number): Promise<void>;
 }

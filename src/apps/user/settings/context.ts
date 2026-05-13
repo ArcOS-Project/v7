@@ -20,17 +20,7 @@ export function SettingsContext(runtime: ISettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await Daemon!.files!.LoadSaveDialog({
-            title: "Choose where to save the theme",
-            isSave: true,
-            startDir: UserPaths.Documents,
-            icon: "ThemesIcon",
-            saveName: `${theme.name || "Untitled theme"}.arctheme`,
-          });
-
-          if (!path) return;
-
-          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Daemon.themes?.exportTheme(theme, runtime.pid);
         },
         icon: "save",
       },
