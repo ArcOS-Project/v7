@@ -21,7 +21,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          await Daemon.themes?.exportTheme(theme, runtime);
+          await Daemon.themes?.exportTheme(theme, runtime.pid);
         },
         icon: "save",
       },

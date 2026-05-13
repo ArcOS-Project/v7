@@ -147,7 +147,7 @@ export class ThemesUserContext extends UserContext implements IThemesUserContext
     });
   }
 
-  async exportTheme(theme: UserTheme, runtime: SettingsRuntime): Promise<void> {
+  async exportTheme(theme: UserTheme, runtimePid: number): Promise<void> {
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the theme",
       isSave: true,
@@ -162,7 +162,7 @@ export class ThemesUserContext extends UserContext implements IThemesUserContext
 
     // The reason for the odddly placed function is this was the best way I
     // could think of to not repeat code, but also achieve the result I wanted.
-    async function exportTheme() {
+    async function writeTheme() {
       if (saveOption === ExportLocalWallpaperResolution.SaveWithoutLocal) {
         if (theme.desktopWallpaper.startsWith("@local:")) theme.desktopWallpaper = "img0";
         if (theme.loginBackground?.startsWith("@local:")) theme.loginBackground = "img0";
@@ -190,20 +190,20 @@ export class ThemesUserContext extends UserContext implements IThemesUserContext
               caption: "Save with local anyways",
               action: () => {
                 saveOption = ExportLocalWallpaperResolution.SaveLocal;
-                exportTheme();
+                writeTheme();
               },
             },
             {
               caption: "Replace with built-in",
               action: () => {
                 saveOption = ExportLocalWallpaperResolution.SaveWithoutLocal;
-                exportTheme();
+                writeTheme();
               },
               suggested: true,
             },
           ],
         },
-        runtime.pid,
+        runtimePid,
         true
       );
     }
