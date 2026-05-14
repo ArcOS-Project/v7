@@ -3,16 +3,11 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServiceHost } from "$interfaces/service";
 import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
-import { PermissionHandler } from "$ts/permissions";
 import { ServiceHost } from "$ts/servicehost";
 import { MessageBox } from "$ts/util/dialog";
 import { Daemon } from "..";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class InitUserContext extends UserContext implements IInitUserContext {
   private registeredAnchors: HTMLAnchorElement[] = [];
   private firstSyncDone = false;
@@ -188,13 +183,5 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     Daemon!.serviceHost = await Stack.spawn<IServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
     await this.serviceHost?.init(broadcast);
-  }
-
-  async startPermissionHandler() {
-    const proc = await Stack.spawn(PermissionHandler, undefined, "SYSTEM", this.pid);
-
-    if (!proc) return false;
-
-    return true;
   }
 }

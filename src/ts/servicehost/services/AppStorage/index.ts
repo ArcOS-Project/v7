@@ -11,6 +11,7 @@ import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { DefaultAppData } from "$ts/user/store";
 import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
+import { cloneAppMeta } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { validateObject } from "$ts/util/json";
@@ -222,7 +223,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   }
 
   getAppSynchronous(id: string): InstalledApp | undefined {
-    return this.buffer().filter((a) => a.id === id)[0];
+    return cloneAppMeta(this.buffer().filter((a) => a.id === id)[0]);
   }
 
   /**
@@ -235,7 +236,7 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
 
     for (const app of apps) {
       if (app.id === id) {
-        return CommandResult.Ok({ ...Object.freeze({ ...app }) });
+        return CommandResult.Ok(cloneAppMeta(app));
       }
     }
 

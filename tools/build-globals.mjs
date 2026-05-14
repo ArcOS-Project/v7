@@ -22,7 +22,7 @@ function extractTypesFromThirdPartyPropMap() {
   });
 
   const sourceFile = program.getSourceFile(THIRDPARTY_TYPES_PATH);
-  if (!sourceFile) throw new Error("❌ Could not read types file");
+  if (!sourceFile) throw new Error("\n❌ Could not read types file\n");
 
   let propMapInterface;
 
@@ -32,7 +32,7 @@ function extractTypesFromThirdPartyPropMap() {
     }
   });
 
-  if (!propMapInterface) throw new Error("❌ Could not locate ThirdPartyPropMap interface");
+  if (!propMapInterface) throw new Error("\n❌ Could not locate ThirdPartyPropMap interface\n");
 
   return propMapInterface.members
     .map((member) => {
@@ -53,10 +53,12 @@ function extractTypesFromThirdPartyPropMap() {
     .filter(Boolean);
 }
 
-const originalTypes = fs.readFileSync(TYPES_PATH, "utf8");
-const globalDecls = extractTypesFromThirdPartyPropMap();
-const globalBlock = globalDecls.join("\n");
-const footer = `\n\nexport {};`;
+export function buildGlobals() {
+  const originalTypes = fs.readFileSync(TYPES_PATH, "utf8");
+  const globalDecls = extractTypesFromThirdPartyPropMap();
+  const globalBlock = globalDecls.join("\n");
+  const footer = `\n\nexport {};`;
 
-fs.writeFileSync(OUTPUT_PATH, originalTypes + "\n\n" + globalBlock + footer);
-console.log("✅ dist/globals.d.ts written.");
+  fs.writeFileSync(OUTPUT_PATH, originalTypes + "\n\n" + globalBlock + footer);
+  console.log("\m✅ dist/globals.d.ts written.\n");
+}

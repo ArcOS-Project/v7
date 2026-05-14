@@ -36,7 +36,6 @@ import { ServiceCommand } from "./commands/service";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
-import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TostrCommand } from "./commands/tostr";
@@ -74,7 +73,6 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   AtConfCommand,
   ConfigCommand,
   SpawnCommand,
-  SudoCommand,
   TasksCommand,
   AdminCommand,
   DrivesCommand,

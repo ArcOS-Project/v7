@@ -1,7 +1,6 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
 import type { IUserDaemon } from "$interfaces/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
-import { Permissions } from "$ts/permissions";
 import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
@@ -55,8 +54,6 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
     const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
-
-    Permissions.removeApplication(id);
 
     if (!distrib) return false;
 

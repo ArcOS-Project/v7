@@ -2,11 +2,11 @@ import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServiceHost } from "$interfaces/service";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { SysDispatch } from "$ts/env";
-import { ProcessWithPermissions } from "$ts/permissions/process";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";
 import type { Readline } from "./readline/readline";
 
-export class TerminalProcess extends ProcessWithPermissions {
+export class TerminalProcess extends Process {
   public static keyword: string;
   public static description: string;
   public static hidden = false;

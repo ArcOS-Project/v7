@@ -54,6 +54,9 @@
     <Option caption="Only show apps from the current workspace">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.openedAppsPerWorkspace} />
     </Option>
+    <Option caption="Start button logo matches accent color">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.accentedStartButton} />
+    </Option>
   </Section>
   <Section caption="Action Center">
     <Option caption="Weather location">

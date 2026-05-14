@@ -24,7 +24,6 @@
     <ActionSubtle mono text={appId} />
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.openPermissions()}>Permissions</ActionButton>
     <ActionButton onclick={() => process.killAll()}>Kill all</ActionButton>
     <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
   {/snippet}

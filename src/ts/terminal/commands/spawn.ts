@@ -1,6 +1,5 @@
 import type { IProcess } from "$interfaces/process";
 import type { IArcTerminal } from "$interfaces/terminal";
-import { Permissions } from "$ts/permissions";
 import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
@@ -42,10 +41,6 @@ export class SpawnCommand extends TerminalProcess {
       ...argv
     );
 
-    if (!proc) return 1;
-
-    if (this.HAS_SUDO) Permissions.grantSudo(proc);
-
-    return 0;
+    return proc ? 0 : 1;
   }
 }
