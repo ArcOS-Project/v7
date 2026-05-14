@@ -1,7 +1,6 @@
 import type { IProcess } from "$interfaces/process";
 import type { IApplicationStorage } from "$interfaces/services/AppStorage";
 import type { IArcTerminal } from "$interfaces/terminal";
-import { Permissions } from "$ts/permissions";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, RESET } from "../store";
@@ -57,7 +56,6 @@ export class LoadCommand extends TerminalProcess {
       });
 
       if (!proc) return 1;
-      if (this.HAS_SUDO) Permissions.grantSudo(proc);
 
       return 0;
     }
