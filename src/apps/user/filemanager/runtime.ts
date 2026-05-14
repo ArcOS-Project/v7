@@ -86,7 +86,7 @@ export class FileManagerRuntime extends AppProcess {
         this.updateRootFolders();
       }
 
-      this.updateDrives();
+      this.updateDrives(Fs.getDriveIdByIdentifier(Fs.getDriveIdentifier(path)));
 
       if (this.path().startsWith(path) || this.path() === path) this.refresh();
     });
@@ -187,7 +187,7 @@ export class FileManagerRuntime extends AppProcess {
   //#endregion
   //#region DRIVES
 
-  async updateDrives() {
+  async updateDrives(driveId?: string) {
     if (this._disposed) return;
     this.Log(`Updating drives`);
 
@@ -203,6 +203,23 @@ export class FileManagerRuntime extends AppProcess {
       }
     } catch {
       this.Log("Failed to determine the currently selected drive", LogLevel.warning);
+    }
+
+    // In case only a specific drive changed
+    if (driveId) {
+      const drive = Fs.getDriveById(driveId);
+      if (!drive) return;
+
+      // getting quota before update to avoid running async code in the update callback
+      const quota = await drive.quota();
+
+      this.drives.update((v) => {
+        v[driveId] = { data: drive, quota };
+        return v;
+      });
+
+      this.updateAltMenu();
+      return;
     }
 
     const result: Record<string, QuotedDrive> = {};

@@ -1,12 +1,10 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import { Env, Fs } from "$ts/env";
-import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
+import { ArchiveReaderProcess } from "$ts/zip";
 import type { FileHandler } from "$types/fs";
-import { fromExtension } from "human-filetypes";
-import JSZip from "jszip";
 
 const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {
@@ -26,7 +24,8 @@ const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
       +Env.get("shell_pid")
     );
 
-    const content = await Fs.readFile(path, (progress) => {
+    const reader = await ArchiveReaderProcess.Create(path, daemon.pid);
+    await reader?.open((progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -34,12 +33,7 @@ const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
 
     await prog.stop();
 
-    if (!content) throw new Error(`RunTpaBundleHandler: content read failure`);
-
-    const zip = new JSZip();
-    const buffer = await zip.loadAsync(content, {});
-
-    if (!buffer.files["_package.tpa"]) {
+    if (!reader?.exist("_package.tpa")) {
       MessageBox(
         {
           title: "Failed to open TPA package",
@@ -57,30 +51,13 @@ const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
     await Fs.createDirectory("T:/PkgTemp");
 
     const extractPath = `T:/PkgTemp/${UUID()}`;
+    const extractResult = await reader.extract(extractPath);
 
-    Fs.createDirectory(extractPath);
-
-    // First, create all directories
-    const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
-
-    for (const path of sortedPaths) {
-      const item = buffer.files[path];
-      const target = join(extractPath, path);
-      if (item.dir) {
-        await Fs.createDirectory(target);
-      }
+    if (extractResult.success) {
+      await daemon.files!.openFile(join(extractPath, "_package.tpa"));
     }
 
-    // Then, write all files
-    for (const path of sortedPaths) {
-      const item = buffer.files[path];
-      const target = join(extractPath, path);
-      if (!item.dir) {
-        await Fs.writeFile(target, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(path)));
-      }
-    }
-
-    await daemon.files!.openFile(join(extractPath, "_package.tpa"));
+    await reader.close();
   },
   isHandler: true,
 });

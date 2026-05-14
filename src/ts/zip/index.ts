@@ -2,9 +2,12 @@ import type { ICommandResult } from "$interfaces/result";
 import { Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { CommandResult } from "$ts/result";
-import { arrayBufferToText } from "$ts/util/convert";
+import { arrayBufferToBlob, arrayBufferToText } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
+import { UUID } from "$ts/util/uuid";
 import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
+import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 
 export class ArchiveReaderProcess extends Process {
@@ -41,6 +44,13 @@ export class ArchiveReaderProcess extends Process {
 
   static async Create(path: string, parentPid?: number) {
     return await Stack.spawn(this, undefined, undefined, parentPid, path);
+  }
+
+  static async CreateFromArrayBuffer(buffer: ArrayBuffer, parentPid?: number) {
+    const path = `T:/${UUID()}.bin`;
+    await Fs.writeFile(path, arrayBufferToBlob(buffer));
+
+    return await this.Create(path, parentPid);
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
@@ -108,7 +118,7 @@ export class ArchiveReaderProcess extends Process {
 
   exist(...paths: string[]): boolean {
     for (const path of paths) {
-      if (!this._zip?.files[path].name) return false;
+      if (!this._zip?.files?.[path]?.name) return false;
     }
 
     return true;
@@ -128,6 +138,40 @@ export class ArchiveReaderProcess extends Process {
     }
 
     return CommandResult.Ok(jsonic);
+  }
+
+  async extract(destination: string, status?: (m: string) => void): Promise<ICommandResult> {
+    try {
+      await Fs.createDirectory(destination);
+
+      // First, create all directories
+      const sortedPaths = Object.keys(this._zip!.files).sort((p) => (this._zip!.files[p].dir ? -1 : 0));
+
+      for (const path of sortedPaths) {
+        const item = this._zip!.files[path];
+        const target = join(destination, path);
+        
+        if (item.dir) {
+          status?.(`Creating dir ${target}`);
+          await Fs.createDirectory(target);
+        }
+      }
+
+      // Then, write all files
+      for (const path of sortedPaths) {
+        const item = this._zip!.files[path];
+        const target = join(destination, path);
+
+        if (!item.dir) {
+          status?.(`Writing file ${target}`);
+          await Fs.writeFile(target, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(path)));
+        }
+      }
+
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.ErrorEx(e);
+    }
   }
 
   async stop() {

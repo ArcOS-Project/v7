@@ -73,6 +73,7 @@ export interface IUserDaemon extends IProcess {
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
   getShell(): IShellRuntime | undefined;
+  checkAdminEnablement(): Promise<void>;
 }
 
 export interface IUserContext {

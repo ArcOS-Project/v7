@@ -39,11 +39,7 @@ export class MemoryFilesystemDrive extends FilesystemDrive implements IMemoryFil
   }
 
   private getPathParts(path: string): string[] {
-    const parts = path.split("/");
-    if (parts[0] === "") {
-      parts.shift(); // Remove leading empty string for root paths
-    }
-    return parts;
+    return path.split("/").filter((part) => part !== "");
   }
 
   private getEntry(path: string): any {

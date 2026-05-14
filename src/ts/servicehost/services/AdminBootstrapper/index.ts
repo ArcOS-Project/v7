@@ -13,12 +13,12 @@ import { BaseService } from "$ts/servicehost/base";
 import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
 import { deepCopyWithBlobs } from "$ts/util";
-import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
+import { ArchiveReaderProcess } from "$ts/zip";
 import type {
   Activity,
   AuditLog,
@@ -38,8 +38,6 @@ import type { ArcPackage, StoreItem } from "$types/package";
 import type { Service } from "$types/service";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
-import { fromExtension } from "human-filetypes";
-import JSZip from "jszip";
 import { MessagingInterface } from "../MessagingService";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
@@ -57,6 +55,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async start() {
     this.initBroadcast?.("Activating admin bootstrapper");
+
+    await Daemon.checkAdminEnablement();
 
     await this.getUserInfo();
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
@@ -1183,69 +1183,33 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     const target = `T:/AdminBootstrapper/${id}`;
     const pkg = await this.getStoreItem(id);
     const distrib = this.host.getService<DistributionServiceProcess>("DistribSvc");
+    if (!pkg || !distrib) return false;
 
     const status = (s: string) => {
       this.Log(`readStoreItemFiles: ${id}: ${s}`);
       onStatus?.(s);
     };
 
-    if (!pkg || !distrib) {
-      return false;
-    }
-
     status("Downloading store item");
 
     const content = await distrib.downloadStoreItem(id, onProgress);
+    if (!content) return false;
 
-    if (!content) {
-      return false;
-    }
+    const reader = await ArchiveReaderProcess.CreateFromArrayBuffer(content, this.pid);
+    await reader?.open();
+    
+    if (!reader?.exist("_metadata.json", "payload/_app.tpa")) return false;
 
-    const zip = new JSZip();
-    const buffer = await zip.loadAsync(content, {});
-
-    if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
-      return false;
-    }
-
-    const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
-
-    if (!metadata || typeof metadata === "string") return false;
-    if (metadata.appId.includes(".") || metadata.appId.includes("-")) return false;
+    const metadataResult = await reader.getJson<ArcPackage>("_metadata.json");
+    const metadata = metadataResult?.result!;
+    if (!metadataResult.success || metadata.appId.includes(".") || metadata.appId.includes("-")) return false;
 
     status("Creating target directory");
 
-    try {
-      await Fs.createDirectory(target);
-      await Fs.createDirectory(`${target}/payload`);
-    } catch {}
-
-    const sortedPaths = Object.keys(buffer.files).sort((p) => (buffer.files[p].dir ? -1 : 0));
-
-    for (const path of sortedPaths) {
-      const item = buffer.files[path];
-      const pathTarget = join(target, path);
-      if (item.dir) {
-        status(`Creating dir ${pathTarget}`);
-
-        try {
-          await Fs.createDirectory(pathTarget);
-        } catch {}
-      }
-    }
-
-    for (const path of sortedPaths) {
-      const item = buffer.files[path];
-      const pathTarget = join(target, path);
-      if (!item.dir) {
-        status(`Writing file ${pathTarget}`);
-
-        try {
-          await Fs.writeFile(pathTarget, arrayBufferToBlob(await item.async("arraybuffer"), fromExtension(pathTarget)));
-        } catch {}
-      }
-    }
+    await Fs.createDirectory(target);
+    await reader.extract(target, (m) => {
+      status(m);
+    });
 
     return target;
   }
