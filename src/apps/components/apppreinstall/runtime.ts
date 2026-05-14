@@ -1,20 +1,18 @@
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
+import { Env } from "$ts/env";
 import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
+import { ArchiveReaderProcess } from "$ts/zip";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
 import type { ArcPackage } from "$types/package";
-import JSZip from "jszip";
 
 export class AppPreInstallRuntime extends AppProcess {
   pkgPath: string;
-  zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
+  reader?: ArchiveReaderProcess;
 
   //#region LIFECYCLE
 
@@ -28,6 +26,10 @@ export class AppPreInstallRuntime extends AppProcess {
 
   async start() {
     if (!this.pkgPath) return false;
+  }
+
+  async stop() {
+    await this.reader?.close();
   }
 
   async render() {
@@ -64,7 +66,7 @@ export class AppPreInstallRuntime extends AppProcess {
     const prog = await Daemon?.files!.FileProgress(
       {
         type: "size",
-        icon: "DownloadIcon",
+        icon: "ArcAppMimeIcon",
         caption: "Reading ArcOS package",
         subtitle: this.pkgPath,
       },
@@ -74,11 +76,8 @@ export class AppPreInstallRuntime extends AppProcess {
     try {
       const distrib = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
 
-      if (!(await distrib.validatePackage(this.pkgPath))) {
-        return this.fail("Package is corrupt; missing files");
-      }
-
-      const content = await Fs.readFile(this.pkgPath, (progress) => {
+      this.reader = await ArchiveReaderProcess.Create(this.pkgPath, this.pid);
+      await this.reader?.open((progress) => {
         prog?.show();
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
@@ -86,15 +85,14 @@ export class AppPreInstallRuntime extends AppProcess {
 
       await prog?.stop();
 
-      if (!content) {
-        return this.fail("The package contents could not be read");
+      if (!(await distrib.validatePackageFromReader(this.reader!))) {
+        return this.fail("Package is corrupt; missing files");
       }
 
-      this.zip = new JSZip();
-      const buffer = await this.zip.loadAsync(content, {});
-      const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-      const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
-      this.metadata.set(metadata);
+      const metadataResult = await this.reader?.getJson<ArcPackage>("_metadata.json");
+      if (!metadataResult?.success) return this.fail("Package does not contain valid metadata");
+
+      this.metadata.set(metadataResult.result!);
     } catch {
       return this.fail("Filesystem error");
     }
@@ -135,7 +133,7 @@ export class AppPreInstallRuntime extends AppProcess {
     if (!elevated) return;
 
     await this.closeWindow();
-    this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.zip);
+    this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.reader?.ZIP);
   }
 
   //#endregion

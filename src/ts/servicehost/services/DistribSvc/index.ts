@@ -11,6 +11,7 @@ import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/conve
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
+import { ArchiveReaderProcess } from "$ts/zip";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { UpdateWriteOpResult } from "$types/mongo";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
@@ -296,14 +297,19 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     const content = await Fs.readFile(path, progress);
     if (!content) return undefined;
 
-    const zip = new JSZip();
-    const buffer = await zip.loadAsync(content, {});
-    const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
+    const reader = await ArchiveReaderProcess.Create(path, this.pid);
+    await reader?.open();
 
+    const metadataResult = await reader?.getJson<ArcPackage>("_metadata.json");
+    if (!metadataResult?.success) return undefined;
+
+    const metadata = metadataResult.result!;
     this.BUSY = "";
 
-    return await this.packageInstaller<T>(zip, metadata, item);
+    const installer = await this.packageInstaller<T>(reader?.ZIP!, metadata, item);
+    await reader?.close();
+
+    return installer;
   }
 
   getInstallerProcess(metadata: ArcPackage): IInstallerProcessBaseConstructor {
@@ -330,34 +336,24 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
   async validatePackage(path: string, progress?: FilesystemProgressCallback) {
     this.BUSY = "validatePackage";
-    const content = await Fs.readFile(path, progress);
 
-    if (!content) {
-      this.BUSY = "";
-      return false;
-    }
+    const reader = await ArchiveReaderProcess.Create(path, this.pid);
+    await reader?.open(progress);
 
-    const zip = new JSZip();
-    const buffer = await zip.loadAsync(content, {});
-
-    if (!buffer.files["_metadata.json"]) {
-      this.BUSY = "";
-      return false;
-    }
-
-    const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-    const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
-
-    if (!metadata || typeof metadata === "string") {
-      this.BUSY = "";
-      return false;
-    }
-
-    const designatedProcess = this.getInstallerProcess(metadata);
-    const isValid = designatedProcess.validatePackage(metadata, buffer);
+    const isValid = await this.validatePackageFromReader(reader!);
+    await reader?.close();
 
     this.BUSY = "";
     return isValid;
+  }
+
+  async validatePackageFromReader(reader: ArchiveReaderProcess): Promise<boolean> {
+    const metadataResult = await reader?.getJson<ArcPackage>("_metadata.json");
+    if (!metadataResult?.success) return false;
+
+    const metadata = metadataResult.result!;
+    const designatedProcess = this.getInstallerProcess(metadata);
+    return await designatedProcess.validatePackage(metadata, reader?.ZIP!);
   }
 
   //#endregion

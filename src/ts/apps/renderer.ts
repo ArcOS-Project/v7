@@ -138,9 +138,11 @@ export class AppRenderer extends Process implements IAppRenderer {
       await process.__render__(body);
       await process.CrashDetection();
     } catch (e) {
+      SysDispatch.dispatch("window-unfullscreen", [process.pid, process.app.desktop]);
+
       if (!process._disposed) {
         process.STATE = "error";
-        this.notifyCrash(data, e as Error, process);
+        await this.notifyCrash(data, e as Error, process);
       }
       await this.remove(process.pid);
       await Stack.kill(process.pid);
@@ -694,7 +696,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost
       ?.getService<DistributionServiceProcess>("DistribSvc")
-      ?.getInstalledStoreItemByAppId(data.id);
+      ?.getInstalledStoreItemByAppId(data?.id ?? "");
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 

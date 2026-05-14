@@ -1,14 +1,11 @@
-import type { IZipDrive } from "$interfaces/drives/zip";
-import type { IFilesystem } from "$interfaces/modules/fs";
-import { getKMod } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { ArchiveReaderProcess } from "$ts/zip";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
-import JSZip from "jszip";
 
-export class ZIPDrive extends FilesystemDrive implements IZipDrive {
+export class ZIPDrive extends FilesystemDrive {
   override label = "";
-  private _buffer: JSZip | undefined;
   private _path: string;
+  private _reader?: ArchiveReaderProcess;
   override REMOVABLE = true;
   public READONLY: boolean = true;
   public IDENTIFIES_AS: string = "zip";
@@ -36,94 +33,32 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   }
 
   async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    const fs = getKMod<IFilesystem>("fs");
-    const contents = await fs.readFile(this._path, onProgress);
-
-    if (!contents) {
-      return false;
-    }
-
     const split = this._path.split("/");
-
     this.label = split[split.length - 1] || "ZIP file";
 
-    const zip = new JSZip();
-    this._buffer = await zip.loadAsync(contents, {});
+    const reader = await ArchiveReaderProcess.Create(this._path);
+    await reader?.open(onProgress);
+    
+    this._reader = reader;
 
     return true;
   }
 
   async _spinDown(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    if (this._buffer) await this._sync(onProgress);
-
-    this._buffer = undefined;
+    this._reader?.killSelf();
     this._path = "";
 
     return true;
   }
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
-    const entries = this._buffer?.files;
-    const result: DirectoryReadReturn = {
-      dirs: [],
-      files: [],
-      shortcuts: {},
-      totalFiles: 0,
-      totalFolders: 0,
-      totalSize: 0,
-    };
-
-    if (await this.readFile(path)) return undefined;
-
-    const normalizedPath = path ? (path.endsWith("/") ? path : path + "/") : "";
-    const seenDirs = new Set<string>();
-
-    for (const entryName in entries) {
-      if (!normalizedPath || (entryName.startsWith(normalizedPath) && entryName !== normalizedPath)) {
-        const relativePath = normalizedPath ? entryName.slice(normalizedPath.length) : entryName;
-        const parts = relativePath.split("/");
-        if (parts.length === 1) {
-          const entry = entries[entryName];
-          if (entry.dir) {
-            result.dirs.push({
-              name: relativePath.replace(/\/$/, ""),
-              dateCreated: new Date(),
-              dateModified: new Date(),
-              itemId: "",
-            });
-          } else {
-            result.files.push({
-              name: relativePath.replace(/\/$/, ""),
-              size: (entry as any)._data.uncompressedSize || 0,
-              dateCreated: new Date(),
-              dateModified: new Date(),
-              mimeType: "",
-              itemId: "",
-            });
-          }
-        } else if (!seenDirs.has(parts[0])) {
-          seenDirs.add(parts[0]);
-          result.dirs.push({
-            name: parts[0].replace(/\/$/, ""),
-            dateCreated: new Date(),
-            dateModified: new Date(),
-            itemId: "",
-          });
-        }
-      }
-    }
-
-    return result;
+    return await this._reader?.readDir(path);
   }
 
   async readFile(path: string): Promise<ArrayBuffer | undefined> {
     if (!path) return;
 
-    const file = Object.entries(this._buffer?.files || {}).filter(([itemPath, item]) => itemPath === path && !item.dir)[0];
-
-    if (!file) return undefined;
-
-    return await file[1].async("arraybuffer");
+    return await this._reader?.readFile(path);
   }
 
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
@@ -171,15 +106,5 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
 
   async moveItem(source: string, destination: string): Promise<boolean> {
     return false;
-  }
-
-  async _sync(progress?: FilesystemProgressCallback) {
-    this.Log("Syncing " + this._path);
-    const file = await this._buffer?.generateAsync({ type: "blob" });
-    const fs = getKMod<IFilesystem>("fs");
-
-    if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
-
-    await fs.writeFile(this._path, file, progress);
   }
 }

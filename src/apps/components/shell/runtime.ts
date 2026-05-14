@@ -7,6 +7,7 @@ import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
+import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
@@ -14,11 +15,10 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
-import type { AppKeyCombinations } from "$types/accelerator";
-import { ShellAccelerators } from "./accelerators";
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
@@ -61,11 +61,26 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     const minimizedFullscreens: Record<string, Set<number>> = {};
 
+    // this.FullscreenCount.subscribe((v) => {
+    //   for (const desktop in v) {
+    //     const ghosts = [...v[desktop]].filter((p) => !Stack.isPid(p));
+
+    //     if (ghosts.length) {
+    //       for (const ghost of ghosts) {
+    //         SysDispatch.dispatch("window-unfullscreen", [ghost, desktop]);
+    //         minimizedFullscreens[desktop].delete(ghost);
+    //       }
+    //     }
+    //   }
+    // });
+
     SysDispatch.subscribe("window-fullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
+        if (!Stack.isPid(pid)) return v;
+        
         minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
 
+        v[desktop] ??= new Set();
         v[desktop].add(pid);
 
         return v;
@@ -74,10 +89,12 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     SysDispatch.subscribe("window-unfullscreen", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
+        if (!Stack.isPid(pid)) return v;
+  
         v[desktop] ??= new Set();
-
         v[desktop].delete(pid);
+
+        minimizedFullscreens[desktop] ??= new Set();
         minimizedFullscreens[desktop].delete(pid);
 
         return v;
@@ -86,10 +103,12 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     SysDispatch.subscribe("window-minimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
+        if (!Stack.isPid(pid)) return v;
+
         v[desktop] ??= new Set();
 
         if (v[desktop].has(pid)) {
+          minimizedFullscreens[desktop] ??= new Set();
           minimizedFullscreens[desktop].add(pid);
           v[desktop].delete(pid);
         }
@@ -100,12 +119,14 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     SysDispatch.subscribe("window-unminimize", ([pid, desktop]) =>
       this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
+        if (!Stack.isPid(pid)) return v;
 
+        v[desktop] ??= new Set();
+        
         if (minimizedFullscreens[desktop].has(pid)) {
-          v[desktop].add(pid);
+          minimizedFullscreens[desktop] ??= new Set();
           minimizedFullscreens[desktop].delete(pid);
+          v[desktop].add(pid);
         }
 
         return v;

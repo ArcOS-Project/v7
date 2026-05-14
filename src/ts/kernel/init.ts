@@ -7,6 +7,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
 import { textToBlob } from "$ts/util/convert";
+import { ArchiveReaderProcess } from "$ts/zip";
 import { StateHandler } from "../state";
 import { Process } from "./mods/stack/process/instance";
 
@@ -65,6 +66,7 @@ export class InitProcess extends Process {
       for (const proxy of Fs.loadedProxies) {
         await Fs.createDirectory(`T:/::{${proxy.uuid}}`);
       }
+      (window as any).ArchiveReaderProcess = ArchiveReaderProcess;
     } catch {}
   }
 

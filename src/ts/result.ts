@@ -3,7 +3,7 @@ import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/r
 import { AxiosError } from "axios";
 import { Log } from "./logging";
 
-export class CommandResult<T = string> implements ICommandResult<T> {
+export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;
   public error?: Error;
   public errorMessage?: string;
@@ -17,7 +17,7 @@ export class CommandResult<T = string> implements ICommandResult<T> {
     this.success = options.success ?? false;
   }
 
-  static Ok<T>(value: T, successMessage?: string) {
+  static Ok<T>(value?: T, successMessage?: string) {
     Log(`CommandResult.Ok`, successMessage ?? "<no message>"); // DEBUG
 
     return new this<T>(value, { success: true, successMessage });
@@ -27,6 +27,24 @@ export class CommandResult<T = string> implements ICommandResult<T> {
     Log(`CommandResult.Error`, errorMessage ?? "<no message>"); // DEBUG
 
     return new this<T>(undefined, { errorMessage });
+  }
+
+  static ErrorEx<T = any>(e: unknown, fallback: string = "Unknown error") {
+    let message: string | undefined;
+
+    if (e instanceof Error) {
+      message = e.message;
+    } else if (e instanceof PromiseRejectionEvent) {
+      message = e.reason?.message;
+    } else if (e instanceof AxiosError) {
+      message = e.response?.data?.e;
+    } else {
+      message = `${e}`;
+    }
+
+    message ||= fallback;
+
+    return new this<T>(undefined, { errorMessage: message });
   }
 
   static AxiosError<T = any>(e: unknown, fallback: string = "Unknown error") {
