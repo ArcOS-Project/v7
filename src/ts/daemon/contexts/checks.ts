@@ -100,49 +100,6 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
     }
   }
 
-  async checkForMissedMessages() {
-    const service = this.serviceHost!.getService<IMessagingInterface>("MessagingService")!;
-    const archived = Daemon!.preferences().appPreferences?.Messages?.archive || [];
-    const messages =
-      (await service?.getReceivedMessages())?.filter(
-        (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
-      ) || [];
-
-    if (!messages?.length) return;
-
-    if (messages?.length === 1) {
-      const message = messages[0];
-      Daemon!.notifications?.sendNotification({
-        className: "incoming-message",
-        image: message.author?.profilePicture,
-        title: message.author?.username || "New message",
-        message: message.title,
-        buttons: [
-          {
-            caption: "View message",
-            action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
-            },
-          },
-        ],
-      });
-    } else {
-      Daemon!.notifications?.sendNotification({
-        title: "Missed messages",
-        message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
-        image: "MessagingIcon",
-        buttons: [
-          {
-            caption: "Open inbox",
-            action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox");
-            },
-          },
-        ],
-      });
-    }
-  }
-
   checkNightly() {
     const isNightly = !!Env.get(`NIGHTLY_WHODIS_${ArcBuild()}`);
     if (!isNightly) return;

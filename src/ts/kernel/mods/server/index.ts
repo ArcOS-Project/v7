@@ -14,6 +14,7 @@ import { TotpConnector } from "./connectors/TotpConnector";
 import { TpaConnector } from "./connectors/TpaConnector";
 import { UserConnector } from "./connectors/UserConnector";
 import { ShareConnector } from "./connectors/ShareConnector";
+import { MessagingConnector } from "./connectors/MessagingConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
@@ -31,7 +32,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   public previewBranch?: string;
   public servers: ServerOption[] = [];
 
-  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector];
+  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector, MessagingConnector];
   private _store: Record<"" | string, IServerConnector[]> = {};
 
   public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {

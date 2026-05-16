@@ -4,7 +4,7 @@ import { Daemon, getKMod, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcBuild } from "$ts/metadata/build";
-import { authcode } from "$ts/util";
+import { authcode, ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -85,13 +85,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
       const response = await Backend.get(`/fs/file/${path}`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onDownloadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.data;
@@ -110,13 +104,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
     try {
       const response = await Backend.post(`/fs/file/${path}`, blob, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (progress) => {
-          onProgress({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onUploadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.status === 200;

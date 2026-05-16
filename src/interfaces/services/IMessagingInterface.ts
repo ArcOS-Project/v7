@@ -26,4 +26,5 @@ export interface IMessagingInterface extends IBaseService {
   getMessageThread(messageId?: string): Promise<ExpandedMessageNode[]>;
   buildAttachment(filePath: string, onProgress?: FilesystemProgressCallback): Promise<File | undefined>;
   downloadAttachments(message: ExpandedMessage, attachments: MessageAttachment[], savePath: string): void;
+  checkForMissedMessages(): Promise<void>;
 }

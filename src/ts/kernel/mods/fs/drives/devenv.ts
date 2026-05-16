@@ -1,5 +1,6 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { ToAxiosProgress } from "$ts/util";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
@@ -69,13 +70,7 @@ export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
     try {
       const response = await this.axios.get(`/fs/file/${path}`, {
         responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onDownloadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.data;
@@ -87,13 +82,7 @@ export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean> {
     try {
       const response = await this.axios.post(`/fs/file/${path}`, data, {
-        onUploadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onUploadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.status === 200;

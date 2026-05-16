@@ -1,6 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import { CommandResult } from "$ts/result";
+import { ToAxiosProgress } from "$ts/util";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { UpdateWriteOpResult } from "$types/mongo";
 import type { PartialStoreItem, StoreItem } from "$types/package";
@@ -74,13 +75,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
       return CommandResult.FromResponse(
         await this.server.get(`/download/${id}`, {
           responseType: "arraybuffer",
-          onDownloadProgress: (progress) => {
-            onProgress?.({
-              max: progress.total || 0,
-              value: progress.loaded || 0,
-              type: "size",
-            });
-          },
+          onDownloadProgress: ToAxiosProgress(onProgress),
         })
       );
     } catch (e) {

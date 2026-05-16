@@ -2,7 +2,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Daemon } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { authcode } from "$ts/util";
+import { authcode, ToAxiosProgress } from "$ts/util";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -92,13 +92,7 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
       const response = await Backend.get(`/admin/fs/file/${this.targetUsername}/${path}`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onDownloadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.data;

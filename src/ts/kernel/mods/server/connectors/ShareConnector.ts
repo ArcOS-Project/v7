@@ -2,6 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IShareConnector } from "$interfaces/modules/server/IShareConnector";
 import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
+import { ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -40,12 +41,7 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
       return CommandResult.FromResponse(
         await this.server.get(`/file/${shareId}/${path}`, {
           responseType: "arraybuffer",
-          onDownloadProgress: (progress) =>
-            onProgress?.({
-              max: progress.total || 0,
-              value: progress.loaded || 0,
-              type: "size",
-            }),
+          onDownloadProgress: ToAxiosProgress(onProgress),
         })
       );
     } catch (e) {
@@ -57,12 +53,7 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
     try {
       return CommandResult.FromResponse(
         await this.server.post(`/file/${shareId}/${path}`, blob, {
-          onUploadProgress: (progress) =>
-            onProgress?.({
-              max: progress.total || 0,
-              value: progress.loaded || 0,
-              type: "size",
-            }),
+          onUploadProgress: ToAxiosProgress(onProgress),
         })
       );
     } catch (e) {

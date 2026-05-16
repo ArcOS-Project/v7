@@ -1,4 +1,6 @@
 import type { IProcess } from "$interfaces/IProcess";
+import type { AxiosProgressEvent } from "$types/axios";
+import type { FilesystemProgressCallback } from "$types/fs";
 import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
@@ -306,4 +308,16 @@ export function logItemToStr(data: LogItem) {
   const line = `[${timestamp}] ${level} ${data.source}: ${data.message}`;
 
   return line;
+}
+
+export function ToAxiosProgress(
+  onProgress?: FilesystemProgressCallback,
+  type: "size" | "percentage" | "items" = "size"
+): (progressEvent: AxiosProgressEvent) => void {
+  return (progress) =>
+    onProgress?.({
+      max: progress.total || 0,
+      value: progress.loaded || 0,
+      type,
+    });
 }

@@ -2,6 +2,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Daemon } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -44,13 +45,7 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
     try {
       const response = await Backend.post(`/admin/afs/file/${path}`, data, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onUploadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.status === 200;
@@ -146,13 +141,7 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
       const response = await Backend.get(`/admin/afs/file/${path}`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onDownloadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.data;

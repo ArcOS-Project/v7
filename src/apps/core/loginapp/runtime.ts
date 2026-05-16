@@ -7,6 +7,7 @@ import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
@@ -246,7 +247,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
     broadcast("Running autorun");
     await userDaemon.apps!.spawnAutoload();
     await userDaemon.checks!.checkForUpdates();
-    await userDaemon.checks!.checkForMissedMessages();
+    await userDaemon.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();
 
     userDaemon._blockLeaveInvocations = false;
   }
