@@ -1489,6 +1489,11 @@ domain-browser@4.22.0:
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-4.22.0.tgz#6ddd34220ec281f9a65d3386d267ddd35c491f9f"
   integrity sha512-IGBwjF7tNk3cwypFNH/7bfzBcgSCbaMOD3GsaY1AU/JRrnHnYgEM0+9kQt52iZxjNsjBtJYtao146V+f8jFZNw==
 
+dseg@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/dseg/-/dseg-0.46.0.tgz#9866819c4bee05fe6e6529d922417a546556bbdb"
+  integrity sha512-+wigrEmU4uJ75jtg26BFRoQdPXn8IVltzwI1ZDNsSoNdeO4vLpOssS/XNZNo8e3x5tBUBZd2aU0XeGhWniH8FA==
+
 dunder-proto@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/dunder-proto/-/dunder-proto-1.0.1.tgz"

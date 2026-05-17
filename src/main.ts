@@ -1,3 +1,4 @@
+import "dseg/css/dseg.css";
 import "./css/main.css";
 
 // CODE EXECUTION STARTS HERE

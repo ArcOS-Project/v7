@@ -40,6 +40,8 @@ export class AppShortcutsMigration extends MigrationNode {
         await Sleep(50);
       }
 
+      await Daemon.appreg?.updateStartMenuFolder();
+
       return { result: "err_ok", successMessage: "Updated" };
     } catch (e) {
       return { result: "err_failure", errorMessage: `${e}` };
