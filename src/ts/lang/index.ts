@@ -60,11 +60,16 @@ function getPrecedence(str: string) {
 }
 
 export class ArcScriptEngine extends Process {
+
+  //#region LIFECYCLE
   constructor(pid: number, parentPid: number, execCommandCallback: (name: string, argv: string[]) => any) {
     super(pid, parentPid);
 
     this.execCommand = execCommandCallback;
   }
+
+  //#endregion
+
   errored = false;
   errorMessage: string | null = null;
 
