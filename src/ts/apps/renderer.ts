@@ -13,6 +13,7 @@ import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { Sleep } from "$ts/sleep";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -186,10 +187,26 @@ export class AppRenderer extends Process implements IAppRenderer {
     }
   }
 
-  _windowEvents(proc: IAppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
-    this.disposedCheck();
+  async centerWindow(proc: IAppProcess) {
+    await Sleep(0);
+    const data = proc.app.data;
+    const window = proc.getWindow();
+    const rect = window.getBoundingClientRect();
 
-    if (data.core || data.overlay) return;
+    if (data.position?.centered) {
+      const x = (document.body.offsetWidth - rect.width) / 2;
+      const y = (document.body.offsetHeight - 60 - rect.height) / 2;
+
+      window.style.top = `${y}px`;
+      window.style.left = `${x}px`;
+      window.style.transform = `translate3d(0px, 0px, 0px)`;
+      window.style.translate = `0 0`;
+      this._windowDraggable(proc, window);
+    }
+  }
+
+  _windowDraggable(proc: IAppProcess, window: HTMLDivElement) {
+    proc?.draggable?.destroy();
 
     const draggable = new Draggable(window, {
       bounds: { top: 0, left: -10000000, right: -10000000, bottom: -10000000 },
@@ -200,6 +217,14 @@ export class AppRenderer extends Process implements IAppRenderer {
     });
 
     proc.draggable = draggable;
+  }
+
+  _windowEvents(proc: IAppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
+    this.disposedCheck();
+
+    if (data.core || data.overlay) return;
+
+    this._windowDraggable(proc, window);
 
     if (titlebar) {
       titlebar?.setAttribute("data-contextmenu", "_window-titlebar");

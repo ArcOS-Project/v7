@@ -15,7 +15,7 @@ export const MinesweeperApp: App = {
     w: 430,
     h: 525,
   },
-  minSize: { w: 430, h: 525 },
+  minSize: { w: NaN, h: NaN },
   maxSize: { w: NaN, h: NaN },
   position: { centered: true },
   state: {
@@ -37,7 +37,7 @@ export const MinesweeperApp: App = {
   noSafeMode: true,
   id: "MinesweeperApp",
   hidden: false,
-  glass: true,
+  glass: false,
 };
 
 export default MinesweeperApp;

@@ -1,11 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
+import { Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { MinesweeperAltMenu } from "./altmenu";
-import { DefaultMinesweeperConfiguration } from "./store";
-import type { MinesweeperCell, MinesweeperFieldSettings, MinesweeperGrid, MinesweeperSettings } from "./types";
+import { DefaultMinesweeperConfiguration, MinesweeperDifficulties } from "./store";
+import { type MinesweeperCell, type MinesweeperGrid, type MinesweeperMode, type MinesweeperSettings } from "./types";
 
 export class MinesweeperRuntime extends AppProcess {
   private durationInterval?: NodeJS.Timeout;
@@ -40,13 +41,12 @@ export class MinesweeperRuntime extends AppProcess {
     this.setSource(__SOURCE__);
     this.grid.subscribe((v) => {
       const cells = v.reduce((a, b) => {
-        a.push(...b)
+        a.push(...b);
         return a;
       }, []);
 
       this.flagsLeft.set(this.mines() - cells.filter((c) => c.flagged).length);
     });
-
 
     this.altMenu.set(MinesweeperAltMenu(this));
   }
@@ -57,7 +57,7 @@ export class MinesweeperRuntime extends AppProcess {
         title: "Minesweeper",
         message: message,
         image: this.app.data.metadata.icon,
-        buttons: [{ caption: "OK", action() { }, suggested: true }],
+        buttons: [{ caption: "OK", action() {}, suggested: true }],
       },
       this.pid,
       true
@@ -65,7 +65,9 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   async start() {
-    this.newGame()
+    await this.Config.initialize();
+    this.newGame();
+    Stack.renderer?.centerWindow(this);
   }
 
   updateDuration() {
@@ -78,26 +80,53 @@ export class MinesweeperRuntime extends AppProcess {
     }
 
     const endTime = endTimeMs || Date.now();
-    this.duration.set(`${Math.min(Math.floor((endTime - startTimeMs) / 1000), 999)}`.padStart(3, "0"))
+    this.duration.set(`${Math.min(Math.floor((endTime - startTimeMs) / 1000), 999)}`.padStart(3, "0"));
   }
 
   async stop() {
-    clearInterval(this.durationInterval)
+    clearInterval(this.durationInterval);
   }
 
-  newGame(field?: MinesweeperFieldSettings) {
-    if (field) {
-      this.gridWidth.set(field.width);
-      this.gridHeight.set(field.height);
-      this.mines.set(field.mines);
+  async setDifficulty(difficulty: MinesweeperMode, newGame = true) {
+    if (this._disposed) return;
+
+    this.Log(`setDifficulty: ${difficulty}`);
+
+    if (difficulty !== "Custom") {
+      this.Settings.update((v) => {
+        v.field = MinesweeperDifficulties[difficulty];
+        v.mode = difficulty;
+
+        return v;
+      });
+
+      if (newGame) this.newGame();
+
+      return;
     }
 
+    await this.customGame();
+
+    if (newGame) this.newGame();
+  }
+
+  newGame() {
+    if (this._disposed) return;
+
+    this.Log("New game");
+
+    const settings = this.Settings();
+
+    this.gridWidth.set(settings.field.width);
+    this.gridHeight.set(settings.field.height);
+    this.mines.set(settings.field.mines);
     this.flagsLeft.set(0);
     this.startTimeMs.set(0);
     this.endTimeMs.set(0);
     this.clicks.set(0);
     this.actualMineAmount.set(0);
     this.failed.set(false);
+
     this.populateGrid();
     this.populateMines();
     this.calculateNumbers();
@@ -105,6 +134,10 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   populateMines() {
+    if (this._disposed) return;
+
+    this.Log(`populateMines`);
+
     const grid = this.grid();
 
     for (let i = 0; i < this.mines(); i++) {
@@ -122,6 +155,10 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   populateGrid() {
+    if (this._disposed) return;
+
+    this.Log(`populateGrid`);
+
     const newGrid: MinesweeperGrid = [];
     const gridWidth = this.gridWidth();
     const gridHeight = this.gridHeight();
@@ -147,17 +184,19 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   calculateNumbers() {
+    if (this._disposed) return;
+
     const grid = this.grid();
     const gridWidth = this.gridWidth();
     const gridHeight = this.gridHeight();
 
     for (let y = 0; y < gridHeight; y++) {
-      for (let x = 0; x < gridHeight; x++) {
+      for (let x = 0; x < gridWidth; x++) {
         grid[y][x].adjacentMines = 0;
       }
     }
 
-    for (let y = 0; y < this.gridHeight(); y++) {
+    for (let y = 0; y < gridHeight; y++) {
       for (let x = 0; x < gridWidth; x++) {
         if (!grid[y][x].hasMine) continue;
 
@@ -166,8 +205,7 @@ export class MinesweeperRuntime extends AppProcess {
             const nx = x + dx;
             const ny = y + dy;
 
-            if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight)
-              grid[ny][nx].adjacentMines += 1;
+            if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight) grid[ny][nx].adjacentMines += 1;
           }
         }
       }
@@ -177,6 +215,8 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   revealCell(cell: MinesweeperCell) {
+    if (this._disposed) return;
+
     let grid = this.grid();
     let clicks = this.clicks();
     let skipMine = false;
@@ -191,7 +231,7 @@ export class MinesweeperRuntime extends AppProcess {
 
     if (!clicks) {
       this.startTimeMs.set(Date.now() - 1000);
-      this.durationInterval = setInterval(() => this.updateDuration(), 500)
+      this.durationInterval = setInterval(() => this.updateDuration(), 500);
     }
 
     cell.revealed = true;
@@ -205,7 +245,6 @@ export class MinesweeperRuntime extends AppProcess {
 
     this.grid.set(grid);
     this.clicks.set(clicks);
-    this.calculateNumbers();
     this.updateDuration();
 
     if (cell.hasMine && !skipMine) {
@@ -216,15 +255,17 @@ export class MinesweeperRuntime extends AppProcess {
       return;
     }
 
-    if (!cell.adjacentMines)
-      this.revealAdjacentMines(cell);
+    if (!cell.adjacentMines) this.revealAdjacentMines(cell);
 
     this.checkWin();
   }
 
   revealAll() {
+    if (this._disposed) return;
+
+    this.Log("revealAll");
     this.endTimeMs.set(Date.now());
-    clearInterval(this.durationInterval)
+    clearInterval(this.durationInterval);
 
     this.grid.update((grid) => {
       for (let y in grid) {
@@ -234,10 +275,12 @@ export class MinesweeperRuntime extends AppProcess {
       }
 
       return grid;
-    })
+    });
   }
 
   revealAdjacentMines(cell: MinesweeperCell) {
+    if (this._disposed) return;
+
     const grid = this.grid();
     const gridWidth = this.gridWidth();
     const gridHeight = this.gridHeight();
@@ -256,6 +299,7 @@ export class MinesweeperRuntime extends AppProcess {
 
   moveFirstClickMine(grid: MinesweeperGrid, x: number, y: number): MinesweeperGrid {
     if (this._disposed) return grid;
+    this.Log("moveFirstClickMine");
 
     // Move mine if first click is on a mine
     const gridWidth = this.gridWidth();
@@ -328,7 +372,7 @@ export class MinesweeperRuntime extends AppProcess {
     if (cell.revealed || this._disposed) return;
 
     this.grid.update((grid) => {
-      grid[cell.y][cell.x].flagged = !grid[cell.y][cell.x].flagged
+      grid[cell.y][cell.x].flagged = !grid[cell.y][cell.x].flagged;
       return grid;
     });
 
@@ -343,17 +387,25 @@ export class MinesweeperRuntime extends AppProcess {
     }
 
     if (cell.hasMine && this.DEBUG) {
-      return "B"
+      return "B";
     }
 
     if ((cell.revealed || this.DEBUG) && cell.adjacentMines > 0) {
-      return `${cell.adjacentMines}`
+      return `${cell.adjacentMines}`;
     }
 
     if (cell.flagged) {
-      return "🚩"
+      return "🚩";
     }
 
-    return ""
+    return "";
+  }
+
+  async bestTimes() {
+    throw new Error("Not implemented");
+  }
+
+  async customGame() {
+    throw new Error("Not implemented");
   }
 }

@@ -8,6 +8,7 @@ import { Log } from "./logging";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function DoError(e: ErrorEvent | PromiseRejectionEvent) {
+    console.log(e);
     if (LOCKED) {
       e.preventDefault();
       return false;
@@ -55,7 +56,7 @@ export function handleGlobalErrors() {
 }
 
 export function interceptTpaErrors(stack: string, e: Error): boolean {
-  const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-f0-9A-F\-_]+\.js/gm;
+  const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/\:]+\/assets\/(?<appId>[a-zA-Z]+)-[a-z0-9A-Z\-_]+\.js/gm;
   let parsed = stackTraceParser.parse(stack);
   parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);

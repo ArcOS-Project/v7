@@ -4,20 +4,35 @@
   --digit-fg: #ff0000;
 }
 
-#MinesweeperApp>div.body div.grid {
+#MinesweeperApp {
+  max-width: 80% !important;
+  max-height: 80% !important;
+}
+
+#MinesweeperApp,
+#MinesweeperApp > div.body {
+  height: fit-content !important;
+  width: fit-content !important;
+}
+
+#MinesweeperApp > div.body {
+  overflow-y:scroll !important;
+}
+
+#MinesweeperApp > div.body div.grid {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px
+  gap: 4px;
 }
 
-#MinesweeperApp>div.body div.grid div.row {
+#MinesweeperApp > div.body div.grid div.row {
   display: flex;
-  gap: 4px
+  gap: 4px;
 }
 
-#MinesweeperApp>div.body div.grid button.cell {
+#MinesweeperApp > div.body div.grid button.cell {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,11 +45,11 @@
   border-radius: 4px;
 }
 
-#MinesweeperApp>div.body button.cell.revealed {
+#MinesweeperApp > div.body button.cell.revealed {
   background-color: var(--button-glass-active-bg);
 }
 
-#MinesweeperApp>div.body div.header {
+#MinesweeperApp > div.body div.header {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -42,11 +57,11 @@
   margin-bottom: 15px;
 }
 
-#MinesweeperApp>div.body div.header img {
-  height: 26px
+#MinesweeperApp > div.body div.header img {
+  height: 26px;
 }
 
-#MinesweeperApp>div.body div.header button {
+#MinesweeperApp > div.body div.header button {
   width: 38px;
   height: 38px;
   padding: 0;
@@ -55,7 +70,7 @@
   align-items: center;
 }
 
-#MinesweeperApp>div.body div.header>div {
+#MinesweeperApp > div.body div.header > div {
   font-family: DSEG7-Classic-MINI;
   font-weight: bold;
   font-size: 24px;
@@ -66,10 +81,10 @@
   width: fit-content;
   padding: 6px;
   border-radius: 5px;
-  border: var(--win-border)
+  border: var(--win-border);
 }
 
-#MinesweeperApp>div.body div.header>div::before {
+#MinesweeperApp > div.body div.header > div::before {
   content: "000";
   position: absolute;
   top: 0;
@@ -82,7 +97,7 @@
   padding: 6px;
 }
 
-#MinesweeperApp>div.body div.header>div>span {
+#MinesweeperApp > div.body div.header > div > span {
   display: block;
   width: 60px;
   position: relative;

@@ -1,4 +1,4 @@
-import { MinesweeperDifficulty, MinesweeperFieldSettings, MinesweeperSettings } from "./types";
+import type { MinesweeperDifficulty, MinesweeperFieldSettings, MinesweeperSettings } from "./types";
 
 export const MinesweeperDifficulties: Record<MinesweeperDifficulty, MinesweeperFieldSettings> = {
   Beginner: {
