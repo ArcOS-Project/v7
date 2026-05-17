@@ -3,6 +3,7 @@ export interface MinesweeperCell {
   revealed: boolean;
   flagged: boolean;
   adjacentMines: number;
+  exploded: boolean
   x: number;
   y: number;
 }

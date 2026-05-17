@@ -5,12 +5,14 @@ import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { MinesweeperAltMenu } from "./altmenu";
+import { MinesweeperBestTimesApp } from "./Overlays/besttimes/MinesweeperBestTimesApp";
 import { DefaultMinesweeperConfiguration, MinesweeperDifficulties } from "./store";
 import { type MinesweeperCell, type MinesweeperGrid, type MinesweeperMode, type MinesweeperSettings } from "./types";
 
 export class MinesweeperRuntime extends AppProcess {
   private durationInterval?: NodeJS.Timeout;
   public failed = Store<boolean>(false);
+  public won = Store<boolean>(false);
   public gridWidth = Store<number>(10);
   public gridHeight = Store<number>(10);
   public mines = Store<number>(20);
@@ -28,6 +30,10 @@ export class MinesweeperRuntime extends AppProcess {
     .WithDefaults(DefaultMinesweeperConfiguration)
     .ForProcess(this)
     .Build();
+
+  protected override overlayStore = {
+    bestTimes: MinesweeperBestTimesApp,
+  };
 
   ///
   public readonly DEBUG = false;
@@ -126,6 +132,7 @@ export class MinesweeperRuntime extends AppProcess {
     this.clicks.set(0);
     this.actualMineAmount.set(0);
     this.failed.set(false);
+    this.won.set(false);
 
     this.populateGrid();
     this.populateMines();
@@ -164,13 +171,14 @@ export class MinesweeperRuntime extends AppProcess {
     const gridHeight = this.gridHeight();
 
     for (let y = 0; y < gridHeight; y++) {
-      const row = [];
+      const row: MinesweeperCell[] = [];
 
       for (let x = 0; x < gridWidth; x++) {
         row.push({
           hasMine: false,
           revealed: false,
           flagged: false,
+          exploded: false,
           adjacentMines: 0,
           x: x,
           y: y,
@@ -215,7 +223,9 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   revealCell(cell: MinesweeperCell) {
-    if (this._disposed) return;
+    this.Log(`revealCell: ${cell.x}x${cell.y}`);
+
+    if (this._disposed || this.failed() || this.won()) return;
 
     let grid = this.grid();
     let clicks = this.clicks();
@@ -243,24 +253,24 @@ export class MinesweeperRuntime extends AppProcess {
 
     grid[cell.y][cell.x] = cell;
 
-    this.grid.set(grid);
     this.clicks.set(clicks);
     this.updateDuration();
 
     if (cell.hasMine && !skipMine) {
       this.notify("Game Over!");
-      this.revealAll();
+      this.revealAll(true);
       this.failed.set(true);
+      cell.exploded = true;
+    } else {
+      if (!cell.adjacentMines) this.revealAdjacentMines(cell);
 
-      return;
+      this.checkWin();
     }
 
-    if (!cell.adjacentMines) this.revealAdjacentMines(cell);
-
-    this.checkWin();
+    this.grid.set(grid);
   }
 
-  revealAll() {
+  revealAll(minesOnly = false) {
     if (this._disposed) return;
 
     this.Log("revealAll");
@@ -270,6 +280,7 @@ export class MinesweeperRuntime extends AppProcess {
     this.grid.update((grid) => {
       for (let y in grid) {
         for (let x in grid[y]) {
+          if (minesOnly && !grid[y][x].hasMine) continue;
           grid[y][x].revealed = true;
         }
       }
@@ -336,6 +347,8 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   checkWin() {
+    this.Log("checkWin");
+
     if (this._disposed) return;
 
     const grid = this.grid();
@@ -353,22 +366,21 @@ export class MinesweeperRuntime extends AppProcess {
         if (cell.hasMine && cell.flagged) {
           counter++;
         }
-
-        if (!cell.hasMine && cell.flagged) {
-          this.failed.set(true);
-        }
       }
     }
 
     if (counter === this.mines() && !this.failed()) {
       this.notify("You Win!");
       this.revealAll();
+      this.won.set(true);
     }
 
     this.grid.set(grid);
   }
 
   toggleFlagged(cell: MinesweeperCell) {
+    this.Log("toggleFlagged");
+
     if (cell.revealed || this._disposed) return;
 
     this.grid.update((grid) => {
@@ -402,7 +414,7 @@ export class MinesweeperRuntime extends AppProcess {
   }
 
   async bestTimes() {
-    throw new Error("Not implemented");
+    this.spawnOverlay("bestTimes", this);
   }
 
   async customGame() {

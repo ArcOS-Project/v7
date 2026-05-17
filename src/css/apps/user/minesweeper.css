@@ -1,3 +1,7 @@
+@import url("./minesweeper/header.css");
+@import url("./minesweeper/grid.css");
+@import url("./minesweeper/besttimes.css");
+
 #MinesweeperApp {
   --digit-bg: #440000;
   --digit-backdrop: #660000;
@@ -16,91 +20,5 @@
 }
 
 #MinesweeperApp > div.body {
-  overflow-y:scroll !important;
-}
-
-#MinesweeperApp > div.body div.grid {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-#MinesweeperApp > div.body div.grid div.row {
-  display: flex;
-  gap: 4px;
-}
-
-#MinesweeperApp > div.body div.grid button.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 35px;
-  height: 35px;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--fg);
-  border: 1px solid var(--button-glass-bg);
-  border-radius: 4px;
-}
-
-#MinesweeperApp > div.body button.cell.revealed {
-  background-color: var(--button-glass-active-bg);
-}
-
-#MinesweeperApp > div.body div.header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-#MinesweeperApp > div.body div.header img {
-  height: 26px;
-}
-
-#MinesweeperApp > div.body div.header button {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#MinesweeperApp > div.body div.header > div {
-  font-family: DSEG7-Classic-MINI;
-  font-weight: bold;
-  font-size: 24px;
-  background-color: var(--digit-bg);
-  white-space: pre;
-  position: relative;
-  text-align: right;
-  width: fit-content;
-  padding: 6px;
-  border-radius: 5px;
-  border: var(--win-border);
-}
-
-#MinesweeperApp > div.body div.header > div::before {
-  content: "000";
-  position: absolute;
-  top: 0;
-  left: 0;
-  text-align: right;
-  width: 100%;
-  color: var(--digit-backdrop);
-  z-index: 0;
-  width: 60px;
-  padding: 6px;
-}
-
-#MinesweeperApp > div.body div.header > div > span {
-  display: block;
-  width: 60px;
-  position: relative;
-  z-index: 100;
-  color: var(--digit-fg);
+  overflow-y: scroll !important;
 }

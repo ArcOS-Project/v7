@@ -1,0 +1,21 @@
+#MinesweeperBestTimesApp > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#MinesweeperBestTimesApp > div.body div.table-wrapper {
+  height: 0;
+  flex-grow: 1;
+  padding: 15px;
+}
+
+#MinesweeperBestTimesApp > div.body div.table-wrapper td {
+  line-height: 20px;
+  padding: 0;
+}
+
+#MinesweeperBestTimesApp > div.body div.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}

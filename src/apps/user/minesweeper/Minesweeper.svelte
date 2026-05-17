@@ -5,7 +5,7 @@
   import { UUID } from "$ts/util/uuid";
 
   const { process }: { process: MinesweeperRuntime } = $props();
-  const { grid, DEBUG, flagsLeft, duration, failed } = process;
+  const { grid, DEBUG, flagsLeft, duration, failed, won } = process;
 
   let clicked = $state(false);
 
@@ -50,6 +50,8 @@
           class:revealed={cell.revealed}
           class:unrevealed={!cell.revealed}
           class:flagged={cell.flagged}
+          class:bombflagged={cell.hasMine && cell.flagged && ($failed || $won)}
+          class:exploded={cell.exploded}
           onclick={() => process.revealCell(cell)}
           oncontextmenu={(e) => rightClick(e, cell)}
         >

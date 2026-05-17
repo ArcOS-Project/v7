@@ -1,0 +1,39 @@
+#MinesweeperApp > div.body div.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+#MinesweeperApp > div.body div.grid div.row {
+  display: flex;
+  gap: 4px;
+}
+
+#MinesweeperApp > div.body div.grid button.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--fg);
+  border: 1px solid var(--button-glass-bg);
+  border-radius: 4px;
+}
+
+#MinesweeperApp > div.body button.cell.revealed {
+  background-color: var(--button-glass-active-bg);
+}
+
+#MinesweeperApp > div.body button.cell.exploded {
+  background-color: var(--clr-red-bg);
+  border-color: var(--clr-red-fg) !important;
+}
+
+#MinesweeperApp > div.body button.cell.bombflagged {
+  background-color: var(--clr-green-bg);
+  border-color: var(--clr-green-fg) !important;
+}
