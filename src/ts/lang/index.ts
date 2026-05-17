@@ -1,5 +1,6 @@
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { type ArcScriptAstNode, ArcScriptAstNodeType, type ArcScriptFunction, type ArcScriptLexerToken, ArcScriptLexerTokenType, type ArcScriptPosition, type ArcScriptVariable, ArcScriptVariableType } from "$interfaces/IArcScriptEngine";
+import { __Console__ } from "$ts/console";
 
 const Operators: string[] = [
   "+",
@@ -614,7 +615,7 @@ export class ArcScriptEngine extends Process {
   }
 
   private error(message: string): ArcScriptLexerToken[] {
-    console.error("[ArcScript] Error: " + message + `\nat ${this.line}:${this.i - this.lineStartPos}`);
+    __Console__.error("[ArcScript] Error: " + message + `\nat ${this.line}:${this.i - this.lineStartPos}`);
 
     this.errored = true;
     this.errorMessage = message;
@@ -622,7 +623,7 @@ export class ArcScriptEngine extends Process {
   }
 
   private posError(message: string, pos: ArcScriptPosition) {
-    console.error("[ArcScript] error: " + message + `\nat ${pos.end.line}:${pos.end.column}`);
+    __Console__.error("[ArcScript] error: " + message + `\nat ${pos.end.line}:${pos.end.column}`);
 
     this.errored = true;
     this.errorMessage = message;
