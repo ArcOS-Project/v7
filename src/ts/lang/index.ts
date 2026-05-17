@@ -615,7 +615,7 @@ export class ArcScriptEngine extends Process {
   }
 
   private error(message: string): ArcScriptLexerToken[] {
-    __Console__.error("[ArcScript] Error: " + message + `\nat ${this.line}:${this.i - this.lineStartPos}`);
+    this.Log("[ArcScript] Error: " + message + `\nat ${this.line}:${this.i - this.lineStartPos}`);
 
     this.errored = true;
     this.errorMessage = message;
@@ -623,7 +623,7 @@ export class ArcScriptEngine extends Process {
   }
 
   private posError(message: string, pos: ArcScriptPosition) {
-    __Console__.error("[ArcScript] error: " + message + `\nat ${pos.end.line}:${pos.end.column}`);
+    this.Log("[ArcScript] error: " + message + `\nat ${pos.end.line}:${pos.end.column}`);
 
     this.errored = true;
     this.errorMessage = message;
