@@ -198,10 +198,15 @@ export class ArcTerminal extends Process implements IArcTerminal {
             runCommand(name, args)
           });
           if (!engine) {
-            this.Error("Failed to execute ArcScript file.")
+            this.Error("Failed to execute ArcScript file.");
             this.lastCommandErrored = true;
           } else {
-            engine.execute(text)
+            try {
+              engine.execute(text)
+            } catch (e) {
+              this.Error("Error occurred while executing ArcScript file.");
+              this.lastCommandErrored = true;
+            }
           }
         }
       }
