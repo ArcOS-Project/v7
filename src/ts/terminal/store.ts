@@ -35,6 +35,7 @@ import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
+import { TouchCommand } from "./commands/touch";
 import { TostrCommand } from "./commands/tostr";
 import { TreeCommand } from "./commands/tree";
 import { UuidCommand } from "./commands/uuid";
@@ -77,6 +78,7 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   PkgCommand,
   KlogCommand,
   InputCommand,
+  TouchCommand,
   SoundbusCommand,
   UuidCommand,
   TostrCommand,
