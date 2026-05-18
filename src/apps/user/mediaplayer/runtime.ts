@@ -1,13 +1,14 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs, Stack } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { getReadableVibrantColor } from "$ts/util/color";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { tryJsonParse } from "$ts/util/json";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { FileEntry } from "$types/fs";
@@ -16,8 +17,9 @@ import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
-import type { AudioFileMetadata, MetadataConfiguration, PlayerState } from "./types";
-import { getReadableVibrantColor } from "$ts/color";
+import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
+import { CommandResult } from "$ts/result";
+import { ConfigurationBuilder } from "$ts/config";
 
 export class MediaPlayerRuntime extends AppProcess {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -26,15 +28,24 @@ export class MediaPlayerRuntime extends AppProcess {
   public queueIndex = Store<number>(0);
   public url = Store<string>();
   public player: HTMLVideoElement | undefined;
+  public seeking = Store<boolean>(false);
+  public loopMode = Store<LoopMode>(LoopMode.None);
   public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
+  public pinControls = Store<boolean>(false);
   MetadataConfiguration = Store<MetadataConfiguration>({});
   CurrentMediaMetadata = Store<AudioFileMetadata | undefined>();
   CurrentCoverUrl = Store<string | undefined>();
   LoadingMetadata = Store<boolean>(false);
   mediaSpecificAccentColor = Store<string>("");
+  Configuration = new ConfigurationBuilder()
+    .ForProcess(this)
+    .ReadsFrom(this.MetadataConfiguration)
+    .WritesTo(this.METADATA_PATH)
+    .WithDefaults({})
+    .Build();
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -108,14 +119,8 @@ export class MediaPlayerRuntime extends AppProcess {
   protected async start(): Promise<any> {
     await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
     await Fs.createDirectory(this.COVERIMAGES_PATH);
-    await this.readConfiguration();
+    await this.Configuration.initialize();
 
-    let firstSub = false;
-    this.MetadataConfiguration.subscribe((v) => {
-      if (!firstSub) return (firstSub = true);
-
-      this.writeConfiguration(v);
-    });
     this.CurrentMediaMetadata.subscribe((v) => {
       if (!v?.title) return;
 
@@ -129,7 +134,16 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
-    if (await this.closeIfSecondInstance()) return;
+    const firstInstance = await this.closeIfSecondInstance();
+
+    if (firstInstance) {
+      if (file) {
+        if (file.endsWith(".arcpl")) firstInstance.readPlaylist(file);
+        else firstInstance.readFile([file]);
+      }
+
+      return;
+    }
 
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
@@ -149,24 +163,30 @@ export class MediaPlayerRuntime extends AppProcess {
   //#endregion
 
   public setPlayer(player: HTMLVideoElement) {
+    this.Log(`setPlayer: #${player.id}.${player.className}`);
+
     this.player = player;
 
     this.player.addEventListener("timeupdate", () => this.updateState());
     this.player.addEventListener("pause", () => this.updateState());
     this.player.addEventListener("play", () => this.updateState());
+    this.player.addEventListener("seeking", () => this.seeking.set(true));
+    this.player.addEventListener("seeked", () => this.seeking.set(false));
   }
 
   public Reset() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Reset`);
+
+    if (this._disposed || !this.player) return;
 
     this.player.src = this.url.get();
     this.player.currentTime = 0;
   }
 
   public async Play() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Play`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       await this.player.play();
@@ -174,8 +194,9 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async Pause() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Pause`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       this.player.pause();
@@ -183,19 +204,62 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public Seek(mod: number) {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Seek: ${mod}`);
+
+    if (this._disposed || !this.player) return;
 
     this.player.currentTime += mod;
   }
 
+  public SeekTo(secondTime: number) {
+    this.Log(`SeekTo: ${secondTime}`);
+
+    if (this._disposed || !this.player) return;
+
+    this.player.currentTime = secondTime;
+  }
+
   public Stop() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Stop`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       this.player.pause();
       this.player.currentTime = 0;
+    } catch {}
+  }
+
+  public async SetLoopNone() {
+    this.Log(`SetLoopNone`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.None);
+    } catch {}
+  }
+
+  public async SetLoopAll() {
+    this.Log(`SetLoopAll`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.All);
+    } catch {}
+  }
+
+  public async SetLoopOne() {
+    this.Log(`SetLoopOne`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = true;
+      this.loopMode.set(LoopMode.One);
     } catch {}
   }
 
@@ -218,6 +282,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async openFile() {
+    this.Log(`openFile`);
+
     if (this._disposed) return;
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select an audio or video file to open",
@@ -233,6 +299,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async readFile(paths: string[], addToQueue = false) {
+    this.Log(`readFile: ${paths.length} files, addToQueue=${addToQueue}`);
+
     if (this._disposed) return;
     if (addToQueue && this.queue().length) {
       this.queue.update((v) => {
@@ -249,11 +317,21 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   nextSong() {
+    this.Log(`nextSong`);
+
     if (this._disposed) return;
     let index = this.queueIndex();
     const queue = this.queue();
 
     if (index + 1 > queue.length - 1) {
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(0);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index++;
@@ -261,8 +339,11 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async previousSong() {
+    this.Log(`previousSong`);
+
     if (this._disposed) return;
     let index = this.queueIndex();
+    const queue = this.queue();
 
     if (this.State().current >= 2) {
       this.player!.currentTime = 0;
@@ -271,6 +352,14 @@ export class MediaPlayerRuntime extends AppProcess {
     }
 
     if (index - 1 < 0) {
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(queue.length - 1);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index--;
@@ -280,12 +369,16 @@ export class MediaPlayerRuntime extends AppProcess {
   //#region QUEUE
 
   clearQueue() {
+    this.Log(`clearQueue`);
+
     if (this._disposed) return;
     this.queueIndex.set(0);
     this.queue.set([]);
   }
 
   async handleSongChange(v: number) {
+    this.Log(`handleSongChange: ${v}`);
+
     if (this._disposed) return;
     const path = this.queue()[v];
 
@@ -318,17 +411,15 @@ export class MediaPlayerRuntime extends AppProcess {
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
       this.windowIcon.set(fileAssociation?.icon || this.getIconCached("MediaPlayerIcon"));
-
-      this.parseMetadata(path);
-
       this.Reset();
 
       await Sleep(10);
       await this.player?.play();
 
+      this.parseMetadata(path);
       this.Loaded.set(true);
-    } catch {
-      this.failedToPlay();
+    } catch (e) {
+      this.failedToPlay(e);
     }
   }
 
@@ -348,6 +439,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   moveQueueItem(sourceIndex: number, targetIndex: number) {
+    this.Log(`moveQueueItem: ${sourceIndex} -> ${targetIndex}`);
+
     if (this._disposed) return;
     const currentQueue = this.queue(); // Get the current value of the queue store
     if (!currentQueue) return;
@@ -366,6 +459,8 @@ export class MediaPlayerRuntime extends AppProcess {
   //#region PLAYLISTS
 
   async savePlaylist(queue = this.queue()) {
+    this.Log(`savePlaylist`);
+
     if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
@@ -391,6 +486,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async readPlaylist(path: string) {
+    this.Log(`readPlaylist: ${path}`);
+
     if (this._disposed) return;
     try {
       const contents = await Fs.readFile(path);
@@ -421,6 +518,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async createPlaylistShortcut() {
+    this.Log(`createPlaylistShortcut`);
+
     if (this._disposed) return;
     const paths = await Daemon?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
@@ -445,6 +544,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async folderAsPlaylist() {
+    this.Log(`folderAsPlaylist`);
+
     const [path] = await Daemon.files!.LoadSaveDialog({
       title: "Choose a folder to scan for media",
       icon: this.app.data.metadata.icon,
@@ -475,12 +576,14 @@ export class MediaPlayerRuntime extends AppProcess {
   //#region ERRORS
 
   async failedToPlay(e?: any) {
+    this.Log(`failedToPlay: ${e}`);
+
     if (this._disposed) return;
     MessageBox(
       {
         title: "Failed to play",
         message:
-          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file. ${e}`.trim(),
+          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
@@ -494,25 +597,9 @@ export class MediaPlayerRuntime extends AppProcess {
   //#endregion
   //#region METADATA
 
-  async readConfiguration() {
-    try {
-      const content = await Fs.readFile(this.METADATA_PATH);
-      if (!content) throw new Error("Failed to read file contents");
-
-      const json = tryJsonParse(arrayBufferToText(content));
-      if (!json || typeof json === "string") throw new Error("File contents could not be parsed as JSON");
-
-      this.MetadataConfiguration.set(json);
-    } catch {
-      return await this.writeConfiguration({});
-    }
-  }
-
-  async writeConfiguration(configuration: MetadataConfiguration) {
-    await Fs.writeFile(this.METADATA_PATH, textToBlob(JSON.stringify(configuration, null, 2)), undefined, false);
-  }
-
   async normalizeMetadata(meta: IAudioMetadata): Promise<AudioFileMetadata> {
+    this.Log(`normalizeMetadata`);
+
     const result: AudioFileMetadata = {};
 
     result.artist = meta?.common?.artist;
@@ -540,7 +627,9 @@ export class MediaPlayerRuntime extends AppProcess {
     return result;
   }
 
-  async parseMetadata(path: string, apply = true) {
+  async parseMetadata(path: string, apply = true): Promise<CommandResult<AudioFileMetadata>> {
+    this.Log(`parseMetadata: ${path} apply=${apply}`);
+
     try {
       if (apply) {
         this.CurrentCoverUrl.set("");
@@ -550,7 +639,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const existing = this.MetadataConfiguration()[path];
       if (existing) {
         if (apply) this.CurrentMediaMetadata.set(existing);
-        return existing;
+        return CommandResult.Ok(existing);
       }
 
       if (apply) {
@@ -561,7 +650,7 @@ export class MediaPlayerRuntime extends AppProcess {
       const content = await Fs.readFile(path);
       if (!content) {
         if (apply) this.LoadingMetadata.set(false);
-        return undefined;
+        return CommandResult.Error("Failed to read the source file");
       }
 
       const metadata = await parseBuffer(new Uint8Array(content));
@@ -576,8 +665,10 @@ export class MediaPlayerRuntime extends AppProcess {
 
         return v;
       });
-    } catch {
-      return;
+
+      return CommandResult.Ok(normalized);
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
     }
   }
 
@@ -611,6 +702,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public openFileLocation() {
+    this.Log(`openFileLocation`);
+
     if (this._disposed) return;
     const path = this.queue.get()[this.queueIndex()];
 

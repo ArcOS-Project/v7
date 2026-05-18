@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
   import type { ShellTrayIcon } from "$apps/components/shell/types";
-  import type { Process } from "$ts/process/instance";
+  import type { IProcess } from "$interfaces/process";
+  import type { IShellRuntime } from "$interfaces/shell";
 
   const {
     process,
     discriminator,
     icon,
     targetedProcess,
-  }: { process: ShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: Process } = $props();
+  }: { process: IShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: IProcess } = $props();
   const { openedTrayPopup } = process;
 
   async function openThis() {

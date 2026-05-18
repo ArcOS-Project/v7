@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { ShareManager } from "$ts/shares";
+  import { Daemon } from "$ts/daemon";
+  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+  import { MessageBox } from "$ts/util/dialog";
   import type { OverlayRuntime } from "../../overlay";
 
   const { process }: { process: OverlayRuntime } = $props();

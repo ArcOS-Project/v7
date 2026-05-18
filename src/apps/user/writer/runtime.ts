@@ -1,10 +1,11 @@
+import type { IFilesystemDrive } from "$interfaces/fs";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -21,6 +22,7 @@ export class WriterRuntime extends AppProcess {
   directoryName = Store<string>("");
   original = Store<string>("");
   input = Store<HTMLTextAreaElement>();
+  drive = Store<IFilesystemDrive | undefined>();
   mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
 
   protected overlayStore: Record<string, App> = {
@@ -94,6 +96,8 @@ export class WriterRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile`);
+
     const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
@@ -119,6 +123,8 @@ export class WriterRuntime extends AppProcess {
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
+
+      this.drive.set(Fs.getDriveByPath(path));
 
       const info = Daemon?.assoc?.getFileAssociation(path);
 
@@ -150,6 +156,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveChanges(force = false) {
+    this.Log(`saveChanges`);
+
     const opened = this.openedFile();
     const buffer = this.buffer();
 
@@ -181,6 +189,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async saveAs() {
+    this.Log(`saveAs`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "TextMimeIcon",
@@ -205,6 +215,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   async openFile() {
+    this.Log(`openFile`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "TextMimeIcon",
@@ -217,6 +229,8 @@ export class WriterRuntime extends AppProcess {
   }
 
   public selectAll() {
+    this.Log(`selectAll`);
+
     this.input()?.select();
   }
 }

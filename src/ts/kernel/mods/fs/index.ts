@@ -1,32 +1,44 @@
+import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/fs";
+import type { IWaveKernel } from "$interfaces/kernel";
+import type { ISystemDispatch } from "$interfaces/modules/dispatch";
+import type { IFilesystem } from "$interfaces/modules/fs";
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { sha256, sliceIntoChunks } from "$ts/util";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import {
   type DirectoryReadReturn,
   type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
+  type FsProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/fs";
-import type { ConstructedWaveKernel, FilesystemType, SystemDispatchType } from "$types/kernel";
-import type { FilesystemDrive } from "../../../drives/drive";
-import { arrayBufferToBlob } from "../../../util/convert";
-import { getItemNameFromPath, getParentDirectory, join } from "../../../util/fs";
+import type { FilesystemDrive } from "./drives/generic";
+import { MountsFilesystemProxy } from "./proxies/mounts";
+import { SourceFilesystemProxy } from "./proxies/src";
 
-export class Filesystem extends KernelModule implements FilesystemType {
-  private dispatch: SystemDispatchType;
-  public drives: Record<string, FilesystemDrive> = {};
+export class Filesystem extends KernelModule implements IFilesystem {
+  private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
+  private dispatch: ISystemDispatch;
+  public drives: Record<string, IFilesystemDrive> = {};
+  public loadedProxies: IFilesystemProxy[] = [];
 
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
 
-    this.dispatch = getKMod<SystemDispatchType>("dispatch");
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
-  async _init() {}
+  async _init() {
+    for (const proxy of this.PROXIES) {
+      this.loadedProxies.push(new proxy(proxy.PROXY_UUID));
+    }
+  }
 
   //#endregion
 
@@ -36,7 +48,7 @@ export class Filesystem extends KernelModule implements FilesystemType {
     return this.drives[id];
   }
 
-  async mountDrive<T = FilesystemDrive>(
+  async mountDrive<T = IFilesystemDrive>(
     id: string,
     supplier: typeof FilesystemDrive,
     letter?: string,
@@ -142,14 +154,60 @@ export class Filesystem extends KernelModule implements FilesystemType {
       throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
   }
 
-  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+  getProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
     this.isKmod();
 
+    const regex = /::\{(?<id>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})\}/g;
+    const uuid = regex.exec(path)?.groups?.id;
+    if (!uuid) return undefined;
+
+    const [prefix, proxyPath] = path.split(`::{${uuid}}`);
+    const proxyHandler = this.loadedProxies.find((p) => p.uuid === uuid);
+    if (topLevel && proxyPath) return undefined;
+    if (!proxyHandler) throw new Error(`GetProxyInfo: Filesystem proxy with UUID ${uuid} does not exist.`);
+
+    this.Log(`getProxyInfo: ${path} -> ${uuid} (${proxyPath})`);
+
+    return {
+      prefix,
+      path: proxyPath,
+      proxyHandler,
+      proxyUuid: uuid,
+      displayName: proxyHandler.displayName ? `${proxyHandler.displayName} (proxy)` : undefined,
+    };
+  }
+
+  tryGetProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+    try {
+      return this.getProxyInfo(path, topLevel);
+    } catch {
+      return undefined;
+    }
+  }
+
+  async tryHandleProxyReadDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readDir(info.path);
+  }
+
+  async tryHandleProxyReadFile(path: string): Promise<ArrayBuffer | undefined> {
+    const info = this.getProxyInfo(path);
+    if (!info) return undefined;
+
+    return await info.proxyHandler.readFile(info.path);
+  }
+
+  async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    this.isKmod();
     this.Log(`Reading directory '${path}'`);
-
     this.validatePath(path);
-    const drive = this.getDriveByPath(path);
 
+    const proxyRead = await this.tryHandleProxyReadDir(path);
+    if (proxyRead) return proxyRead;
+
+    const drive = this.getDriveByPath(path);
     drive.isCapable("readDir");
 
     return await drive.readDir(this.removeDriveLetter(path));
@@ -191,9 +249,11 @@ export class Filesystem extends KernelModule implements FilesystemType {
     onProgress ||= this.defaultProgress.bind(this);
 
     this.isKmod();
-
     this.Log(`Reading file '${path}'`);
     this.validatePath(path);
+
+    const proxyRead = await this.tryHandleProxyReadFile(path);
+    if (proxyRead) return proxyRead;
 
     const drive = this.getDriveByPath(path);
     path = this.removeDriveLetter(path);
@@ -433,7 +493,7 @@ export class Filesystem extends KernelModule implements FilesystemType {
 
     this.isKmod();
 
-    await this.createDirectory(target);
+    if (!(await this.isDirectory(target))) await this.createDirectory(target);
 
     this.validatePath(target);
     const uploader = document.createElement("input");
@@ -546,18 +606,13 @@ export class Filesystem extends KernelModule implements FilesystemType {
     }
   }
 
-  // COMPAT: not using stat calls here because we don't
-  // know if the designated drive will have such capability
-
-  // TODO: Add support for both stat-based checks and a
-  // fallback for drives that can't stat
   async isDirectory(path: string) {
     try {
       const drive = this.getDriveByPath(path);
 
       drive.isCapable("stat");
 
-      return !!(await this.stat(path))?.isDirectory;
+      return !!(await this.stat(path))?.isDirectory as false;
     } catch {
       const contents = await this.readDir(path);
       const fileContents = await this.readFile(path);

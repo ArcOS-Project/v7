@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import type { StoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../runtime";
 

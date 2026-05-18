@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SqeletonRuntime } from "$apps/user/sqeleton/runtime";
   import type { SqlTable } from "$apps/user/sqeleton/types";
-  import { contextMenu } from "$ts/context/actions.svelte";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import TableColumn from "./TableColumn.svelte";
 
   const { process, table }: { process: SqeletonRuntime; table: SqlTable } = $props();
@@ -31,16 +31,16 @@
           {
             caption: "Drop existing table first",
             action: async () => {
-              const sql = await process.tableToSql(table, true, true);
-              if (sql) process.newQuery(sql);
+              const sqlResult = await process.tableToSql(table, true, true);
+              if (sqlResult.success) process.newQuery(sqlResult.result);
             },
             icon: "eraser",
           },
           {
             caption: "Keep existing table",
             action: async () => {
-              const sql = await process.tableToSql(table, true, false);
-              if (sql) process.newQuery(sql);
+              const sqlResult = await process.tableToSql(table, true, false);
+              if (sqlResult) process.newQuery(sqlResult.result);
             },
             icon: "check-check",
           },

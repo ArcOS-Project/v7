@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import Header from "./IconPicker/Header.svelte";
   import Icon from "./IconPicker/Icon.svelte";
   import type { IconPickerRuntime } from "./runtime";
@@ -23,17 +25,18 @@
   {/each}
 </div>
 
-<div class="actions">
-  <div class="left">
-    <button
-      class="reset-icon"
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton
       onclick={() => ($selected = defaultIcon || process.getIconCached("DefaultIcon"))}
-      disabled={$selected === defaultIcon}>Reset</button
+      disabled={$selected === defaultIcon}
     >
-    <button class="random" onclick={() => process.selectRandom()}>Random</button>
-  </div>
-  <div class="right">
-    <button class="cancel" onclick={() => process.cancel()}>Cancel</button>
-    <button class="suggested" onclick={() => process.confirm()} disabled={!$selected}>Choose</button>
-  </div>
-</div>
+      Reset
+    </ActionButton>
+    <ActionButton onclick={() => process.selectRandom()}>Random</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.cancel()}>Cancel</ActionButton>
+    <ActionButton suggested onclick={() => process.confirm()} disabled={!$selected}>Choose</ActionButton>
+  {/snippet}
+</ActionBar>

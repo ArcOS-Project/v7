@@ -1,0 +1,72 @@
+#AdminPortal .container.versioning div.page-content {
+  display: flex;
+  flex-direction: column;
+}
+
+#AdminPortal .container.versioning div.page-content > div.header {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  height: 31px;
+  border-bottom: var(--win-border);
+  gap: 5px;
+}
+
+#AdminPortal .container.versioning div.page-content > div.header h1 {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-right: auto;
+}
+
+#AdminPortal .container.versioning div.page-content > div.header button {
+  padding: 0 10px;
+  border-radius: 0;
+  height: 30px;
+  border-left: var(--win-border);
+}
+
+#AdminPortal .container.versioning div.version-list {
+  height: 0;
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+#AdminPortal .container.versioning div.version-list div.row {
+  display: flex;
+  align-items: center;
+  height: 31px;
+  padding: 0 10px;
+  border-bottom: var(--win-border);
+  gap: 10px;
+}
+
+#AdminPortal .container.versioning div.version-list div.row:last-child {
+  border-bottom: 0;
+  height: 30px;
+}
+
+#AdminPortal .container.versioning div.version-list div.row.header {
+  font-weight: bold;
+  background-color: var(--button-bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+#AdminPortal .container.versioning div.version-list div.row div.segment.username {
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AdminPortal .container.versioning div.version-list div.row div.segment.os-version {
+  margin-right: auto;
+}
+
+#AdminPortal .container.versioning div.version-list div.row div.segment.migration {
+  width: 100px;
+}
+
+#AdminPortal .container.versioning div.version-list div.row img {
+  height: 20px;
+}

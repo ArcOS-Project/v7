@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StoreItemScreenshot } from "$ts/distrib/util";
+  import { StoreItemScreenshot } from "$ts/util/distrib";
   import type { StoreItem } from "$types/package";
   import type { AppStoreRuntime } from "../../runtime";
 

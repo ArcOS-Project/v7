@@ -1,17 +1,19 @@
 <script lang="ts">
+  import { Daemon } from "$ts/daemon";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
+  import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
   import type { MediaPlayerRuntime } from "./runtime";
-  import CoverImage from "./MediaPlayer/CoverImage.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
-
+  const { pinControls } = process;
+  
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
+  let style = $state<string | undefined>();
   let hideTimeout: NodeJS.Timeout | undefined;
 
   function onmousemove() {
@@ -37,18 +39,22 @@
 
   onMount(() => {
     process.setPlayer(audio);
+
+    mediaSpecificAccentColor.subscribe((v) => {
+      style = v ? Daemon.renderer?.getAppRendererStyle(v.replace("#", "")) : "";
+    });
   });
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="container"
-  class:hide-controls={hideControls}
+  class="container shell-colored colored"
+  class:hide-controls={hideControls && !$pinControls}
   {onmousemove}
   data-contextmenu={$queue.length && $Loaded ? "player" : ""}
   class:is-video={$isVideo && $Loaded}
   class:theme-dark={$windowFullscreen}
-  style={$mediaSpecificAccentColor ? Daemon.renderer?.getAppRendererStyle($mediaSpecificAccentColor.replace("#","")) : ""}
+  {style}
 >
   <div class="video-wrapper" class:show={$isVideo}>
     <video bind:this={audio}>
@@ -75,7 +81,7 @@
     </div>
   {/if}
 </div>
-<div class="queue" class:hide={hideControls}>
+<div class="queue shell-colored colored" class:hide={hideControls} {style}>
   {#each $queue as path, i (path + `${i}`)}
     <QueueItem {path} {i} {process} />
   {/each}

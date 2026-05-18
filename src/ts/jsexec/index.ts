@@ -8,16 +8,17 @@
  *
  * © IzKuipers 2025
  */
+import type { IUserDaemon } from "$interfaces/daemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Fs, Server } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
-import { ThirdPartyProps } from "$ts/tpa/props";
+import { ThirdPartyProps } from "$ts/apps/tpa/props";
+import { Daemon } from "$ts/daemon";
+import { Env, Fs, Server, Stack } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { authcode } from "$ts/util";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/app";
 import type { ThirdPartyPropMap } from "$types/thirdparty";
 import * as acorn from "acorn";
@@ -26,7 +27,7 @@ import * as walk from "acorn-walk";
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
   props?: ThirdPartyPropMap;
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   app?: App;
   args: any[];
   metaPath?: string;
@@ -39,7 +40,7 @@ export class JsExec extends Process {
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
     super(pid, parentPid);
 
-    this.userDaemon = TryGetDaemon();
+    this.userDaemon = Daemon;
     this.args = args;
     this.filePath = filePath;
     this.workingDirectory = getParentDirectory(filePath);
@@ -128,8 +129,8 @@ export class JsExec extends Process {
   //#endregion
   //#region HELPERS
 
-  setApp(app: App, metaPath: string) {
-    this.Log(`Setting app data to ${app.id} (${metaPath})`);
+  setApp(app: App, metaPath?: string) {
+    this.Log(`Setting app data to ${app.id} (${metaPath ?? "<unknown meta>"})`);
 
     if (this.app) return;
 
@@ -152,7 +153,7 @@ export class JsExec extends Process {
   async testFileContents(unwrapped: string) {
     const isUnsafe = unwrapped.startsWith(`// #unsafe`);
 
-    if (isUnsafe) return; // File is dangerous, TODO -> PERMISSIONS
+    if (isUnsafe) return;
 
     try {
       const ast = acorn.parse(unwrapped, {
@@ -173,8 +174,8 @@ export class JsExec extends Process {
       if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
       if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
       if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
-    } catch {
-      throw new JsExecError("An error occurred while parsing the source file");
+    } catch (e) {
+      throw new JsExecError(`An error occurred while parsing the source file: ${e}`);
     }
   }
 
@@ -201,6 +202,10 @@ export class JsExec extends Process {
   }
 
   //#endregion
+
+  static async Invoke(filePath: string, ...args: any[]) {
+    return await Stack.spawn<JsExec>(JsExec, undefined, undefined, +Env.get("userdaemon_pid"), filePath, ...args);
+  }
 }
 
 export class JsExecError extends Error {

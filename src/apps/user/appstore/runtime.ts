@@ -1,15 +1,15 @@
+import type { IInstallerProcessBase } from "$interfaces/distrib";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { StoreItemIcon } from "$ts/distrib/util";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { UUID } from "$ts/uuid";
+import { MessageBox } from "$ts/util/dialog";
+import { StoreItemIcon } from "$ts/util/distrib";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -27,7 +27,7 @@ export class AppStoreRuntime extends AppProcess {
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
-  operations: Record<string, InstallerProcessBase> = {};
+  operations: Record<string, IInstallerProcessBase> = {};
   distrib: DistributionServiceProcess;
 
   //#region LIFECYCLE
@@ -104,11 +104,15 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async Search() {
+    this.Log(`Searching`);
+
     this.searching.set(true);
     this.switchPage("search", { query: this.searchQuery() });
   }
 
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`installPackage: ${pkg?._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
       const go = await Daemon!.helpers?.Confirm(
@@ -162,6 +166,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`updatePackage: ${pkg._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
       const go = await Daemon!.helpers?.Confirm(
@@ -217,6 +223,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deprecatePackage(pkg: StoreItem) {
+    this.Log(`deprecatePackage: ${pkg._id}`);
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
@@ -233,6 +241,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deletePackage(pkg: StoreItem) {
+    this.Log(`deletePackage: ${pkg._id}`);
+
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
@@ -249,6 +259,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async publishPackage() {
+    this.Log(`publishPackage`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select package to publish",
       icon: "AppStoreIcon",
@@ -299,6 +311,8 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updateStoreItem(pkg: StoreItem) {
+    this.Log(`updateStoreItem: ${pkg._id}`);
+
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: `Select update for '${pkg.pkg.name}'`,
       icon: StoreItemIcon(pkg),
@@ -317,19 +331,20 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
+    const updateResult = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
       if (progress.what) prog.updSub(progress.what);
     });
 
-    if (!result) {
+    prog.stop();
+
+    if (!updateResult.success) {
       MessageBox(
         {
           title: "Failed to update store item",
-          message:
-            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
+          message: `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: ${updateResult.errorMessage ?? "Unknown error"}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -342,11 +357,11 @@ export class AppStoreRuntime extends AppProcess {
     }
 
     await this.switchPage("manageStoreItem", { id: pkg._id }, true);
-
-    prog.stop();
   }
 
   readmeFallback(pkg: StoreItem): string {
+    this.Log(`readmeFallback: ${pkg._id}`);
+
     const times = Plural("time", pkg.installCount);
     dayjs.extend(advancedFormat);
 
@@ -369,6 +384,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   learnMoreBlocking() {
+    this.Log(`learnMoreBlocking`);
+
     MessageBox(
       {
         title: "What is a blocked package?",
@@ -382,15 +399,18 @@ The author hasn't provided a readme file themselves, so this one has been automa
     );
   }
 
-  registerOperation(id: string, proc: InstallerProcessBase) {
-    if (this.operations[id]) return false;
+  registerOperation(id: string, proc: IInstallerProcessBase) {
+    this.Log(`registerOperation: ${id} for ${proc.pid}`);
 
+    if (this.operations[id]) return false;
     this.operations[id] = proc;
 
     return true;
   }
 
   discardOperation(id: string) {
+    this.Log(`discardOperation: ${id}`);
+
     if (!this.operations[id]) return false;
 
     delete this.operations[id];
@@ -403,6 +423,8 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   async viewImage(url: string, name?: string) {
+    this.Log(`viewImage: ${url} name=${name}`);
+
     const uuid = name || UUID();
     const path = `T:/Apps/${this.app.id}/${uuid}`;
     const array = await axios.get(url, { responseType: "arraybuffer" });

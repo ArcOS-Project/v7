@@ -1,4 +1,5 @@
 import type { Component } from "svelte";
+import type { MaybePromise } from "./common";
 
 export interface MessageBoxData {
   title: string;
@@ -11,7 +12,8 @@ export interface MessageBoxData {
 
 export interface MessageBoxButton {
   caption: string;
-  action: () => void;
+  action: () => MaybePromise<void | false>;
+  disabled?: () => MaybePromise<boolean>;
   suggested?: boolean;
 }
 

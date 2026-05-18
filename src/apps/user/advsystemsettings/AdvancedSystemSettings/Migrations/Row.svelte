@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MigrationService } from "$ts/migrations";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
 
   const {
     migrationService,
@@ -31,7 +31,6 @@
     <div class="version current">{migration.version}</div>
     <button
       class="run-migration"
-      disabled={upToDate}
       onclick={runMigration}
       title={upToDate ? "This migration is up to date" : "Click to run this migration now"}
     >

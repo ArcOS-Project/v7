@@ -2,9 +2,9 @@ name: Format check
 
 on:
   pull_request:
-    branches: [main] # or whatever branch you protect
+    branches: [development, main, beta] # or whatever branch you protect
   workflow_dispatch:
-    branches: [main]
+    branches: [development, main, beta]
   push:
     branches: [main]
 
@@ -23,8 +23,4 @@ jobs:
       - name: Satisfy dependencies
         run: yarn install --frozen-lockfile
       - name: Check console usages
-        run: yarn console:check
-      - name: Check lifecycle regions
-        run: yarn region:check
-      - name: Check method count
-        run: yarn method:check
+        run: yarn build -bh

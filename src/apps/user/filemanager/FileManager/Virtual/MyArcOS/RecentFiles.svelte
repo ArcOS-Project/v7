@@ -1,19 +1,19 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { contextMenu } from "$ts/context/actions.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
-  import { RecentFilesService } from "$ts/server/user/recents";
+  import { Daemon } from "$ts/daemon";
+  import { RecentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
   import RecentFile from "./RecentFiles/RecentFile.svelte";
 
   const { process }: { process: FileManagerRuntime } = $props();
   const { userPreferences } = process;
   const service = Daemon.serviceHost?.getService<RecentFilesService>("RecentFilesSvc");
-  const Configuration = service?.Configuration;
+  const Rrecents = service?.Recents;
 
   let selected = $state<string>("");
 </script>
 
-{#if Configuration}
+{#if Rrecents}
   <section class="recent-files">
     <button
       class="expander"
@@ -26,7 +26,7 @@
           {
             caption: "Clear recents",
             icon: "x",
-            action: () => service.Configuration.set([]),
+            action: () => service.Recents.set([]),
           },
         ],
         process,
@@ -37,10 +37,10 @@
     </button>
     {#if $userPreferences.appPreferences.fileManager.myExpandRecents}
       <div class="content">
-        {#if !$Configuration?.length}
+        {#if !$Rrecents?.length}
           <p class="empty">The files you open will appear in this list.</p>
         {:else}
-          {#each $Configuration as path (path)}
+          {#each $Rrecents as path (path)}
             <RecentFile {path} {service} {process} bind:selected />
           {/each}
         {/if}

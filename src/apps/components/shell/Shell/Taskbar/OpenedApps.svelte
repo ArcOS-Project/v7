@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { AppProcess } from "$ts/apps/process";
-  import { isPopulatable } from "$ts/apps/util";
+  import { Daemon } from "$ts/daemon";
   import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
-  import type { ShellRuntime } from "../../runtime";
+  import { isPopulatable } from "$ts/util/apps";
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
   const { store } = Stack;
 </script>

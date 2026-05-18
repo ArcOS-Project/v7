@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { onMount } from "svelte";
   import type { OverlayRuntime } from "../../overlay";
 
@@ -57,7 +59,10 @@
     <input type="url" bind:value={wallpaper} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={cancel}>Cancel</button>
-  <button class="suggested" disabled={!valid} onclick={apply}>Apply</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={cancel}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!valid} onclick={apply}>Apply</ActionButton>
+  {/snippet}
+</ActionBar>

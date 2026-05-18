@@ -84,24 +84,3 @@
   -moz-appearance: textfield;
   appearance: textfield;
 }
-
-#AddServer > div.body div.actions {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: var(--button-glass-bg);
-  border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-  box-shadow: var(--secondary-box-shadow);
-}
-
-#AddServer > div.body div.actions button.test {
-  margin-right: auto;
-}
-
-#AddServer > div.body div.actions button:not(:hover):not(:active) {
-  background-color: var(--button-glass-bg);
-}

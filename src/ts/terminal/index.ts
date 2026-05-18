@@ -1,23 +1,27 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
-import { hexToRgb } from "$ts/color";
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { Constructs } from "$interfaces/common";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, State } from "$ts/env";
-import { ASCII_ART } from "$ts/intro";
-import { Process } from "$ts/process/instance";
-import { LoginUser } from "$ts/server/user/auth";
-import { Daemon, TryGetDaemon, type UserDaemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { ASCII_ART } from "$ts/kernel/intro";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { UserPaths } from "$ts/user/store";
 import { noop, sha256 } from "$ts/util";
+import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel, type ElevationData } from "$types/elevation";
 import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
-import { TerminalProcess } from "./process";
 import { Readline } from "./readline/readline";
 import {
   BOLD,
@@ -32,24 +36,22 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
-import { Sleep } from "$ts/sleep";
-import { tryJsonParse } from "$ts/json";
 
-export class ArcTerminal extends Process {
+export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
   path: string;
-  drive: FilesystemDrive | undefined;
+  drive: IFilesystemDrive | undefined;
   term: Terminal;
   rl: Readline | undefined;
   var: ArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
-  daemon: UserDaemon | undefined;
+  daemon: IUserDaemon | undefined;
   ansiEscapes = ansiEscapes;
   lastCommandErrored = false;
   lastLine?: string;
   config: ArcTermConfiguration = DefaultArcTermConfiguration;
   configProvidedExternal = false;
-  window: TerminalWindowRuntime | undefined;
+  window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
 
   //#region LIFECYCLE
@@ -59,11 +61,11 @@ export class ArcTerminal extends Process {
 
     this.path = path || UserPaths.Home;
     this.changeDirectory(this.path);
-    this.daemon = TryGetDaemon();
-
+    this.daemon = Daemon;
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+
     if (config) {
       this.config = config;
       this.configProvidedExternal = true;
@@ -104,9 +106,7 @@ export class ArcTerminal extends Process {
     if (this._disposed) return;
 
     this.window?.windowTitle.set(`ArcTerm - ${this.path}`);
-
     const line = await this.rl?.read(this.var?.replace(this.config.prompt || "$")!);
-
     await this.processLine(line);
   }
 
@@ -159,7 +159,7 @@ export class ArcTerminal extends Process {
         this.lastCommandErrored = true;
       } else {
         try {
-          const proc = await Stack.spawn<TerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
+          const proc = await Stack.spawn<ITerminalProcess>(command, undefined, Daemon?.userInfo?._id, this.pid);
 
           // BUG 68798d6957684017c3e9a085
           if (!proc) {
@@ -193,7 +193,6 @@ export class ArcTerminal extends Process {
 
     if (!path) return this.path;
     if (path.includes(":/")) return path;
-
     return join(this.path, path || "");
   }
 
@@ -201,7 +200,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: list: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readDir(this.join(path));
   }
 
@@ -209,7 +207,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: mkdir: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.createDirectory(this.join(path));
   }
 
@@ -217,7 +214,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: write: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.writeFile(this.join(path), data);
   }
 
@@ -225,7 +221,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: tree: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.tree(this.join(path));
   }
 
@@ -233,7 +228,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: cp: ${source} -> ${destination}`);
 
     if (this._disposed) return;
-
     return await Fs.copyItem(this.join(source), this.join(destination));
   }
 
@@ -241,7 +235,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: mv: ${source} -> destination`);
 
     if (this._disposed) return;
-
     return await Fs.moveItem(this.join(source), this.join(destination));
   }
 
@@ -249,7 +242,6 @@ export class ArcTerminal extends Process {
     this.Log(`FS: read: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.readFile(this.join(path));
   }
 
@@ -257,25 +249,21 @@ export class ArcTerminal extends Process {
     this.Log(`FS: rm: ${path}`);
 
     if (this._disposed) return;
-
     return await Fs.deleteItem(this.join(path));
   }
 
   async Error(message: string, prefix = "Error") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRRED}${prefix}${RESET}: ${message}`);
   }
 
   async Warning(message: string, prefix = "Warning") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRYELLOW}${prefix}${RESET}: ${message}`);
   }
 
   async Info(message: string, prefix = "Info") {
     if (this._disposed) return;
-
     this.rl?.println(`${BRBLUE}${prefix}${RESET}: ${message}`);
   }
 
@@ -286,21 +274,21 @@ export class ArcTerminal extends Process {
 
     try {
       const drive = Fs.getDriveByPath(path);
-
       if (!drive) return false;
 
       this.drive = drive;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 
     try {
       const contents = await Fs.readDir(path);
-
       if (!contents) throw "";
 
       this.contents = contents;
-    } catch {
+    } catch (e) {
+      this.Error(`${e}`);
       return false;
     }
 
@@ -315,7 +303,6 @@ export class ArcTerminal extends Process {
 
     const regex = /(?: --(?<nl>[a-z\-]+)(?:=(?<vl>.*?)(?= --|$)|))/gm; //--name=?value
     const matches: RegExpMatchArray[] = [];
-
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(args))) {
@@ -394,16 +381,16 @@ export class ArcTerminal extends Process {
 
     if (lockdown || !password) return false;
 
-    const token = await LoginUser(this.daemon?.username!, password!);
+    const tokenResult = await LoginUser(this.daemon?.username!, password!);
 
-    if (!token) {
-      this.Error("Incorrect password");
+    if (!tokenResult.result) {
+      this.Error(tokenResult.errorMessage ?? "Incorrect password");
       this.rl?.println("");
 
       return false;
     }
 
-    await this.daemon?.account?.discontinueToken(token);
+    await this.daemon?.account?.discontinueToken(tokenResult.result!);
 
     return true;
   }
@@ -508,7 +495,7 @@ export class ArcTerminal extends Process {
             {
               caption: "New window",
               action: () => {
-                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, this.path);
+                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, {}, this.path);
               },
               icon: "square-plus",
             },
@@ -536,7 +523,7 @@ export class ArcTerminal extends Process {
     noop();
   }
 
-  handleCommandError(e: Error, command: typeof TerminalProcess) {
+  handleCommandError(e: Error, command: Constructs<ITerminalProcess>) {
     this.rl?.println(ErrorUtils.abbreviatedStackTrace(e, `${BRRED}${command.name}: `));
     this.rl?.println(`${RESET}`);
   }

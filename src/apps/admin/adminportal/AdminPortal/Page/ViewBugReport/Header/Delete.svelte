@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { MessageBox } from "$ts/util/dialog";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewBugReportData } = $props();
   const { report, quickView } = data;
 
   let loading = $state(false);
@@ -26,10 +26,10 @@
             caption: "Delete",
             action: async () => {
               await process.admin.deleteBugReport(report._id!);
-             
+
               if ($quickView) $quickView = "";
               else await process.switchPage("bughunt");
-             
+
               loading = false;
             },
             suggested: true,

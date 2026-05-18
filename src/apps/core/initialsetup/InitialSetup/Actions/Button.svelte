@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/writable";
   import { onMount } from "svelte";
   import type { PageButton } from "../../types";
 

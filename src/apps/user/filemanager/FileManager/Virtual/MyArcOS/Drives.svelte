@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { SharedDrive } from "$ts/shares/drive";
   import { onMount } from "svelte";
   import Drive from "./Drives/Drive.svelte";
 

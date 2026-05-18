@@ -21,6 +21,8 @@
   background-color: var(--button-bg);
   overflow: hidden;
   box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #systemSettings section div.content div.option {

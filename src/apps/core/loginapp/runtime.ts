@@ -2,26 +2,25 @@ import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
 import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/modules/server";
+import { AppProcess } from "$ts/apps/process";
+import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
-import { tryJsonParse } from "$ts/json";
-import { ProtocolServiceProcess } from "$ts/proto";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { Wallpapers } from "$ts/user/wallpaper/store";
 import { authcode } from "$ts/util";
-import { UUID } from "$ts/uuid";
-import { Wallpapers } from "$ts/wallpaper/store";
+import { tryJsonParse } from "$ts/util/json";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
+import type { AppProcessData } from "$types/app";
 import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
-import { MigrationService } from "../../../ts/migrations";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
@@ -34,9 +33,9 @@ export class LoginAppRuntime extends AppProcess {
   public hideProfileImage = Store<boolean>(false);
   public persistence = Store<PersistenceInfo | undefined>();
   public serverInfo = Store<ServerInfo>();
-  public server: ServerManagerType;
-  public unexpectedInvocation = false;
+  public server: IServerManager;
   public safeMode = false;
+  public loginProps?: LoginAppProps;
   private type = "";
 
   //#region LIFECYCLE
@@ -44,9 +43,8 @@ export class LoginAppRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, props?: LoginAppProps) {
     super(pid, parentPid, app);
 
-    const server = getKMod<ServerManagerType>("server");
+    const server = getKMod<IServerManager>("server");
 
-    this.unexpectedInvocation = State?.currentState !== "boot" && State?.currentState !== "initialSetup" && !props?.type;
     this.server = server;
     this.serverInfo.set(server.serverInfo!);
     this.safeMode = !!(props?.safeMode || Env.get("safemode"));
@@ -61,48 +59,7 @@ export class LoginAppRuntime extends AppProcess {
       }
     });
 
-    if (this.unexpectedInvocation) {
-      this.app.data.core = false;
-      this.app.data.position = { centered: true };
-      this.app.data.minSize = { w: 700, h: 500 };
-      this.app.data.maxSize = { w: NaN, h: NaN };
-      this.app.data.size = { w: 700, h: 500 };
-      this.app.data.state = {
-        maximized: false,
-        minimized: false,
-        resizable: true,
-        headless: false,
-        fullscreen: false,
-      };
-      this.app.data.controls = {
-        maximize: true,
-        minimize: true,
-        close: true,
-      };
-    } else if (props?.type) {
-      this.hideProfileImage.set(true);
-
-      if (!props.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
-
-      SoundBus.playSound("arcos.system.logoff");
-      props.userDaemon?.renderer?.setAppRendererClasses(props.userDaemon.preferences());
-
-      switch (props.type) {
-        case "logoff":
-          this.logoff(props.userDaemon);
-          break;
-        case "shutdown":
-          this.shutdown(props.userDaemon);
-          break;
-        case "restart":
-          this.restart(props.userDaemon);
-          break;
-        default:
-          throw new Error(`LoginAppRuntimeConstructor: invalid login type '${props.type}'`);
-      }
-    } else {
-      State?.getStateLoaders()?.main?.removeAttribute("style");
-    }
+    this.loginProps = props;
 
     this.setSource(__SOURCE__);
   }
@@ -119,11 +76,37 @@ export class LoginAppRuntime extends AppProcess {
     this.getBody().classList.add("theme-dark");
 
     if (this.serverInfo().freshBackend) {
-      State?.loadState("initialSetup");
+      await State?.loadState("initialSetup");
       return false;
     }
 
-    if (!this.type && !this.unexpectedInvocation) {
+    if (this.loginProps?.type) {
+      State?.getStateLoaders()?.main?.removeAttribute("style");
+      this.hideProfileImage.set(true);
+
+      if (!this.loginProps.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
+
+      SoundBus.playSound("arcos.system.logoff");
+      await this.loginProps.userDaemon?.renderer?.setAppRendererClasses(this.loginProps.userDaemon.preferences());
+
+      switch (this.loginProps.type) {
+        case "logoff":
+          await this.logoff(this.loginProps.userDaemon);
+          break;
+        case "shutdown":
+          await this.shutdown(this.loginProps.userDaemon);
+          break;
+        case "restart":
+          await this.restart(this.loginProps.userDaemon);
+          break;
+        default:
+          throw new Error(`LoginAppRuntimeConstructor: invalid login type '${this.loginProps.type}'`);
+      }
+    } else {
+      State?.getStateLoaders()?.main?.removeAttribute("style");
+    }
+
+    if (!this.type) {
       await this.loadPersistence();
 
       const tokenResult = await this.loadToken();
@@ -143,15 +126,26 @@ export class LoginAppRuntime extends AppProcess {
     return "Good evening";
   }
 
+  async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
+    this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
+    this.profileImage.set(`${this.server.url}/user/pfp/${userDaemon.userInfo._id}${authcode()}`);
+
+    if (!this.safeMode && applyBackground) {
+      this.loginBackground.set(
+        (await userDaemon.wallpaper?.getWallpaper(userDaemon.preferences().account.loginBackground))?.url ||
+          this.DEFAULT_WALLPAPER()
+      );
+    }
+  }
+
   //#endregion
   //#region DAEMON
 
   async startDaemon(token: string, username: string, info?: UserInfo) {
     this.Log(`Starting user daemon for '${username}'`);
-
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
+    const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
 
     if (!userDaemon) {
       this.loadingStatus.set("");
@@ -161,25 +155,26 @@ export class LoginAppRuntime extends AppProcess {
     }
 
     this.loadingStatus.set("Saving token");
-
     this.saveToken(userDaemon);
-
     this.loadingStatus.set("Loading your settings");
 
-    const userInfo = await userDaemon.account!.getUserInfo();
+    const userInfoResult = await userDaemon.account!.getUserInfo();
 
-    if (!userInfo) {
+    if (!userInfoResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to request user info");
+      this.errorMessage.set(userInfoResult.errorMessage ?? "Failed to request user info");
 
       return;
     }
+
+    const userInfo = userInfoResult.result!;
 
     this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
 
     if (userInfo.hasTotp && userInfo.restricted) {
       this.loadingStatus.set("Requesting 2FA");
-      const unlocked = await this.askForTotp(token, userDaemon.userInfo?._id);
+
+      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
 
       if (!unlocked) {
         await userDaemon.account!.discontinueToken();
@@ -200,21 +195,19 @@ export class LoginAppRuntime extends AppProcess {
     };
 
     await this.loadPersistence();
-
     this.savePersistence(username, this.profileImage());
 
     broadcast("Starting filesystem");
     await userDaemon.init!.startFilesystemSupplier();
+    await userDaemon.version!.mountSourceDrive();
 
     broadcast("Starting synchronization");
     await userDaemon.init!.startPreferencesSync();
 
     broadcast("Reading profile customization");
+    await this.setUserDisplayStuff(userDaemon);
 
-    this.profileName.set(userDaemon.preferences().account.displayName || username);
     if (!this.safeMode) {
-      this.loginBackground.set((await userDaemon.wallpaper!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
-
       this.savePersistence(username, this.profileImage(), this.loginBackground());
     }
 
@@ -222,20 +215,7 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.activity!.logActivity("login");
 
     broadcast("Starting service host");
-    await userDaemon.init?.startServiceHost(async (serviceStep) => {
-      switch (serviceStep.id) {
-        case "AppStorage":
-          broadcast("Loading apps");
-          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => broadcast(`Loaded ${app.metadata.name}`));
-          break;
-        default:
-          broadcast(`Started ${serviceStep.name}`);
-          break;
-      }
-    });
-
-    broadcast("Connecting global dispatch");
-    await userDaemon.activateGlobalDispatch();
+    await userDaemon.init?.startServiceHost(broadcast);
 
     broadcast("Welcome to ArcOS");
     if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
@@ -245,32 +225,14 @@ export class LoginAppRuntime extends AppProcess {
     broadcast("Starting drive notifier watcher");
     userDaemon.init!.startDriveNotifierWatcher();
 
-    broadcast("Starting permission manager");
-    await userDaemon.init!.startPermissionHandler();
-
-    broadcast("Starting share management");
-    await userDaemon.init!.startShareManager();
-
     broadcast("Indexing your files");
     await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-    broadcast("Running migrations");
-    await userDaemon.serviceHost?.getService<MigrationService>("MigrationSvc")?.runMigrations(broadcast);
-
-    const storage = userDaemon.appStorage();
-
-    if (userDaemon.userInfo.admin) {
-      broadcast("Activating admin bootstrapper");
-      await userDaemon.activateAdminBootstrapper();
-    } else {
-      await storage?.refresh();
-    }
 
     broadcast("Starting status refresh");
     await userDaemon.init!.startSystemStatusRefresh();
 
     broadcast("Let's go!");
-    await State?.loadState("desktop", { userDaemon });
+    await State?.loadState("desktop", { userDaemon }, true);
     SoundBus.playSound("arcos.system.logon");
     userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
     userDaemon.checks!.checkNightly();
@@ -280,11 +242,7 @@ export class LoginAppRuntime extends AppProcess {
 
     broadcast("Running autorun");
     await userDaemon.apps!.spawnAutoload();
-
-    await this.appStore()?.refresh();
-
     await userDaemon.checks!.checkForUpdates();
-    userDaemon.serviceHost?.getService<ProtocolServiceProcess>("ProtoService")?.parseProtoParam();
     await userDaemon.checks!.checkForMissedMessages();
 
     userDaemon._blockLeaveInvocations = false;
@@ -293,31 +251,44 @@ export class LoginAppRuntime extends AppProcess {
   //#endregion
   //#region POWER
 
-  async logoff(daemon: UserDaemon) {
-    this.Log(`Logging off user '${daemon.username}'`);
+  async logoff(userDaemon: IUserDaemon) {
+    this.Log(`Logging off user '${userDaemon.username}'`);
 
-    // this.hideProfileImage.set(true);
     this.type = "logoff";
-
-    this.loadingStatus.set(`Goodbye, ${daemon.username}!`);
+    this.loadingStatus.set(`Goodbye, ${userDaemon.username}!`);
     this.errorMessage.set("");
 
+    const verbose = userDaemon.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+    };
+
+    broadcast("Stopping Service Host");
+    await userDaemon.serviceHost?.spinDown(broadcast);
+
+    broadcast("Stopping processes");
     for (const [_, proc] of [...Stack.store()]) {
       if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
 
-    this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
+    broadcast("Reading user preferences");
+    this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
+    this.loginBackground.set((await userDaemon.wallpaper!.getWallpaper(userDaemon.preferences().account.loginBackground)).url);
 
+    broadcast("Notifying activity");
     await Sleep(2000);
-    await daemon.activity!.logActivity("logout");
+    await userDaemon.activity!.logActivity("logout");
 
     this.resetCookies();
-    await daemon.account!.discontinueToken();
-    await daemon.stopUserContexts();
-    await daemon.killSelf();
+    broadcast("Stopping User Contexts");
+    await userDaemon.stopUserContexts();
+    broadcast("Discontinuing token");
+    await userDaemon.account!.discontinueToken();
+    broadcast("Stopping User Daemon");
+    await userDaemon.killSelf();
 
     setTimeout(async () => {
       this.loadingStatus.set("");
@@ -328,47 +299,67 @@ export class LoginAppRuntime extends AppProcess {
     }, 600);
   }
 
-  async shutdown(daemon?: UserDaemon) {
+  async shutdown(userDaemon?: IUserDaemon) {
     this.Log(`Handling shutdown`);
-
     this.type = "shutdown";
-
-    if (daemon) {
-      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set((await daemon.wallpaper!.getWallpaper(daemon.preferences().account.loginBackground)).url);
-
-      this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    }
 
     this.loadingStatus.set(`Shutting down...`);
     this.errorMessage.set("");
 
+    const verbose = userDaemon?.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+    };
+
+    if (userDaemon) {
+      broadcast("Stopping Service Host");
+      await userDaemon.serviceHost?.spinDown(broadcast);
+
+      broadcast("Stopping User Contexts");
+      await userDaemon?.stopUserContexts();
+      await this.setUserDisplayStuff(userDaemon);
+    }
+
     await Sleep(2000);
 
-    if (daemon) await daemon.killSelf();
+    if (userDaemon) {
+      broadcast("Stopping User Daemon");
+      await userDaemon.killSelf();
+    }
     State?.loadState("turnedOff");
   }
 
-  async restart(daemon?: UserDaemon) {
+  async restart(userDaemon?: IUserDaemon) {
     this.Log(`Handling restart`);
-
     this.type = "restart";
 
-    if (daemon) {
-      this.profileImage.set(`${this.server.url}/user/pfp/${daemon.userInfo._id}${authcode()}`);
-      this.loginBackground.set(
-        (await daemon.wallpaper?.getWallpaper(daemon.preferences().account.loginBackground))?.url || this.DEFAULT_WALLPAPER()
-      );
-
-      this.profileName.set(daemon.preferences().account.displayName || daemon.username);
-    }
+    const verbose = userDaemon?.preferences().enableVerboseLogin;
+    const broadcast = (message: string) => {
+      if (!verbose) return;
+      this.loadingStatus.set(message);
+      this.Log(message);
+    };
 
     this.loadingStatus.set(`Restarting...`);
+
+    if (userDaemon) {
+      broadcast("Stopping Service Host");
+      await userDaemon.serviceHost?.spinDown(broadcast);
+
+      broadcast("Stopping User Contexts");
+      await userDaemon?.stopUserContexts();
+      await this.setUserDisplayStuff(userDaemon);
+    }
+
     this.errorMessage.set("");
 
     await Sleep(2000);
 
-    if (daemon) await daemon.killSelf();
+    if (userDaemon) {
+      broadcast("Stopping User Daemon");
+      await userDaemon.killSelf();
+    }
     location.reload();
   }
 
@@ -380,25 +371,25 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(`Hi, ${username}!`);
 
-    const token = await LoginUser(username, password);
+    const tokenResult = await LoginUser(username, password);
 
-    if (!token) {
+    if (!tokenResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Username or password incorrect.");
+      this.errorMessage.set(tokenResult.errorMessage ?? "Username or password incorrect");
 
       this.updateServerStuff();
 
       return;
     }
 
-    await this.startDaemon(token, username);
+    await this.startDaemon(tokenResult.result!, username);
   }
 
-  private saveToken(daemon: UserDaemon) {
-    const token = daemon.token;
-    const username = daemon.username;
+  private saveToken(userDaemon: IUserDaemon) {
+    const token = userDaemon.token;
+    const username = userDaemon.username;
 
-    this.Log(`Saving token of '${daemon.username}' to cookies`);
+    this.Log(`Saving token of '${userDaemon.username}' to cookies`);
 
     const cookieOptions = {
       expires: 14, // lmao
@@ -455,7 +446,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(token: string, userId: string | undefined) {
+  private async askForTotp(userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {
@@ -478,7 +469,7 @@ export class LoginAppRuntime extends AppProcess {
     });
   }
 
-  async firstRun(daemon: UserDaemon) {
+  async firstRun(daemon: IUserDaemon) {
     const process = await Stack.spawn<FirstRunRuntime>(
       FirstRunRuntime,
       undefined,

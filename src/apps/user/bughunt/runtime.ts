@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import type { BugHuntUserSpaceProcess } from "$ts/servicehost/services/BugHuntUsp";
+import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -42,6 +42,8 @@ export class BugHuntRuntime extends AppProcess {
   //#endregion
 
   async changeTab(tab: string) {
+    this.Log(`changeTab: ${tab}`);
+
     if (this.currentTab() === tab) return;
 
     this.loading.set(true);
@@ -52,10 +54,14 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   async refresh(tab = this.currentTab()) {
+    this.Log(`Refreshing!`);
+
     this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
   }
 
   async invalidateCaches(restoreSelected = false) {
+    this.Log(`Invalidating caches`);
+
     const selected = this.selectedReport();
     this.loading.set(true);
     await this.bughunt.refreshAllCaches();
@@ -65,10 +71,14 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   newReport() {
+    this.Log(`newReport`);
+
     this.spawnOverlay("creator");
   }
 
   viewLogs() {
+    this.Log(`viewLogs`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 
@@ -78,6 +88,8 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   userData() {
+    this.Log(`userData`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 
@@ -87,6 +99,8 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   async exportReport() {
+    this.Log(`exportReport`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 

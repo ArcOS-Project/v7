@@ -55,3 +55,8 @@
   height: 30px;
   line-height: 30px;
 }
+
+#AdvSystemSettings > div.body div.migrations div.list p.error-text {
+  text-align: center;
+  padding: 30px 60px;
+}

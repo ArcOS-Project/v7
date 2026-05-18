@@ -1,9 +1,10 @@
+import type { IArcFindRuntime } from "$interfaces/arcfind";
 import { AppProcess } from "$ts/apps/process";
-import { isPopulatable } from "$ts/apps/util";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
-import { UUID } from "$ts/uuid";
+import { UserPaths } from "$ts/user/store";
+import { isPopulatable } from "$ts/util/apps";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/fs";
@@ -11,7 +12,7 @@ import type { SearchItem } from "$types/search";
 import type { UserPreferences } from "$types/user";
 import Fuse from "fuse.js";
 
-export class ArcFindRuntime extends AppProcess {
+export class ArcFindRuntime extends AppProcess implements IArcFindRuntime {
   private fileSystemIndex: PathedFileEntry[] = [];
   private searchItems: SearchItem[] = [];
   public loading = Store<boolean>(false);

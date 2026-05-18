@@ -1,3 +1,4 @@
+import type { IFilesystemProxy } from "$interfaces/fs";
 import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
@@ -114,14 +115,14 @@ export type DriveCapabilities =
   | "makeDir"
   | "readFile"
   | "writeFile"
-  | "tree"
   | "copyItem"
   | "moveItem"
   | "deleteItem"
+  | "tree"
   | "direct"
-  | "quota"
   | "bulk"
-  | "stat";
+  | "stat"
+  | "quota";
 
 export interface FilesystemStat {
   isFile: boolean;
@@ -163,4 +164,11 @@ export interface FsModifierOptions {
 export interface ExtendedStat extends FilesystemStat {
   modifiers?: SummarizedFsModifiers;
 }
-// uhhh yes?
+
+export interface FsProxyInfo {
+  prefix: string;
+  proxyUuid: string;
+  proxyHandler: IFilesystemProxy;
+  path: string;
+  displayName?: string;
+}

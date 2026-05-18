@@ -14,7 +14,6 @@
   margin-bottom: 5px;
   transition: none;
   pointer-events: initial !important;
-
 }
 
 #fileManager > div.body div.my_arcos section.recent-files > div button:hover {

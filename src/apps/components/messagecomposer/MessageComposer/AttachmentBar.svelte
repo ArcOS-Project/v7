@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { formatBytes } from "$ts/util/fs";
   import type { MessageComposerRuntime } from "../runtime";
 

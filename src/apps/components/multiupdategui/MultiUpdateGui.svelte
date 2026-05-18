@@ -1,8 +1,8 @@
 <script lang="ts">
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import type { MultiUpdateGuiRuntime } from "./runtime";
   import { StateIconTranslations } from "./types";
 
@@ -22,9 +22,7 @@
   <img
     src={$working && $currentPackage
       ? StoreItemIcon($currentPackage)
-      : $done
-        ? process.getIconCached("GoodStatusIcon")
-        : "UpdateIcon"}
+      : process.getIconCached($done ? "GoodStatusIcon" : "UpdateIcon")}
     alt=""
   />
   <div class="info">

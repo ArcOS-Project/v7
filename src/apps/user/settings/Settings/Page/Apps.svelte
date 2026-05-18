@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Daemon } from "$ts/daemon";
   import { Glow } from "$ts/images/branding";
-  import { Daemon } from "$ts/server/user/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";

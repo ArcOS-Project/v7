@@ -1,3 +1,9 @@
+export enum LoopMode {
+  None = 0,
+  All = 1,
+  One = 2,
+}
+
 export interface PlayerState {
   paused: boolean;
   current: number;

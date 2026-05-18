@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { Sleep } from "$ts/sleep";
+  import { MessageBox } from "$ts/util/dialog";
   import type { ExpandedToken } from "$types/admin";
   import dayjs from "dayjs";
   import Cookies from "js-cookie";
   import { UAParser } from "ua-parser-js";
 
-  const { token, process }: { token: ExpandedToken; process: AdminPortalRuntime } = $props();
+  const { token, process }: { token: ExpandedToken; process: IAdminPortalRuntime } = $props();
   const { redacted } = process;
   const parsed = UAParser(token.userAgent);
   const lastUsed = dayjs(token.lastUsed).format("D MMM YYYY, HH:mm");

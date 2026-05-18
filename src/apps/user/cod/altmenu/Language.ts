@@ -27,6 +27,11 @@ export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
         isActive: () => runtime.language() === "javascript",
       },
       {
+        caption: "TypeScript",
+        action: () => runtime.language.set("typescript"),
+        isActive: () => runtime.language() === "typescript",
+      },
+      {
         caption: "JSON",
         action: () => runtime.language.set("json"),
         isActive: () => runtime.language() === "json",

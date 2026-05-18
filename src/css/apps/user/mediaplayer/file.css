@@ -1,6 +1,6 @@
 #MediaPlayer > div.body > div.container div.file h1 {
   font-size: 20px;
-  display:flex;
+  display: flex;
   align-items: center;
   gap: 10px;
 }

@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
 import type { ContextMenuItem } from "$types/app";
 import type { FileManagerRuntime } from "../runtime";
 
@@ -10,7 +10,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         caption: "New window",
         icon: "plus",
         action: () => {
-          Daemon?.spawn?.spawnApp("fileManager", undefined, runtime.path());
+          runtime.spawnApp("fileManager", undefined, runtime.path());
         },
       },
       {

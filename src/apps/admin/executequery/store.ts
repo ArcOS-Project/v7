@@ -1,5 +1,5 @@
 import type { ExecuteQueryRuntime } from "./runtime";
-import type { QueryDesignation, QueryDesignationsType, QueryExpressionsType } from "./types";
+import type { QueryDesignation, QueryDesignationsType } from "./types";
 
 export const QuerySources = [
   "",
@@ -29,7 +29,7 @@ export const QueryComparisonTypes = [
   "is less than or equal to",
 ] as const;
 
-export const QueryUserColumns = ["userId","authorId","recipient","repliesTo"]
+export const QueryUserColumns = ["userId", "authorId", "recipient", "repliesTo"];
 
 export const EmptyQueryDesignation: QueryDesignation = { obtainer: () => [], scopes: [] };
 

@@ -1,3 +1,8 @@
+#MessageComposer {
+  max-width: 90%;
+  max-height: 95%;
+}
+
 #MessageComposer > div.body {
   padding: 0;
   display: flex;
@@ -25,6 +30,7 @@
   border-radius: 0;
   width: 100%;
 }
+
 #MessageComposer > div.body div.fields > div.field > div.value {
   flex-grow: 1;
 }
@@ -89,8 +95,9 @@
 }
 
 #MessageComposer > div.body div.attachment-bar {
-  height: 47px;
-  min-height: fit-content;
+  height: fit-content;
+  max-height: 85%;
+  overflow-y: auto;
   padding: 8px 10px;
   display: flex;
   align-items: center;
@@ -137,59 +144,13 @@
   outline: none;
 }
 
-#MessageComposer > div.body div.action-bar {
+#MessageComposer > div.body div.window-action-bar {
+  background-color: var(--win-bg);
+  border-top: none;
   height: 50px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
-#MessageComposer > div.body div.action-bar button {
-  height: 30px;
-}
-
-#MessageComposer > div.body div.action-bar button.lucide {
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  font-size: 16px;
-}
-
-#MessageComposer > div.body div.action-bar button.discard {
+#MessageComposer > div.body div.window-action-bar .discard-button {
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);
-}
-
-#MessageComposer > div.body div.action-bar div.actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-#MessageComposer > div.body div.action-bar div.sep {
-  width: 1px;
-  height: 20px;
-  background-color: var(--button-glass-hover-bg);
-}
-
-#MessageComposer > div.body div.action-bar div.pill {
-  height: 30px;
-  border-radius: 8px;
-  padding: 0 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: var(--button-bg);
-  border: var(--win-border);
-  background-color: transparent;
-}
-
-#MessageComposer > div.body div.action-bar div.pill p.caption {
-  font-weight: bold;
-  opacity: 0.5;
-  padding-right: 8px;
-  border-right: var(--button-glass-hover-bg) 1px solid;
-  line-height: 20px;
 }

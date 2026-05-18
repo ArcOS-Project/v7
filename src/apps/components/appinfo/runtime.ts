@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ElevationLevel } from "$types/elevation";
@@ -44,6 +44,8 @@ export class AppInfoRuntime extends AppProcess {
   //#endregion
 
   async killAll() {
+    this.Log(`killAll`);
+
     const elevated = await Daemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
       image: Daemon?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
@@ -61,12 +63,10 @@ export class AppInfoRuntime extends AppProcess {
     }
   }
 
-  async openPermissions() {
-    await Daemon?.spawn?.spawnOverlay("AppPermissions", +Env.get("shell_pid"), this.targetAppId);
-  }
-
   async processManager() {
-    await Daemon?.spawn?.spawnApp("processManager", +Env.get("shell_pid"));
+    this.Log(`processManager`);
+
+    await this.spawnApp("processManager", +Env.get("shell_pid"));
     this.closeWindow();
   }
 }

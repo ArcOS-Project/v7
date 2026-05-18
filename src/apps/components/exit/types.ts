@@ -1,9 +1,9 @@
-import type { UserDaemon } from "$ts/server/user/daemon";
+import type { IUserDaemon } from "$interfaces/daemon";
 
 export interface ExitAction {
   caption: string;
-  action: (daemon: UserDaemon) => void;
-  alternateAction?: (daemon: UserDaemon) => void; // Action upon submit w/ shift key
+  action: (daemon: IUserDaemon) => void;
+  alternateAction?: (daemon: IUserDaemon) => void; // Action upon submit w/ shift key
   alternateCaption?: string;
   icon: string;
 }

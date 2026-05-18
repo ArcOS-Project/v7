@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import type { BugReport } from "$types/bughunt";
   import dayjs from "dayjs";
 
-  const { report, process }: { report: BugReport; process: AdminPortalRuntime } = $props();
+  const { report, process }: { report: BugReport; process: IAdminPortalRuntime } = $props();
   let timestamp = dayjs(report.createdAt).format("MMMM D, YYYY hh:mm A");
 </script>
 

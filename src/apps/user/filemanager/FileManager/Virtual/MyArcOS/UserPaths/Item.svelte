@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
-  import { UserPathCaptions, UserPathIcons } from "$ts/server/user/store";
+  import { UserPathCaptions, UserPathIcons } from "$ts/user/store";
 
   const { process, path, id }: { process: FileManagerRuntime; path: string; id: string } = $props();
 

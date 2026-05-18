@@ -1,12 +1,12 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/server/messaging";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { MessageCreateData } from "$types/messaging";
@@ -82,6 +82,8 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   async discard() {
+    this.Log(`discard`);
+
     if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
@@ -89,7 +91,13 @@ export class MessageComposerRuntime extends AppProcess {
         message: "Are you sure you want to discard this message? This cannot be undone.",
         buttons: [
           { caption: "Cancel", action: () => {} },
-          { caption: "Discard", action: () => this.closeWindow(), suggested: true },
+          {
+            caption: "Discard",
+            action: () => {
+              this.closeWindow();
+            },
+            suggested: true,
+          },
         ],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
@@ -100,6 +108,8 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   sendFailed() {
+    this.Log(`sendFailed`);
+
     this.sending.set(false);
     MessageBox(
       {
@@ -119,6 +129,8 @@ export class MessageComposerRuntime extends AppProcess {
   //#region ATTACHMENTS
 
   async addAttachment() {
+    this.Log(`addAttachment`);
+
     const attachments: Attachment[] = [];
     const paths = await Daemon!.files!.LoadSaveDialog({
       title: "Choose one or more files to attach",
@@ -176,10 +188,14 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   filesToAttachments(...files: File[]): Attachment[] {
+    this.Log(`filesToAttachments: ${files.length} specimens`);
+
     return files.map((f) => ({ data: f, uuid: UUID() })); // Give each Node file a UUID
   }
 
   removeAttachment(uuid: string) {
+    this.Log(`removeAttachment: ${uuid}`);
+
     this.attachments.update((v) => v.filter((a) => a.uuid !== uuid));
   }
 
@@ -187,6 +203,8 @@ export class MessageComposerRuntime extends AppProcess {
   //#region MISC
 
   removeRecipient(recipient: string) {
+    this.Log(`removeRecipient: ${recipient}`);
+
     this.recipients.update((v) => {
       return v.filter((r) => r !== recipient);
     });

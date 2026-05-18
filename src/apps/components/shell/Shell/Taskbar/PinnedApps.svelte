@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ShellRuntime } from "../../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import PinnedApp from "./PinnedApps/PinnedApp.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
 
   let pins = $state<string[]>([]);

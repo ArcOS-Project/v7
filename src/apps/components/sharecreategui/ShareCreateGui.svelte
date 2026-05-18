@@ -2,6 +2,8 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { ShareCreateGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareCreateGuiRuntime } = $props();
@@ -26,8 +28,12 @@
   </InfoRow>
 </InfoBlock>
 
-<div class="actions">
-  <button class="joined" onclick={() => process.myShares()}>My shares</button>
-  <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" onclick={() => process.go()} disabled={!$shareName || !$sharePassword}>Create</button>
-</div>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton onclick={() => process.myShares()}>My shares</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton onclick={() => process.go()} suggested disabled={!$shareName || !$sharePassword}>Create</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,8 +1,8 @@
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Fs } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import type { AppContextMenu } from "$types/app";
 import type { UserTheme } from "$types/theme";
@@ -21,17 +21,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await Daemon!.files!.LoadSaveDialog({
-            title: "Choose where to save the theme",
-            isSave: true,
-            startDir: UserPaths.Documents,
-            icon: "ThemesIcon",
-            saveName: `${theme.name || "Untitled theme"}.arctheme`,
-          });
-
-          if (!path) return;
-
-          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Daemon.themes?.exportTheme(theme, runtime.pid);
         },
         icon: "save",
       },
@@ -85,7 +75,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
+          runtime.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
         },
       },
       { sep: true },

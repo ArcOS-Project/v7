@@ -1,8 +1,8 @@
+import type { IProcess } from "$interfaces/process";
+import type { IArcTerminal } from "$interfaces/terminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRYELLOW, RESET } from "../store";
 
@@ -20,7 +20,7 @@ export class TasksCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const tree = flags.tree || flags.t;
     const store = Stack.store();
 
@@ -36,7 +36,7 @@ export class TasksCommand extends TerminalProcess {
       return 0;
     }
 
-    function branch(proc: Process, indent = "", isLast = true) {
+    function branch(proc: IProcess, indent = "", isLast = true) {
       const subProcesses = Stack.getSubProcesses(proc.pid);
       const prefix = indent + (isLast ? "└── " : "├── ");
 

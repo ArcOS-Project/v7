@@ -1,3 +1,8 @@
+#AdminPortal .container.scopes div.scope-list {
+  height: 100%;
+  overflow-y: scroll;
+}
+
 #AdminPortal .container.scopes div.row {
   min-height: 36px;
   height: fit-content;
@@ -14,6 +19,9 @@
 #AdminPortal .container.scopes div.row.header {
   background-color: var(--button-bg);
   font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 #AdminPortal .container.scopes div.row div.segment {

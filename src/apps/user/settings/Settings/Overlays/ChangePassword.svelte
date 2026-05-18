@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { Daemon } from "$ts/server/user/daemon";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/daemon";
+  import { MessageBox } from "$ts/util/dialog";
   import type { SettingsRuntime } from "../../runtime";
 
   const { process }: { process: SettingsRuntime } = $props();
@@ -69,7 +71,10 @@
     <input type="password" placeholder="Confirm new password" bind:value={confirmNewPassword} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

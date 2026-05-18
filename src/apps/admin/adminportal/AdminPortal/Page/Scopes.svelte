@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ProfilePictures } from "$ts/images/pfp";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { ScopesData } from "../../types";
   import ScopeRow from "./Scopes/ScopeRow.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ScopesData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ScopesData } = $props();
   const { admins } = data;
 </script>
 

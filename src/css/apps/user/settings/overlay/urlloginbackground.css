@@ -9,6 +9,8 @@
   align-items: start;
   gap: 15px;
   padding: 15px;
+  height: 0;
+  flex-grow: 1;
 }
 
 #systemSettings #UrlLoginBackground > div.body div.top img {
@@ -23,17 +25,4 @@
 #systemSettings #UrlLoginBackground > div.body div.top input {
   width: 100%;
   margin-top: 15px;
-}
-
-#systemSettings #UrlLoginBackground > div.body div.bottom {
-  border-top: var(--win-border);
-  padding: 10px;
-  background-color: var(--button-glass-bg);
-  margin: 0;
-  display: flex;
-  margin-left: auto;
-  margin-top: auto;
-  gap: 10px;
-  width: 100%;
-  justify-content: end;
 }

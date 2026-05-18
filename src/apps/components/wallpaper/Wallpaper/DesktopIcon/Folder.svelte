@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Env } from "$ts/env";
+  import { Env, Fs } from "$ts/env";
   import { join } from "$ts/util/fs";
   import type { FolderEntry } from "$types/fs";
   import type { WallpaperRuntime } from "../../runtime";
@@ -8,13 +8,14 @@
   const { process, folder, i }: { process: WallpaperRuntime; folder: FolderEntry; i: number } = $props();
 
   const path = join(process.directory, folder.name);
+  const proxy = Fs.tryGetProxyInfo(path, true);
 </script>
 
 {#if path}
   <DesktopIcon
     {process}
     identifier={folder.itemId}
-    caption={folder.name}
+    caption={proxy?.displayName ?? folder.name}
     alt={`Location: ${path}`}
     props={[folder, path]}
     contextMenu="folder-icon"

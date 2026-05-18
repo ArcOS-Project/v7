@@ -1,12 +1,13 @@
-import { EchoIntro } from "$ts/intro";
-import { WaveKernel } from "$ts/kernel/wavekernel";
 import "./css/main.css";
 
 // CODE EXECUTION STARTS HERE
 async function Main() {
-  EchoIntro();
+  const { WaveKernel } = await import("$ts/kernel/wavekernel");
 
   const kernel = new WaveKernel();
+
+  window.__DW_STATUS__ = "async Main";
+  document.querySelector<HTMLDivElement>("#stateLoader")!.innerText = "..";
 
   await kernel._init();
 }

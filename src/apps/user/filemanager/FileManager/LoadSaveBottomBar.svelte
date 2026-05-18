@@ -1,4 +1,7 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
@@ -30,23 +33,29 @@
   });
 </script>
 
-<div class="bottom save">
-  {#if $contents}
-    {#if process.loadSave?.isSave}
-      <div class="save-name">
-        <input type="text" bind:value={$saveName} />
-        {#if process.loadSave?.extensions?.[0]}
-          <span class="extension">{process.loadSave?.extensions?.[0]}</span>
-        {/if}
-      </div>
-    {:else}
-      {$contents.dirs.length + $contents.files.length}
-      {Plural("item", $contents.dirs.length + $contents.files.length)} in {dirName || driveLetter || driveLabel}
+<ActionBar className="save">
+  {#snippet leftContent()}
+    {#if $contents}
+      {#if process.loadSave?.isSave}
+        <div class="save-name">
+          <input type="text" bind:value={$saveName} />
+          {#if process.loadSave?.extensions?.[0]}
+            <span class="extension">{process.loadSave?.extensions?.[0]}</span>
+          {/if}
+        </div>
+      {:else}
+        <ActionSubtle
+          text="{$contents.dirs.length + $contents.files.length} {Plural(
+            'item',
+            $contents.dirs.length + $contents.files.length
+          )} in {dirName || driveLetter || driveLabel}"
+        />
+      {/if}
     {/if}
-  {/if}
-  <div class="actions">
-    <button onclick={() => process.closeWindow()}>Cancel</button>
-    <button
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton
       onclick={() => process.confirmLoadSave()}
       disabled={!process.loadSave?.folder
         ? process.loadSave?.isSave
@@ -55,9 +64,9 @@
             ? !$selection.length
             : $selection.length !== 1
         : false}
-      class="suggested"
+      suggested
     >
       {process.loadSave?.isSave ? "Save" : "Open"}
-    </button>
-  </div>
-</div>
+    </ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
-import { IconService } from "$ts/icon";
-import { Daemon } from "$ts/server/user/daemon";
+import { IconService } from "$ts/servicehost/services/IconService";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -24,7 +24,7 @@ export class IconEditorRuntime extends AppProcess {
   async start() {
     this.iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
     this.setGroups();
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.icons.subscribe(() => {
       this.hasChanges.set(true);
       this.updateFiltered();
@@ -49,7 +49,7 @@ export class IconEditorRuntime extends AppProcess {
     );
 
     if (saveChanges) {
-      this.iconService?.Configuration.set({ ...this.icons() });
+      this.iconService?.Icons.set({ ...this.icons() });
       this.hasChanges.set(false);
     }
 
@@ -59,7 +59,8 @@ export class IconEditorRuntime extends AppProcess {
   //#endregion
 
   revert() {
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.Log(`Reverting changes`);
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.setGroups();
     this.selectedIcon.set("");
     this.selectedGroup.set("");
@@ -67,8 +68,9 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   setGroups() {
-    const groups = this.iconService?.getGroupedIcons();
+    this.Log(`setGroups`);
 
+    const groups = this.iconService?.getGroupedIcons();
     if (!groups) return;
 
     const result: Record<string, string[]> = Object.fromEntries(Object.entries(groups).map(([k, v]) => [k, Object.keys(v)]));
@@ -77,12 +79,16 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   updateFiltered(v = this.selectedGroup()) {
+    this.Log(`updateFiltered`);
+
     const icons = this.icons();
     this.filtered.set(!v ? icons : Object.fromEntries(Object.entries(icons).filter(([k]) => this.iconGroups()[v]?.includes(k))));
   }
 
   async save() {
-    this.iconService?.Configuration.set({ ...this.icons() });
+    this.Log(`Saving changes`);
+
+    this.iconService?.Icons.set({ ...this.icons() });
     this.hasChanges.set(false);
     await this.closeWindow();
 
@@ -103,6 +109,7 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async editIcon() {
+    this.Log(`editIcon: ${this.selectedIcon()}`);
     const icon = await Daemon.helpers!.IconEditor(
       this.icons()[this.selectedIcon()],
       `@builtin::${this.selectedIcon()}`,

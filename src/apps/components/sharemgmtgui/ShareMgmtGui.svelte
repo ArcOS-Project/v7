@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { ShareMgmtGuiRuntime } from "./runtime";
 
   const { process }: { process: ShareMgmtGuiRuntime } = $props();
@@ -10,9 +12,11 @@
     <img src={process.getIconCached("ShareIcon")} alt="" />
     <div>
       <h1>
-        {info.shareName}
+        <span>
+          {info.shareName}
+        </span>
         {#if info.locked}
-          <span class="lucide icon-triangle-alert"></span>
+          <span class="lucide icon-triangle-alert locked" title="This share is locked!"></span>
         {/if}
       </h1>
       <p>Share of {info.ownerName}</p>
@@ -64,8 +68,12 @@
       </div>
     {/if}
   </div>
-  <div class="actions">
-    <button class="delete" disabled={!myShare} onclick={() => process.deleteShare()}>Delete share</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
-  </div>
+  <ActionBar floating>
+    {#snippet leftContent()}
+      <ActionButton disabled={!myShare} onclick={() => process.deleteShare()} className="delete">Delete share</ActionButton>
+    {/snippet}
+    {#snippet rightContent()}
+      <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    {/snippet}
+  </ActionBar>
 {/if}

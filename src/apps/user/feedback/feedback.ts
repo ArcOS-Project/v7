@@ -1,6 +1,6 @@
-import { RegisteredProcess } from "$ts/apps/util";
 import { ArcOSVersion } from "$ts/env";
 import { BugReportIcon } from "$ts/images/general";
+import { RegisteredProcess } from "$ts/util/apps";
 import { FeedbackProcess } from "./runtime";
 
 const feedbackApp = RegisteredProcess({

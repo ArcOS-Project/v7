@@ -1,22 +1,24 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Fs } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
-import { MessagingInterface } from "$ts/server/messaging";
-import { Daemon } from "$ts/server/user/daemon";
+import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import { CommandResult } from "$ts/result";
+import { MessagesContextMenu } from "./context";
 
 export class MessagingAppRuntime extends AppProcess {
   service: MessagingInterface;
@@ -34,6 +36,8 @@ export class MessagingAppRuntime extends AppProcess {
   searchResults = Store<string[]>([]);
   messageWindow = false;
   messageFromFile = false;
+
+  override contextMenu: AppContextMenu = MessagesContextMenu(this);
 
   //#region LIFECYCLE
 
@@ -61,6 +65,10 @@ export class MessagingAppRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
+  async start() {
+    if (!this.service) return false;
+  }
+
   async render({ page }: { page: string }) {
     await this.switchPage(page);
 
@@ -71,6 +79,8 @@ export class MessagingAppRuntime extends AppProcess {
   //#region GETTERS
 
   async getInbox() {
+    this.Log(`Getting received messages`);
+
     if (this.messageWindow) return [];
 
     const inbox = await this.service.getInboxListing();
@@ -80,6 +90,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async getSent() {
+    this.Log(`Getting sent messages`);
+
     if (this.messageWindow) return [];
 
     const sent = await this.service.getSentMessages();
@@ -89,6 +101,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async getArchived() {
+    this.Log(`Obtaining archived messages`);
+
     if (this.messageWindow) return [];
 
     const sent = await this.service.getSentMessages();
@@ -99,6 +113,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async readMessage(messageId: string, force = false) {
+    this.Log(`readMessage: ${messageId}, force=${force}`);
+
     if (this.message()?._id === messageId && !force) return;
 
     this.messageNotFound.set(false);
@@ -114,18 +130,22 @@ export class MessagingAppRuntime extends AppProcess {
       this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
   }
 
-  async userInfo(userId: string): Promise<PublicUserInfo | undefined> {
-    if (this.userInfoCache[userId]) return this.userInfoCache[userId];
+  async userInfo(userId: string): Promise<CommandResult<PublicUserInfo>> {
+    this.Log(`userInfo: ${userId}`);
+
+    if (this.userInfoCache[userId]) return CommandResult.Ok(this.userInfoCache[userId]);
 
     const info = await Daemon?.account?.getPublicUserInfoOf(userId);
-    if (!info) return undefined;
+    if (!info) return CommandResult.Error("Failed to obtain user info");
 
     this.userInfoCache[userId] = info;
 
-    return info;
+    return CommandResult.Ok(info);
   }
 
   async readMessageFromFile(path: string) {
+    this.Log(`readMessageFromFile: ${path}`);
+
     this.messageFromFile = true;
 
     try {
@@ -144,6 +164,8 @@ export class MessagingAppRuntime extends AppProcess {
   //#region ACTIONS
 
   async deleteMessage(id: string) {
+    this.Log(`deleteMessage: ${id}`);
+
     MessageBox(
       {
         title: "Delete message?",
@@ -167,10 +189,14 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   compose() {
+    this.Log(`compose`);
+
     this.spawnOverlayApp("MessageComposer", this.pid);
   }
 
   replyTo(message: ExpandedMessage) {
+    this.Log(`replyTo: ${message._id}`);
+
     this.spawnOverlayApp(
       "MessageComposer",
       this.pid,
@@ -185,6 +211,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async forward(message: ExpandedMessage) {
+    this.Log(`forward: ${message._id}`);
+
     const attachments: File[] = [];
 
     const prog = await Daemon?.files?.FileProgress(
@@ -219,6 +247,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async saveMessage() {
+    this.Log(`saveMessage`);
+
     const message = this.message();
 
     if (!message) return;
@@ -279,6 +309,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   addToArchive(id: string) {
+    this.Log(`addToArchive: ${id}`);
+
     const state = this.getArchiveState();
 
     if (state.includes(id)) return;
@@ -288,6 +320,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   removeFromArchive(id: string) {
+    this.Log(`removeFromArchive: ${id}`);
+
     const state = this.getArchiveState();
 
     if (!state.includes(id)) return;
@@ -297,6 +331,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   toggleArchived(message: ExpandedMessage) {
+    this.Log(`toggleArchived: ${message._id}`);
+
     if (this.isArchived(message._id)) {
       this.removeFromArchive(message._id);
       this.switchPage(message.authorId === Daemon?.userInfo?._id ? "sent" : "inbox");
@@ -312,6 +348,8 @@ export class MessagingAppRuntime extends AppProcess {
   //#region PAGING
 
   async switchPage(id: string) {
+    this.Log(`switchPage: ${id}`);
+
     if (this.messageWindow) return;
     if (this.pageId() === id && !this.errored()) return;
     if (!messagingPages[id]) return;
@@ -324,6 +362,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async refresh() {
+    this.Log(`refresh`);
+
     if (this.messageWindow) return;
 
     this.refreshing.set(true);
@@ -355,6 +395,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   refreshFailed() {
+    this.Log(`refreshFailed`);
+
     this.errored.set(true);
 
     MessageBox(
@@ -371,6 +413,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   Search(query: string) {
+    this.Log(`Searching for ${query}`);
+
     if (this.messageWindow) return;
     if (!query) {
       this.searchResults.set([]);
@@ -394,6 +438,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   popoutMessage(messageId: string) {
+    this.Log(`Poppin' ${messageId}`);
+
     this.message.set(undefined);
     this.spawnApp(this.app.id, this.parentPid, this.pageId(), messageId);
   }
@@ -402,6 +448,8 @@ export class MessagingAppRuntime extends AppProcess {
   //#region ATTACHMENTS
 
   async readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator) {
+    this.Log(`readAttachment: ${attachment._id}, ${messageId}`);
+
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
     try {
@@ -422,6 +470,8 @@ export class MessagingAppRuntime extends AppProcess {
   }
 
   async openAttachment(attachment: MessageAttachment, messageId: string) {
+    this.Log(`openAttachment: ${attachment._id}, ${messageId}`);
+
     const path = `T:/Apps/${this.app.id}/${messageId}/${attachment.filename}`;
 
     const prog = await Daemon?.files?.FileProgress(

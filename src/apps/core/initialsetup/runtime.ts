@@ -1,16 +1,18 @@
-import { MessageBox } from "$ts/dialog";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IServerManager } from "$interfaces/modules/server";
+import { AppProcess } from "$ts/apps/process";
+import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
-import { LoginUser, RegisterUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
+import { MessageBox } from "$ts/util/dialog";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -31,8 +33,8 @@ export class InitialSetupRuntime extends AppProcess {
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
   public displayName = Store<string>();
-  public server: ServerManagerType;
-  #userDaemon?: UserDaemon;
+  public server: IServerManager;
+  #userDaemon?: IUserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -147,7 +149,7 @@ export class InitialSetupRuntime extends AppProcess {
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<ServerManagerType>("server");
+    this.server = getKMod<IServerManager>("server");
 
     this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 
@@ -156,7 +158,7 @@ export class InitialSetupRuntime extends AppProcess {
 
   async render() {
     if (this.server.serverInfo?.disableRegistration) {
-      throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
+      throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 
     await Sleep(1000);
@@ -341,20 +343,46 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
+    if (Server?.serverInfo?.noEmailVerify) {
+      Env.set("DISPATCH_SOCK_ID", UUID());
+      const tokenResult = await LoginUser(this.newUsername(), this.password());
+
+      if (tokenResult.success) {
+        this.#userDaemon = await Stack.spawn(
+          UserDaemon,
+          undefined,
+          this.#userDaemon?.userInfo?._id,
+          this.pid,
+          tokenResult.result!,
+          this.newUsername()
+        );
+
+        await this.#userDaemon?.account?.getUserInfo();
+        await this.#userDaemon?.init?.startPreferencesSync();
+        await this.#userDaemon?.init?.startFilesystemSupplier();
+        
+        this.#userDaemon?.preferences.update((v) => {
+          v.isDefault = false;
+          v.account.displayName = this.displayName();
+
+          return v;
+        });
+      }
+    }
+
     this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
     this.Log(`Checking account activation of '${this.newUsername()}'`);
 
-    const token = await LoginUser(this.newUsername(), this.password());
+    const tokenResult = await LoginUser(this.newUsername(), this.password());
 
-    if (!token) {
+    if (!tokenResult.success) {
       MessageBox(
         {
           title: "Did you click the link?",
-          message:
-            "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.",
+          message: `Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.<br><br>Details: ${tokenResult.errorMessage ?? "Unknown error"}`,
           buttons: [
             {
               caption: "Okay",
@@ -378,14 +406,18 @@ export class InitialSetupRuntime extends AppProcess {
       undefined,
       this.#userDaemon?.userInfo?._id,
       this.pid,
-      token,
+      tokenResult.result!,
       this.newUsername()
     );
+
+    // set the socket ID to something bogus to fool the backend into thinking we're connected to the websocket
+    Env.set("DISPATCH_SOCK_ID", UUID());
 
     await this.#userDaemon?.account?.getUserInfo();
     await this.#userDaemon?.init?.startPreferencesSync();
     await this.#userDaemon?.init?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
+      v.isDefault = false;
       v.account.displayName = this.displayName();
 
       return v;

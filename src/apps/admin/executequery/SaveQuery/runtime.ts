@@ -18,9 +18,13 @@ export class SaveQueryOverlayRuntime extends AppProcess {
   //#endregion LIFECYCLE
 
   async Confirm() {
-    if (!this.queryName()) return;
+    const queryName = this.queryName();
 
-    await this.parent.saveQuery(this.queryName());
+    this.Log(`Confirm -> ${queryName}`);
+
+    if (!queryName) return;
+
+    await this.parent.saveQuery(queryName);
     await this.closeWindow();
   }
 }

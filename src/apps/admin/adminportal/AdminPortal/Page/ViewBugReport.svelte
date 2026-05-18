@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "../../runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import type { ViewBugReportData } from "../../types";
   import Header from "./ViewBugReport/Header.svelte";
   import LeftPanel from "./ViewBugReport/LeftPanel.svelte";
   import RightPanel from "./ViewBugReport/RightPanel.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewBugReportData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewBugReportData } = $props();
   const { report } = data;
 </script>
 

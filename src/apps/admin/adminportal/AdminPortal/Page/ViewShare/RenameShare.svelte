@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { Daemon } from "$ts/daemon";
   import type { SharedDriveType } from "$types/shares";
 
-  const { share, process }: { share: SharedDriveType; process: AdminPortalRuntime } = $props();
+  const { share, process }: { share: SharedDriveType; process: IAdminPortalRuntime } = $props();
   let newName = $state("");
   let loading = $state<boolean>(false);
 

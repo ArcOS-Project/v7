@@ -1,0 +1,77 @@
+<script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Fs, SysDispatch } from "$ts/env";
+  import { contextMenu, contextProps } from "$ts/ui/context/actions.svelte";
+  import { UserPaths } from "$ts/user/store";
+  import type { FolderEntry } from "$types/fs";
+  import type { UserPreferencesStore } from "$types/user";
+  import { onMount } from "svelte";
+  import UserButton from "../Folders/UserButton.svelte";
+
+  const {
+    process,
+    userPreferences,
+    username,
+  }: {
+    process: IShellRuntime;
+    userPreferences: UserPreferencesStore;
+    username: string;
+  } = $props();
+
+  let dirs: FolderEntry[] = $state([]);
+
+  onMount(() => {
+    SysDispatch.subscribe<string>("fs-flush-folder", (path) => {
+      if (!path) return;
+
+      if (path.startsWith("U:") && path.split("/").length == 1) {
+        update();
+      }
+    });
+
+    update();
+  });
+
+  async function update() {
+    try {
+      const root = await Fs.readDir(UserPaths.Home);
+      if (!root) return;
+
+      dirs = root?.dirs;
+    } catch {}
+  }
+</script>
+
+<div class="right-pane">
+  <UserButton {userPreferences} {username} {process} />
+  <div
+    class="content"
+    use:contextMenu={[
+      [
+        {
+          caption: "Refresh",
+          icon: "refresh-cw",
+          action: () => update(),
+        },
+        {
+          caption: "Open home folder",
+          icon: "folder-open",
+          action: () => process.spawnApp("fileManager", process.pid, UserPaths.Home),
+        },
+      ],
+      process,
+    ]}
+  >
+    {#each dirs as dir}
+      <button
+        class="folder"
+        data-contextmenu="startmenu-folder"
+        use:contextProps={[dir.name]}
+        onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}
+      >
+        <img src={process.getIconCached("FolderIcon")} alt="" />
+        <span class="name">{dir.name}</span>
+      </button>
+    {/each}
+  </div>
+</div>

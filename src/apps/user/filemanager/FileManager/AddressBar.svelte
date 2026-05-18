@@ -24,6 +24,22 @@
       <div class="sep"></div>
       <CutCopyPaste {process} />
       <div class="sep"></div>
+    {:else}
+      <button
+        class="parent lucide icon-file-plus"
+        aria-label="New file"
+        title="New file"
+        onclick={() => process.spawnOverlayApp("FsNewFile", process.pid, process.path())}
+        disabled={!!$virtual}
+      ></button>
+      <button
+        class="parent lucide icon-folder-plus"
+        aria-label="New folder"
+        title="New folder"
+        onclick={() => process.spawnOverlayApp("FsNewFolder", process.pid, process.path())}
+        disabled={!!$virtual}
+      ></button>
+      <div class="sep"></div>
     {/if}
     <UpDownLoad {process} />
   {/if}

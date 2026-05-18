@@ -1,9 +1,9 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ShareManager } from "$ts/shares";
-import { SharedDrive } from "$ts/shares/drive";
+import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
+import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -26,6 +26,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     // Join the share
     const result = await this.shares.joinShare(this.shareUsername(), this.shareName(), this.sharePassword(), true);
 
@@ -71,6 +73,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the conngui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

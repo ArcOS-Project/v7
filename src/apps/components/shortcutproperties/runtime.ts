@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
-import { Daemon } from "$ts/server/user/daemon";
+import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -55,19 +55,20 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async goTarget() {
+    this.Log(`goTarget`);
     const data = this.shortcutData();
 
     await this.closeWindow();
 
     switch (data.type) {
       case "app":
-        await Daemon?.spawn?.spawnOverlay("AppInfo", +Env.get("shell_pid"), data.target);
+        await this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();
@@ -76,6 +77,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async changeIcon() {
+    this.Log(`changeIcon`);
+
     const data = this.shortcutData();
 
     data.icon = await Daemon.helpers!.IconEditor(data.icon, data.icon, "Shortcut icon");
@@ -84,6 +87,8 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async pickTarget() {
+    this.Log(`pickTarget`);
+
     const data = this.shortcutData();
 
     const [path] = await Daemon!.files!.LoadSaveDialog({

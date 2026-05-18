@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
-import { toForm } from "$ts/form";
-import { Backend } from "$ts/server/axios";
-import { Daemon } from "$ts/server/user/daemon";
+import { Daemon } from "$ts/daemon";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { toForm } from "$ts/util/form";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -48,6 +48,8 @@ export class TotpSetupGuiRuntime extends AppProcess {
     if (!this.validate()) return false;
 
     const string = this.code();
+
+    this.Log(`activateTotp: ${string}`)
 
     if (string.length !== 6) return false;
 

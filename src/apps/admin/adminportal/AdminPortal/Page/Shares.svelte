@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import type { SharedDriveType } from "$types/shares";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { SharesData, SharesPageFilters } from "../../types";
 
-  const { process, data }: { process: AdminPortalRuntime; data: SharesData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: SharesData } = $props();
   const { redacted } = process;
   const { shares, users } = data;
 

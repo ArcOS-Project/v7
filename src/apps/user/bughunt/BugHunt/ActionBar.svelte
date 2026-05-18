@@ -1,50 +1,33 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import type { BugReport } from "$types/bughunt";
   import type { BugHuntRuntime } from "../runtime";
 
   const { process, report }: { process: BugHuntRuntime; report: BugReport | undefined } = $props();
 </script>
 
-<div class="actionbar">
-  <button class="create suggested" onclick={() => process.newReport()}>
-    <span class="lucide icon-plus"></span>
-    <span>New report...</span>
-  </button>
-  {#if report}
-    <div class="actions">
-      <button
-        class="lucide icon-scroll-text"
-        aria-label="View logs"
-        disabled={!report.logs.length}
-        onclick={() => process.viewLogs()}
-        title="View logs"
-      ></button>
-      <button
-        class="lucide icon-braces"
-        aria-label="View user data"
-        disabled={!report.userData}
-        onclick={() => process.userData()}
-        title="View user data"
-      ></button>
-
-      <button class="lucide icon-save" aria-label="Save JSON" onclick={() => process.exportReport()} title="Export bug report..."
-      ></button>
-      <div class="sep"></div>
-      <button
-        class="lucide icon-refresh-cw"
-        aria-label="Refresh"
-        onclick={() => process.invalidateCaches(true)}
-        title="Refresh caches"
-      ></button>
-    </div>
-  {:else}
-    <div class="actions">
-      <button
-        class="lucide icon-refresh-cw"
-        aria-label="Refresh"
-        onclick={() => process.invalidateCaches(true)}
-        title="Refresh caches"
-      ></button>
-    </div>
-  {/if}
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionButton icon="plus" onclick={() => process.newReport()} suggested>New report...</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    {#if report}
+      <ActionGroup>
+        <ActionIconButton
+          icon="scroll-text"
+          disabled={!report.logs.length}
+          onclick={() => process.viewLogs()}
+          title="View logs"
+        />
+        <ActionIconButton icon="braces" disabled={!report.userData} onclick={() => process.userData()} title="View user data" />
+        <ActionIconButton icon="save" onclick={() => process.exportReport()} title="Export bug report..." />
+      </ActionGroup>
+      <ActionSeparator />
+    {/if}
+    <ActionIconButton icon="refresh-cw" onclick={() => process.invalidateCaches(true)} title="Refresh caches" />
+  {/snippet}
+</ActionBar>

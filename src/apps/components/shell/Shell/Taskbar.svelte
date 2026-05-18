@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ShellRuntime } from "../runtime";
+  import type { IShellRuntime } from "$interfaces/shell";
   import ActionCenterButton from "./Taskbar/ActionCenterButton.svelte";
   import OpenedApps from "./Taskbar/OpenedApps.svelte";
   import PinnedApps from "./Taskbar/PinnedApps.svelte";
@@ -9,7 +9,7 @@
   import TrayIcon from "./Taskbar/SystemTray/TrayIcon.svelte";
   import WorkspaceManagerButton from "./Taskbar/WorkspaceManagerButton.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { userPreferences, trayHost } = process;
   const { trayIcons } = trayHost!;
 </script>

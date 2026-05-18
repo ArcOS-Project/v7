@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StoreItemBanner, StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import type { AppStoreRuntime } from "../runtime";

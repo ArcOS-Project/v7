@@ -26,7 +26,9 @@
         <VirtualRenderer {process} />
       {/if}
       {#if !process.loadSave}
-        <BottomBar {process} />
+        {#if !$virtual}
+          <BottomBar {process} />
+        {/if}
       {:else}
         <LoadSaveBottomBar {process} />
       {/if}

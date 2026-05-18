@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Env, Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
-import type { ShareManager } from "$ts/shares";
+import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
@@ -25,6 +25,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     const name = this.shareName();
     const password = this.sharePassword();
 
@@ -72,6 +74,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the creategui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

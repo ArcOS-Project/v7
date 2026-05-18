@@ -62,6 +62,8 @@ export class IconEditDialogRuntime extends AppProcess {
   }
 
   save() {
+    this.Log(`Saving: dispatching result to ${this.returnId}`);
+
     SysDispatch.dispatch("ied-confirm", [this.returnId, `${this.type()}::${this.values()[this.type()]}`]);
     this.sent = true;
     this.closeWindow();

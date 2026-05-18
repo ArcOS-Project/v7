@@ -1,4 +1,3 @@
-@import url("./creator/actions.css");
 @import url("./creator/fields.css");
 
 #BugHuntCreator {
@@ -23,7 +22,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  max-height: calc(100% - 50px - var(--titlebar-height));
+  height: 0;
 }
 #BugHuntCreator > div.body textarea {
   width: 100%;

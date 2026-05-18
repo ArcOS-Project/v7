@@ -1,6 +1,6 @@
+import type { IArcTerminal } from "$interfaces/terminal";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRPURPLE, BRYELLOW, RESET, TerminalCommandStore } from "../store";
 
@@ -18,7 +18,7 @@ export class HelpCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
     const showHidden = flags.a || flags.all;
     const maxLen = maxLength(
       TerminalCommandStore.map((c) => c.keyword),

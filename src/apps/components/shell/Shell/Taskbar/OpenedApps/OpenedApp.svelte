@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
+  import type { IAppProcess } from "$interfaces/app";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
   import { Stack } from "$ts/env";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
 
-  const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
-  const { windowTitle, windowIcon } = openedProcess;
+  const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
+  const { windowTitle, windowIcon, blinking } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = Stack.renderer!;
 
@@ -31,6 +31,7 @@
   onclick={focus}
   class:active={$focusedPid == openedProcess.pid}
   class:iconic={!$userPreferences.shell.taskbar.labels}
+  class:blinking={$blinking}
   data-pid={pid}
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}

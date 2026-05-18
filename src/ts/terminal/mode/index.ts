@@ -1,12 +1,14 @@
-import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
-import { toForm } from "$ts/form";
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { IArcTerminal } from "$interfaces/terminal";
+import { UserDaemon } from "$ts/daemon";
+import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
+import { Backend } from "$ts/kernel/mods/server/axios";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser } from "$ts/user/auth";
+import { toForm } from "$ts/util/form";
 import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
@@ -16,16 +18,16 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
+import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
-import type { MigrationService } from "../../migrations";
 
 export class TerminalMode extends Process {
-  userDaemon?: UserDaemon;
+  userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
-  arcTerm?: ArcTerminal;
+  arcTerm?: IArcTerminal;
 
   //#region LIFECYCLE
 
@@ -40,7 +42,6 @@ export class TerminalMode extends Process {
 
   async start() {
     await this.initializeTerminal();
-
     if (await this.loadToken()) return;
 
     return await this.loginPrompt();
@@ -97,15 +98,15 @@ export class TerminalMode extends Process {
   async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
-    const token = await LoginUser(username, password);
-    if (!token) return false;
+    const tokenResult = await LoginUser(username, password);
+    if (!tokenResult) return false;
 
-    return await this.startDaemon(token, username);
+    return await this.startDaemon(tokenResult.result!, username);
   }
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
 
       const broadcast = (m: string) => {
         this.rl?.println(`${CURUP}${CLRROW}${m}`);
@@ -118,12 +119,13 @@ export class TerminalMode extends Process {
 
       this.saveToken(userDaemon);
 
-      const userInfo = await userDaemon.account!.getUserInfo();
-
-      if (!userInfo) {
-        this.rl?.println(`Failed to request user info`);
+      const userInfoResult = await userDaemon.account!.getUserInfo();
+      if (!userInfoResult.success) {
+        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
         return false;
       }
+
+      const userInfo = userInfoResult.result!;
 
       if (userInfo.hasTotp && userInfo.restricted) {
         const unlocked = await this.askForTotp(token);
@@ -146,28 +148,10 @@ export class TerminalMode extends Process {
       await userDaemon.activity?.logActivity(`login`);
 
       broadcast(`Starting service host`);
-      await userDaemon.init?.startServiceHost(async (serviceStep) => {
-        if (serviceStep.id === "AppStorage") {
-          broadcast(`Loading apps...`);
-          await userDaemon.appreg!.initAppStorage(userDaemon.appStorage()!, (app) => {
-            broadcast(`Loading apps... ${app.id}`);
-          });
-        } else {
-          broadcast(`Started ${serviceStep.id}`);
-        }
-      });
-
-      broadcast(`Connecting global dispatch`);
-      await userDaemon.activateGlobalDispatch();
+      await userDaemon.init?.startServiceHost(broadcast);
 
       broadcast(`Starting drive notifier watcher`);
       userDaemon.init!.startDriveNotifierWatcher();
-
-      broadcast(`Starting permission manager`);
-      await userDaemon.init!.startPermissionHandler();
-
-      broadcast(`Starting share management`);
-      await userDaemon.init!.startShareManager();
 
       broadcast(`Indexing your files`);
       await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
@@ -175,11 +159,6 @@ export class TerminalMode extends Process {
       await userDaemon.serviceHost
         ?.getService<MigrationService>("MigrationSvc")
         ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
-
-      if (userDaemon.userInfo.admin) {
-        broadcast(`Activating admin bootstrapper`);
-        await userDaemon.activateAdminBootstrapper();
-      }
 
       broadcast(`Starting status refresh`);
       await userDaemon.init!.startSystemStatusRefresh();
@@ -195,10 +174,8 @@ export class TerminalMode extends Process {
       await Sleep(10);
 
       this.term?.clear();
-
-      this.arcTerm = await Stack.spawn<ArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
+      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
       this.arcTerm!.IS_ARCTERM_MODE = true;
-
       this.term?.focus();
 
       return true;
@@ -217,11 +194,9 @@ export class TerminalMode extends Process {
 
     const token = Cookies.get(`arcToken`);
     const username = Cookies.get(`arcUsername`);
-
     if (!token || !username) return false;
 
     const userInfo = await this.validateUserToken(token);
-
     if (!userInfo) {
       this.resetCookies();
 
@@ -256,7 +231,7 @@ export class TerminalMode extends Process {
 
   async loginPrompt(): Promise<boolean> {
     this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
-    const username = await this.rl?.read(`arcapi.nl login: `);
+    const username = await this.rl?.read(`${Server.hostname ?? "ArcOS"} login: `);
     const password = await this.rl?.read(`Password:`);
 
     if (!username || !password) {
@@ -274,7 +249,7 @@ export class TerminalMode extends Process {
     return true;
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 

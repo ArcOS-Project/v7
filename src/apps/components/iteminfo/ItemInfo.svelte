@@ -11,7 +11,7 @@
 
 {#if $info}
   <Header {info} {process} />
-  <Meta {info} {process} />
-  <Location {info} {process} />
+  <Meta {info} />
+  <Location {info} />
   <Actions {info} {process} />
 {/if}

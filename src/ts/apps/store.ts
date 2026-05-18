@@ -3,7 +3,6 @@ import type { AppKeyCombinations } from "$types/accelerator";
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
   "$apps/components/appinfo/AppInfo",
-  "$apps/components/apppermissions/AppPermissions",
   "$apps/components/appinstaller/AppInstaller",
   "$apps/components/apppreinstall/AppPreInstall",
   "$apps/components/arcfind/ArcFindProc",
@@ -44,6 +43,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/serviceinfo/ServiceInfo",
   "$apps/components/iconeditdialog/IconEditDialog",
   "$apps/components/arctermcolors/ArcTermColors",
+  "$apps/components/masteroptions/MasterOptions",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",
@@ -65,13 +65,13 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/iconeditor/IconEditorApp",
   "$apps/user/donut/DonutApp",
   "$apps/user/feedback/feedback",
-  // "$apps/user/sqeleton/Sqeleton",
+  "$apps/user/sqeleton/Sqeleton",
 ]);
 
 export const AdminAppImportPathAbsolutes = import.meta.glob([
   "$apps/admin/adminportal/AdminPortal",
   "$apps/admin/executequery/ExecuteQueryApp",
-])
+]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];
 export const AppOrigins: Record<string, string> = {

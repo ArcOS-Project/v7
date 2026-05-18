@@ -1,8 +1,8 @@
-import type { MigrationNode } from "../ts/migrations/node";
+import type { IMigrationNode } from "$interfaces/migration";
 
 export interface MigrationStatusItem {
   caption: string;
-  migration: MigrationNode;
+  migration: IMigrationNode;
 }
 
 export interface MigrationResult {

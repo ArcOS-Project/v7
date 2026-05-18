@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import Spinner from "$lib/Spinner.svelte";
-  import { Backend } from "$ts/server/axios";
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
+  import { Backend } from "$ts/kernel/mods/server/axios";
   import type { StoreItem } from "$types/package";
   import type { ExpandedUserInfo } from "$types/user";
   import Users from "../../Users.svelte";
 
-  const { item, process }: { item: StoreItem; process: AdminPortalRuntime } = $props();
+  const { item, process }: { item: StoreItem; process: IAdminPortalRuntime } = $props();
 
   let loading = $state(false);
   let installed = $state<ExpandedUserInfo[]>([]);
@@ -30,7 +30,7 @@
 
         if (typeof response.data !== "object" || !Array.isArray(response.data)) throw "";
 
-        if (response.data.filter((i) => i?._id === item._id)) installed.push(user);
+        if (response.data.find((i) => i?._id === item._id)) installed.push(user);
       } catch {
         continue;
       } finally {

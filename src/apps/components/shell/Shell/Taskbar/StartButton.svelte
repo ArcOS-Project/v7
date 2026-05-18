@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
+  import AccentedLogo from "$lib/AccentedLogo.svelte";
   import { Logo } from "$ts/branding";
-  import type { ShellRuntime } from "../../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
-  const { startMenuOpened } = process;
+  const { process }: { process: IShellRuntime } = $props();
+  const { startMenuOpened, userPreferences } = process;
 
   function toggle() {
     $startMenuOpened = !$startMenuOpened;
@@ -11,5 +12,9 @@
 </script>
 
 <button class="start-button" class:active={$startMenuOpened} onclick={toggle}>
-  <img src={Logo()} alt="ArcOS" />
+  {#if !$userPreferences.shell.taskbar.accentedStartButton}
+    <img src={Logo()} alt="ArcOS" />
+  {:else}
+    <AccentedLogo width={30} height={30} />
+  {/if}
 </button>

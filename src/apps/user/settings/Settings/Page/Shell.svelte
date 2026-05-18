@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -53,6 +53,9 @@
     </Option>
     <Option caption="Only show apps from the current workspace">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.openedAppsPerWorkspace} />
+    </Option>
+    <Option caption="Start button logo matches accent color">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.accentedStartButton} />
     </Option>
   </Section>
   <Section caption="Action Center">

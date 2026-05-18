@@ -114,6 +114,7 @@ export class Tty {
 
     this.write(highlighter.highlightPrompt(prompt));
     if (!conceiled) this.write(highlighter.highlight(line.buf, line.pos));
+    else this.write("*".repeat(highlighter.highlight(line.buf, line.pos).length));
 
     if (endPos.col === 0 && endPos.row > 0 && line.buf[line.buf.length - 1] !== "\n") {
       this.write("\n");

@@ -1,4 +1,7 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { formatBytes } from "$ts/util/fs";
   import type { FsProgressRuntime } from "../runtime";
 
@@ -16,15 +19,15 @@
   }
 </script>
 
-<div class="bottom">
-  {#if $Progress.max > 0}
-    <p class="status">
-      {#if $Progress.type == "quantity"}
-        {$Progress.done} / {$Progress.max} done
-      {:else if $Progress.type == "size"}
-        {formatBytes($Progress.done)} / {formatBytes($Progress.max)} done
-      {/if}
-    </p>
-  {/if}
-  <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> Cancel </button>
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    {#if $Progress.type == "quantity"}
+      <ActionSubtle text="{$Progress.done} / {$Progress.max} done" />
+    {:else if $Progress.type == "size"}
+      <ActionSubtle text="{formatBytes($Progress.done)} / {formatBytes($Progress.max)} done" />
+    {/if}
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton disabled={!$Progress.cancel || canceling} onclick={cancel}>Cancel</ActionButton>
+  {/snippet}
+</ActionBar>

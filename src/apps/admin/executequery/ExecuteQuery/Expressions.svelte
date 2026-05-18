@@ -8,6 +8,6 @@
 
 <div class="expressions">
   {#each $expressions[$selectedSource] as _, i}
-    <ExpressionRow {i} {process}/>
+    <ExpressionRow {i} {process} />
   {/each}
 </div>

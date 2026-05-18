@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/shell";
   import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { actionCenterOpened, userPreferences } = process;
 
   let timeout: NodeJS.Timeout | undefined;

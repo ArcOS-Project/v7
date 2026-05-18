@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AdminPortal/Sidebar.svelte";
   import StatusBar from "./AdminPortal/StatusBar.svelte";
-  import type { AdminPortalRuntime } from "./runtime";
   import { AdminPortalPageStore } from "./store";
   import type { AdminPortalPage } from "./types";
 
-  const { process }: { process: AdminPortalRuntime } = $props();
+  const { process }: { process: IAdminPortalRuntime } = $props();
   const { currentPage, switchPageProps, ready, windowTitle, windowIcon } = process;
 
   let Page: Component | undefined = $state();

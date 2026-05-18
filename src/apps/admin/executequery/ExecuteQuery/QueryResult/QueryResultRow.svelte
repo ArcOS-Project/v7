@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { contextMenu } from "$ts/context/actions.svelte";
-  import { tryJsonStringify } from "$ts/json";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { tryJsonStringify } from "$ts/util/json";
   import type { ExecuteQueryRuntime } from "../../runtime";
   import { QueryUserColumns } from "../../store";
 

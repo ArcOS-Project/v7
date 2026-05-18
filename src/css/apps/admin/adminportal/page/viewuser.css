@@ -390,3 +390,32 @@
   background-color: var(--clr-red-fg);
   color: var(--clr-red-bg);
 }
+
+#AdminPortal div.viewUser div.section.versioning div.os {
+  padding: 0 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#AdminPortal div.viewUser div.section.versioning div.versions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+#AdminPortal div.viewUser div.section.versioning div.migrations {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#AdminPortal div.viewUser div.section.versioning div.version {
+  display: flex;
+  flex-direction: column;
+}
+
+#AdminPortal div.viewUser div.section.versioning span.id {
+  font-weight: bold;
+  opacity: 0.5;
+}

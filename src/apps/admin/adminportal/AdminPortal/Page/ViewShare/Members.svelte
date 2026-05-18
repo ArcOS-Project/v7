@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import { Logo } from "$ts/branding";
   import type { SharedDriveType } from "$types/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import MemberRow from "./Members/MemberRow.svelte";
 
-  const { process, share, members }: { process: AdminPortalRuntime; share: SharedDriveType; members: ExpandedUserInfo[] } =
+  const { process, share, members }: { process: IAdminPortalRuntime; share: SharedDriveType; members: ExpandedUserInfo[] } =
     $props();
 </script>
 

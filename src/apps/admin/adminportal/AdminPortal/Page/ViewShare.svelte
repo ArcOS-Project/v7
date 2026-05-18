@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { AdminPortalRuntime } from "../../runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import { MessageBox } from "$ts/util/dialog";
   import type { ViewShareData } from "../../types";
   import Accessors from "./ViewShare/Accessors.svelte";
   import AddUser from "./ViewShare/AddUser.svelte";
@@ -10,7 +10,7 @@
   import Members from "./ViewShare/Members.svelte";
   import RenameShare from "./ViewShare/RenameShare.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewShareData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewShareData } = $props();
   const { share, users, accessors } = data;
 
   const author = users.filter((u) => share.userId === u._id)[0];

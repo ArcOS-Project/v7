@@ -1,4 +1,4 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { IFilesystemDrive } from "$interfaces/fs";
 import type { UserQuota } from "$types/fs";
 import type { Component } from "svelte";
 
@@ -14,7 +14,7 @@ export interface Location {
   component: any;
 }
 
-export type QuotedDrive = { data: FilesystemDrive; quota: UserQuota };
+export type QuotedDrive = { data: IFilesystemDrive; quota: UserQuota };
 
 export interface LoadSaveDialogData {
   title: string;

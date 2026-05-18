@@ -1,0 +1,85 @@
+.shade-MasterOptions {
+  background-position: center;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, #0006 0%, #0006 100%), var(--wallpaper);
+  z-index: 10000000000;
+}
+
+#MasterOptions > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#MasterOptions > div.body div.header {
+  padding: 10px;
+  border-bottom: var(--win-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#MasterOptions > div.body div.header h1 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#MasterOptions > div.body div.content {
+  height: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+#MasterOptions > div.body div.options {
+  height: 0;
+  flex-grow: 1;
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 15px;
+  border: var(--win-border);
+}
+
+#MasterOptions > div.body div.options button {
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 10px;
+}
+
+#MasterOptions > div.body div.options button img {
+  height: 24px;
+}
+
+#MasterOptions > div.body div.options button:not(:hover):not(:active) {
+  outline: none;
+  background-color: transparent;
+}
+
+#MasterOptions > div.body div.authorization {
+  display: flex;
+  justify-content: space-between;
+}
+
+#MasterOptions > div.body div.authorization p.hostname {
+  opacity: 0.5;
+}
+
+#MasterOptions > div.body div.window-action-bar button.lucide {
+  color: var(--win-bg);
+}
+
+#MasterOptions > div.body div.window-action-bar button.restart {
+  background-color: var(--clr-orange-fg);
+}
+
+#MasterOptions > div.body div.window-action-bar button.shutdown {
+  background-color: var(--clr-red-fg);
+}
+
+#MasterOptions > div.body div.window-action-bar button.logout {
+  background-color: var(--clr-green-fg);
+}

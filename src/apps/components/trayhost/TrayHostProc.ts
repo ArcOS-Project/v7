@@ -1,4 +1,4 @@
-import { RegisteredProcess } from "$ts/apps/util";
+import { RegisteredProcess } from "$ts/util/apps";
 import type { App } from "$types/app";
 import { TrayHostRuntime } from "./runtime";
 

@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { Fs } from "$ts/env";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
-  import { Fs } from "$ts/env";
 
   const { process }: { process: MediaPlayerRuntime } = $props();
   const { CurrentMediaMetadata, LoadingMetadata, CurrentCoverUrl } = process;

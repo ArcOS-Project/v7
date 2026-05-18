@@ -1,6 +1,6 @@
 import "$css/apps/core/initialsetup.css";
 import { WaveIcon } from "$ts/images/general";
-import type { App } from "../../../types/app";
+import type { App } from "$types/app";
 import InitialSetup from "./InitialSetup.svelte";
 import { InitialSetupRuntime } from "./runtime";
 

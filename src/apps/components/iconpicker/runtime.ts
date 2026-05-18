@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/daemon";
 import { SysDispatch } from "$ts/env";
-import { IconService } from "$ts/icon";
-import { Daemon } from "$ts/server/user/daemon";
+import { IconService } from "$ts/servicehost/services/IconService";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { IconPickerData } from "./types";
@@ -37,19 +37,23 @@ export class IconPickerRuntime extends AppProcess {
     const iconService = Daemon?.serviceHost?.getService<IconService>("IconService");
 
     if (!iconService) return false;
-    this.store = iconService.Configuration();
+    this.store = iconService.Icons();
     this.groups = iconService.getGroupedIcons();
   }
 
   //#endregion
 
   async confirm() {
+    this.Log(`Confirm: dispatching selection to ${this.returnId}`);
+
     SysDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
 
     await this.closeWindow();
   }
 
   async cancel() {
+    this.Log(`Cancel: dispatching cancel to ${this.returnId}`);
+
     SysDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();

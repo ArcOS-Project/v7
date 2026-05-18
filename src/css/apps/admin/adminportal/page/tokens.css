@@ -3,11 +3,17 @@
   padding-left: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 #AdminPortal .container.tokens div.header h1 {
   opacity: 0.5;
+}
+
+#AdminPortal .container.tokens div.header select {
+  margin-left: auto;
+  border-radius: 0;
+  border: none;
+  border-left: var(--win-border);
 }
 
 #AdminPortal .container.tokens div.token-list {
@@ -23,6 +29,7 @@
 #AdminPortal .container.tokens div.row.header {
   font-weight: bold;
   background-color: var(--button-bg);
+  padding-left: 0;
 }
 
 #AdminPortal .container.tokens div.row.header button {

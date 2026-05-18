@@ -29,7 +29,7 @@
   z-index: 0;
 }
 
-#initialSetupWizard > div.body {
+#initialSetupWizard>div.body {
   position: absolute;
   top: 0;
   left: 0;
@@ -66,13 +66,13 @@
   pointer-events: initial;
 }
 
-#initialSetupWizard div.container > div {
+#initialSetupWizard div.container>div {
   transition:
     opacity 0.2s,
     pointer-events 0s;
 }
 
-#initialSetupWizard div.container > .hide {
+#initialSetupWizard div.container>.hide {
   opacity: 0;
   pointer-events: none;
 }
@@ -81,6 +81,7 @@
   padding: 15px;
   height: calc(100% - 51px);
 }
+
 #initialSetupWizard div.actions {
   display: flex;
   align-items: center;
@@ -113,6 +114,7 @@
   outline: var(--button-glass-bg) 1px solid;
   outline-offset: -1px;
 }
+
 #initialSetupWizard div.actions button:disabled {
   opacity: 0.5;
 }
@@ -133,49 +135,49 @@
   flex-direction: column;
 }
 
-#initialSetupWizard div.hero-page > .lucide {
+#initialSetupWizard div.hero-page>.lucide {
   width: 72px;
   height: 72px;
   stroke: var(--accent-light);
   margin-bottom: 20px;
 }
 
-#initialSetupWizard div.hero-page > .lucide path {
+#initialSetupWizard div.hero-page>.lucide path {
   stroke-dasharray: 50;
   stroke-dashoffset: 50;
   animation: draw 2s 0.2s forwards;
   stroke: inherit;
 }
 
-#initialSetupWizard div.hero-page > .lucide.lucide-rocket path {
+#initialSetupWizard div.hero-page>.lucide.lucide-rocket path {
   stroke-dasharray: 40;
   stroke-dashoffset: 40;
 }
 
-#initialSetupWizard div.hero-page > .lucide.lucide-scale path {
+#initialSetupWizard div.hero-page>.lucide.lucide-scale path {
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
 }
 
-#initialSetupWizard div.hero-page > .lucide.lucide-send path {
+#initialSetupWizard div.hero-page>.lucide.lucide-send path {
   stroke-dasharray: 62;
   stroke-dashoffset: 62;
 }
 
-#initialSetupWizard div.hero-page > .lucide.lucide-flag path {
+#initialSetupWizard div.hero-page>.lucide.lucide-flag path {
   stroke-dasharray: 58;
   stroke-dashoffset: 58;
 }
 
-#initialSetupWizard div.hero-page > h1 {
+#initialSetupWizard div.hero-page>h1 {
   font-size: 22px;
 }
 
-#initialSetupWizard div.hero-page > p.subtitle {
+#initialSetupWizard div.hero-page>p.subtitle {
   opacity: 0.5;
 }
 
-#initialSetupWizard div.hero-page > p.message {
+#initialSetupWizard div.hero-page>p.message {
   margin-top: 30px;
   max-width: 80%;
   text-align: center;
@@ -214,6 +216,15 @@
   margin-bottom: 10px;
 }
 
+#initialSetupWizard div.form-page div.fields div.field .info-button {
+  margin-left: 5px;
+  padding: 0;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  font-size: 12px;
+}
+
 #initialSetupWizard div.form-page div.fields div.field.username input {
   margin-right: -22px;
   padding-right: 24px;
@@ -231,17 +242,18 @@
 #initialSetupWizard div.form-page div.fields div.field.email div.html-spinner {
   margin-right: 6px;
 }
-#initialSetupWizard div.form-page div.fields div.field > div.duo {
+
+#initialSetupWizard div.form-page div.fields div.field>div.duo {
   display: flex;
   gap: 10px;
 }
 
-#initialSetupWizard div.form-page div.fields div.field > div.duo input {
+#initialSetupWizard div.form-page div.fields div.field>div.duo input {
   width: 130px;
 }
 
-#initialSetupWizard div.form-page div.fields div.field > input,
-#initialSetupWizard div.form-page div.fields div.field > div.duo {
+#initialSetupWizard div.form-page div.fields div.field>input,
+#initialSetupWizard div.form-page div.fields div.field>div.duo {
   width: 270px;
   margin-left: auto;
 }
@@ -280,7 +292,7 @@
   margin-top: 20px;
 }
 
-#initialSetupWizard div.form-page p.error + p.error {
+#initialSetupWizard div.form-page p.error+p.error {
   margin-top: 0;
 }
 
@@ -289,6 +301,7 @@
   display: flex;
   flex-direction: column;
 }
+
 #initialSetupWizard div.fresh-deployment h1 {
   margin-bottom: 10px;
   font-size: 18px;

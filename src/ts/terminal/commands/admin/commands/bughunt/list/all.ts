@@ -1,4 +1,4 @@
-import { AdminScopes } from "$ts/server/admin/store";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import type { AdminCommandType } from "$ts/terminal/commands/admin";
 
 export const AdminBugHuntListAll: AdminCommandType = async (term, admin) => {

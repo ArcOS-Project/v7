@@ -1,8 +1,10 @@
+import type { ITerminalProcessConstructor } from "$interfaces/terminal";
 import type { ArcTermConfiguration } from "$types/terminal";
 import { AdminCommand } from "./commands/admin";
 import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { AtConfCommand } from "./commands/atconf";
+import { Base64Command } from "./commands/base64";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
 import { ConfigCommand } from "./commands/config";
@@ -29,17 +31,19 @@ import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
 import { ShutdownCommand } from "./commands/shutdown";
+import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
-import { SudoCommand } from "./commands/sudo";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TouchCommand } from "./commands/touch";
+import { TostrCommand } from "./commands/tostr";
 import { TreeCommand } from "./commands/tree";
+import { UuidCommand } from "./commands/uuid";
 import { VerCommand } from "./commands/ver";
-import type { TerminalProcess } from "./process";
 
-export const TerminalCommandStore: (typeof TerminalProcess)[] = [
+export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   AppListCommand,
+  Base64Command,
   DirCommand,
   CdCommand,
   ClearCommand,
@@ -67,7 +71,6 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   AtConfCommand,
   ConfigCommand,
   SpawnCommand,
-  SudoCommand,
   TasksCommand,
   AdminCommand,
   DrivesCommand,
@@ -76,6 +79,9 @@ export const TerminalCommandStore: (typeof TerminalProcess)[] = [
   KlogCommand,
   InputCommand,
   TouchCommand,
+  SoundbusCommand,
+  UuidCommand,
+  TostrCommand,
 ];
 
 export const ESC = `\x1b[`;

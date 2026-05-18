@@ -18,18 +18,17 @@
 }
 
 #systemSettings div.slide-wrapper::before {
-  content:"";
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   background-color: #0002;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
 }
-
 
 #systemSettings div.slide-wrapper.visible::before {
   opacity: 1;

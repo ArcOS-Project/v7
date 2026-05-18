@@ -1,5 +1,6 @@
 import type { AppProcess } from "$ts/apps/process";
-import { Store, type ReadableStore } from "$ts/writable";
+import { Store } from "$ts/writable";
+import type { ReadableStore } from "$types/writable";
 
 export interface FsProgressOperation {
   type: "quantity" | "size" | "none";

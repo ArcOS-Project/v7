@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/admin";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
@@ -8,7 +8,7 @@
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 
-  const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
+  const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
 
   let quota: UserQuota | undefined = $state();
   let loading = $state(true);

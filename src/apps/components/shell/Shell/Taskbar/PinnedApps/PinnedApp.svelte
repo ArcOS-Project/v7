@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { Daemon } from "$ts/server/user/daemon";
+  import type { IShellRuntime } from "$interfaces/shell";
+  import { Daemon } from "$ts/daemon";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import type { App } from "$types/app";
   import { onMount } from "svelte";
 
-  const { appId, process }: { appId: string; process: ShellRuntime } = $props();
+  const { appId, process }: { appId: string; process: IShellRuntime } = $props();
 
   let app: App | undefined = $state();
 

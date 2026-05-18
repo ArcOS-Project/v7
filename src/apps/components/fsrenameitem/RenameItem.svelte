@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { RenameItemRuntime } from "./runtime";
 
   const { process }: { process: RenameItemRuntime } = $props();
@@ -13,7 +15,10 @@
     <input type="text" bind:value={$newName} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newName} onclick={() => process.rename()}> Rename </button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$newName} onclick={() => process.rename()}>Rename</ActionButton>
+  {/snippet}
+</ActionBar>

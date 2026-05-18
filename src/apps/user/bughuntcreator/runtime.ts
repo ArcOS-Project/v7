@@ -1,8 +1,8 @@
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon } from "$ts/daemon";
 import { Stack } from "$ts/env";
-import { Daemon } from "$ts/server/user/daemon";
+import type { BugHuntUserSpaceProcess } from "$ts/servicehost/services/BugHuntUsp";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import type { BugHuntProc } from "$types/bughunt";
@@ -36,7 +36,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
       v.appPreferences.BugHunt ||= {};
       return v;
     });
-    
+
     if (parent && bugHuntInstances?.includes(parent.pid)) this.parent = parent as any;
 
     if (title && body) {
@@ -53,6 +53,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
   //#endregion
 
   async Send() {
+    this.Log(`Sending report`);
     const options = this.overrideOptions || (this.userPreferences().appPreferences.BugHunt! as BugHuntCreatorOptions);
     const title = this.title();
     const body = this.body();
@@ -76,12 +77,19 @@ export class BugHuntCreatorRuntime extends AppProcess {
   }
 
   async dataPrivacy() {
+    this.Log(`dataPrivacy`);
+
     MessageBox(
       {
         title: "Please keep in mind",
         content: DataPrivacy,
         buttons: [
-          { caption: "Decline", action: () => this.closeWindow() },
+          {
+            caption: "Decline",
+            action: () => {
+              this.closeWindow();
+            },
+          },
           { caption: "I Agree", action() {}, suggested: true },
         ],
         sound: "arcos.dialog.info",

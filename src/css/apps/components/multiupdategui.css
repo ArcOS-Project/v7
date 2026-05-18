@@ -31,6 +31,17 @@
 
 #MultiUpdateGui > div.body div.header h1 {
   font-size: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#MultiUpdateGui > div.body div.header div.info {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #MultiUpdateGui > div.body div.header p.sub {

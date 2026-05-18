@@ -1,7 +1,7 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ServerPfp } from "$ts/images/pfp";
-  import { DefaultUserPreferences } from "$ts/server/user/default";
+  import { DefaultUserPreferences } from "$ts/user/default";
   import { type AuditLog, AuditSeverity, AuditSeverityIcons } from "$types/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";

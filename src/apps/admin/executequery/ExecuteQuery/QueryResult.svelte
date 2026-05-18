@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UUID } from "$ts/uuid";
+  import { UUID } from "$ts/util/uuid";
   import type { ExecuteQueryRuntime } from "../runtime";
   import ActionBar from "./QueryResult/ActionBar.svelte";
   import QueryResultRow from "./QueryResult/QueryResultRow.svelte";

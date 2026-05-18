@@ -1,4 +1,7 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import Custom from "./ArcTermColors/Custom.svelte";
   import Presets from "./ArcTermColors/Presets.svelte";
   import type { ArcTermColorsRuntime } from "./runtime";
@@ -33,16 +36,13 @@
   {/if}
 </div>
 
-<div class="actions">
-  <button class="lucide icon-folder-open" aria-label="Load colorset..." onclick={() => process.openPreset()}></button>
-  <button
-    class="lucide icon-save"
-    disabled={$mode === "presets"}
-    aria-label="Save current colorset"
-    onclick={() => process.savePresetToFile()}
-  ></button>
-  <div class="master">
-    <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-    <button class="apply suggested" onclick={() => process.applyConfiguration()} disabled={!$changed}>Apply</button>
-  </div>
-</div>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionIconButton icon="folder-open" title="Load colorset..." onclick={() => process.openPreset()} />
+    <ActionIconButton icon="save" title="Save current colorset" onclick={() => process.savePresetToFile()} />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested onclick={() => process.applyConfiguration()} disabled={!$changed}>Apply</ActionButton>
+  {/snippet}
+</ActionBar>

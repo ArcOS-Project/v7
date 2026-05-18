@@ -1,8 +1,8 @@
-import { ApplicationStorage } from "$ts/apps/storage";
-import { isPopulatable } from "$ts/apps/util";
+import type { IArcTerminal } from "$interfaces/terminal";
+import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { isPopulatable } from "$ts/util/apps";
 import type { App, InstalledApp } from "$types/app";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRYELLOW, RESET } from "../store";
 
@@ -20,7 +20,7 @@ export class AppListCommand extends TerminalProcess {
 
   //#endregion
 
-  async main(term: ArcTerminal, flags: Arguments) {
+  async main(term: IArcTerminal, flags: Arguments) {
     const all = flags.a || flags.all;
     const countInstead = flags.c || flags.count;
     const store = term.daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();

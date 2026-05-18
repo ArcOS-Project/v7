@@ -1,16 +1,14 @@
 <script lang="ts">
-  import { Daemon } from "$ts/server/user/daemon";
+  import { Daemon } from "$ts/daemon";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import type { MediaPlayerRuntime } from "../runtime";
-  import type { AudioFileMetadata } from "../types";
 
   const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded, MetadataConfiguration } = process;
 
   let icon = $state<string>();
   let filename = $state<string>();
-  let metadata = $state<AudioFileMetadata|undefined>();
 
   onMount(() => {
     filename = getItemNameFromPath(path);

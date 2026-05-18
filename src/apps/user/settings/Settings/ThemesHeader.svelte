@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { IUserDaemon } from "$interfaces/daemon";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo, UserPreferencesStore } from "$types/user";
   import type { Snippet } from "svelte";
 
@@ -11,7 +11,7 @@
     userInfo: UserInfo;
     userPreferences: UserPreferencesStore;
     children?: Snippet;
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
   }
 
   const { login = false, desktop = false, background, userInfo, userPreferences, children, userDaemon }: Props = $props();
