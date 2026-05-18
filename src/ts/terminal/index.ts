@@ -36,6 +36,7 @@ import {
   TerminalCommandStore,
 } from "./store";
 import { ArcTermVariables } from "./var";
+import { ArcScriptEngine } from "$ts/lang";
 
 export class ArcTerminal extends Process implements IArcTerminal {
   readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
@@ -149,13 +150,11 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     argv.shift();
 
-    if (cmd.endsWith(":")) {
-      await this.changeDirectory(`${cmd}/`);
-    } else {
-      const command = TerminalCommandStore.filter((a) => a.keyword === cmd)[0];
+    const runCommand = async(name: string, args: string[]) => {
+      const command = TerminalCommandStore.filter((a) => a.keyword === name)[0];
 
       if (!command) {
-        this.Error("Command not found.");
+        this.Error(`Command '${name}' not found.`);
         this.lastCommandErrored = true;
       } else {
         try {
@@ -170,7 +169,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
               if (command.allowInterrupt) await proc?.killSelf();
             });
 
-            const result = (await proc?._main(this, flags, argv)) || 0;
+            const result = (await proc?._main(this, flags, args)) || 0;
 
             if (result !== 0) this.lastCommandErrored = true;
             else this.lastCommandErrored = false;
@@ -183,6 +182,36 @@ export class ArcTerminal extends Process implements IArcTerminal {
           this.handleCommandError(e as Error, command);
         }
       }
+    }
+
+    if (cmd.endsWith(":")) {
+      await this.changeDirectory(`${cmd}/`);
+    } else if (cmd.startsWith(".")) {
+      const ab = await this.readFile(cmd)
+      if (!ab) {
+        this.Error("File not found.");
+        this.lastCommandErrored = true;
+      } else {
+        const text = arrayBufferToText(ab)
+        if (text) {
+          const engine = await Stack.spawn(ArcScriptEngine, undefined, undefined, undefined, (name: string, args: string[]) => {
+            runCommand(name, args)
+          });
+          if (!engine) {
+            this.Error("Failed to execute ArcScript file.");
+            this.lastCommandErrored = true;
+          } else {
+            try {
+              engine.execute(text)
+            } catch (e) {
+              this.Error("Error occurred while executing ArcScript file.");
+              this.lastCommandErrored = true;
+            }
+          }
+        }
+      }
+    } else {
+      runCommand(cmd, argv);
     }
 
     this.readline();

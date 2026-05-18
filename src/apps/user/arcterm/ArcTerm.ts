@@ -4,7 +4,7 @@ import { ArcTermRuntime } from "./process";
 export const ArcTermApp: App = {
   metadata: {
     name: "ArcTerm",
-    version: "4.0.4",
+    version: "4.0.5",
     author: "Izaak Kuipers",
     icon: "ArcTermIcon",
     appGroup: "utilities",
