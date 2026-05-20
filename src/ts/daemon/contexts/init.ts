@@ -1,3 +1,5 @@
+import FirstRunApp from "$apps/components/firstrun/FirstRun";
+import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import type { IInitUserContext } from "$interfaces/contexts/init";
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IServiceHost } from "$interfaces/service";
@@ -184,4 +186,24 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     Daemon!.serviceHost = await Stack.spawn<IServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
     await this.serviceHost?.init(broadcast);
   }
+
+  async firstRun() {
+    const process = await Stack.spawn<FirstRunRuntime>(
+      FirstRunRuntime,
+      undefined,
+      this.userInfo?._id,
+      this.pid,
+      { data: { ...FirstRunApp, overlay: true }, id: "FirstRun" },
+      Daemon
+    );
+
+    if (!process) return;
+
+    Env.set("shell_pid", this.pid);
+
+    await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
+
+    Env.delete("shell_pid");
+  }
+
 }

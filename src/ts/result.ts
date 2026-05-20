@@ -3,7 +3,7 @@ import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/r
 import { AxiosError } from "axios";
 import { Log } from "./logging";
 
-export class CommandResult<T = string> implements ICommandResult<T> {
+export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;
   public error?: Error;
   public errorMessage?: string;
@@ -17,7 +17,7 @@ export class CommandResult<T = string> implements ICommandResult<T> {
     this.success = options.success ?? false;
   }
 
-  static Ok<T>(value: T, successMessage?: string) {
+  static Ok<T>(value?: T, successMessage?: string) {
     Log(`CommandResult.Ok`, successMessage ?? "<no message>"); // DEBUG
 
     return new this<T>(value, { success: true, successMessage });

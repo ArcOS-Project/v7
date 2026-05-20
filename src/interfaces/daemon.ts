@@ -1,3 +1,4 @@
+import type { UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { IAccountUserContext } from "./contexts/account";
@@ -21,6 +22,7 @@ import type { IVersionUserContext } from "./contexts/version";
 import type { IWallpaperUserContext } from "./contexts/wallpaper";
 import type { IWorkspaceUserContext } from "./contexts/workspaces";
 import type { IProcess } from "./process";
+import type { ICommandResult } from "./result";
 import type { IServiceHost } from "./service";
 import type { IApplicationStorage } from "./services/AppStorage";
 import type { IFileAssocService } from "./services/FileAssocSvc";
@@ -73,6 +75,7 @@ export interface IUserDaemon extends IProcess {
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
   getShell(): IShellRuntime | undefined;
+  startUserDaemon(startOptions: UserDaemonStartOptions, broadcast: (m: string) => void): Promise<ICommandResult<IUserDaemon>>;
 }
 
 export interface IUserContext {

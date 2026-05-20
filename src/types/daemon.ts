@@ -1,0 +1,29 @@
+import type { IUserDaemon } from "$interfaces/daemon";
+import type { ICommandResult } from "$interfaces/result";
+import type { MaybePromise } from "./common";
+import type { UserInfo } from "./user";
+
+export const UserDaemonInitStages = [
+  "filesystem",
+  "preferencesSync",
+  "notifyLogin",
+  "serviceHost",
+  "firstRun",
+  "driveNotifierWatcher",
+  "indexing",
+  "statusRefresh",
+  "letsGo",
+  "workspaces",
+  "autorun"
+] as const;
+
+export type UserDaemonInitCallback = (daemon: IUserDaemon, broadcast: (m: string) => void) => MaybePromise<void>;
+export type UserDaemonInitStage = (typeof UserDaemonInitStages)[number];
+export type UserDaemonInitStagesSelection = Partial<UserDaemonInitStage[]>;
+export type UserDaemonInitCallbacks = Partial<Record<UserDaemonInitStage, UserDaemonInitCallback>>;
+
+export interface UserDaemonStartOptions {
+  startStages: UserDaemonInitStagesSelection;
+  stageCallbacks: UserDaemonInitCallbacks;
+  onUserInfo: (info: UserInfo) => MaybePromise<ICommandResult>;
+}

@@ -61,6 +61,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     await this.getUserInfo();
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
 
+    this.initBroadcast?.("Admin: loading admin apps");
     await this._loadAdminApps();
     const proto = this.host.getService<IProtocolServiceProcess>("ProtoService");
 
@@ -69,6 +70,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
 
     try {
+      this.initBroadcast?.("Admin: Creating temp directory");
       await Fs.createDirectory("T:/AdminBootstrapper");
       await Fs.mountDrive("admin", AdminFileSystem, "A", undefined);
     } catch {}
@@ -99,6 +101,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
           this.Log(
             `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
           );
+
+          this.initBroadcast?.(`Admin: Loaded ${appCopy.metadata.name}`);
 
           return appCopy;
         } catch (e) {

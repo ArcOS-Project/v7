@@ -1,12 +1,11 @@
 import type { IUserDaemon } from "$interfaces/daemon";
 import type { IArcTerminal } from "$interfaces/terminal";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Server, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { toForm } from "$ts/util/form";
 import type { UserInfo } from "$types/user";
@@ -17,10 +16,9 @@ import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
-import { ArcTerminal } from "..";
-import type { MigrationService } from "../../servicehost/services/MigrationSvc";
 import { Readline } from "../readline/readline";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
+import { ArcTermModeUserDaemonStartOptions } from "./store";
 
 export class TerminalMode extends Process {
   userDaemon?: IUserDaemon;
@@ -106,77 +104,21 @@ export class TerminalMode extends Process {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      this.rl?.println(`Starting daemon`);
+
+      const {success, result: userDaemon, errorMessage} = await UserDaemon.Hello(token, username);
+      if (!success) throw new Error(errorMessage);
 
       const broadcast = (m: string) => {
         this.rl?.println(`${CURUP}${CLRROW}${m}`);
       };
-      this.rl?.println(`Starting daemon`);
 
-      if (!userDaemon) {
-        throw new Error("Daemon process didn't come up.");
+      this.saveToken(userDaemon!);
+
+      const result = await userDaemon!.startUserDaemon(ArcTermModeUserDaemonStartOptions(this), broadcast);
+      if (!result.success) {
+        throw new Error(result.errorMessage ?? "Unknown error");
       }
-
-      this.saveToken(userDaemon);
-
-      const userInfoResult = await userDaemon.account!.getUserInfo();
-      if (!userInfoResult.success) {
-        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
-        return false;
-      }
-
-      const userInfo = userInfoResult.result!;
-
-      if (userInfo.hasTotp && userInfo.restricted) {
-        const unlocked = await this.askForTotp(token);
-
-        if (!unlocked) {
-          this.rl?.println(`2FA code invalid!`);
-          await userDaemon.account?.discontinueToken();
-          await userDaemon.killSelf();
-          return false;
-        }
-      }
-
-      broadcast(`Starting filesystem`);
-      await userDaemon.init?.startFilesystemSupplier();
-
-      broadcast(`Starting synchronization`);
-      await userDaemon.init?.startPreferencesSync();
-
-      broadcast(`Notifying login activity`);
-      await userDaemon.activity?.logActivity(`login`);
-
-      broadcast(`Starting service host`);
-      await userDaemon.init?.startServiceHost(broadcast);
-
-      broadcast(`Starting drive notifier watcher`);
-      userDaemon.init!.startDriveNotifierWatcher();
-
-      broadcast(`Indexing your files`);
-      await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-      await userDaemon.serviceHost
-        ?.getService<MigrationService>("MigrationSvc")
-        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
-
-      broadcast(`Starting status refresh`);
-      await userDaemon.init!.startSystemStatusRefresh();
-
-      broadcast(`Refreshing app storage`);
-      SysDispatch.dispatch(`app-store-refresh`);
-
-      Env.set("currentuser", username);
-      Env.set("shell_pid", undefined);
-
-      userDaemon.checks!.checkNightly();
-
-      await Sleep(10);
-
-      this.term?.clear();
-      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
-      this.arcTerm!.IS_ARCTERM_MODE = true;
-      this.term?.focus();
 
       return true;
     } catch (e) {

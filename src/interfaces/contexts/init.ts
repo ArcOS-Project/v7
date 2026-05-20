@@ -11,4 +11,5 @@ export interface IInitUserContext extends IUserContext {
   startSystemStatusRefresh(): Promise<void>;
   startVirtualDesktops(): Promise<void>;
   startServiceHost(broadcast?: (msg: string) => void): Promise<void>;
+  firstRun(): Promise<void>;
 }

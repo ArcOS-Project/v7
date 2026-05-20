@@ -21,6 +21,7 @@ import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import { LoginUserDaemonStartOptions } from "./store";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
 export class LoginAppRuntime extends AppProcess {
@@ -145,107 +146,29 @@ export class LoginAppRuntime extends AppProcess {
     this.Log(`Starting user daemon for '${username}'`);
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
+    const { success, result: userDaemon, errorMessage } = await UserDaemon.Hello(token, username, info);
 
-    if (!userDaemon) {
+    if (!success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to start user daemon");
+      this.errorMessage.set(errorMessage ?? "Unknown error");
 
       return;
     }
 
-    this.loadingStatus.set("Saving token");
-    this.saveToken(userDaemon);
-    this.loadingStatus.set("Loading your settings");
-
-    const userInfoResult = await userDaemon.account!.getUserInfo();
-
-    if (!userInfoResult.success) {
-      this.loadingStatus.set("");
-      this.errorMessage.set(userInfoResult.errorMessage ?? "Failed to request user info");
-
-      return;
-    }
-
-    const userInfo = userInfoResult.result!;
-
-    this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
-
-    if (userInfo.hasTotp && userInfo.restricted) {
-      this.loadingStatus.set("Requesting 2FA");
-
-      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
-
-      if (!unlocked) {
-        await userDaemon.account!.discontinueToken();
-        await userDaemon.killSelf();
-        this.resetCookies();
-        this.loadingStatus.set("");
-        this.errorMessage.set("You didn't enter a valid 2FA code!");
-        return;
-      }
-    }
-
-    this.loadingStatus.set(this.getWelcomeString());
-
-    const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {
-      if (!verbose) return;
+      if (!userDaemon?.preferences()?.enableVerboseLogin || !message) return;
       this.loadingStatus.set(message);
     };
 
-    await this.loadPersistence();
-    this.savePersistence(username, this.profileImage());
+    this.loadingStatus.set("Saving token");
+    this.saveToken(userDaemon!);
 
-    broadcast("Starting filesystem");
-    await userDaemon.init!.startFilesystemSupplier();
-    await userDaemon.version!.mountSourceDrive();
+    const result = await userDaemon!.startUserDaemon(LoginUserDaemonStartOptions(this), broadcast);
 
-    broadcast("Starting synchronization");
-    await userDaemon.init!.startPreferencesSync();
-
-    broadcast("Reading profile customization");
-    await this.setUserDisplayStuff(userDaemon);
-
-    if (!this.safeMode) {
-      this.savePersistence(username, this.profileImage(), this.loginBackground());
+    if (!result.success) {
+      this.loadingStatus.set("");
+      this.errorMessage.set(result.errorMessage ?? "Unknown error");
     }
-
-    broadcast("Notifying login activity");
-    await userDaemon.activity!.logActivity("login");
-
-    broadcast("Starting service host");
-    await userDaemon.init?.startServiceHost(broadcast);
-
-    broadcast("Welcome to ArcOS");
-    if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
-      await this.firstRun(userDaemon);
-    }
-
-    broadcast("Starting drive notifier watcher");
-    userDaemon.init!.startDriveNotifierWatcher();
-
-    broadcast("Indexing your files");
-    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-    broadcast("Starting status refresh");
-    await userDaemon.init!.startSystemStatusRefresh();
-
-    broadcast("Let's go!");
-    await State?.loadState("desktop", { userDaemon }, true);
-    SoundBus.playSound("arcos.system.logon");
-    userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
-    userDaemon.checks!.checkNightly();
-
-    broadcast("Starting Workspaces");
-    await userDaemon.init!.startVirtualDesktops();
-
-    broadcast("Running autorun");
-    await userDaemon.apps!.spawnAutoload();
-    await userDaemon.checks!.checkForUpdates();
-    await userDaemon.checks!.checkForMissedMessages();
-
-    userDaemon._blockLeaveInvocations = false;
   }
 
   //#endregion
@@ -446,7 +369,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(userId: string | undefined) {
+  public async askForTotp(userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {
