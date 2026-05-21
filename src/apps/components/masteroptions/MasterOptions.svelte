@@ -1,15 +1,14 @@
 <script lang="ts">
+  import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
-  import { Daemon } from "$ts/daemon";
-  import { Server } from "$ts/env";
+  import { Daemon, Server } from "$ts/env";
   import MasterOptionButton from "./MasterOptions/MasterOptionButton.svelte";
-  import type { MasterOptionsRuntime } from "./runtime";
   import { MasterOptionStore } from "./store";
 
-  const { process }: { process: MasterOptionsRuntime } = $props();
+  const { process }: { process: IMasterOptionsRuntime } = $props();
   const { loading } = process;
 </script>
 

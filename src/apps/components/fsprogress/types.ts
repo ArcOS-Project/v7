@@ -1,4 +1,5 @@
-import type { AppProcess } from "$ts/apps/process";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { Store } from "$ts/writable";
 import type { ReadableStore } from "$types/writable";
 
@@ -27,7 +28,7 @@ export interface FileProgressMutator {
   stop: () => Promise<any>;
   show: () => Promise<any>;
   setType: (type: "quantity" | "size" | "none") => void;
-  process: () => FsProgressProc | undefined;
+  process: () => IFsProgressRuntime | undefined;
 }
 
 export const DummyFileProgress: FileProgressMutator = {
@@ -46,7 +47,3 @@ export const DummyFileProgress: FileProgressMutator = {
   setType: (_: string) => {},
   process: () => undefined,
 };
-
-export interface FsProgressProc extends AppProcess {
-  Progress: ReadableStore<FsProgressOperation>;
-}

@@ -2,9 +2,9 @@
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
-  import type { IconEditorRuntime } from "../runtime";
+  import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
 
-  const { process }: { process: IconEditorRuntime } = $props();
+  const { process }: { process: IIconEditorRuntime } = $props();
   const { icons, hasChanges } = process;
 </script>
 

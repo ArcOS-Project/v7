@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
-  import type { SettingsRuntime } from "../../runtime";
+  import { Daemon } from "$ts/env";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
   import Header from "./Account/Header.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = Daemon || {}!;
 </script>
 

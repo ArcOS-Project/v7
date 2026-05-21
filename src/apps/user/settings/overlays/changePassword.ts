@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import ChangePassword from "../Settings/Overlays/ChangePassword.svelte";
 
 export const ChangePasswordApp: App = {
@@ -26,7 +26,7 @@ export const ChangePasswordApp: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: ChangePassword as any,
   },
   overlay: true,

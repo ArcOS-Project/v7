@@ -10,9 +10,10 @@
  * v7 filename: src/apps/user/calculator/store.ts
  */
 
+import type { ICalculatorStore } from "$interfaces/runtimes/ICalculatorRuntime";
 import type { CalculatorOverrides } from "./types";
 
-export class CalculatorStore {
+export class CalculatorStore implements ICalculatorStore {
   public AllowedKeys = ["+", "-", "/", "*", "7", "8", "9", "**", "4", "5", "6", "%", "1", "2", "3", "%%C", ".", "0", "00", "%%E"];
   public Shortcuts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "+", "-", "*"];
   public Overrides: CalculatorOverrides = {

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { FileHandler } from "$types/fs";
 
 const mountZipFile: (d: IUserDaemon) => FileHandler = (daemon) => ({

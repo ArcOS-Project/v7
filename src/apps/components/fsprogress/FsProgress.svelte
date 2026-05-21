@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
   import Bottom from "./FsProgress/Bottom.svelte";
   import Top from "./FsProgress/Top.svelte";
-  import type { FsProgressRuntime } from "./runtime";
 
-  const { process }: { process: FsProgressRuntime } = $props();
+  const { process }: { process: IFsProgressRuntime } = $props();
   const { Progress } = process;
 </script>
 

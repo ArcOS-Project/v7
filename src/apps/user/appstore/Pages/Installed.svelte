@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { Env } from "$ts/env";
   import { Plural } from "$ts/util";
   import { StoreItemIcon } from "$ts/util/distrib";
   import type { StoreItem, UpdateInfo } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
+  const { process, updates, installed }: { process: IAppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
 
   function updateAll() {
     process.spawnOverlayApp("MultiUpdateGui", +Env.get("shell_pid") || process.pid, updates);

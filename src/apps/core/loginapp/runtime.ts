@@ -1,12 +1,16 @@
 import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
-import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
-import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
+import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Sleep } from "$ts/sleep";
@@ -24,7 +28,7 @@ import Cookies from "js-cookie";
 import { LoginUserDaemonStartOptions } from "./store";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
-export class LoginAppRuntime extends AppProcess {
+export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public DEFAULT_WALLPAPER = Store<string>("");
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
@@ -129,7 +133,7 @@ export class LoginAppRuntime extends AppProcess {
 
   async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
-    this.profileImage.set(`${this.server.url}/user/pfp/${userDaemon.userInfo._id}${authcode()}`);
+    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userDaemon.userInfo._id));
 
     if (!this.safeMode && applyBackground) {
       this.loginBackground.set(
@@ -191,8 +195,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.serviceHost?.spinDown(broadcast);
 
     broadcast("Stopping processes");
-    for (const [_, proc] of [...Stack.store()]) {
-      if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
+    for (const proc of Stack.renderer?.currentState.map((pid) => Stack.getProcess(pid) as IAppProcess) ?? []) {
+      if (!proc._disposed && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
@@ -351,15 +355,10 @@ export class LoginAppRuntime extends AppProcess {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const infoResult = await GetConnector<IUserConnector>("UserConnector", token).Self();
+    if (!infoResult.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return infoResult.result;
   }
 
   resetCookies() {
@@ -382,7 +381,7 @@ export class LoginAppRuntime extends AppProcess {
       });
 
       await Stack.spawn(
-        TotpAuthGuiRuntime,
+        TotpAuthGuiApp.assets.runtime,
         undefined,
         userId,
         this.pid,
@@ -393,7 +392,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: IUserDaemon) {
-    const process = await Stack.spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<IFirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,

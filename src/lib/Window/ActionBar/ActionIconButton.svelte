@@ -16,5 +16,11 @@
   } = $props();
 </script>
 
-<button class={`action-bar-icon-button lucide icon-${icon} ${className}`.trim()} aria-label={title} {title} {disabled} class:suggested {onclick}
+<button
+  class={`action-bar-icon-button lucide icon-${icon} ${className}`.trim()}
+  aria-label={title}
+  {title}
+  {disabled}
+  class:suggested
+  {onclick}
 ></button>

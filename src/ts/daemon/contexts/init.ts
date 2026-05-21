@@ -1,13 +1,13 @@
 import FirstRunApp from "$apps/components/firstrun/FirstRun";
-import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
-import type { IInitUserContext } from "$interfaces/contexts/init";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServiceHost } from "$interfaces/service";
-import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
+import type { Constructs } from "$interfaces/common";
+import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
 import { MessageBox } from "$ts/util/dialog";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {
@@ -188,8 +188,8 @@ export class InitUserContext extends UserContext implements IInitUserContext {
   }
 
   async firstRun() {
-    const process = await Stack.spawn<FirstRunRuntime>(
-      FirstRunRuntime,
+    const process = await Stack.spawn<IFirstRunRuntime>(
+      FirstRunApp.assets.runtime as Constructs<IFirstRunRuntime>,
       undefined,
       this.userInfo?._id,
       this.pid,
@@ -205,5 +205,4 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     Env.delete("shell_pid");
   }
-
 }

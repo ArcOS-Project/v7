@@ -1,6 +1,6 @@
-import type { IArcFindRuntime } from "$interfaces/arcfind";
+import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { isPopulatable } from "$ts/util/apps";

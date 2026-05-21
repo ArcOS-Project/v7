@@ -1,10 +1,10 @@
 <script lang="ts">
   import { MessageBox } from "$ts/util/dialog";
-  import type { QlorbRuntime } from "../runtime";
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage } = process;
 
   function start() {

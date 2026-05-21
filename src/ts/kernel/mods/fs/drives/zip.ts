@@ -1,5 +1,5 @@
-import type { IZipDrive } from "$interfaces/drives/zip";
-import type { IFilesystem } from "$interfaces/modules/fs";
+import type { IZipDrive } from "$interfaces/drives/IZipDrive";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
 import { getKMod } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";

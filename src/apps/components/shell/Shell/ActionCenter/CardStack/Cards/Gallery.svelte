@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
-  import { Fs } from "$ts/env";
+  import { Daemon, Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
   import { arrayBufferToBlob } from "$ts/util/convert";

@@ -1,33 +1,35 @@
 //#region IMPORTS
-import type { IAccountUserContext } from "$interfaces/contexts/account";
-import type { ILoginActivityUserContext } from "$interfaces/contexts/activity";
-import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
-import type { IApplicationsUserContext } from "$interfaces/contexts/apps";
-import type { IChecksUserContext } from "$interfaces/contexts/checks";
-import type { IElevationUserContext } from "$interfaces/contexts/elevation";
-import type { IFilesystemUserContext } from "$interfaces/contexts/files";
-import type { IHelpersUserContext } from "$interfaces/contexts/helpers";
-import type { IIconsUserContext } from "$interfaces/contexts/icons";
-import type { IInitUserContext } from "$interfaces/contexts/init";
-import type { INotificationsUserContext } from "$interfaces/contexts/notifications";
-import type { IPowerUserContext } from "$interfaces/contexts/power";
-import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
-import type { IAppRendererUserContext } from "$interfaces/contexts/renderer";
-import type { IShortcutsUserContext } from "$interfaces/contexts/shortcuts";
-import type { ISpawnUserContext } from "$interfaces/contexts/spawn";
-import type { IThemesUserContext } from "$interfaces/contexts/themes";
-import type { IVersionUserContext } from "$interfaces/contexts/version";
-import type { IWallpaperUserContext } from "$interfaces/contexts/wallpaper";
-import type { IWorkspaceUserContext } from "$interfaces/contexts/workspaces";
-import type { IUserContext, IUserDaemon } from "$interfaces/daemon";
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { ICommandResult } from "$interfaces/result";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IFileAssocService } from "$interfaces/services/FileAssocSvc";
-import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
-import type { ILibraryManagement } from "$interfaces/services/LibMgmtSvc";
-import type { IShellRuntime } from "$interfaces/shell";
-import { Env, Fs, getKMod, Stack, State } from "$ts/env";
+import type { IAccountUserContext } from "$interfaces/contexts/IAccountUserContext";
+import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { IAppRendererUserContext } from "$interfaces/contexts/IAppRendererUserContext";
+import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
+import type { IElevationUserContext } from "$interfaces/contexts/IElevationUserContext";
+import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
+import type { IHelpersUserContext } from "$interfaces/contexts/IHelpersUserContext";
+import type { IIconsUserContext } from "$interfaces/contexts/IIconsUserContext";
+import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
+import type { ILoginActivityUserContext } from "$interfaces/contexts/ILoginActivityUserContext";
+import type { INotificationsUserContext } from "$interfaces/contexts/INotificationsUserContext";
+import type { IPowerUserContext } from "$interfaces/contexts/IPowerUserContext";
+import type { IPreferencesUserContext } from "$interfaces/contexts/IPreferencesUserContext";
+import type { IShortcutsUserContext } from "$interfaces/contexts/IShortcutsUserContext";
+import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
+import type { IThemesUserContext } from "$interfaces/contexts/IThemesUserContext";
+import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserContext";
+import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserContext";
+import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IServerConnector } from "$interfaces/modules/IServerManager";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import { Daemon, Env, Fs, GetConnector, SetDaemon, Stack, State, getKMod } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
@@ -111,7 +113,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     this.name = "UserDaemon";
 
     this.setSource(__SOURCE__);
-    Daemon = this;
+    SetDaemon(this);
   }
 
   async start() {
@@ -210,6 +212,10 @@ export class UserDaemon extends Process implements IUserDaemon {
     this.serviceHost?.getService<IGlobalDispatch>?.("GlobalDispatch")?.sendUpdate();
   }
 
+  GetConnector<T extends IServerConnector>(name: string): T {
+    return GetConnector<T>(name, this.token);
+  }
+
   static async Hello(token: string, username: string, userInfo?: UserInfo, parentPid = 1): Promise<ICommandResult<IUserDaemon>> {
     Log("UserDaemon.Hello", "HELLO!");
     const userDaemon = await Stack.spawn<IUserDaemon>(this, undefined, userInfo?._id ?? "SYSTEM", parentPid, token, username);
@@ -279,15 +285,13 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("autorun", "Running autorun", async () => {
-      await Daemon.apps?.spawnAutoload();
-      await Daemon.checks?.checkForUpdates();
-      await Daemon.checks?.checkForMissedMessages();
+      await this.apps?.spawnAutoload();
+      await this.checks?.checkForUpdates();
+      await this.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();
     });
 
-    Daemon._blockLeaveInvocations = false;
+    this._blockLeaveInvocations = false;
 
-    return CommandResult.Ok(Daemon);
+    return CommandResult.Ok(this);
   }
 }
-
-export let Daemon: IUserDaemon;

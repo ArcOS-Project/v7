@@ -1,4 +1,4 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Fs } from "$ts/env";
 import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
 import { FilesystemProxy } from "./generic";

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";

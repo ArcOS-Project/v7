@@ -1,9 +1,9 @@
-import type { IFileAssocService } from "$interfaces/services/FileAssocSvc";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
-import type { ServiceHost } from "$ts/servicehost";
+import { Daemon } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
@@ -23,7 +23,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -46,7 +46,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   }
 
   public defaultFileAssociations(): FileAssociationConfig {
-    const apps = this.host.getService<ApplicationStorage>("AppStorage")?.buffer() || [];
+    const apps = this.host.getService<IApplicationStorage>("AppStorage")?.buffer() || [];
     const result: FileAssociationConfig = {
       associations: {
         apps: {},
@@ -75,7 +75,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   getFileAssociation(path: string): ExpandedFileAssociationInfo | undefined {
     if (this._disposed || !path) return;
 
-    const storage = this.host.getService<ApplicationStorage>("AppStorage");
+    const storage = this.host.getService<IApplicationStorage>("AppStorage");
     const config = this.Associations();
     const associations = config?.associations;
     const definitions = config?.definitions;

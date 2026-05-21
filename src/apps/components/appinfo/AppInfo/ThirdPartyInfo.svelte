@@ -3,9 +3,9 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import type { App } from "$types/app";
-  import type { AppInfoRuntime } from "../runtime";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
 
-  const { target }: { target: App; process: AppInfoRuntime } = $props();
+  const { target }: { target: App; process: IAppInfoRuntime } = $props();
 </script>
 
 <InfoBlock>

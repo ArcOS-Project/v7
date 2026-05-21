@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { StoreItemIcon } from "$ts/util/distrib";
   import type { StoreItem } from "$types/package";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { process, unblocked, blocked }: { process: AppStoreRuntime; unblocked: StoreItem[]; blocked: StoreItem[] } = $props();
+  const { process, unblocked, blocked }: { process: IAppStoreRuntime; unblocked: StoreItem[]; blocked: StoreItem[] } = $props();
 </script>
 
 {#if unblocked && blocked}

@@ -1,12 +1,12 @@
-import type { IArcFindRuntime } from "$interfaces/arcfind";
-import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
+import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
+import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
@@ -14,11 +14,10 @@ import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
+import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
-import type { AppKeyCombinations } from "$types/accelerator";
-import { ShellAccelerators } from "./accelerators";
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);

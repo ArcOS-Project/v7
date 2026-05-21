@@ -1,13 +1,14 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
 import { FirstRunPages, FirstRunShortcuts } from "./store";
 import type { FirstRunPage } from "./types";
 
-export class FirstRunRuntime extends AppProcess {
+export class FirstRunRuntime extends AppProcess implements IFirstRunRuntime {
   done = Store<boolean>(false);
   currentPage = Store<FirstRunPage>();
 
@@ -51,8 +52,6 @@ export class FirstRunRuntime extends AppProcess {
 
   switchPage(id: string) {
     this.Log(`switchPage: ${id}`);
-
-    if (!FirstRunPages.has(id)) this.notImplemented(`Page ${id}`);
 
     this.currentPage.set(FirstRunPages.get(id)!);
   }

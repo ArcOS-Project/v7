@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -6,9 +7,8 @@
   import { formatBytes } from "$ts/util/fs";
   import type { StoreItem } from "$types/package";
   import dayjs from "dayjs";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { process, pkg }: { process: AppStoreRuntime; pkg: StoreItem | undefined } = $props();
+  const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem | undefined } = $props();
 </script>
 
 {#if pkg}

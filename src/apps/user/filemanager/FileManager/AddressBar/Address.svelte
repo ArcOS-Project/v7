@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { IFilesystemDrive } from "$interfaces/fs";
+  import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import type { FsProxyInfo } from "$types/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { path, virtual } = process;
 
   let manualPath = $state<string>();

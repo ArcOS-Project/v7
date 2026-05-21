@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import SaveTheme from "../Settings/Overlays/SaveTheme.svelte";
 
 export const SaveThemeApp: App = {
@@ -26,7 +26,7 @@ export const SaveThemeApp: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: SaveTheme as any,
   },
   overlay: true,

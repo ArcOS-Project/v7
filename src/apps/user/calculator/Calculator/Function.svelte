@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { CalculatorRuntime } from "../runtime";
+  import type { ICalculatorRuntime } from "$interfaces/runtimes/ICalculatorRuntime";
   import type { CalculatorKey } from "../types";
 
-  const { key, process }: { key: CalculatorKey; process: CalculatorRuntime } = $props();
+  const { key, process }: { key: CalculatorKey; process: ICalculatorRuntime } = $props();
 </script>
 
 <button onclick={process.Functions[key[0]!][1]} class={process.Functions[key[1]!][2]}>

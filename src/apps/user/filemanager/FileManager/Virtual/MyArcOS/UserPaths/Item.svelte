@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { UserPathCaptions, UserPathIcons } from "$ts/user/store";
 
-  const { process, path, id }: { process: FileManagerRuntime; path: string; id: string } = $props();
+  const { process, path, id }: { process: IFileManagerRuntime; path: string; id: string } = $props();
 
   let split = path.split("/").filter((p) => !!p.length);
 </script>
