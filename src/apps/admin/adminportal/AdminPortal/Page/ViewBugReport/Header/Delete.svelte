@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import { MessageBox } from "$ts/util/dialog";
 

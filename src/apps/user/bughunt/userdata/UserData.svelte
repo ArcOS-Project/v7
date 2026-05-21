@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IBugHuntUserDataRuntime } from "$interfaces/runtimes/IBugHuntUserDataRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import type { BugHuntUserDataRuntime } from "./runtime";
 
-  const { process }: { process: BugHuntUserDataRuntime } = $props();
+  const { process }: { process: IBugHuntUserDataRuntime } = $props();
   const { html } = process;
 </script>
 

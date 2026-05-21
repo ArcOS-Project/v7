@@ -1,10 +1,11 @@
+import type { IDonutAppRuntime } from "$interfaces/runtimes/IDonutAppRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { DonutAltMenu } from "./altmenu";
 
-export class DonutAppRuntime extends AppProcess {
+export class DonutAppRuntime extends AppProcess implements IDonutAppRuntime {
   public interval: NodeJS.Timeout;
 
   //#region LIFECYCLE

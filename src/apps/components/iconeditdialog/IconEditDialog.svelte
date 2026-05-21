@@ -1,13 +1,13 @@
 <script lang="ts">
+  import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import AppType from "./IconEditDialog/AppType.svelte";
   import BuiltinType from "./IconEditDialog/BuiltinType.svelte";
   import FileType from "./IconEditDialog/FileType.svelte";
   import ModeToggle from "./IconEditDialog/ModeToggle.svelte";
-  import type { IconEditDialogRuntime } from "./runtime";
 
-  const { process }: { process: IconEditDialogRuntime } = $props();
+  const { process }: { process: IIconEditDialogRuntime } = $props();
   const { iconName, type, currentIcon, values } = process;
 </script>
 

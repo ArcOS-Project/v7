@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Address from "./AddressBar/Address.svelte";
   import CutCopyPaste from "./AddressBar/CutCopyPaste.svelte";
   import UpDownLoad from "./AddressBar/UpDownLoad.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { virtual } = process;
 </script>
 

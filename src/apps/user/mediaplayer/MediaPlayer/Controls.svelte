@@ -1,6 +1,7 @@
 <script lang="ts">
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
   import { Stack } from "$ts/env";
-  import type { MediaPlayerRuntime } from "../runtime";
+
   import Forward from "./Controls/Forward.svelte";
   import Loop from "./Controls/Loop.svelte";
   import Next from "./Controls/Next.svelte";
@@ -10,7 +11,7 @@
   import Stop from "./Controls/Stop.svelte";
   import Time from "./Controls/Time.svelte";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { windowFullscreen, queue, pinControls } = process;
 </script>
 

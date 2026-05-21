@@ -1,0 +1,14 @@
+import type { IUserContext } from "$interfaces/IUserDaemon";
+import type { BatteryType } from "$types/navigator";
+import type { ReadableStore } from "$types/writable";
+
+export interface IPowerUserContext extends IUserContext {
+  battery: ReadableStore<BatteryType | undefined>;
+  logoff(force?: boolean): Promise<void>;
+  shutdown(force?: boolean): Promise<void>;
+  restart(force?: boolean): Promise<void>;
+  logoffSafeMode(force?: boolean): Promise<void>;
+  toLogin(type: string, props?: Record<string, any>, force?: boolean): Promise<void>;
+  closeOpenedApps(type: string, props?: Record<string, any>, force?: boolean): Promise<boolean>;
+  batteryInfo(): Promise<BatteryType | undefined>;
+}

@@ -1,9 +1,9 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
 import type { ContextMenuItem } from "$types/app";
-import type { FileManagerRuntime } from "../runtime";
 
-export function GoMenu(runtime: FileManagerRuntime): ContextMenuItem {
+export function GoMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {
     caption: "Go",
     subItems: [
@@ -17,7 +17,7 @@ export function GoMenu(runtime: FileManagerRuntime): ContextMenuItem {
   };
 }
 
-function folderGoItems(runtime: FileManagerRuntime) {
+function folderGoItems(runtime: IFileManagerRuntime) {
   const result = [];
 
   for (const folder of runtime.rootFolders()) {
@@ -33,7 +33,7 @@ function folderGoItems(runtime: FileManagerRuntime) {
   return result;
 }
 
-function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
+function userPathsGoItems(runtime: IFileManagerRuntime): ContextMenuItem {
   const result = [];
 
   for (const id in UserPaths) {
@@ -55,7 +55,7 @@ function userPathsGoItems(runtime: FileManagerRuntime): ContextMenuItem {
   };
 }
 
-function driveGoItems(runtime: FileManagerRuntime) {
+function driveGoItems(runtime: IFileManagerRuntime) {
   const result = [];
   const driveSubmenu = (drive: IFilesystemDrive, id: string) => [
     {

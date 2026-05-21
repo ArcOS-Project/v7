@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import type { PartialStoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { official, process }: { official: PartialStoreItem[]; process: AppStoreRuntime } = $props();
+  const { official, process }: { official: PartialStoreItem[]; process: IAppStoreRuntime } = $props();
 </script>
 
 {#if official?.length}

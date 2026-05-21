@@ -1,7 +1,6 @@
-import type { SettingsRuntime } from "$apps/user/settings/runtime";
-import type { IThemesUserContext } from "$interfaces/contexts/themes";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Fs } from "$ts/env";
+import type { IThemesUserContext } from "$interfaces/contexts/IThemesUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Fs } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { BuiltinThemes, UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
@@ -9,7 +8,6 @@ import { MessageBox } from "$ts/util/dialog";
 import { LogLevel } from "$types/logging";
 import { ExportLocalWallpaperResolution, UserThemeKeys, type UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class ThemesUserContext extends UserContext implements IThemesUserContext {

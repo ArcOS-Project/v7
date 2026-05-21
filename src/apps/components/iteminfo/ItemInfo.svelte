@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
   import Actions from "./ItemInfo/Actions.svelte";
   import Header from "./ItemInfo/Header.svelte";
   import Location from "./ItemInfo/Location.svelte";
   import Meta from "./ItemInfo/Meta.svelte";
-  import type { ItemInfoRuntime } from "./runtime";
 
-  const { process }: { process: ItemInfoRuntime } = $props();
+  const { process }: { process: IItemInfoRuntime } = $props();
   const { info } = process;
 </script>
 

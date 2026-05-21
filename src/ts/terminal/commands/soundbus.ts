@@ -1,9 +1,9 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { SoundBus } from "$ts/env";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
+import { BRBLUE, BRRED, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRRED, RESET } from "../store";
 
 export class SoundbusCommand extends TerminalProcess {
   static keyword = "soundbus";

@@ -1,8 +1,12 @@
 onload = function () {
+  let prebooted = false;
   window.__DW_STATUS__ = "window.onload";
   const stateLoader = this.document.querySelector("#stateLoader");
 
   function loadFail(r) {
+    if (prebooted) return;
+    prebooted = true;
+
     const url = "https://docs.arcapi.nl/general-information/troubleshooting#the-dots-of-doom";
     const pre = document.createElement("pre");
 

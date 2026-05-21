@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { ITotpSetupGuiRuntime } from "$interfaces/runtimes/ITotpSetupGuiRuntime";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";
-  import type { TotpSetupGuiRuntime } from "./runtime";
 
-  const { process }: { process: TotpSetupGuiRuntime } = $props();
+  const { process }: { process: ITotpSetupGuiRuntime } = $props();
   const { code, url } = process;
   let errored = $state(false);
   let locked = $state(false);

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA, Server } from "$ts/env";
@@ -6,9 +7,8 @@
   import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/app";
   import { onMount } from "svelte";
-  import type { BootScreenRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<BootScreenRuntime> = $props();
+  const { process }: AppComponentProps<IBootScreenRuntime> = $props();
   const { status, progress } = process;
 
   let url = $state<string>();

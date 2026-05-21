@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { sortByKey } from "$ts/util";

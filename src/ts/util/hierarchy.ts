@@ -16,7 +16,7 @@ export function getAllJsonPaths(obj: any, prefix: string = ""): string[] {
 export function getJsonHierarchy<T = any>(object: Object, hierarchy: string): T | null {
   const parts = hierarchy.split(".");
 
-  let currentObj: Record<string, any> = object;
+  let currentObj: Record<string, any> = object ?? {};
 
   for (const part of parts) {
     if (currentObj[part] === undefined || currentObj[part] === null) return null;

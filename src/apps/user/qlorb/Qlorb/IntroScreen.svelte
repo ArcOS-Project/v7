@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import { Logo } from "$ts/branding";
-  import type { QlorbRuntime } from "../runtime";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage, userPreferences } = process;
 
   CurrentPage.subscribe((v) => {

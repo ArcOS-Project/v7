@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
   import type { AdminPortalPage } from "$apps/admin/adminportal/types";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import type { ExpandedUserInfo } from "$types/user";

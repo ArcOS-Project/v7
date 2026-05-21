@@ -1,15 +1,15 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, Env, Fs } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/app";
 import type { ArcPackage } from "$types/package";
 import type { ReadableStore } from "$types/writable";
 import JSZip from "jszip";
 
-export class AppInstallerRuntime extends AppProcess {
+export class AppInstallerRuntime extends AppProcess implements IAppInstallerRuntime {
   progress?: IInstallerProcessBase;
   metadata?: ArcPackage;
   isLibrary = false;
@@ -31,7 +31,7 @@ export class AppInstallerRuntime extends AppProcess {
     if (!(this.zip instanceof JSZip) || !this.metadata) return false; // No ZIP object? Then die.
 
     // Get the distribution service
-    const distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    const distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
 
     if (!distrib) {
       // Should never happen unless nik fucked something up (yes, nik)

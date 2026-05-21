@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 
 export interface ArcProtocol {

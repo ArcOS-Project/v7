@@ -1,13 +1,14 @@
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { getKMod } from "$ts/env";
-import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/elevation";
-import type { Arguments } from "$types/terminal";
+import type { AdminCommandType, Arguments } from "$types/terminal";
+import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../colors";
 import { TerminalProcess } from "../process";
-import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
+import { AdminHelp } from "./admin/commands/help";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 
 export class AdminCommand extends TerminalProcess {
@@ -37,7 +38,7 @@ export class AdminCommand extends TerminalProcess {
     if (!elevated) return 1;
 
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
-    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
+    const admin = term.daemon?.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper");
     const server = getKMod<IServerManager>("server");
 
     term.term.clear();
@@ -74,6 +75,11 @@ export class AdminCommand extends TerminalProcess {
           return await prompt();
         }
 
+        if (response === "?") {
+          await AdminHelp(term, admin, []);
+          return await prompt();
+        }
+
         for (const path of paths) {
           const text = `${response} `;
           if (text?.startsWith(`${path} `)) {
@@ -95,5 +101,3 @@ export class AdminCommand extends TerminalProcess {
     });
   }
 }
-
-export type AdminCommandType = (term: IArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;

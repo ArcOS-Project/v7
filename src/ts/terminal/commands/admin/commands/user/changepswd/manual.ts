@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminUserChangepswdManual: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess(AdminScopes.adminUsersList, AdminScopes.adminUsersChangePswd)) return 2;

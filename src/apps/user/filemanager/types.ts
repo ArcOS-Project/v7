@@ -1,4 +1,4 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { UserQuota } from "$types/fs";
 import type { Component } from "svelte";
 

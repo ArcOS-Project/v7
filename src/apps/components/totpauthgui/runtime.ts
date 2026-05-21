@@ -1,13 +1,12 @@
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ITotpAuthGuiRuntime } from "$interfaces/runtimes/ITotpAuthGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon, SysDispatch } from "$ts/env";
+import { InfoIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";
-import { toForm } from "$ts/util/form";
 import type { AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
 
-export class TotpAuthGuiRuntime extends AppProcess {
+export class TotpAuthGuiRuntime extends AppProcess implements ITotpAuthGuiRuntime {
   private dispatchId: string;
 
   //#region LIFECYCLE
@@ -20,7 +19,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  render(args: RenderArgs) {
+  render() {
     if (!Daemon!.token || !this.dispatchId) {
       this.closeWindow();
       return false;
@@ -45,27 +44,15 @@ export class TotpAuthGuiRuntime extends AppProcess {
   async verifyTotp(code: string) {
     this.Log(`verifyTotp: ${code}`);
 
-    if (!this.validate(code)) return false;
+    if (!this.validate(code) || code.length !== 6) return false;
 
-    if (code.length !== 6) return false;
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Unlock(code);
+    if (!result.success) return false;
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    await this.closeWindow();
+    this.doDispatch();
 
-      const unlocked = response.status === 200;
-
-      if (!unlocked) return false;
-
-      await this.closeWindow();
-
-      this.doDispatch();
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   cantAccess() {
@@ -78,7 +65,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
           "Lost access to your authenticator app? Not a problem! Please contact an ArcOS System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
         buttons: [{ caption: "Okay", action: () => this.cancel(), suggested: true }],
         sound: "arcos.dialog.info",
-        image: "InfoIcon",
+        image: InfoIcon,
       },
       this.parentPid,
       true

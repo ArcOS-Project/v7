@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { INewFolderRuntime } from "$interfaces/runtimes/INewFolderRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { NewFolderRuntime } from "./runtime";
 
-  const { process }: { process: NewFolderRuntime } = $props();
+  const { process }: { process: INewFolderRuntime } = $props();
   const { newFolder } = process;
 </script>
 

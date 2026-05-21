@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { SettingsRuntime } from "../../runtime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");

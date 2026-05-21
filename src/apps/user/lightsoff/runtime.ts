@@ -1,3 +1,4 @@
+import type { ILightsOffLevels, ILightsOffRuntime } from "$interfaces/runtimes/ILightsOffRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
@@ -7,7 +8,7 @@ import type { ReadableStore } from "$types/writable";
 import { LightsOffLevels } from "./levels";
 import type { LightsOffGrid } from "./types";
 
-export class LightsOffRuntime extends AppProcess {
+export class LightsOffRuntime extends AppProcess implements ILightsOffRuntime {
   xModifiers = [-1, 0, +1];
   yModifiers = [-1, +1];
   Grid: ReadableStore<LightsOffGrid> = Store([
@@ -20,7 +21,7 @@ export class LightsOffRuntime extends AppProcess {
   Transitioning = Store<boolean>(false);
   Clicks = Store<number>(0);
   LEVEL = Store<number>(0);
-  Levels: LightsOffLevels;
+  Levels: ILightsOffLevels;
 
   //#region LIFECYCLE
 
@@ -74,6 +75,8 @@ export class LightsOffRuntime extends AppProcess {
       this.pid,
       true
     );
+
+    return false;
   }
 
   ToggleLight(x: number, y: number) {

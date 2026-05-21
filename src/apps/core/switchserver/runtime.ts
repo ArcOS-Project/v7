@@ -1,3 +1,4 @@
+import type { ISwitchServerRuntime } from "$interfaces/runtimes/ISwitchServerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Server, Stack, SysDispatch } from "$ts/env";
 import { WarningIcon } from "$ts/images/dialog";
@@ -6,7 +7,8 @@ import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/app";
 import type { ServerOption } from "$types/server";
 import Cookies from "js-cookie";
-export class SwitchServerRuntime extends AppProcess {
+
+export class SwitchServerRuntime extends AppProcess implements ISwitchServerRuntime {
   servers = Store<ServerOption[]>([]);
   selected = Store<string>();
   loading = Store<boolean>(false);

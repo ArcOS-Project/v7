@@ -1,6 +1,6 @@
 <script lang="ts">
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
-  import type { MediaPlayerRuntime } from "../runtime";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
   import Bar from "./Bar.svelte";
   import Next from "./Controls/Next.svelte";
   import PlayPause from "./Controls/PlayPause.svelte";
@@ -8,7 +8,7 @@
   import Time from "./Controls/Time.svelte";
   import CoverImage from "./CoverImage.svelte";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { queueIndex, queue, CurrentMediaMetadata, windowTitle, LoadingMetadata } = process;
 </script>
 

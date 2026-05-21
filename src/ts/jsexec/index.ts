@@ -8,15 +8,12 @@
  *
  * © IzKuipers 2025
  */
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Server, Stack } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import { authcode } from "$ts/util";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/app";
@@ -27,7 +24,6 @@ import * as walk from "acorn-walk";
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
   props?: ThirdPartyPropMap;
-  userDaemon?: IUserDaemon;
   app?: App;
   args: any[];
   metaPath?: string;
@@ -40,7 +36,6 @@ export class JsExec extends Process {
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
     super(pid, parentPid);
 
-    this.userDaemon = Daemon;
     this.args = args;
     this.filePath = filePath;
     this.workingDirectory = getParentDirectory(filePath);
@@ -50,7 +45,7 @@ export class JsExec extends Process {
   }
 
   async start() {
-    if (!this.userDaemon || !this.filePath) return false;
+    if (!this.filePath) return false;
 
     this.props = ThirdPartyProps(this);
   }
@@ -61,20 +56,14 @@ export class JsExec extends Process {
   async getTpaUrl(wrapped: string) {
     this.Log(`Getting TPA file URL`);
 
-    const postUrl = this.getTpaPostUrl();
-    const serverUrl = Server.url;
     const { appId, userId, filename } = this.getTpaUrlInfo();
-    const now = Date.now();
-    const ac = authcode();
-
     try {
-      await Backend.post(postUrl, textToBlob(wrapped), {
-        headers: { Authorization: `Bearer ${this.userDaemon?.token}` },
-      });
+      const urlResult = await Daemon!.GetConnector<ITpaConnector>("TpaConnector").CreateUrl(wrapped, userId, appId, filename);
 
-      return `${serverUrl}/tpa/v3/${userId}/${now}/${appId}@${filename}${ac}`;
-    } catch {
-      throw new JsExecError(`Failed to create momentary TPA URL`);
+      if (!urlResult.success) throw new JsExecError();
+      return urlResult.result!;
+    } catch (e: any) {
+      throw new JsExecError(`Failed to create momentary TPA URL: ${e?.message ?? e}`);
     }
   }
 
@@ -86,7 +75,7 @@ export class JsExec extends Process {
 
   getTpaUrlInfo() {
     const appId = this.app?.id || "ArcOS";
-    const userId = this.userDaemon?.userInfo?._id || "SYSTEM";
+    const userId = Daemon?.userInfo?._id || "SYSTEM";
     const filename = getItemNameFromPath(this.filePath!);
 
     return { appId, userId, filename };

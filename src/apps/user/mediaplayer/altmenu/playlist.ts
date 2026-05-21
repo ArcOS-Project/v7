@@ -1,7 +1,7 @@
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 import type { ContextMenuItem } from "$types/app";
-import type { MediaPlayerRuntime } from "../runtime";
 
-export function PlaylistAltMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
+export function PlaylistAltMenu(runtime: IMediaPlayerRuntime): ContextMenuItem {
   return {
     caption: "Playlist",
     subItems: [

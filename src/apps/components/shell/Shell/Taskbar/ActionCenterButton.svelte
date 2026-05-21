@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 
   const { process }: { process: IShellRuntime } = $props();
   const { actionCenterOpened } = process;

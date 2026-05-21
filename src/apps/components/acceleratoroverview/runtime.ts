@@ -1,10 +1,11 @@
+import type { IAcceleratorOverviewRuntime } from "$interfaces/runtimes/IAcceleratorOverviewRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData, AppStorage } from "$types/app";
 
-export class AcceleratorOverviewRuntime extends AppProcess {
+export class AcceleratorOverviewRuntime extends AppProcess implements IAcceleratorOverviewRuntime {
   // Very gross array containing keys known to the accelerator handlers
   KnownAcceleratorKeys = [
     "alt",
@@ -56,7 +57,7 @@ export class AcceleratorOverviewRuntime extends AppProcess {
   async render() {
     if (await this.closeIfSecondInstance()) return;
 
-    const apps = await Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.get();
+    const apps = await Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.get();
 
     if (!apps) throw new Error("ERR_NO_DAEMON"); // Should never happen
 

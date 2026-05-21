@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import ActionCenterButton from "./Taskbar/ActionCenterButton.svelte";
   import OpenedApps from "./Taskbar/OpenedApps.svelte";
   import PinnedApps from "./Taskbar/PinnedApps.svelte";

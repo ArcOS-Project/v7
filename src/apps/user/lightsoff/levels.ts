@@ -1,11 +1,11 @@
+import type { ILightsOffLevels, ILightsOffRuntime } from "$interfaces/runtimes/ILightsOffRuntime";
 import { Sleep } from "$ts/sleep";
-import type { LightsOffRuntime } from "./runtime";
 import type { LightsOffGrid } from "./types";
 
-export class LightsOffLevels {
-  runtime: LightsOffRuntime;
+export class LightsOffLevels implements ILightsOffLevels {
+  runtime: ILightsOffRuntime;
 
-  constructor(runtime: LightsOffRuntime) {
+  constructor(runtime: ILightsOffRuntime) {
     this.runtime = runtime;
   }
 

@@ -1,7 +1,6 @@
-import type { IProcess } from "$interfaces/process";
-import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/shell";
-import { Daemon } from "$ts/daemon";
-import { Env } from "$ts/env";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
+import { Daemon, Env } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
