@@ -27,11 +27,3 @@ export function cloneAppMeta<T extends App>(app: T): T {
 
   return { ...newApp, assets, process } as T;
 }
-
-export function safeIsAppProc(proc: IProcess | undefined) {
-  if (!proc) return false;
-
-  const appProc = proc as IAppProcess;
-
-  return !!appProc.app?.data?.id;
-}
