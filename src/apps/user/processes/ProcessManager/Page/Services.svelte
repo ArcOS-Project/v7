@@ -5,15 +5,16 @@
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Service from "./Services/Service.svelte";
+  import type { ServiceIdentifier } from "$interfaces/IServiceHost";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
   const { Services } = process.host;
   const { selected } = process;
 
-  let serviceId = $state<string>("");
+  let serviceId = $state<ServiceIdentifier | undefined>(undefined);
 
   selected.subscribe((v) => {
-    serviceId = v.replace("svc#", "");
+    serviceId = v.replace("svc#", "") as ServiceIdentifier;
   });
 </script>
 
@@ -34,23 +35,23 @@
     <ActionSubtle text="{$Services.size} services" />
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton disabled={!$selected} onclick={() => process.serviceInfoFor(serviceId)}>Service info</ActionButton>
+    <ActionButton disabled={!$selected} onclick={() => process.serviceInfoFor(serviceId!)}>Service info</ActionButton>
     <ActionSeparator />
     <ActionButton
       className="start"
-      disabled={!$selected || !!$Services.get(serviceId)?.pid}
-      onclick={() => process.startService(serviceId)}
+      disabled={!$selected || !!$Services.get(serviceId!)?.pid}
+      onclick={() => process.startService(serviceId!)}
     >
       Start
     </ActionButton>
     <ActionButton
       className="stop"
-      disabled={!$selected || !$Services.get(serviceId)?.pid}
-      onclick={() => process.stopService(serviceId)}
+      disabled={!$selected || !$Services.get(serviceId!)?.pid}
+      onclick={() => process.stopService(serviceId!)}
     >
       Stop
     </ActionButton>
-    <ActionButton className="restart" disabled={!$selected} onclick={() => process.restartService(serviceId)}>
+    <ActionButton className="restart" disabled={!$selected} onclick={() => process.restartService(serviceId!)}>
       Restart
     </ActionButton>
     {#if process.app.data.overlay}

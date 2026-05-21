@@ -24,6 +24,7 @@ import { compareVersion } from "$ts/util/version";
 import type {
   Activity,
   AuditLog,
+  AuditLogQueryOptions,
   FsAccess,
   FSItem,
   IpAddress,
@@ -45,6 +46,9 @@ import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { QueryResult } from "$types/query";
+import { CommandResult } from "$ts/result";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -208,6 +212,19 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return response.data as AuditLog[];
     } catch {
       return [];
+    }
+  }
+
+  async queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>> {
+    try {
+      return CommandResult.FromResponse(
+        await Backend.get(`/admin/audit/query`, {
+          params: query,
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 

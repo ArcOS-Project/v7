@@ -1,5 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "../interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
@@ -16,7 +16,7 @@ export interface Service {
   changedAt?: number;
 }
 
-export type ServiceStore = Map<string, Service>;
+export type ServiceStore = Map<ServiceIdentifier, Service>;
 export type ReadableServiceStore = ReadableStore<ServiceStore>;
 export type InitialServiceState = "stopped" | "started";
 export type ServiceChangeResult =

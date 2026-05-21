@@ -4,6 +4,7 @@ import { sliceIntoChunks } from "$ts/util";
 import type { PartialUserTotp, Token } from "$types/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
+import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
@@ -262,11 +263,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Audit log",
       icon: "scroll-text",
-      content: AuditLog,
+      content: AuditLogQueryable,
       props: async (process) => {
         return {
-          // Chunk the logs into 20 items to reduce lag, and have the newest presented first.
-          audits: sliceIntoChunks((await process.admin.getAuditLog()).reverse(), 20),
           users: await process.admin.getAllUsers(),
         };
       },

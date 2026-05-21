@@ -1,5 +1,4 @@
-import { Daemon } from "$ts/daemon";
-import { SoundBus, State } from "$ts/env";
+import { Daemon, SoundBus, State } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { authcode } from "$ts/util";
 import type { UserDaemonStartOptions } from "$types/daemon";

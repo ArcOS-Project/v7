@@ -119,3 +119,11 @@ span.beta-pill {
   line-height: 18px;
   min-width: fit-content;
 }
+
+.center-flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

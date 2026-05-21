@@ -1,4 +1,4 @@
-import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IServiceInfoRuntime } from "$interfaces/runtimes/IServiceInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
@@ -9,14 +9,14 @@ import type { Service } from "$types/service";
 import type { Unsubscriber } from "svelte/store";
 
 export class ServiceInfoRuntime extends AppProcess implements IServiceInfoRuntime {
-  serviceId: string;
+  serviceId: ServiceIdentifier;
   service = Store<Service | undefined>();
   serviceProcess = Store<IBaseService | undefined>();
   serviceSubscriber?: Unsubscriber;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, serviceId: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, serviceId: ServiceIdentifier) {
     super(pid, parentPid, app);
 
     this.serviceId = serviceId;

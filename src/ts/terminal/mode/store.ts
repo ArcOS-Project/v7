@@ -1,7 +1,6 @@
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
-import type { IArcTerminal } from "$interfaces/terminal";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack, SysDispatch } from "$ts/env";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
+import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import type { UserDaemonStartOptions } from "$types/daemon";

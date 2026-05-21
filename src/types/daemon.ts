@@ -1,5 +1,5 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { ICommandResult } from "$interfaces/result";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { UserInfo } from "./user";
 

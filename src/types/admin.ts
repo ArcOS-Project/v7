@@ -1,3 +1,4 @@
+import type { QueryableOptions } from "./query";
 import type { ExpandedUserInfo } from "./user";
 
 export interface Activity {
@@ -168,4 +169,12 @@ export interface IpAddress {
   userId: string;
   ip: string;
   variant: 4 | 6;
+}
+
+export interface AuditLogQueryOptions extends QueryableOptions {
+  authorId?: string;
+  data?: string;
+  message?: string;
+  targetUserId?: string;
+  severity?: string;
 }

@@ -7,12 +7,10 @@ import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
-import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { Wallpapers } from "$ts/user/wallpaper/store";
@@ -87,7 +85,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
 
     if (this.loginProps?.type) {
       State?.getStateLoaders()?.main?.removeAttribute("style");
-      this.hideProfileImage.set(true);
+      // this.hideProfileImage.set(true);
 
       if (!this.loginProps.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
@@ -132,14 +130,13 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   }
 
   async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
+    const userConnector = GetConnector<IUserConnector>("UserConnector");
+
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
-    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userDaemon.userInfo._id));
+    this.profileImage.set(userConnector.PictureUrl(userDaemon.userInfo._id));
 
     if (!this.safeMode && applyBackground) {
-      this.loginBackground.set(
-        (await userDaemon.wallpaper?.getWallpaper(userDaemon.preferences().account.loginBackground))?.url ||
-          this.DEFAULT_WALLPAPER()
-      );
+      this.loginBackground.set(userConnector.LoginBgUrl(userDaemon.userInfo._id));
     }
   }
 

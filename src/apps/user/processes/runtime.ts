@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
-import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
@@ -107,7 +107,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async stopService(id: string) {
+  async stopService(id: ServiceIdentifier) {
     this.Log(`stopService: ${id}`);
 
     if (!this.host.getService(id)) return;
@@ -136,7 +136,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async restartService(id: string) {
+  async restartService(id: ServiceIdentifier) {
     this.Log("Restarting selected service");
 
     MessageBox(
@@ -161,14 +161,14 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async startService(id: string) {
+  async startService(id: ServiceIdentifier) {
     this.Log(`startService: ${id}`);
 
     if (this.host.getService(id)) return;
     Daemon?.serviceHost?.startService(id);
   }
 
-  serviceInfoFor(id: string) {
+  serviceInfoFor(id: ServiceIdentifier) {
     this.Log(`serviceInfoFor: ${id}`);
 
     if (!this.host.hasService(id)) return;

@@ -15,14 +15,34 @@ export interface IServiceHost extends IProcess {
   initialRun(broadcast?: (m: string) => void): Promise<void>;
   init(broadcast?: (m: string) => void): Promise<void>;
   stop(): Promise<void>;
-  readonly STORE: Map<string, Service>;
+  readonly STORE: Map<ServiceIdentifier, Service>;
   loadStore(store: ServiceStore): boolean;
-  getServiceInfo(id: string): Service | undefined;
-  startService(id: string): Promise<ServiceChangeResult>;
-  stopService(id: string): Promise<ServiceChangeResult>;
-  restartService(id: string): Promise<ServiceChangeResult>;
+  getServiceInfo(id: ServiceIdentifier): Service | undefined;
+  startService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
+  stopService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
+  restartService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
   verifyServicesProcesses(): Promise<void>;
-  getService<T extends IBaseService = IBaseService>(id: string): T | undefined;
-  hasService(id: string): boolean;
+  getService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined;
+  hasService(id: ServiceIdentifier): boolean;
   spinDown(broadcast?: (message: string) => void): Promise<void>;
 }
+
+export const ServiceIdentifiers = [
+  "TrashSvc",
+  "BugHuntUsp",
+  "ShareMgmt",
+  "AppStorage",
+  "ProtoService",
+  "AdminBootstrapper",
+  "FileAssocSvc",
+  "GlobalDispatch",
+  "MessagingService",
+  "DevEnvironment",
+  "DistribSvc",
+  "IconService",
+  "LibMgmtSvc",
+  "MigrationSvc",
+  "RecentFilesSvc",
+] as const;
+
+export type ServiceIdentifier = (typeof ServiceIdentifiers)[number];

@@ -1,8 +1,10 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type {
   Activity,
   AuditLog,
+  AuditLogQueryOptions,
   FSItem,
   IpAddress,
   PartialUserTotp,
@@ -15,6 +17,7 @@ import type {
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
 import type { StoreItem } from "$types/package";
+import type { QueryResult } from "$types/query";
 import type { SharedDriveType } from "$types/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 
@@ -31,6 +34,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getUserByUsername(username: string): Promise<UserInfo | undefined>;
   getServerLogs(): Promise<ServerLogItem[]>;
   getAuditLog(): Promise<AuditLog[]>;
+  queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>>;
   grantAdmin(username: string): Promise<boolean>;
   revokeAdmin(username: string): Promise<boolean>;
   getPreferencesOf(username: string): Promise<UserPreferences | undefined>;
