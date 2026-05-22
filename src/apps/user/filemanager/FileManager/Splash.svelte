@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import type { FileManagerRuntime } from "../runtime";
-  const { process }: { process: FileManagerRuntime } = $props();
+
+  const { process }: { process: IFileManagerRuntime } = $props();
 </script>
 
 <div class="splash">

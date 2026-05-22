@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Env, Fs } from "$ts/env";
   import { join } from "$ts/util/fs";
   import type { FolderEntry } from "$types/fs";
-  import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
 
-  const { process, folder, i }: { process: WallpaperRuntime; folder: FolderEntry; i: number } = $props();
+  const { process, folder, i }: { process: IWallpaperRuntime; folder: FolderEntry; i: number } = $props();
 
   const path = join(process.directory, folder.name);
   const proxy = Fs.tryGetProxyInfo(path, true);

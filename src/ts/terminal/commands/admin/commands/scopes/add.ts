@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminScopesAdd: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess(AdminScopes.adminScopesPut, AdminScopes.adminScopesAvailable, AdminScopes.adminScopesGet)) return 2;

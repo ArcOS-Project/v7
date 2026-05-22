@@ -1,6 +1,6 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IIconsUserContext } from "$interfaces/contexts/icons";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IIconsUserContext } from "$interfaces/contexts/IIconsUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { maybeIconId } from "$ts/images";
 import type { IconService } from "$ts/servicehost/services/IconService";
 import { Store } from "$ts/writable";

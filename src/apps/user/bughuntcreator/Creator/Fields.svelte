@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { BugHuntCreatorRuntime } from "../runtime";
+  import type { IBugHuntCreatorRuntime } from "$interfaces/runtimes/IBugHuntCreatorRuntime";
 
-  const { process }: { process: BugHuntCreatorRuntime } = $props();
+  const { process }: { process: IBugHuntCreatorRuntime } = $props();
   const { userPreferences: preferences, title, body, overrideOptions } = process;
 </script>
 

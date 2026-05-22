@@ -162,6 +162,10 @@ export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
   strong: "strong",
 };
 
+export interface TotpSetupResponse {
+  url: string;
+}
+
 export interface PublicUserInfo {
   username: string;
   displayName?: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { MessageComposerRuntime } from "../runtime";
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { title, sending } = process;
 </script>
 

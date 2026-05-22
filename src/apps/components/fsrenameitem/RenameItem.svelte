@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IRenameItemRuntime } from "$interfaces/runtimes/IRenameItemRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { RenameItemRuntime } from "./runtime";
 
-  const { process }: { process: RenameItemRuntime } = $props();
+  const { process }: { process: IRenameItemRuntime } = $props();
   const { newName } = process;
 </script>
 

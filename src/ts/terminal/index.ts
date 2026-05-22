@@ -1,11 +1,10 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { Constructs } from "$interfaces/common";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Stack, State } from "$ts/env";
+import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -22,19 +21,11 @@ import type { DirectoryReadReturn } from "$types/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRRED, BRYELLOW, DefaultColors, RESET } from "./colors";
+import { HelpCommand } from "./commands/help";
+import { DefaultArcTermConfiguration } from "./config";
 import { Readline } from "./readline/readline";
-import {
-  BOLD,
-  BRBLACK,
-  BRBLUE,
-  BRGREEN,
-  BRRED,
-  BRYELLOW,
-  DefaultArcTermConfiguration,
-  DefaultColors,
-  RESET,
-  TerminalCommandStore,
-} from "./store";
+import { TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
 import { ArcScriptEngine } from "$ts/lang";
 

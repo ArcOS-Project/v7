@@ -1,12 +1,14 @@
 <script lang="ts">
+  import type { IShareListGuiRuntime } from "$interfaces/runtimes/IShareListGuiRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
-  import type { ShareListGuiRuntime } from "./runtime";
 
-  const { process }: { process: ShareListGuiRuntime } = $props();
+  const { process }: { process: IShareListGuiRuntime } = $props();
   const { joinedShares, ownedShares, selectedShare, selectedIsOwn, selectedIsMounted, loading } = process;
+
+  // The fact that the refresh button calls a foundational process method should be illegal.
 </script>
 
 <div class="header">

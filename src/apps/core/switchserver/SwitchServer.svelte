@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISwitchServerRuntime } from "$interfaces/runtimes/ISwitchServerRuntime";
   import { UUID } from "$ts/util/uuid";
-  import type { SwitchServerRuntime } from "./runtime";
   import ServerOption from "./SwitchServer/ServerOption.svelte";
 
-  const { process }: { process: SwitchServerRuntime } = $props();
+  const { process }: { process: ISwitchServerRuntime } = $props();
   const { servers, connectionError, loading } = process;
 </script>
 

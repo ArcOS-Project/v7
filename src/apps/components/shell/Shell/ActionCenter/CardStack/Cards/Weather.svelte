@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { WeatherInformation } from "$apps/components/shell/types";
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import { Sleep } from "$ts/sleep";
   import { contextMenu } from "$ts/ui/context/actions.svelte";

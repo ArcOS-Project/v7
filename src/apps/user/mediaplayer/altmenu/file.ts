@@ -1,7 +1,7 @@
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
 import type { ContextMenuItem } from "$types/app";
-import type { MediaPlayerRuntime } from "../runtime";
 
-export function FileMenu(runtime: MediaPlayerRuntime): ContextMenuItem {
+export function FileMenu(runtime: IMediaPlayerRuntime): ContextMenuItem {
   return {
     caption: "File",
     subItems: [

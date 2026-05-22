@@ -1,11 +1,12 @@
+import type { IExitRuntime } from "$interfaces/runtimes/IExitRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 import { ExitActions } from "./store";
 import type { ExitAction } from "./types";
 
-export class ExitRuntime extends AppProcess {
+export class ExitRuntime extends AppProcess implements IExitRuntime {
   selected = Store<string>();
 
   //#region LIFECYCLE

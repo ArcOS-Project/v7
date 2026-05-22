@@ -1,8 +1,8 @@
 import { DefaultPinnedApps, DefaultStartMenuActions } from "$apps/components/shell/store";
-import type { IPreferencesUserContext } from "$interfaces/contexts/preferences";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Fs, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import type { IPreferencesUserContext } from "$interfaces/contexts/IPreferencesUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import { Daemon, Fs, SysDispatch } from "$ts/env";
 import { DefaultUserPreferences } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";
 import { applyDefaults } from "$ts/util/hierarchy";
@@ -10,7 +10,6 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { UserPreferences } from "$types/user";
 import type { Unsubscriber } from "$types/writable";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {
@@ -35,15 +34,13 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
     }
     this.Log(`Committing user preferences`);
 
-    try {
-      const response = await Backend.put(`/user/preferences`, preferences, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.status === 200;
-    } catch {
-      this.Log(`Failed to commit user preferences!`, LogLevel.error);
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").PreferencesPut(preferences);
+    if (!result.success) {
+      this.Log(`Failed to commit user preferences! ${result.errorMessage}`, LogLevel.error);
+      return false;
     }
+
+    return true;
   }
 
   async sanitizeUserPreferences() {

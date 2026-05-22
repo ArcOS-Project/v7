@@ -1,7 +1,7 @@
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 import type { ContextMenuItem } from "$types/app";
-import type { FileManagerRuntime } from "../runtime";
 
-export function ViewMenu(runtime: FileManagerRuntime): ContextMenuItem {
+export function ViewMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {
     caption: "View",
     subItems: [

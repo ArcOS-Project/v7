@@ -1,39 +1,12 @@
-import type { ExecuteQueryRuntime } from "./runtime";
+import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 import type { QueryDesignation, QueryDesignationsType } from "./types";
 
-export const QuerySources = [
-  "",
-  "users",
-  "tokens",
-  "totp",
-  "reports",
-  "shares",
-  "indexes",
-  "activities",
-  "logs",
-  "auditlog",
-] as const;
-
-export const QueryComparisonTypes = [
-  "",
-  "is equal to",
-  "is not equal to",
-  "includes",
-  "does not include",
-  "is defined",
-  "is not defined",
-  "is boolean",
-  "is greater than",
-  "is greater than or equal to",
-  "is less than",
-  "is less than or equal to",
-] as const;
-
 export const QueryUserColumns = ["userId", "authorId", "recipient", "repliesTo"];
+export const ConceiledColumns = ["users.passwordHash", "tokens.value"];
 
 export const EmptyQueryDesignation: QueryDesignation = { obtainer: () => [], scopes: [] };
 
-export function QueryDesignations(runtime: ExecuteQueryRuntime): QueryDesignationsType {
+export function QueryDesignations(runtime: IExecuteQueryRuntime): QueryDesignationsType {
   return {
     "": EmptyQueryDesignation,
     users: {
@@ -71,6 +44,10 @@ export function QueryDesignations(runtime: ExecuteQueryRuntime): QueryDesignatio
     auditlog: {
       obtainer: async () => await runtime.admin.getAuditLog(),
       scopes: ["admin.auditlog"],
+    },
+    ips: {
+      obtainer: async () => await runtime.admin.GetIpAddresses(),
+      scopes: ["admin.ip.list"],
     },
   };
 }

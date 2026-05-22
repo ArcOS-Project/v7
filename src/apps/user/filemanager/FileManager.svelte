@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import type { AppComponentProps } from "$types/app";
   import AddressBar from "./FileManager/AddressBar.svelte";
@@ -8,9 +9,8 @@
   import Sidebar from "./FileManager/Sidebar.svelte";
   import Splash from "./FileManager/Splash.svelte";
   import VirtualRenderer from "./FileManager/VirtualRenderer.svelte";
-  import type { FileManagerRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<FileManagerRuntime> = $props();
+  const { process }: AppComponentProps<IFileManagerRuntime> = $props();
   const { starting, virtual } = process;
 </script>
 

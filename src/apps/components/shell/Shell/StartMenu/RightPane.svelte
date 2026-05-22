@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Fs, SysDispatch } from "$ts/env";
   import { contextMenu, contextProps } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";

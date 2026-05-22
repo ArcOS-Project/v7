@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
 
   const { data, process }: { data: ViewBugReportData; process: IAdminPortalRuntime } = $props();
   const { report } = data;

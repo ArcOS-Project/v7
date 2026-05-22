@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ArcTermColorsRuntime } from "../runtime";
+  import type { IArcTermColorsRuntime } from "$interfaces/runtimes/IArcTermColorsRuntime";
   import { DarkColorPresets, LightColorPresets } from "../store";
   import type { ArcTermColorPreset } from "../types";
   import Preset from "./Preset.svelte";
 
-  const { process }: { process: ArcTermColorsRuntime } = $props();
+  const { process }: { process: IArcTermColorsRuntime } = $props();
 
   let selected = $state<ArcTermColorPreset>();
 </script>

@@ -1,9 +1,9 @@
-import type { IArcTerminal } from "$interfaces/terminal";
-import { DevelopmentEnvironment } from "$ts/servicehost/services/DevEnvironment";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
 import { DevEnvActivationResultCaptions } from "$types/devenv";
 import type { Arguments } from "$types/terminal";
+import { BRGREEN, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRGREEN, RESET } from "../store";
 
 export class DevenvCommand extends TerminalProcess {
   static keyword: string = "devenv";
@@ -46,7 +46,7 @@ export class DevenvCommand extends TerminalProcess {
     }
 
     await term.daemon?.serviceHost?.startService("DevEnvironment");
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    const service = term.daemon?.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Warning("Failed to start DevEnvironment service. Please report.");
@@ -69,7 +69,7 @@ export class DevenvCommand extends TerminalProcess {
   }
 
   async disconnect(term: IArcTerminal) {
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    const service = term.daemon?.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Error("There is no development environment running");

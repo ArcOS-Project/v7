@@ -1,4 +1,4 @@
-import type { IAdminPortalRuntime } from "$interfaces/admin";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
 import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";

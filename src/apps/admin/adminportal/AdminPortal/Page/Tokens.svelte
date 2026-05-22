@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { sliceIntoChunks, sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { ExpandedToken } from "$types/admin";

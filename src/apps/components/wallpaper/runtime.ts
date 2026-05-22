@@ -1,7 +1,7 @@
+import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -13,7 +13,7 @@ import type { ShortcutStore } from "$types/shortcut";
 import { WallpaperContextMenu } from "./context";
 import type { DesktopIcons } from "./types";
 
-export class WallpaperRuntime extends AppProcess {
+export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
   CONFIG_PATH = join(UserPaths.System, "DesktopIcons.json");
   contents = Store<DirectoryReadReturn | undefined>();
   selected = Store<string>();

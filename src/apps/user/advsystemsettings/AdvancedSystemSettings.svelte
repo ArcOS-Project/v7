@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
   import type { Component } from "svelte";
-  import type { AdvSysSetRuntime } from "./runtime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { tabs, currentTab, bufferChanged } = process;
 
   let Tab: Component | undefined = $state(undefined);

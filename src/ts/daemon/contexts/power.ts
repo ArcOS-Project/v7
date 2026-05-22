@@ -1,10 +1,9 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IPowerUserContext } from "$interfaces/contexts/power";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, Stack, State } from "$ts/env";
+import type { IPowerUserContext } from "$interfaces/contexts/IPowerUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { BatteryType } from "$types/navigator";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext implements IPowerUserContext {

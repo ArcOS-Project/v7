@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import { Daemon } from "$ts/daemon";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon } from "$ts/env";
   import { sortByKey } from "$ts/util";
   import type { ArcShortcut } from "$types/shortcut";
   import { onMount } from "svelte";

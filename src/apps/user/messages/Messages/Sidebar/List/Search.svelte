@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { searchQuery } = process;
 </script>
 

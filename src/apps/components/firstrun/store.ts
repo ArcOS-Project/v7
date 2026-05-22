@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/shortcut";

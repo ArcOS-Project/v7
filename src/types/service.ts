@@ -1,6 +1,6 @@
 import type { Constructs } from "$interfaces/common";
-import type { IBaseService } from "$interfaces/service";
-import type { IUserDaemon } from "../interfaces/daemon";
+import type { IBaseService } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "../interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
 

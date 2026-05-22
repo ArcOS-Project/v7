@@ -1,9 +1,10 @@
-import type { IAppProcess } from "$interfaces/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import type { App, AppProcessData } from "$types/app";
 import type { ParsedStackFrame } from "$types/error";
 
-export class OopsStackTracerRuntime extends AppProcess {
+export class OopsStackTracerRuntime extends AppProcess implements IOopsStackTracerRuntime {
   data: App;
   proc?: IAppProcess;
   exception: Error | PromiseRejectionEvent;

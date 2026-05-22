@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "../../runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import Attachment from "./AttachmentBar/Attachment.svelte";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { message } = process;
 </script>
 

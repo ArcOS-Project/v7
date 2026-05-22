@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import { MessageBox } from "$ts/util/dialog";
   import type { UserTotp } from "$types/admin";

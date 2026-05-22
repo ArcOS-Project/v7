@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAddServerRuntime } from "$interfaces/runtimes/IAddServerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { AddServerRuntime } from "./runtime";
 
-  const { process }: { process: AddServerRuntime } = $props();
+  const { process }: { process: IAddServerRuntime } = $props();
   const { loading, action } = process;
 
   let hostname = $state<string>("");

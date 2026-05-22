@@ -1,10 +1,9 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IGlobalDispatch } from "$interfaces/services/GlobalDispatch";
-import { Daemon } from "$ts/daemon";
-import { Env, getKMod, Stack, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
-import type { ServiceHost } from "$ts/servicehost";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+import { Daemon, Env, getKMod, Stack, SysDispatch } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
 import type { GlobalDispatchClient } from "$types/dispatch";
@@ -19,7 +18,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost) {
     super(pid, parentPid, name, host);
 
     this.server = getKMod<IServerManager>("server");
@@ -95,27 +94,12 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   }
 
   async getClients(): Promise<GlobalDispatchClient[]> {
-    try {
-      const response = await Backend.get("/user/dispatch", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-
-      return response.data as GlobalDispatchClient[];
-    } catch {
-      return [];
-    }
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchGet();
+    return result?.result ?? [];
   }
 
   async disconnectClient(clientId: string) {
-    try {
-      const response = await Backend.post(
-        `/user/dispatch/kick/${clientId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchKick(clientId)).success;
   }
 
   enableListener() {

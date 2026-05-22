@@ -1,4 +1,4 @@
-import type { IProcess, IProcessDispatch } from "$interfaces/process";
+import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
 import { Log } from "$ts/logging";
 import type { DispatchCallback } from "$types/dispatch";
 

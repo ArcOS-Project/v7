@@ -1,10 +1,10 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { AppProcessData } from "$types/app";
 
 export class FeedbackProcess extends Process {
   //#region LIFECYCLE
-    
+
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid);
 
