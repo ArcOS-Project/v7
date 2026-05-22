@@ -1,6 +1,5 @@
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { type ArcScriptAstNode, ArcScriptAstNodeType, type ArcScriptFunction, type ArcScriptLexerToken, ArcScriptLexerTokenType, type ArcScriptPosition, type ArcScriptVariable, ArcScriptVariableType } from "$interfaces/IArcScriptEngine";
-import { __Console__ } from "$ts/console";
 
 const Operators: string[] = [
   "+",
@@ -28,7 +27,8 @@ const AssignOps: string[] = [
 const Keywords: string[] = [
   "var",
   "fn",
-  "return"
+  "return",
+  "friend"
 ];
 
 const Precedences: string[][] = [
@@ -59,6 +59,11 @@ function getPrecedence(str: string) {
   return precedence !== -1 ? precedence : 3;
 }
 
+interface ArcScriptExpressionReference {
+  name: string;
+  expression: ArcScriptAstNode;
+}
+
 export class ArcScriptEngine extends Process {
 
   //#region LIFECYCLE
@@ -85,6 +90,8 @@ export class ArcScriptEngine extends Process {
   
   private variables: Record<string, ArcScriptVariable> = {};
   private functions: Record<string, ArcScriptFunction> = {};
+  private derivedVars: Record<string, ArcScriptExpressionReference[]> = {};
+  private friendVars: string[] = [];
 
   execute(src: string): void {
     const tokens = this.tokenize(src)
@@ -96,6 +103,9 @@ export class ArcScriptEngine extends Process {
 
   interpret(ast: ArcScriptAstNode[]) {
     this.variables = {};
+    this.functions = {};
+    this.derivedVars = {};
+    this.friendVars = [];
     for (const l of ast) {
       this.interpretLine(l);
       if (this.errored) return;
@@ -108,7 +118,8 @@ export class ArcScriptEngine extends Process {
     return ArcScriptVariableType.string;
   }
 
-  private getExpressionValue(expr: ArcScriptAstNode[]): ExpressionData {
+  private getExpressionValue(input: ArcScriptAstNode[]): ExpressionData {
+    const expr = structuredClone(input);
     const data: ExpressionData = {
       type: ArcScriptVariableType.string,
       value: null
@@ -193,20 +204,80 @@ export class ArcScriptEngine extends Process {
     return "";
   }
 
+  private findReferences(line: ArcScriptAstNode): string[] {
+    const refs: string[] = [];
+    switch (line.type) {
+      case ArcScriptAstNodeType.IDENT:
+        const name = line.data.value;
+        const v = this.variables[name];
+        if (v) {
+          refs.push(name);
+        }
+        break;
+      
+      case ArcScriptAstNodeType.EXPR:
+        for (const node of line.data.value as ArcScriptAstNode[]) {
+          const ref = this.findReferences(node);
+          if (ref.length > 0) {
+            refs.push(...ref);
+          }
+        }
+    }
+    return [...new Set(refs)];
+  }
+
+  private recalculateFriends(varName: string) {
+    const friends = this.derivedVars[varName];
+    if (!friends) return;
+    for (const friend of friends) {
+      const v = this.interpretLine(friend.expression);
+        if (v) {
+          this.variables[friend.name] = {
+            type: v.type,
+            value: v.value
+          };
+        }
+    }
+  }
+
   private interpretLine(line: ArcScriptAstNode): ExpressionData | undefined {
     if (!line) return;
     switch (line.type) {
       case ArcScriptAstNodeType.DECL:
       case ArcScriptAstNodeType.ASSIGN: {
+        if (this.friendVars.includes(line.data.value)) {
+          this.posError("cannot reassign friend variable", line.position[1]);
+          return;
+        }
         const v = this.interpretLine(line.data.value);
         if (v) {
           this.variables[line.data.name] = {
             type: v.type,
             value: v.value
           };
+          this.recalculateFriends(line.data.name);
         }
         break
       }
+
+      case ArcScriptAstNodeType.FRIEND:
+        const refs = this.findReferences(line.data.value);
+        for (const ref of refs) {
+          if (!this.derivedVars[ref]) this.derivedVars[ref] = [];
+          this.derivedVars[ref].push({
+            name: line.data.name,
+            expression: line.data.value
+          });
+        }
+        const v = this.interpretLine(line.data.value);
+        if (v) {
+          this.friendVars.push(line.data.name);
+          this.variables[line.data.name] = {
+            type: v.type,
+            value: v.value
+          };
+        }
+        break
 
       case ArcScriptAstNodeType.COMMAND:{
         const args: string[] = [];
@@ -331,7 +402,35 @@ export class ArcScriptEngine extends Process {
     }
 
     if (line[0].type === ArcScriptLexerTokenType.KEYWORD && line[0].value === "var") {
+      if (line.length === 1) {
+        this.posError("expected variable name", line[0].position);
+        return out;
+      } else if (line.length === 2) {
+        this.posError("expected operator", line[1].position);
+        return out;
+      } else if (line.length === 3) {
+        this.posError("expected value", line[2].position);
+        return out;
+      }
       out.type = ArcScriptAstNodeType.DECL;
+      out.data.name = line[1].value;
+      out.data.op = line[2].value;
+      out.data.value = this.parseTokenLine(line.slice(3));
+      return out;
+    }
+
+    if (line[0].type === ArcScriptLexerTokenType.KEYWORD && line[0].value === "friend") {
+      if (line.length === 1) {
+        this.posError("expected variable name", line[0].position);
+        return out;
+      } else if (line.length === 2) {
+        this.posError("expected operator", line[1].position);
+        return out;
+      } else if (line.length === 3) {
+        this.posError("expected value", line[2].position);
+        return out;
+      }
+      out.type = ArcScriptAstNodeType.FRIEND;
       out.data.name = line[1].value;
       out.data.op = line[2].value;
       out.data.value = this.parseTokenLine(line.slice(3));
@@ -355,8 +454,11 @@ export class ArcScriptEngine extends Process {
           if (arg.value === ',') {
             args.push(structuredClone(temp));
             temp.length = 0;
+            i++;
+            continue
           }
         }
+        temp.push(arg);
         i++;
       }
       if (temp.length > 0) {
@@ -392,8 +494,11 @@ export class ArcScriptEngine extends Process {
           if (arg.value === ',') {
             args.push(structuredClone(temp));
             temp.length = 0;
+            i++;
+            continue
           }
         }
+        temp.push(arg);
         i++;
       }
       if (temp.length > 0) {

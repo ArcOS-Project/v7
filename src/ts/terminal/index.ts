@@ -203,8 +203,8 @@ export class ArcTerminal extends Process implements IArcTerminal {
           } else {
             try {
               engine.execute(text)
-            } catch (e) {
-              this.Error("Error occurred while executing ArcScript file.");
+            } catch (e: any) {
+              this.Error("An error occurred while executing the ArcScript file.");
               this.lastCommandErrored = true;
             }
           }

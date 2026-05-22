@@ -144,6 +144,10 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     friendlyName: "ArcTerm Color Preset",
     icon: "ArcTermIcon",
   },
+  ".script": {
+    friendlyName: "ArcOS Script",
+    icon: "ReleaseLogo"
+  },
   ...AudioFileDefinitions, // AudioMimeIcon
   ...ImageFileDefinitions, // ImageMimeIcon
   ...VideoFileDefinitions, // VideoMimeIcon

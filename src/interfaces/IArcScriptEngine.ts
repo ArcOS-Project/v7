@@ -24,6 +24,7 @@ export const enum ArcScriptAstNodeType {
   BOOL = "boolean",
   FUNC = "function",
   CALL = "call",
+  FRIEND = "friend"
 }
 
 export const enum ArcScriptVariableType {
