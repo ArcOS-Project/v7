@@ -1,4 +1,4 @@
-import type { IAppProcess } from "$interfaces/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { LogItem } from "./logging";
 
 export interface BugReport {

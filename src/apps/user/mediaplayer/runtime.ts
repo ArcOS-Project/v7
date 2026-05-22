@@ -1,13 +1,16 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs, Stack } from "$ts/env";
+import { ConfigurationBuilder } from "$ts/config";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { getReadableVibrantColor } from "$ts/util/color";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/app";
@@ -18,10 +21,8 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import { CommandResult } from "$ts/result";
-import { ConfigurationBuilder } from "$ts/config";
 
-export class MediaPlayerRuntime extends AppProcess {
+export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
   private readonly COVERIMAGES_PATH = join(UserPaths.Configuration, "MediaPlayer", "CoverImages");
   public queue = Store<string[]>([]);
@@ -150,7 +151,7 @@ export class MediaPlayerRuntime extends AppProcess {
       else this.readFile([file]);
     }
 
-    this.shell?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,
@@ -627,7 +628,7 @@ export class MediaPlayerRuntime extends AppProcess {
     return result;
   }
 
-  async parseMetadata(path: string, apply = true): Promise<CommandResult<AudioFileMetadata>> {
+  async parseMetadata(path: string, apply = true): Promise<ICommandResult<AudioFileMetadata>> {
     this.Log(`parseMetadata: ${path} apply=${apply}`);
 
     try {

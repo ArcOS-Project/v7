@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { IBugHuntCreatorRuntime } from "$interfaces/runtimes/IBugHuntCreatorRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
@@ -6,9 +7,8 @@
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import Fields from "./Creator/Fields.svelte";
-  import type { BugHuntCreatorRuntime } from "./runtime";
 
-  const { process }: { process: BugHuntCreatorRuntime } = $props();
+  const { process }: { process: IBugHuntCreatorRuntime } = $props();
   const { loading, title, body } = process;
 </script>
 

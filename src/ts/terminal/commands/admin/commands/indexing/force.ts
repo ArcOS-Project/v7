@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
-import { BRPURPLE, RESET } from "$ts/terminal/store";
+import { BRPURPLE, RESET } from "$ts/terminal/colors";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminIndexingForce: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess(AdminScopes.adminIndexUser)) return 2;

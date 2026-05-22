@@ -1,9 +1,9 @@
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
 import { Env } from "$ts/env";
 import { getParentDirectory } from "$ts/util/fs";
 import type { ContextMenuItem } from "$types/app";
-import type { CodRuntime } from "../runtime";
 
-export function FileMenu(runtime: CodRuntime): ContextMenuItem {
+export function FileMenu(runtime: ICodRuntime): ContextMenuItem {
   return {
     caption: "File",
     subItems: [

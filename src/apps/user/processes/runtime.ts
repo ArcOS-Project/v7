@@ -1,9 +1,9 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IProcess } from "$interfaces/process";
-import type { IServiceHost } from "$interfaces/service";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
@@ -14,7 +14,7 @@ import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
 
-export class ProcessManagerRuntime extends AppProcess {
+export class ProcessManagerRuntime extends AppProcess implements IProcessManagerRuntime {
   public selected = Store<string>();
   public running = Store<number>(0);
   public currentTab = Store<string>("Processes");

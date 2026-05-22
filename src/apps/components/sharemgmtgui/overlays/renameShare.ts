@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { ShareMgmtOverlayRuntime } from "../overlay";
 import RenameShare from "../ShareMgmtGui/Overlays/RenameShare.svelte";
 
 export const RenameShareApp: App = {
@@ -26,7 +26,7 @@ export const RenameShareApp: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: ShareMgmtOverlayRuntime,
     component: RenameShare as any,
   },
   overlay: true,

@@ -1,10 +1,10 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
-  import type { MessagingAppRuntime } from "../../runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import Message from "./List/Message.svelte";
   import Search from "./List/Search.svelte";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { buffer, refreshing, searchQuery, searchResults } = process;
 </script>
 

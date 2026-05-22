@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import type { MessagingAppRuntime } from "../runtime";
   import ActionBar from "./Container/ActionBar.svelte";
   import AttachmentBar from "./Container/AttachmentBar.svelte";
   import MessageContent from "./Container/MessageContent.svelte";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
   const { message, loading, messageNotFound, messageWindow } = process;
 </script>
 

@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
@@ -5,7 +6,7 @@ import { toForm } from "$ts/util/form";
 import { LogLevel } from "$types/logging";
 import { AxiosError } from "axios";
 
-export async function LoginUser(identity: string, password: string): Promise<CommandResult<string>> {
+export async function LoginUser(identity: string, password: string): Promise<ICommandResult<string>> {
   Log("LoginUser", `Attempting to authenticate ${identity}`);
 
   try {

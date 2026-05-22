@@ -1,6 +1,5 @@
-import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/shell";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack, SysDispatch } from "$ts/env";
+import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
+import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";

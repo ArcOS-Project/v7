@@ -1,5 +1,5 @@
-import type { IProcess } from "$interfaces/process";
-import type { IShellRuntime } from "$interfaces/shell";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
 

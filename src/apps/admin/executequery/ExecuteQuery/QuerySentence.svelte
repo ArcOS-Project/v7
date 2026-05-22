@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { tryJsonStringify } from "$ts/util/json";
   /**
    * This is a messy file. Yes.
    */
-  import type { ExecuteQueryRuntime } from "../runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+  import { tryJsonStringify } from "$ts/util/json";
 
-  const { process }: { process: ExecuteQueryRuntime } = $props();
+  const { process }: { process: IExecuteQueryRuntime } = $props();
   const { selectedSource, expressions } = process;
 </script>
 

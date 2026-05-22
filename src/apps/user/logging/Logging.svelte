@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import Content from "./Logging/Content.svelte";
   import Sidebar from "./Logging/Sidebar.svelte";
-  import type { LoggingRuntime } from "./runtime";
 
-  const { process }: { process: LoggingRuntime } = $props();
+  const { process }: { process: ILoggingRuntime } = $props();
   const { groups, currentSource, sources } = process;
 </script>
 

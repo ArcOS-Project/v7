@@ -1,0 +1,52 @@
+import type { FileProgressMutator } from "$apps/components/fsprogress/types";
+import type { MessagingPage } from "$apps/user/messages/types";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
+import type { PublicUserInfo } from "$types/user";
+import type { ReadableStore } from "$types/writable";
+
+export interface IMessagingAppRuntime extends IAppProcess {
+  service: IMessagingInterface;
+  page: ReadableStore<MessagingPage | undefined>;
+  pageId: ReadableStore<string | undefined>;
+  buffer: ReadableStore<ExpandedMessage[]>;
+  correlated: ReadableStore<ExpandedMessage[][]>;
+  loading: ReadableStore<boolean>;
+  refreshing: ReadableStore<boolean>;
+  errored: ReadableStore<boolean>;
+  messageNotFound: ReadableStore<boolean>;
+  message: ReadableStore<ExpandedMessage | undefined>;
+  userInfoCache: Record<string, PublicUserInfo>;
+  searchQuery: ReadableStore<string>;
+  searchResults: ReadableStore<string[]>;
+  messageWindow: boolean;
+  messageFromFile: boolean;
+
+  getInbox(): Promise<ExpandedMessage[]>;
+  getSent(): Promise<ExpandedMessage[]>;
+  getArchived(): Promise<ExpandedMessage[]>;
+  readMessage(messageId: string, force?: boolean): Promise<void>;
+  userInfo(userId: string): Promise<ICommandResult<PublicUserInfo>>;
+  readMessageFromFile(path: string): Promise<boolean | void>;
+  deleteMessage(id: string): Promise<void>;
+  compose(): void;
+  replyTo(message: ExpandedMessage): void;
+  forward(message: ExpandedMessage): Promise<void>;
+  saveMessage(): Promise<void>;
+  getArchiveState(): string[];
+  setArchiveState(state: string[]): void;
+  isArchived(id: string): boolean;
+  addToArchive(id: string): void;
+  removeFromArchive(id: string): void;
+  toggleArchived(message: ExpandedMessage): void;
+  switchPage(id: string): Promise<void>;
+  refresh(): Promise<void>;
+  correlateMessages(messages: ExpandedMessage[]): ExpandedMessage[][];
+  refreshFailed(): void;
+  Search(query: string): void;
+  popoutMessage(messageId: string): void;
+  readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator): Promise<ArrayBuffer | undefined>;
+  openAttachment(attachment: MessageAttachment, messageId: string): Promise<void>;
+}

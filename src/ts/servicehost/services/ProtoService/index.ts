@@ -1,7 +1,7 @@
-import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
-import { Daemon } from "$ts/daemon";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
+import { Daemon } from "$ts/env";
 import { KernelParams } from "$ts/kernel/getters";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { tryJsonParse } from "$ts/util/json";
 import type { ArcProtocol, ProtocolHandler } from "$types/proto";
@@ -17,7 +17,7 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);

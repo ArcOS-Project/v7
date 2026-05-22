@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Clock from "./SystemArea/Clock.svelte";
 
   const { process }: { process: IShellRuntime } = $props();

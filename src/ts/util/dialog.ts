@@ -1,6 +1,5 @@
-import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import { Daemon } from "$ts/daemon";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import { Daemon } from "$ts/env";
 import type { App } from "$types/app";
 import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
 import type { ErrorButton } from "$types/notification";
@@ -13,7 +12,7 @@ export async function MessageBox(data: MessageBoxData, parentPid: number, overla
   const desktop = Daemon?.workspaces?.getCurrentDesktop();
 
   await stack.spawn(
-    MessageBoxRuntime,
+    appData.assets.runtime,
     desktop,
     "SYSTEM",
     parentPid,

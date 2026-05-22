@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import type { FileManagerRuntime } from "../runtime";
   import FileItem from "./DirectoryListing/FileItem.svelte";
   import FolderItem from "./DirectoryListing/FolderItem.svelte";
   import HeaderRow from "./DirectoryListing/HeaderRow.svelte";
   import InfoPane from "./InfoPane.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { loading, contents, userPreferences, directoryListing, loadSave } = process;
 </script>
 

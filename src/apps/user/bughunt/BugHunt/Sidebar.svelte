@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import dayjs from "dayjs";
   import type { BugHuntRuntime } from "../runtime";
   import Loading from "./Loading.svelte";

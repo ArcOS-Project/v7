@@ -14,7 +14,6 @@ import { AdminBugHuntReportClose } from "./commands/bughunt/report/close";
 import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
 import { AdminBugHuntReportOpen } from "./commands/bughunt/report/open";
 import { AdminBugHuntStats } from "./commands/bughunt/stats";
-import { AdminHelp } from "./commands/help";
 import { AdminIndexingDelete } from "./commands/indexing/delete";
 import { AdminIndexingForce } from "./commands/indexing/force";
 import { AdminIndexingListAll } from "./commands/indexing/list/all";
@@ -138,7 +137,6 @@ export const AdminCommandStore = {
     delete: AdminTotpDelete,
     deactivate: AdminTotpDeactivate,
   },
-  "?": AdminHelp,
   accessors: {
     list: {
       all: AdminAccessorsListAll,

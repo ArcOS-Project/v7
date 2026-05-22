@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import AccentedLogo from "$lib/AccentedLogo.svelte";
   import { Logo } from "$ts/branding";
 

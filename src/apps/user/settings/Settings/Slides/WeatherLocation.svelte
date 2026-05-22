@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { Env, Stack } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
 
   let searchInput = $state("");

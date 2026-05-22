@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import type { OopsNotifierRuntime } from "./runtime";
+  import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
+  import { Daemon } from "$ts/env";
 
-  const { process }: { process: OopsNotifierRuntime } = $props();
+  const { process }: { process: IOopsNotifierRuntime } = $props();
   const { data } = process;
 </script>
 

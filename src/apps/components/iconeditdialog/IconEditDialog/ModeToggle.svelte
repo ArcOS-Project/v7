@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IconEditDialogRuntime } from "../runtime";
+  import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
 
-  const { process }: { process: IconEditDialogRuntime } = $props();
+  const { process }: { process: IIconEditDialogRuntime } = $props();
   const { type } = process;
 </script>
 

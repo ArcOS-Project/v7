@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "../../runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
   import ColumnName from "./ExpressionRow/ColumnName.svelte";
   import ComparisonType from "./ExpressionRow/ComparisonType.svelte";
   import ComparisonValue from "./ExpressionRow/ComparisonValue.svelte";
   import IncompleteWarning from "./ExpressionRow/IncompleteWarning.svelte";
 
-  const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
+  const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
 </script>
 
 <div class="row">

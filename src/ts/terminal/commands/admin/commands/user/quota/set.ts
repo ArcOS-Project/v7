@@ -1,6 +1,6 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
 import { tryParseInt } from "$ts/util";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminUserQuotaSet: AdminCommandType = async (term, admin, argv) => {
   if (!admin.canAccess(AdminScopes.adminUserfsQuota)) return 2;

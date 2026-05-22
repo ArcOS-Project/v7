@@ -1,5 +1,5 @@
-import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
@@ -10,12 +10,15 @@ export class MigrationNode implements IMigrationNode {
   public static friendlyName = "Unknown Migration";
   public static inversional = false;
   public static deprecated = false;
-  // TODO: below version aggregation is bugged, 7.0.1 resolves to the same as 7.0.10 and 7.1.0
-  public static version = packageJson.version
-    .split(".")
-    .splice(1, 2)
-    .map(Number)
-    .reduce((p, v, i) => p + (i == 1 ? v / 10 : v)); // float, defaults to ArcOS version (more or less)
+
+  // float, defaults to ArcOS version (more or less)
+  public static version =
+    Number(
+      `0x${packageJson.version
+        .split(".")
+        .map((s) => s.padStart(2, "0"))
+        .join("")}`
+    ) / 1e5;
   public svc: IMigrationService;
 
   protected self: IMigrationNodeConstructor;
