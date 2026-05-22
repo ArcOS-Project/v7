@@ -31,4 +31,6 @@ export interface IFilesystemUserContext extends IUserContext {
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
   normalizePath(path: string): string;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
+  startFilesystemSupplier(): Promise<void>;
+  startDriveNotifierWatcher(): void;
 }

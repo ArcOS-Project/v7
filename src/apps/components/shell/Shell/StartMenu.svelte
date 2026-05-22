@@ -18,7 +18,7 @@
     username: string;
   } = $props();
 
-  const { searchQuery } = process;
+  const { searchQuery } = process.arcFind!;
 </script>
 
 <div

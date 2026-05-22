@@ -43,6 +43,10 @@ export class AppProcess extends Process implements IAppProcess {
   public windowFullscreen = Store<boolean>(false);
   public blinking = Store<boolean>(false);
 
+  get shell() {
+    return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
+  }
+
   draggable: Draggable | undefined;
 
   //#region LIFECYCLE

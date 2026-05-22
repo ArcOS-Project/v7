@@ -1,8 +1,10 @@
 import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShareManager } from "$interfaces/services/IShareManager";
+import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { Sleep } from "$ts/sleep";
 import { isPopulatable } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import type { App } from "$types/app";
@@ -10,63 +12,9 @@ import { ElevationLevel } from "$types/elevation";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {
+
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
-  }
-
-  async spawnAutoload() {
-    if (this._disposed) return;
-
-    const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
-    const autoloadApps: string[] = [];
-
-    this.Log(`Spawning autoload applications`);
-
-    let { startup } = Daemon!.preferences();
-    startup ||= {};
-
-    for (const payload in startup) {
-      const type = startup[payload];
-
-      switch (type.toLowerCase()) {
-        case "app":
-          autoloadApps.push(payload);
-          break;
-        case "file":
-          if (!this.safeMode) await Daemon!.files?.openFile(payload);
-          break;
-        case "folder":
-          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", this.pid, {}, payload);
-          break;
-        case "share":
-          await shares?.mountShareById(payload);
-          break;
-        case "disabled":
-          break;
-        default:
-          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
-      }
-    }
-
-    await Daemon!.spawn?.spawnApp("shellHost", this.pid, { noWorkspace: true }, autoloadApps);
-
-    if (this.safeMode) Daemon!.helpers?.safeModeNotice();
-
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      await MessageBox(
-        {
-          title: "Firefox support",
-          message:
-            "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: "FirefoxIcon",
-        },
-        +Env.get("shell_pid"),
-        true
-      );
-    }
-
-    Daemon!.autoLoadComplete = true;
   }
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {

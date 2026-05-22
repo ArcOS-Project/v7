@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { UserPreferences } from "$types/user";
+import type { UserPreferences, Workspace } from "$types/user";
 
 export interface IWorkspaceUserContext extends IUserContext {
   virtualDesktop: HTMLDivElement | undefined;
@@ -14,4 +14,6 @@ export interface IWorkspaceUserContext extends IUserContext {
   nextDesktop(): boolean;
   previousDesktop(): void;
   moveWindow(pid: number, destination: string): Promise<void>;
+  deleteVirtualDesktopAck(workspace: Workspace): Promise<void>;
+  startVirtualDesktops(): Promise<void>;
 }

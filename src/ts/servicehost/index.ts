@@ -19,7 +19,10 @@ import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { IBaseService, IServiceHost, ServiceIdentifier } from "../../interfaces/IServiceHost";
+import { arcFindService } from "./services/ArcFindSvc";
 import { migrationService } from "./services/MigrationSvc";
+import { systemShortcutsService } from "./services/SystemShortcutsSvc";
+import { trayHostService } from "./services/TrayHostSvc";
 import { ServiceChangeResultCaptions } from "./store";
 
 export class ServiceHost extends Process implements IServiceHost {
@@ -109,8 +112,11 @@ export class ServiceHost extends Process implements IServiceHost {
     ["TrashSvc", { ...trashService }],
     ["BugHuntUsp", { ...bhuspService }],
     ["ShareMgmt", { ...shareService }],
+    ["ArcFindSvc", { ...arcFindService }],
+    ["SystemShortcutsSvc", { ...systemShortcutsService }],
     ["AppStorage", { ...appStoreService }],
     ["ProtoService", { ...protoService }],
+    ["TrayHostSvc", { ...trayHostService }],
     ["AdminBootstrapper", { ...adminService }],
     ["FileAssocSvc", { ...fileAssocService }],
     ["GlobalDispatch", { ...globalDispatchService }],

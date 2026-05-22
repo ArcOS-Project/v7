@@ -1,15 +1,17 @@
+import type { IBaseService } from "$interfaces/IServiceHost";
 import type { PathedFileEntry } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
-import type { FuseResultMatch } from "fuse.js";
-import type { IAppProcess } from "../IAppProcess";
+import type { FuseResult, FuseResultMatch } from "fuse.js";
 
-// TODO: Why is this an app process and not a service?
-export interface IArcFindRuntime extends IAppProcess {
+export interface IArcFindService extends IBaseService {
   loading: ReadableStore<boolean>;
-  start(): Promise<false | undefined>;
-  stop(): Promise<void>;
+  searchQuery: ReadableStore<string>;
+  searchResults: ReadableStore<FuseResult<SearchItem>[]>;
+  searching: ReadableStore<boolean>;
+  SelectionIndex: ReadableStore<number>;
+
   refresh(): Promise<SearchItem[] | undefined>;
   getFilesystemSearchSupplier(preferences: UserPreferences): Promise<SearchItem[]>;
   getAppSearchSupplier(preferences: UserPreferences): Promise<SearchItem[]>;
@@ -23,4 +25,7 @@ export interface IArcFindRuntime extends IAppProcess {
       matches?: ReadonlyArray<FuseResultMatch>;
     }[]
   >;
+  MutateIndex(e: KeyboardEvent): void | -1;
+  Trigger(result: SearchItem): Promise<void>;
+  Submit(): void;
 }

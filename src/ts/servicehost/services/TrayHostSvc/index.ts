@@ -1,37 +1,23 @@
-import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
+import type { TrayIconDiscriminator, TrayIconOptions } from "$apps/components/shell/types";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { ITrayHostService, ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { UserPreferencesStore } from "$types/user";
-import type { TrayIconDiscriminator, TrayIconOptions } from "../shell/types";
+import type { Service } from "$types/service";
 
-export class TrayHostRuntime extends Process implements ITrayHostRuntime {
-  userPreferences?: UserPreferencesStore;
+export class TrayHostService extends BaseService implements ITrayHostService {
   public trayIcons = Store<Record<TrayIconDiscriminator, ITrayIconProcess>>({});
 
-  //#region LIFECYCLE
-
-  constructor(pid: number, parentPid: number, _: AppProcessData) {
-    super(pid, parentPid);
-
-    this.name = "TrayHostRuntime";
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (message: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
+
+    Env.set("TRAYHOST_PID", this.pid);
   }
-
-  async start() {
-    if (Env.get("trayhost_pid") && Stack.getProcess(+Env.get("trayhost_pid"))) return false;
-
-    this.userPreferences = Daemon!.preferences;
-
-    Env.set("trayhost_pid", this.pid);
-  }
-
-  //#endregion
-  //#region ACTIONS
 
   async createTrayIcon(
     pid: number,
@@ -74,12 +60,25 @@ export class TrayHostRuntime extends Process implements ITrayHostRuntime {
 
     if (!trayIcons[discriminator]) return false;
 
-    await Stack.kill(trayIcons[discriminator].pid);
+    await Stack.kill(trayIcons[discriminator].pid, true);
 
     delete trayIcons[discriminator];
 
     this.trayIcons.set(trayIcons);
     SysDispatch.dispatch("tray-icon-dispose", [pid, identifier]);
+  }
+
+  async disposeAllTrayIcons() {
+    const trayIcons = this.trayIcons();
+
+    for (const discriminator of Object.keys(trayIcons) as TrayIconDiscriminator[]) {
+      const [pid, identifier] = discriminator.split("#");
+
+      await this.disposeTrayIcon(+pid, identifier);
+      SysDispatch.dispatch("tray-icon-dispose", [+pid]);
+    }
+
+    this.trayIcons.set(trayIcons);
   }
 
   disposeProcessTrayIcons(pid: number) {
@@ -97,5 +96,22 @@ export class TrayHostRuntime extends Process implements ITrayHostRuntime {
     SysDispatch.dispatch("tray-icon-dispose", [pid]);
   }
 
-  //#endregion
+  changeIcon(pid: number, identifier: string, newIcon: string): void {
+    this.Log(`changeIcon: for PID ${pid}, identifier=${identifier}, newIcon=${newIcon}`);
+
+    const discriminator: TrayIconDiscriminator = `${pid}#${identifier}`;
+    if (!this.trayIcons()[discriminator]) return;
+
+    this.trayIcons.update((v) => {
+      v[discriminator]!.icon = newIcon;
+      return v;
+    });
+  }
 }
+
+export const trayHostService: Service = {
+  name: "TrayHostSvc",
+  initialState: "started",
+  process: TrayHostService,
+  description: "Manages the taskbar's tray icons",
+};

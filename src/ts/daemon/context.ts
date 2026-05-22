@@ -1,4 +1,6 @@
 import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import { Env, Stack } from "$ts/env";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { UserInfo } from "$types/user";
@@ -6,6 +8,10 @@ import type { UserInfo } from "$types/user";
 export class UserContext implements IUserContext {
   #daemon: IUserDaemon;
   #id: string;
+
+  get shell() {
+    return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
+  }
 
   constructor(id: string, daemon: IUserDaemon) {
     this.#daemon = daemon;

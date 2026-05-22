@@ -12,7 +12,7 @@
   const { userPreferences, startMenuOpened } = process;
   const populatable = Store<ArcShortcut[]>([]);
 
-  userPreferences.subscribe((v) => {
+  userPreferences.subscribe(() => {
     $populatable = Object.values(shortcuts).filter(
       ({ target, type }) =>
         type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)

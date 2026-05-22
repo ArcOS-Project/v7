@@ -2,7 +2,6 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App } from "$types/app";
 
 export interface IApplicationsUserContext extends IUserContext {
-  spawnAutoload(): Promise<void>;
   checkDisabled(appId: string, noSafeMode?: boolean): boolean;
   isVital(app: App): boolean | undefined;
   isPopulatableByAppIdSync(appId: string): boolean;

@@ -6,7 +6,8 @@
   import { StartMenuActions } from "../../store";
 
   const { process }: { process: IShellRuntime } = $props();
-  const { searchQuery, startMenuOpened, searchLoading, userPreferences } = process;
+  const { startMenuOpened, userPreferences } = process;
+  const { loading, searchQuery } = process.arcFind! ?? {};
 
   let searchBar = $state<HTMLInputElement>();
 
@@ -30,22 +31,24 @@
     }}
     autocomplete="off"
   >
-    {#if $searchLoading}
-      <div class="loading">
-        <HtmlSpinner height={16} thickness={2} />
-        <span>Refreshing</span>
-      </div>
-    {:else if !process.safeMode}
-      <span class="lucide icon-search"></span>
-      <input
-        type="text"
-        role="searchbox"
-        placeholder="Search..."
-        bind:value={$searchQuery}
-        bind:this={searchBar}
-        onkeydown={(e) => process.MutateIndex(e)}
-        disabled={process.safeMode}
-      />
+    {#if process.arcFind}
+      {#if $loading}
+        <div class="loading">
+          <HtmlSpinner height={16} thickness={2} />
+          <span>Refreshing</span>
+        </div>
+      {:else if !process.safeMode}
+        <span class="lucide icon-search"></span>
+        <input
+          type="text"
+          role="searchbox"
+          placeholder="Search..."
+          bind:value={$searchQuery}
+          bind:this={searchBar}
+          onkeydown={(e) => process.arcFind?.MutateIndex(e)}
+          disabled={process.safeMode}
+        />
+      {/if}
     {/if}
   </form>
   {#if Object.keys(StartMenuActions).filter((e) => $userPreferences.shell.start.actions?.includes(e)).length}

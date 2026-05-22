@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
   import { Stack } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
@@ -11,10 +12,7 @@
 
   onMount(() => {
     const unsub = Stack.store.subscribe(() => {
-      if (!Stack.getProcess(icon.pid)) {
-        process.trayHost!.disposeTrayIcon(icon.pid, icon.identifier);
-        unsub();
-      }
+      if (!Stack.getProcess(icon.pid)) unsub();
     });
   });
 </script>

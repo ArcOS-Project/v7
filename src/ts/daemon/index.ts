@@ -248,12 +248,12 @@ export class UserDaemon extends Process implements IUserDaemon {
     }
 
     await performStartStage("filesystem", "Starting filesystem", async () => {
-      await this.init!.startFilesystemSupplier();
+      await this.files!.startFilesystemSupplier();
       await this.version!.mountSourceDrive();
     });
 
     await performStartStage("preferencesSync", "Starting synchronization", async () => {
-      await this.init!.startPreferencesSync();
+      await this.preferencesCtx!.startPreferencesSync();
     });
 
     await performStartStage("notifyLogin", "Notifying login activity", async () => {
@@ -281,11 +281,11 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("workspaces", "Starting workspaces", async () => {
-      await this.init!.startVirtualDesktops();
+      await this.workspaces!.startVirtualDesktops();
     });
 
     await performStartStage("autorun", "Running autorun", async () => {
-      await this.apps?.spawnAutoload();
+      await this.init?.handleShellAndAutorun();
       await this.checks?.checkForUpdates();
       await this.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();
     });

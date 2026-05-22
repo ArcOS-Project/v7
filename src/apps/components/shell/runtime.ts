@@ -1,23 +1,20 @@
-import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
-import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IArcFindService } from "$interfaces/services/IArcFindService";
+import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
-import type { SearchItem } from "$types/search";
-import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
-import { type FuseResult } from "fuse.js";
 import { fetchWeatherApi } from "openmeteo";
 import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
@@ -25,22 +22,22 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public workspaceManagerOpened = Store<boolean>(false);
   public calendarOpened = Store<boolean>(false);
   public stackBusy = Store<boolean>(false);
-  public searchQuery = Store<string>();
-  public searchResults = Store<FuseResult<SearchItem>[]>([]);
-  public searching = Store<boolean>(false);
-  public SelectionIndex = Store<number>(0);
   public FullscreenCount = Store<Record<string, Set<number>>>({});
   public openedTrayPopup = Store<string>();
-  public searchLoading = Store<boolean>(true);
-  public trayHost?: ITrayHostRuntime;
-  public arcFind?: IArcFindRuntime;
-  public ready = Store<boolean>(false);
   public STARTMENU_FOLDER = UserPaths.StartMenu;
   public StartMenuContents = Store<RecursiveDirectoryReadReturn>();
   public selectedAppGroup = Store<string>("");
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
   override acceleratorStore: AppKeyCombinations = ShellAccelerators(this);
+
+  get trayHost() {
+    return Daemon.serviceHost?.getService<ITrayHostService>("TrayHostSvc");
+  }
+
+  get arcFind() {
+    return Daemon.serviceHost?.getService<IArcFindService>("ArcFindSvc");
+  }
 
   //#region LIFECYCLE
 
@@ -57,78 +54,10 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     SysDispatch.subscribe("stack-busy", () => this.stackBusy.set(true)); // Subscribe to stack-busy
     SysDispatch.subscribe("stack-not-busy", () => this.stackBusy.set(false)); // Subscribe to stack-not-busy
-
-    const minimizedFullscreens: Record<string, Set<number>> = {};
-
-    SysDispatch.subscribe("window-fullscreen", ([pid, desktop]) =>
-      this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
-
-        v[desktop].add(pid);
-
-        return v;
-      })
-    );
-
-    SysDispatch.subscribe("window-unfullscreen", ([pid, desktop]) =>
-      this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
-
-        v[desktop].delete(pid);
-        minimizedFullscreens[desktop].delete(pid);
-
-        return v;
-      })
-    );
-
-    SysDispatch.subscribe("window-minimize", ([pid, desktop]) =>
-      this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
-
-        if (v[desktop].has(pid)) {
-          minimizedFullscreens[desktop].add(pid);
-          v[desktop].delete(pid);
-        }
-
-        return v;
-      })
-    );
-
-    SysDispatch.subscribe("window-unminimize", ([pid, desktop]) =>
-      this.FullscreenCount.update((v) => {
-        minimizedFullscreens[desktop] ??= new Set();
-        v[desktop] ??= new Set();
-
-        if (minimizedFullscreens[desktop].has(pid)) {
-          v[desktop].add(pid);
-          minimizedFullscreens[desktop].delete(pid);
-        }
-
-        return v;
-      })
-    );
-
-    this.searchQuery.subscribe(async (v) => {
-      if (!v) {
-        // Reset the search stuff
-        this.SelectionIndex.set(0);
-        this.searchResults.set([]);
-        return;
-      }
-
-      this.searching.set(true);
-      const result = await this.arcFind?.Search(v)!;
-
-      if (result.length > 8) result.length = 8; // Cut the list down if it's too long
-
-      this.searchResults.set(result);
-      this.searching.set(false);
-    });
-
-    this.dispatch.subscribe("ready", () => this.gotReadySignal());
+    SysDispatch.subscribe("window-fullscreen", () => this.updateFullscreenCount());
+    SysDispatch.subscribe("window-unfullscreen", () => this.updateFullscreenCount());
+    SysDispatch.subscribe("window-minimize", () => this.updateFullscreenCount());
+    SysDispatch.subscribe("window-unminimize", () => this.updateFullscreenCount());
 
     SysDispatch.subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();
@@ -208,7 +137,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     this.startMenuOpened.subscribe((v) => {
       if (!v) {
-        this.searchQuery.set(""); // Remove search query on close
+        this.arcFind?.searchQuery.set(""); // Remove search query on close
         this.selectedAppGroup.set(""); // Remove selected app group on close
       }
       if (v) Stack.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
@@ -220,15 +149,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   async stop() {
     Env.delete("shell_pid");
     return true;
-  }
-
-  async gotReadySignal() {
-    this.Log("Got ready signal!");
-    this.trayHost = Stack.getProcess(+Env.get("trayhost_pid"))!;
-    this.arcFind = Stack.getProcess(+Env.get("arcfind_pid"))!;
-    this.arcFind.loading.subscribe((v) => this.searchLoading.set(v));
-    this.ready.set(true);
-    await this.refreshStartMenu();
   }
 
   //#endregion
@@ -260,82 +180,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
       return v;
     });
-  }
-
-  //#endregion
-  //#region WORKSPACES
-
-  async deleteWorkspace(workspace: Workspace) {
-    const windowCount = [...Stack.store()].filter(([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
-
-    if (windowCount > 0) {
-      MessageBox(
-        {
-          title: "Can't delete workspace",
-          message:
-            "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          sound: "arcos.dialog.error",
-          image: "WarningIcon",
-        },
-        this.pid,
-        true
-      );
-
-      return;
-    }
-
-    Daemon?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
-    await Sleep(0); // Then wait for the next frame
-    this.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
-  }
-
-  //#endregion
-  //#region ARCFIND
-
-  public MutateIndex(e: KeyboardEvent) {
-    if (!e?.key) return;
-
-    const key = e.key.toLowerCase();
-    const results = this.searchResults();
-
-    if (e.key === "Escape") return this.startMenuOpened.set(false); // Close the start menu upon escape
-    let index = this.SelectionIndex();
-    if (!results.length) return (index = -1); // Reset the index if no results
-    if (key == "enter") return this.Submit(); // Execute the selected result upon enter
-    let length = results.length - 1;
-
-    switch (key) {
-      case "arrowup":
-        index--;
-        if (index < 0) index = length; // Reset to end of list if index below 0
-        break;
-
-      case "arrowdown":
-        index++;
-        if (index > length) index = 0; // Reset to 0 if index above length
-        break;
-    }
-
-    this.SelectionIndex.set(index);
-  }
-
-  public async Trigger(result: SearchItem) {
-    await result.action(result);
-
-    this.startMenuOpened.set(false);
-  }
-
-  public Submit() {
-    const results = this.searchResults();
-    const index = this.SelectionIndex.get();
-
-    if (!results.length) return;
-
-    this.searchQuery.set("");
-
-    // Trigger the selected search result
-    this.Trigger(results[index == -1 ? 0 : index].item); // Default to index 0
   }
 
   //#endregion
@@ -423,7 +267,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   }
 
   //#endregion
-  //#region MISCELLANEOUS
+  //#region WEATHER
 
   async getWeather(): Promise<WeatherInformation> {
     this.Log(`Retrieving weather`);
@@ -466,35 +310,28 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     await this.spawnOverlayApp("ExitApp", this.pid); // Then spawn the exit overlay
   }
 
-  async changeShell(id: string) {
-    const appStore = Daemon!.appStorage();
-    const newShell = appStore?.getAppSynchronous(id);
-
-    if (!newShell) return false;
-
-    const proceed = await Daemon?.helpers?.Confirm(
-      "Change your shell",
-      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
-      "Deny",
-      "Allow"
+  updateFullscreenCount() {
+    const fullscreenCount: Record<string, Set<number>> = {};
+    const procs: Record<number, IAppProcess> = Object.fromEntries(
+      ([...Stack.store()] as [number, IAppProcess][]).filter(([_, proc]) => proc instanceof AppProcess)
     );
+    const preferences = this.userPreferences();
 
-    if (!proceed) return false;
+    for (const workspace of preferences.workspaces.desktops) {
+      fullscreenCount[workspace.uuid] = new Set(
+        Object.values(procs)
+          .filter((proc) => {
+            const window = proc.getWindow();
+            if (!window) return false;
+            if (proc.app.desktop !== workspace.uuid) return false;
 
-    this.userPreferences.update((v) => {
-      v.globalSettings.shellExec = id;
-      return v;
-    });
+            return window.classList.contains("fullscreen") && !window.classList.contains("minimized");
+          })
+          .map((proc) => proc.pid)
+      );
+    }
 
-    const restartNow = await Daemon?.helpers?.Confirm(
-      "Restart now?",
-      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
-      "Not now",
-      "Restart",
-      "RestartIcon"
-    );
-
-    if (restartNow) await Daemon?.power?.restart();
+    this.FullscreenCount.set(fullscreenCount);
   }
 
   //#endregion

@@ -4,13 +4,13 @@
   import type { FuseResult } from "fuse.js";
 
   const { result, i, process }: { result: FuseResult<SearchItem>; i: number; process: IShellRuntime } = $props();
-  const { SelectionIndex } = process;
+  const { SelectionIndex } = process.arcFind! ?? {};
 </script>
 
 <button
   class="list-item"
   title={result.item.description}
-  onclick={() => process.Trigger(result.item)}
+  onclick={() => process.arcFind?.Trigger(result.item)}
   class:selected={i == $SelectionIndex}
 >
   <img src={result.item.image} alt="" />

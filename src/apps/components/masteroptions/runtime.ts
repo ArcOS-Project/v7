@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon, Stack } from "$ts/env";
+import { Stack } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
@@ -35,7 +35,9 @@ export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRu
       }
     }
 
-    await Daemon.getShell()?.ShowToast(
+    this.shell?.updateFullscreenCount();
+
+    await this.shell?.ShowToast(
       {
         content: `Removed ${ghosts.length} ${Plural("ghost", ghosts.length)} from the renderer.`,
         icon: "ghost",
@@ -55,7 +57,7 @@ export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRu
       await Stack.kill(proc.pid, true);
     }
 
-    await Daemon.getShell()?.ShowToast(
+    await this.shell?.ShowToast(
       {
         content: `Forcefully terminated ${userApps.length} ${Plural("application", userApps.length)}.`,
         icon: "power",

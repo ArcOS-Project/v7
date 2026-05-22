@@ -65,7 +65,7 @@
               {
                 caption: "Delete workspace",
                 action: () => {
-                  process.deleteWorkspace(desktop);
+                  Daemon.workspaces?.deleteVirtualDesktopAck(desktop);
                 },
               },
             ],

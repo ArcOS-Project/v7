@@ -6,7 +6,8 @@
   import SearchResults from "./LeftPanel/SearchResults.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
-  const { searchQuery, searching, userPreferences } = process;
+  const { userPreferences } = process;
+  const { searchQuery, searching } = process.arcFind! ?? {};
 </script>
 
 <div class="left-pane" class:searching={$searchQuery} class:loading={$searching}>
