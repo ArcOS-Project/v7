@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import type { ICommandResult } from "$interfaces/ICommandResult";
-=======
->>>>>>> development
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type {

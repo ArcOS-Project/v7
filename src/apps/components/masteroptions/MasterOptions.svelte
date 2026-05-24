@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";

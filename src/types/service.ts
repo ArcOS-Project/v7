@@ -1,9 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-<<<<<<< HEAD
 import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
-=======
-import type { IBaseService } from "$interfaces/IServiceHost";
->>>>>>> development
 import type { IUserDaemon } from "../interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";

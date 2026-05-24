@@ -14,8 +14,5 @@ export declare class IUserConnector extends IServerConnector {
   DispatchGet(): Promise<ICommandResult<GlobalDispatchClient[]>>;
   DispatchKick(clientId: string): Promise<ICommandResult>;
   PictureUrl(userId: string): string;
-<<<<<<< HEAD
   LoginBgUrl(userId: string): string;
-=======
->>>>>>> development
 }

@@ -1,10 +1,6 @@
 <script lang="ts">
   import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
-  import { Daemon } from "$ts/env";
->>>>>>> development
 
   const { process }: { process: IOopsNotifierRuntime } = $props();
   const { data } = process;

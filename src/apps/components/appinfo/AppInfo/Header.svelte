@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { Daemon } from "$ts/env";
   import type { App } from "$types/app";
   import { onMount } from "svelte";

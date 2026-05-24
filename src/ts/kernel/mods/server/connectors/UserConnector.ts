@@ -103,12 +103,9 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     const code = authcode();
     return `${Server.url}/user/pfp/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
   }
-<<<<<<< HEAD
 
   LoginBgUrl(userId: string) {
     const code = authcode();
     return `${Server.url}/user/loginbg/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
   }
-=======
->>>>>>> development
 }

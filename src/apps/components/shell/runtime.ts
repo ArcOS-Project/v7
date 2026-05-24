@@ -1,31 +1,22 @@
-<<<<<<< HEAD
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
-=======
-import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
-import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
-import { AppProcess } from "$ts/apps/process";
-import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
-import { Sleep } from "$ts/sleep";
->>>>>>> development
 import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
+import type { SearchItem } from "$types/search";
+import type { Workspace } from "$types/user";
 import dayjs from "dayjs";
 import { fetchWeatherApi } from "openmeteo";
 import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
-<<<<<<< HEAD
-import type { IAppProcess } from "$interfaces/IAppProcess";
-=======
->>>>>>> development
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
@@ -56,6 +47,25 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
+  }
+
+  gotReadySignal(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  deleteWorkspace(workspace: Workspace): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  MutateIndex(e: KeyboardEvent): void | -1 {
+    throw new Error("Method not implemented.");
+  }
+  Trigger(result: SearchItem): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  Submit(): void {
+    throw new Error("Method not implemented.");
+  }
+  changeShell(id: string): Promise<false | undefined> {
+    throw new Error("Method not implemented.");
   }
 
   async start() {

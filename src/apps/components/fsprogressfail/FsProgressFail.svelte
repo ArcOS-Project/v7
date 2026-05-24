@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IFsProgressFailRuntime } from "$interfaces/runtimes/IFsProgressFailRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
 
   const { process }: { process: IFsProgressFailRuntime } = $props();
   const { title, icon, errors } = process;

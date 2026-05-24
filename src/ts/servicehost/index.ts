@@ -17,14 +17,9 @@ import { trashService } from "$ts/servicehost/services/TrashSvc";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/logging";
-<<<<<<< HEAD
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
 import type { IBaseService, IServiceHost, ServiceIdentifier } from "../../interfaces/IServiceHost";
 import { arcFindService } from "./services/ArcFindSvc";
-=======
-import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
-import type { IBaseService, IServiceHost } from "../../interfaces/IServiceHost";
->>>>>>> development
 import { migrationService } from "./services/MigrationSvc";
 import { systemShortcutsService } from "./services/SystemShortcutsSvc";
 import { trayHostService } from "./services/TrayHostSvc";

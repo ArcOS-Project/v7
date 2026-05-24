@@ -5,10 +5,7 @@
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;

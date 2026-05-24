@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";

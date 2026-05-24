@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/util/dialog";
   import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { MessageBox } from "$ts/util/dialog";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage } = process;
@@ -99,9 +99,5 @@
     font-family: "Material Icons Round";
     font-size: 20px;
     margin-left: auto;
-  }
-
-  img {
-    height: 50px;
   }
 </style>

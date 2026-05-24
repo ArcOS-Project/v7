@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";

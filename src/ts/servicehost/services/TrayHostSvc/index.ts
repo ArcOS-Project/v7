@@ -1,14 +1,8 @@
-<<<<<<< HEAD:src/ts/servicehost/services/TrayHostSvc/index.ts
 import type { TrayIconDiscriminator, TrayIconOptions } from "$apps/components/shell/types";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { ITrayHostService, ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-=======
-import type { ITrayHostRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
-import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
->>>>>>> development:src/apps/components/trayhost/runtime.ts
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";

@@ -1,10 +1,7 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { Daemon, Stack } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
 

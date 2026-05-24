@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import type { MasterOption } from "../types";
 
   const { process, option }: { process: IMasterOptionsRuntime; option: MasterOption } = $props();

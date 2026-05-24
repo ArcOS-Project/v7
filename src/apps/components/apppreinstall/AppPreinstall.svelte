@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: IAppPreInstallRuntime } = $props();

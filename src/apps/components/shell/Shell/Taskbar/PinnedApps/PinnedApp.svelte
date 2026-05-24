@@ -1,10 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
-  import { Daemon } from "$ts/env";
->>>>>>> development
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import type { App } from "$types/app";
   import { onMount } from "svelte";

@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { Logo } from "$ts/branding";
 
   const { process }: { process: IQlorbRuntime } = $props();

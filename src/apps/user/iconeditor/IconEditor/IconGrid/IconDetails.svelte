@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { IconIdTypeCaptions } from "../../store";
 
   const { process }: { process: IIconEditorRuntime } = $props();

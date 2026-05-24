@@ -7,10 +7,7 @@
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
 
   const { process }: { process: IMediaPlayerRuntime } = $props();
   const { pinControls } = process;

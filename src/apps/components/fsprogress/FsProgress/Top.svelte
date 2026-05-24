@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import Bar from "./Top/Bar.svelte";
 
   const { process }: { process: IFsProgressRuntime } = $props();

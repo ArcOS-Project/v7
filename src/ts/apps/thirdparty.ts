@@ -1,9 +1,5 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-<<<<<<< HEAD
 import { Fs, Stack, SysDispatch } from "$ts/env";
-=======
-import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
->>>>>>> development
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";

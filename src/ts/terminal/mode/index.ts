@@ -2,15 +2,8 @@ import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-<<<<<<< HEAD
 import { UserDaemon } from "$ts/daemon";
 import { ArcOSVersion, GetConnector, Server, Stack } from "$ts/env";
-=======
-import type { IMigrationService } from "$interfaces/services/IMigrationService";
-import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
->>>>>>> development
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -22,15 +15,9 @@ import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
-<<<<<<< HEAD
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
 import { Readline } from "../readline/readline";
 import { ArcTermModeUserDaemonStartOptions } from "./store";
-=======
-import { ArcTerminal } from "..";
-import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
->>>>>>> development
 
 export class TerminalMode extends Process {
   userDaemon?: IUserDaemon;
@@ -118,7 +105,7 @@ export class TerminalMode extends Process {
     try {
       this.rl?.println(`Starting daemon`);
 
-      const {success, result: userDaemon, errorMessage} = await UserDaemon.Hello(token, username);
+      const { success, result: userDaemon, errorMessage } = await UserDaemon.Hello(token, username);
       if (!success) throw new Error(errorMessage);
 
       const broadcast = (m: string) => {
@@ -132,70 +119,6 @@ export class TerminalMode extends Process {
         throw new Error(result.errorMessage ?? "Unknown error");
       }
 
-<<<<<<< HEAD
-=======
-      this.saveToken(userDaemon);
-
-      const userInfoResult = await userDaemon.account!.getUserInfo();
-      if (!userInfoResult.success) {
-        this.rl?.println(userInfoResult.errorMessage ?? `Failed to request user info`);
-        return false;
-      }
-
-      const userInfo = userInfoResult.result!;
-
-      if (userInfo.hasTotp && userInfo.restricted) {
-        const unlocked = await this.askForTotp(token);
-
-        if (!unlocked) {
-          this.rl?.println(`2FA code invalid!`);
-          await userDaemon.account?.discontinueToken();
-          await userDaemon.killSelf();
-          return false;
-        }
-      }
-
-      broadcast(`Starting filesystem`);
-      await userDaemon.init?.startFilesystemSupplier();
-
-      broadcast(`Starting synchronization`);
-      await userDaemon.init?.startPreferencesSync();
-
-      broadcast(`Notifying login activity`);
-      await userDaemon.activity?.logActivity(`login`);
-
-      broadcast(`Starting service host`);
-      await userDaemon.init?.startServiceHost(broadcast);
-
-      broadcast(`Starting drive notifier watcher`);
-      userDaemon.init!.startDriveNotifierWatcher();
-
-      broadcast(`Indexing your files`);
-      await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-      await userDaemon.serviceHost
-        ?.getService<IMigrationService>("MigrationSvc")
-        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
-
-      broadcast(`Starting status refresh`);
-      await userDaemon.init!.startSystemStatusRefresh();
-
-      broadcast(`Refreshing app storage`);
-      SysDispatch.dispatch(`app-store-refresh`);
-
-      Env.set("currentuser", username);
-      Env.set("shell_pid", undefined);
-
-      userDaemon.checks!.checkNightly();
-
-      await Sleep(10);
-
-      this.term?.clear();
-      this.arcTerm = await Stack.spawn<IArcTerminal>(ArcTerminal, undefined, userDaemon.userInfo?._id, this.pid, this.term);
-      this.arcTerm!.IS_ARCTERM_MODE = true;
-      this.term?.focus();
-
->>>>>>> development
       return true;
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";

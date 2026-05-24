@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import Spinner from "$lib/Spinner.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA, Server } from "$ts/env";

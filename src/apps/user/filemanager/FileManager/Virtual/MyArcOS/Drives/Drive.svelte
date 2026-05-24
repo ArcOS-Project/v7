@@ -3,10 +3,7 @@
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { contextProps } from "$ts/ui/context/actions.svelte";
 
   const { drive, id, process }: { drive: QuotedDrive; id: string; process: IFileManagerRuntime } = $props();

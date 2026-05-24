@@ -1,10 +1,6 @@
 <script lang="ts">
-<<<<<<< HEAD
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
-=======
-  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
->>>>>>> development
   import { Stack } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";

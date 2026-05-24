@@ -1,10 +1,7 @@
 <script lang="ts">
   import backdrop from "$assets/sqeleton/backdrop.svg";
   import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
 
   const { process }: { process: ISqeletonRuntime } = $props();
   const { data: app } = process.app;

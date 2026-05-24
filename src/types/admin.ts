@@ -170,7 +170,6 @@ export interface IpAddress {
   ip: string;
   variant: 4 | 6;
 }
-<<<<<<< HEAD
 
 export interface AuditLogQueryOptions extends QueryableOptions {
   authorId?: string;
@@ -179,5 +178,3 @@ export interface AuditLogQueryOptions extends QueryableOptions {
   targetUserId?: string;
   severity?: string;
 }
-=======
->>>>>>> development

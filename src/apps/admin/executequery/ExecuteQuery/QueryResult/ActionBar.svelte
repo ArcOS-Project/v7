@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
 
   const { process }: { process: IExecuteQueryRuntime } = $props();
   const { result, truncated, totalCount } = process;

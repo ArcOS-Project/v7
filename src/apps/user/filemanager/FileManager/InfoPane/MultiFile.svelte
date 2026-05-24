@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { Plural } from "$ts/util";
   import type { QuotedDrive } from "../../types";
 

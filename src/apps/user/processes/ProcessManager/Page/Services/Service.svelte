@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import type { Service } from "$types/service";
 
   const { process, service, id }: { process: IProcessManagerRuntime; service: Service; id: string } = $props();

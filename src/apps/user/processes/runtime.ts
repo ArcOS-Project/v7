@@ -1,10 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
-<<<<<<< HEAD
 import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
-=======
-import type { IServiceHost } from "$interfaces/IServiceHost";
->>>>>>> development
 import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";

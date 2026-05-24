@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
   import type { AppComponentProps } from "$types/app";

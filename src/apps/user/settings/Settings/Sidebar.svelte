@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { settingsPageStore } from "../store";
   import AccountButton from "./Sidebar/AccountButton.svelte";
 

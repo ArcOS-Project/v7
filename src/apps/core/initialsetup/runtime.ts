@@ -359,8 +359,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
         );
 
         await this.#userDaemon?.account?.getUserInfo();
-        await this.#userDaemon?.init?.startPreferencesSync();
-        await this.#userDaemon?.init?.startFilesystemSupplier();
+        await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+        await this.#userDaemon?.files?.startFilesystemSupplier();
 
         this.#userDaemon?.preferences.update((v) => {
           v.isDefault = false;
@@ -415,8 +415,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     Env.set("DISPATCH_SOCK_ID", UUID());
 
     await this.#userDaemon?.account?.getUserInfo();
-    await this.#userDaemon?.init?.startPreferencesSync();
-    await this.#userDaemon?.init?.startFilesystemSupplier();
+    await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+    await this.#userDaemon?.files?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
       v.isDefault = false;
       v.account.displayName = this.displayName();

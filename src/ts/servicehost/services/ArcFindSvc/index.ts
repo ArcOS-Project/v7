@@ -1,14 +1,7 @@
-<<<<<<< HEAD:src/ts/servicehost/services/ArcFindSvc/index.ts
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import { Stack, Env, Daemon, Fs } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-=======
-import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
-import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
->>>>>>> development:src/apps/components/arcfind/runtime.ts
 import { UserPaths } from "$ts/user/store";
 import { isPopulatable } from "$ts/util/apps";
 import { UUID } from "$ts/util/uuid";

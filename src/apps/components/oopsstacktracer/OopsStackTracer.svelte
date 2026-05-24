@@ -1,10 +1,6 @@
 <script lang="ts">
   import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
-  import { Daemon } from "$ts/env";
->>>>>>> development
 
   const { process }: { process: IOopsStackTracerRuntime } = $props();
   const { data, proc, trace, stackFrames } = process;

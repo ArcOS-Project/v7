@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import FirstRunApp from "$apps/components/firstrun/FirstRun";
 import type { Constructs } from "$interfaces/common";
 import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
@@ -10,13 +9,6 @@ import type { IShareManager } from "$interfaces/services/IShareManager";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
-=======
-import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
-import type { IServiceHost } from "$interfaces/IServiceHost";
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
-import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
->>>>>>> development
 import { ServiceHost } from "$ts/servicehost";
 import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";

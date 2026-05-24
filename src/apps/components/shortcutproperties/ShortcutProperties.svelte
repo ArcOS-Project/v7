@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";

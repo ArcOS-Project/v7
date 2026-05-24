@@ -19,10 +19,7 @@ import type { IThemesUserContext } from "$interfaces/contexts/IThemesUserContext
 import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserContext";
 import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserContext";
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
-<<<<<<< HEAD
 import type { ICommandResult } from "$interfaces/ICommandResult";
-=======
->>>>>>> development
 import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
@@ -31,12 +28,8 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
-<<<<<<< HEAD
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon, Env, Fs, GetConnector, SetDaemon, Stack, State, getKMod } from "$ts/env";
-=======
-import { Daemon, Env, Fs, GetConnector, getKMod, SetDaemon, Stack, State } from "$ts/env";
->>>>>>> development
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
@@ -222,7 +215,6 @@ export class UserDaemon extends Process implements IUserDaemon {
   GetConnector<T extends IServerConnector>(name: string): T {
     return GetConnector<T>(name, this.token);
   }
-<<<<<<< HEAD
 
   static async Hello(token: string, username: string, userInfo?: UserInfo, parentPid = 1): Promise<ICommandResult<IUserDaemon>> {
     Log("UserDaemon.Hello", "HELLO!");
@@ -302,6 +294,4 @@ export class UserDaemon extends Process implements IUserDaemon {
 
     return CommandResult.Ok(this);
   }
-=======
->>>>>>> development
 }

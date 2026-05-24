@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { IUserDaemon } from "$interfaces/IUserDaemon";
-<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
-=======
->>>>>>> development
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
