@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import type { MasterOption } from "../types";
 
   const { process, option }: { process: IMasterOptionsRuntime; option: MasterOption } = $props();
@@ -13,6 +14,6 @@
 </script>
 
 <button class="master-option" title={option.caption} onclick={exec} disabled={$loading}>
-  <img src={process.getIconCached(option.image)} alt="" />
+  <Icon icon={option.image} />
   <span>{option.caption}</span>
 </button>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShareConnGuiRuntime } from "$interfaces/runtimes/IShareConnGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -11,7 +12,7 @@
 </script>
 
 <div class="header">
-  <img src={process.getIconCached("ShareIcon")} alt="" />
+  <Icon icon="ShareIcon" />
   <h1>Join a share</h1>
   <p>Enter the information to join a share or click 'Joined' to view the shares you've joined already.</p>
 </div>

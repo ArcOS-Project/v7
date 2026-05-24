@@ -4,6 +4,7 @@
   import type { ReadableStore } from "$types/writable";
   import { onMount } from "svelte";
   import type { ItemInfo } from "../types";
+  import Icon from "$lib/Icon.svelte";
 
   const { info, process }: { info: ReadableStore<ItemInfo>; process: IItemInfoRuntime } = $props();
 
@@ -11,12 +12,12 @@
 
   onMount(() => {
     const assoc = Daemon?.assoc?.getFileAssociation($info.name);
-    icon = $info.isFolder ? process.getIconCached("FolderIcon") : assoc?.icon || process.getIconCached("DefaultMimeIcon");
+    icon = $info.isFolder ? "FolderIcon" : assoc?.icon || "DefaultMimeIcon";
   });
 </script>
 
 <div class="header">
-  <img src={$info.name ? icon || process.getIconCached("DefaultMimeIcon") : process.getIconCached("DriveIcon")} alt="" />
+  <Icon icon={$info.name ? icon || "DefaultMimeIcon" : "DriveIcon"} />
   <div>
     <h1>{$info.name || $info.location.parent || $info.location.drive}</h1>
     {#if $info.name && ($info.location.parent || $info.location.drive)}

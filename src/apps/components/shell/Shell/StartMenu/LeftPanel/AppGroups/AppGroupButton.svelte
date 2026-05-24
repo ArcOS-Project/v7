@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
@@ -54,7 +55,7 @@
       process,
     ]}
   >
-    <img src={process.getIconCached("FolderIcon")} alt="" />
+    <Icon icon="FolderIcon" />
     <span class="name">{groupName}</span>
     <span class="lucide icon-chevron-right"></span>
   </button>

@@ -156,16 +156,11 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     let { startup } = Daemon!.preferences();
     startup ||= {};
 
-    if (startup["contextMenu"] !== "app") {
-      startup["contextMenu"] = "app";
-
-      Daemon!.preferences.update((v) => {
-        v.startup = startup;
-        return v;
-      });
-    }
+    await Daemon.spawn?.spawnApp("contextMenu", this.pid, { noWorkspace: true });
 
     for (const payload in startup) {
+      if (payload === "contextMenu") continue;
+
       const type = startup[payload];
 
       switch (type.toLowerCase()) {

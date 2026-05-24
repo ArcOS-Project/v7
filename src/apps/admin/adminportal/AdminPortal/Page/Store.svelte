@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import type { StoreData, StorePageFilters } from "../../types";
   import StoreRow from "./Store/StoreRow.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: StoreData } = $props();
   const { items, users } = data;
@@ -48,7 +49,7 @@
 </div>
 <div class="item-list">
   <div class="item-row header">
-    <img src={Logo()} alt="" />
+    <Icon icon={Logo()} />
     <div class="segment author">Author</div>
     <div class="segment name">Name</div>
     <div class="segment version">Version</div>

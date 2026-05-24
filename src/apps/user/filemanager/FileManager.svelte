@@ -35,5 +35,5 @@
     </div>
   </div>
 {:else}
-  <Splash {process} />
+  <Splash />
 {/if}

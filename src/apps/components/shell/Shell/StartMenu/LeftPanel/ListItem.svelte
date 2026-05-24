@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon, Env } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
@@ -134,7 +135,7 @@
     ]}
     class:no-safemode={process.safeMode && app.noSafeMode}
   >
-    <img src={Daemon?.icons?.getAppIcon(app)} alt="" />
+    <Icon icon="@app::{app.id}" />
     <span class="name">{shortcut.name === `_${app.id}` ? app.metadata.name : shortcut.name}</span>
   </button>
 {/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Filter from "./Options/Filter.svelte";
 
   const { process }: { process: ILoggingRuntime } = $props();
@@ -12,7 +13,7 @@
       <span class="lucide icon-scroll-text" class:icon-archive={isArchive}></span>
       <span>{isArchive ? "Archive" : "Group"}</span>
     </div>
-    <img src={process.getIconCached("FolderIcon")} alt="" />
+    <Icon icon="FolderIcon" />
     <span>{$currentSource}</span>
   </div>
   <div class="sep"></div>

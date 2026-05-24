@@ -7,6 +7,7 @@
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
 
@@ -23,7 +24,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("SecurityLowIcon")} alt="" />
+    <Icon icon="SecurityLowIcon" />
     <h1>Account Activity</h1>
     <p>View the security activity on your account.</p>
   </div>

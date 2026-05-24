@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -13,7 +14,7 @@
 {#if $shortcutData}
   <div class="header">
     <div class="icon">
-      <img src={process.getIconCached($shortcutData.icon) || process.getIconCached("UnknownFileIcon")} alt="" />
+      <Icon icon={$shortcutData.icon} fallback="UnknownFileIcon" />
       <button class="change lucide icon-pencil" title="Change icon" aria-label="Change icon" onclick={() => process.changeIcon()}
       ></button>
     </div>
@@ -82,7 +83,7 @@
       <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
       <ActionButton
         suggested
-        onclick={() => process.save}
+        onclick={() => process.save()}
         disabled={!$shortcutData.icon || !$shortcutData.name || !$shortcutData.target || $shortcutData.type === "new"}
       >
         Save

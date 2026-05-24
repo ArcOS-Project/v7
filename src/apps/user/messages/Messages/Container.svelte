@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import ActionBar from "./Container/ActionBar.svelte";
   import AttachmentBar from "./Container/AttachmentBar.svelte";
@@ -21,13 +22,13 @@
     <AttachmentBar {process} />
   {:else if $messageNotFound}
     <div class="center-notice">
-      <img src={process.getIconCached("BadStatusIcon")} alt="" />
+      <Icon icon="BadStatusIcon" />
       <h1>Message not found!</h1>
       <p>The message you tried to open could not be found.</p>
     </div>
   {:else}
     <div class="center-notice">
-      <img src={process.getIconCached("MessagingIcon")} alt="" />
+      <Icon icon="MessagingIcon" />
       <h1>Nothing is selected</h1>
       <p>Click on a message to read it.</p>
     </div>

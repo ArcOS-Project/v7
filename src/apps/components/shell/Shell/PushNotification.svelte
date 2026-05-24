@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";
@@ -57,7 +58,7 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        <img src={process.getIconCached(data.image) || data.image} alt="" class="icon" />
+        <Icon icon={data.image} className="icon" />
       </div>
     {:else if data.icon}
       <div class="left">

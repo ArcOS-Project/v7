@@ -8,6 +8,7 @@
   import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem } = $props();
 
@@ -24,7 +25,7 @@
   <div class="header" class:no-banner={!pkg.pkg.store?.banner}>
     <img src={StoreItemBanner(pkg) || StoreItemIcon(pkg)} class:fallback={!pkg.pkg.store?.banner} alt="" class="banner" />
     <div class="info">
-      <img src={StoreItemIcon(pkg)} alt="" />
+      <Icon icon={StoreItemIcon(pkg)} />
       <div class="metadata">
         <h1>
           <span class="name">{pkg.pkg.name}</span>

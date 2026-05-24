@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import type { SearchItem } from "$types/search";
   import type { FuseResult } from "fuse.js";
 
@@ -13,7 +14,7 @@
   onclick={() => process.arcFind?.Trigger(result.item)}
   class:selected={i == $SelectionIndex}
 >
-  <img src={result.item.image} alt="" />
+  <Icon icon={result.item.image ?? "EmptyMimeIcon"} />
   <span class="name">
     <p>{result.item.caption}</p>
     <p class="description">{result.item.description}</p>

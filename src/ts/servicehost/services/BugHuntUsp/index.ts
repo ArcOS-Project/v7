@@ -52,7 +52,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getUserBugReports(Daemon!.token!)).reverse();
+    const reports = (await this.module.getUserBugReports(Daemon.token)).reverse();
 
     this.privateCache = reports;
 
@@ -71,7 +71,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getPublicBugReports()).reverse();
+    const reports = (await this.module.getPublicBugReports(Daemon.token)).reverse();
 
     this.publicCache = reports;
 

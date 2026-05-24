@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
@@ -52,7 +53,7 @@
 {/if}
 <div class="user-list" class:compact>
   <div class="user-row header">
-    <img src={Logo()} alt="" />
+    <Icon icon={Logo()} />
     <div class="segment username">Username</div>
     {#if !compact}
       <div class="segment email">Email</div>

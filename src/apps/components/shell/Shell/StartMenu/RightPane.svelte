@@ -7,6 +7,7 @@
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import UserButton from "../Folders/UserButton.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const {
     process,
@@ -69,7 +70,7 @@
         use:contextProps={[dir.name]}
         onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}
       >
-        <img src={process.getIconCached("FolderIcon")} alt="" />
+        <Icon icon="FolderIcon" className="icon" />
         <span class="name">{dir.name}</span>
       </button>
     {/each}

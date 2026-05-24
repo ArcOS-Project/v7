@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IUserDaemon } from "$interfaces/IUserDaemon";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
@@ -69,7 +70,7 @@
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
-          <img src={userDaemon.icons!.getIconCached(notification.image) || notification.image} alt="" class="icon" />
+          <Icon icon={notification.image} className="icon" />
         </div>
       {:else if notification.icon}
         <div class="left">

@@ -2,7 +2,9 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { QuestionIcon } from "$ts/images/dialog";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
@@ -12,6 +14,7 @@ import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { BlankIcon } from "$ts/images/general";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -294,7 +297,15 @@ export class AppRenderer extends Process implements IAppRenderer {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = Daemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    Daemon.serviceHost?.Gate<IIconService>(
+      "IconService",
+      () => {
+        titleIcon.src = process.getIconCached(`@app::${app.id}`) || process.getIconCached("ComponentIcon");
+      },
+      () => {
+        titleIcon.src = BlankIcon;
+      }
+    );
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));

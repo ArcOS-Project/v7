@@ -5,6 +5,7 @@
   import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
@@ -72,7 +73,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("GlobeIcon")} alt="" />
+    <Icon icon="GlobeIcon" />
     <h1>Weather location</h1>
     <p>From where do you want to see the weather?</p>
   </div>

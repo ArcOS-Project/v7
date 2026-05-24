@@ -34,6 +34,7 @@
       data = null;
       await Sleep();
       data = v;
+
       await Sleep();
 
       if (!menu) return;

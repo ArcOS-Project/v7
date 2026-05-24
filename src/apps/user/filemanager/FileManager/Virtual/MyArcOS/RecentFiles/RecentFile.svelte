@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon, Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
@@ -62,7 +63,7 @@
     process,
   ]}
 >
-  <img src={icon} alt="" />
+  <Icon icon={icon ?? "DefaultMimeIcon"} />
   <span class="name" title={name}>{name}</span>
   <span class="path">{driveIsMounted ? "" : "(Not mounted) "}{parent}</span>
 </button>

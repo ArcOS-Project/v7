@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -14,7 +15,7 @@
   const { process }: { process: IProcessInfoRuntime } = $props();
   const { proc, parent, procConstructor: inherit } = process;
 
-  const icon = proc instanceof AppProcess ? Daemon?.icons?.getAppIcon(proc.app.data)! : process.getIconCached("ComponentIcon");
+  const icon = proc instanceof AppProcess ? `@app::${proc.app.id}` : "ComponentIcon";
   const children = Stack.getSubProcesses(proc!.pid);
   const context = Stack.getProcessContext(proc!.pid);
 
@@ -35,7 +36,7 @@
 
 {#if proc}
   <div class="header">
-    <img src={icon} alt="" />
+    <Icon {icon} />
     <div class="base-info">
       <h1>{proc.name}</h1>
       <p>Process {proc.pid}</p>

@@ -75,9 +75,9 @@ export class BugHunt extends KernelModule implements IBugHunt {
     }
   }
 
-  async getPublicBugReports(): Promise<BugReport[]> {
+  async getPublicBugReports(token: string): Promise<BugReport[]> {
     try {
-      const response = await Backend.get(`/bughunt/reports/public`);
+      const response = await Backend.get(`/bughunt/reports/public`, { headers: { Authorization: `Bearer ${token}` } });
 
       return response.data as BugReport[];
     } catch {

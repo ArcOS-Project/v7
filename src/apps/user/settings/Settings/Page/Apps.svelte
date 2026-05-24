@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { Glow } from "$ts/images/branding";
   import Section from "../Section.svelte";
@@ -11,7 +12,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("AppsIcon")} alt="" />
+    <Icon icon="AppsIcon" />
     <h1>Applications</h1>
     <p>Manage the apps on your system</p>
   </div>

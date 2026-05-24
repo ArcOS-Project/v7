@@ -498,7 +498,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
           title: `'${attachment.filename}' unavailable`,
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
+          image: info?.icon || "DefaultMimeIcon",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },

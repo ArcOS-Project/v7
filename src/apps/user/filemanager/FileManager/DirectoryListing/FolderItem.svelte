@@ -9,6 +9,7 @@
   import { onMount } from "svelte";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { Fs } from "$ts/env";
+  import Icon from "$lib/Icon.svelte";
 
   const { process, dir }: { process: IFileManagerRuntime; dir: FolderEntry } = $props();
   const { selection } = process;
@@ -50,7 +51,7 @@
     data-path={thisPath}
   >
     <div class="segment icon">
-      <img src={process.getIconCached("FolderIcon")} alt="" />
+      <Icon icon="FolderIcon" />
     </div>
     <div class="segment name" title={dir.name}>{proxy?.displayName ?? dir.name}</div>
     <div class="segment type">Folder</div>

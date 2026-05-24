@@ -407,7 +407,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       {
         type: folder ? "folder" : "file",
         target: path,
-        icon: folder ? "FolderIcon" : info?.icon || this.getIconCached("DefaultMimeIcon"),
+        icon: folder ? "FolderIcon" : info?.icon || "DefaultMimeIcon",
         name: `${name} - Shortcut`,
       },
       join(paths[0], `${name}.arclnk`)

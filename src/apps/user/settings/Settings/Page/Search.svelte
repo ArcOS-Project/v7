@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
@@ -9,7 +10,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("ArcFindIcon")} alt="" />
+    <Icon icon="ArcFindIcon" />
     <h1>ArcFind options</h1>
     <p>The search functionality of ArcOS</p>
   </div>

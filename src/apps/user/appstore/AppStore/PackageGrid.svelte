@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { UUID } from "$ts/util/uuid";
   import type { PartialStoreItem } from "$types/package";
@@ -13,7 +14,7 @@
     process: IAppStoreRuntime;
   }
 
-  const { items, name, more, className, process }: Props = $props();
+  const { items, name, more, process }: Props = $props();
   const { currentPage } = process;
 </script>
 
@@ -33,7 +34,7 @@
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div class="trigger" onclick={() => process.switchPage("viewStoreItem", { id: item._id })}></div>
-        <img src={StoreItemIcon(item)} alt="" />
+        <Icon icon={StoreItemIcon(item)} />
         <div class="info">
           <h1>{item.pkg.name}</h1>
           <p class="author">

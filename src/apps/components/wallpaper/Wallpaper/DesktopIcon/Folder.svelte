@@ -19,7 +19,7 @@
     alt={`Location: ${path}`}
     props={[folder, path]}
     contextMenu="folder-icon"
-    icon={process.getIconCached("FolderIcon")}
+    icon={"FolderIcon"}
     action={() => process.spawnApp("fileManager", +Env.get("shell_pid"), path)}
     {i}
   />

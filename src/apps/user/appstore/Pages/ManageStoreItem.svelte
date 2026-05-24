@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -13,7 +14,7 @@
 
 {#if pkg}
   <div class="header">
-    <img src={StoreItemIcon(pkg)} alt="" />
+    <Icon icon={StoreItemIcon(pkg)} />
     <div class="info">
       <h1>
         <span class="name">{pkg.pkg.name}</span>

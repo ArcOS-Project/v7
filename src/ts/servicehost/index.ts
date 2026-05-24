@@ -263,4 +263,13 @@ export class ServiceHost extends Process implements IServiceHost {
 
     return true;
   }
+
+  Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void) {
+    this.Services.subscribe(() => {
+      const svc = this.getService<T>(id);
+
+      if (svc) onActive(svc);
+      else onInactive?.();
+    });
+  }
 }

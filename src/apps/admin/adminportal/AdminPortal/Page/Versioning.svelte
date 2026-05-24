@@ -2,6 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import type { IMigrationService } from "$interfaces/services/IMigrationService";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import Icon from "$lib/Icon.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";
   import { Daemon } from "$ts/env";
@@ -52,7 +53,7 @@
 </div>
 <div class="version-list">
   <div class="row header">
-    <img src={Logo()} alt="" />
+    <Icon icon={Logo()} />
     <div class="segment username">Author</div>
     <div class="segment os-version">OS version</div>
     {#each migrations as migration}

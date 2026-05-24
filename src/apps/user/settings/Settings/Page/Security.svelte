@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
@@ -35,7 +36,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("SecurityMediumIcon")} alt="" />
+    <Icon icon="SecurityMediumIcon" />
     <h1>Security Center</h1>
     <p>Manage the security of ArcOS</p>
   </div>
@@ -78,7 +79,7 @@
           </p>
         {/if}
         <button class="disable" onclick={turnOff}>
-          <img src={process.getIconCached("ElevationIcon")} alt="" />
+          <Icon icon="ElevationIcon" />
           <span>
             {#if $userPreferences.security.disabled}
               Turn on...

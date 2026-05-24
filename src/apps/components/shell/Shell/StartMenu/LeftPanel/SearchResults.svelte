@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { IArcFindService } from "$interfaces/services/IArcFindService";
   import Spinner from "$lib/Spinner.svelte";
   import SearchResult from "./SearchResults/SearchResult.svelte";
 
-  const { process }: { process: IShellRuntime } = $props();
-  const { searching, searchResults } = process.arcFind! ?? {};
+  const { process, service }: { process: IShellRuntime; service: IArcFindService } = $props();
+  const { searching, searchResults } = service;
 </script>
 
 {#if $searching}

@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcess } from "$interfaces/IProcess";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { AppProcess } from "$ts/apps/process";
   import { Daemon, Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";
@@ -34,15 +35,13 @@
       children = Stack.getSubProcesses(proc.pid);
     });
 
-    memoryInterval = setInterval(() => {
-      memory = proc.MEMORY;
-    }, 2000); // every 2 seconds
+    memory = proc.MEMORY; // only once because laggy
 
     if (proc instanceof AppProcess) {
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = Daemon?.icons?.getAppIconByProcess(proc);
+      icon = `@app::${app.id}`;
       appId = app.id;
 
       const dispatcher = SysDispatch.subscribe("window-closing", ([pid]) => {
@@ -56,7 +55,7 @@
     }
 
     name = proc.name;
-    icon = process.getIconCached("DefaultIcon");
+    icon = "DefaultIcon";
   });
 
   onDestroy(() => {
@@ -112,12 +111,12 @@
     class:critical={proc._criticalProcess}
   >
     <div class="segment name">
-      <img src={icon} alt="" />
+      <Icon icon={icon ?? "DefaultIcon"} />
       <span>{name}{orphan ? " (orphaned)" : ""}</span>
       <span class="lucide icon-{ProcessStateIcons[proc.STATE]}"></span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
-      <img src={process.getIconCached("FlagIcon")} alt="" class="flag" />
+      <Icon icon="FlagIcon" className="flag" />
       <span>{proc.pid}</span>
     </div>
     <div class="segment memory">

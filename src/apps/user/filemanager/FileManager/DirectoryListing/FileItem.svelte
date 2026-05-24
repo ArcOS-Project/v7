@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
@@ -85,7 +86,7 @@
     class:is-shortcut={shortcut}
   >
     <div class="segment icon">
-      <img src={shortcut ? shortcutIcon : thumbnail || icon} alt="" />
+      <Icon icon={(shortcut ? shortcutIcon : thumbnail || icon) || "DefaultMimeIcon"} />
       {#if shortcut}
         <span class="icon-arrow-up-right"></span>
       {/if}

@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { SummarizedFsModifiers } from "$types/fs";
   import dayjs from "dayjs";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const {
     modifiers,
@@ -26,7 +27,7 @@
 
 <div class="single-file">
   <div class="header">
-    <img src={thumbnail || process.getIconCached(association?.icon) || association?.icon} alt="" />
+    <Icon icon={thumbnail || association?.icon} />
     <h1>{filename}</h1>
     <p>{association?.friendlyName}</p>
   </div>

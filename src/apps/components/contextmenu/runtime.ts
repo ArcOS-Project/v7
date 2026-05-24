@@ -21,9 +21,11 @@ export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntim
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    Env.set("contextmenu_pid", this.pid);
-
     this.setSource(__SOURCE__);
+  }
+
+  async start() {
+    Env.set("contextmenu_pid", this.pid);
   }
 
   async stop() {

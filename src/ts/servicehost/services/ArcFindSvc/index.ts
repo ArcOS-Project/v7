@@ -58,6 +58,8 @@ export class ArcFindService extends BaseService implements IArcFindService {
       this.searchResults.set(result);
       this.searching.set(false);
     });
+
+    await this.refresh();
   }
 
   async stop() {

@@ -12,10 +12,10 @@
 </script>
 
 {#if data}
-  <Header {data} {process}></Header>
+  <Header {data}></Header>
   <div class="top">
     <p class="what">{@html data.what}</p>
-    <Display {data} {process} />
+    <Display {data} />
     <Notice {userPreferences} />
     <Password {process} />
     <div class="login-status">

@@ -3,6 +3,7 @@
   import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage } = process;
@@ -34,7 +35,7 @@
     <Background />
     <div class="fullscreen center-flex">
       <h1 class="title">
-        <img src={process.getIconCached(process.app.data.metadata.icon)} alt="" />
+        <Icon icon={process.app.data.metadata.icon} />
         <span>Qlorb</span>
         <p>Catch orbs, get points, and get frustrated!</p>
       </h1>
@@ -74,10 +75,6 @@
 
   h1.title > span {
     font-size: 26px;
-  }
-
-  h1.title img {
-    height: 96px;
   }
 
   h1.title p {

@@ -116,7 +116,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
     this.currentPage.set(pageId);
 
     this.windowTitle.set(`${page?.name}`);
-    this.windowIcon.set(this.getIconCached(page?.icon || "SettingsIcon"));
+    this.windowIcon.set(page?.icon || "SettingsIcon");
   }
 
   async showSlide(id: string) {

@@ -42,7 +42,7 @@ export enum AuditSeverity {
 
 export enum AuditSeverityIcons {
   moon,
-  "shield-checkc",
+  "shield-check",
   "shield-ellipsis",
   "shield-x",
   siren,

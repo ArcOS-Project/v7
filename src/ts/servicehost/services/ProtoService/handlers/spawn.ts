@@ -11,7 +11,7 @@ export const  SpawnAppHandler: ProtocolHandler = {
     if (!app) return undefined;
 
     return {
-      icon: daemon.icons!.getAppIcon(app),
+      icon: `@app::${app.id}`,
       caption: app.metadata.name,
       title: `Open ${app.metadata.name} by ${app.metadata.author} (${app.metadata.version})`,
     };

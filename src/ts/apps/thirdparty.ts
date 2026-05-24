@@ -1,5 +1,5 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
+import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import type { AppProcessData } from "$types/app";
@@ -28,7 +28,7 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
 
     this.workingDirectory = workingDirectory;
     this.operationId = operationId;
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${this.app.id}`);
 
     this.setSource(__SOURCE__);
   }

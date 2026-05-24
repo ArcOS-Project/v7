@@ -48,7 +48,7 @@ export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
 
     const elevated = await Daemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: Daemon?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
+      image: `@app::${this.targetAppId}`,
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,

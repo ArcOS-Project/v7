@@ -25,6 +25,7 @@ export interface IServiceHost extends IProcess {
   getService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined;
   hasService(id: ServiceIdentifier): boolean;
   spinDown(broadcast?: (message: string) => void): Promise<void>;
+  Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void): void;
 }
 
 export const ServiceIdentifiers = [

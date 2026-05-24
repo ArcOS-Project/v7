@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
@@ -11,7 +12,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("TaskbarIcon")} alt="" />
+    <Icon icon="TaskbarIcon" />
     <h1>The ArcOS Shell</h1>
     <p>The taskbar, start menu and action center</p>
   </div>

@@ -12,7 +12,6 @@ import { ElevationLevel } from "$types/elevation";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {
-
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
@@ -53,13 +52,13 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     this.Log(`Disabling application ${appId}`);
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppSynchronous(appId);
+    const app = appStore?.getAppSynchronous(appId);
 
     if (!app || this.isVital(app)) return;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: Daemon!.icons!.getAppIcon(app),
+      image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -95,7 +94,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: Daemon!.icons!.getAppIcon(app),
+      image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,

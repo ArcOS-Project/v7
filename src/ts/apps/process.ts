@@ -74,7 +74,7 @@ export class AppProcess extends Process implements IAppProcess {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${app.id}`);
 
     SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
@@ -207,11 +207,9 @@ export class AppProcess extends Process implements IAppProcess {
         },
       });
 
-    const result = this.render(this.renderArgs);
+    await this.render(this.renderArgs);
 
-    // Below lines make sure render methods can be either asynchronous or synchronous.
-    if (result instanceof Promise) result.then(() => (this.STATE = "running"));
-    else this.STATE = "running";
+    this.STATE = "running";
   }
 
   //#endregion

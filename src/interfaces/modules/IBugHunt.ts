@@ -8,5 +8,5 @@ export interface IBugHunt extends IKernelModule {
   sendReport(outgoing: OutgoingBugReport, token?: string, options?: ReportOptions): Promise<boolean>;
   getToken(): string;
   getUserBugReports(token: string): Promise<BugReport[]>;
-  getPublicBugReports(): Promise<BugReport[]>;
+  getPublicBugReports(token: string): Promise<BugReport[]>;
 }

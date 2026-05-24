@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA, Server } from "$ts/env";
@@ -44,7 +45,7 @@
   </div>
 </div>
 
-<img src={Logo()} alt="ArcOS" />
+<Icon icon={Logo()} fallback={Logo()} />
 
 <div class="bottom">
   <Spinner height={30} stopped={!$progress} />

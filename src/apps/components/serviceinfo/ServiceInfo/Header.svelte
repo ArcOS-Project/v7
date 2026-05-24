@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { IServiceInfoRuntime } from "$interfaces/runtimes/IServiceInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IServiceInfoRuntime } = $props();
   const { service } = process;
 </script>
 
 <div class="header">
-  <img src={process.getIconCached("ComponentIcon")} alt="" />
+  <Icon icon="ComponentIcon" />
   <div class="info">
     <h1>{$service?.name}</h1>
     <p>{$service?.description}</p>

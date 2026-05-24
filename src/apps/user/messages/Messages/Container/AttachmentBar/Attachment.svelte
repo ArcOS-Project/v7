@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
@@ -17,7 +18,7 @@
     data-contextmenu="message-attachment"
     use:contextProps={[message, attachment]}
   >
-    <img src={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || process.getIconCached("DefaultMimeIcon")} alt="" />
+    <Icon icon={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || "DefaultMimeIcon"} />
     <p>
       <span class="filename">
         {attachment.filename}
