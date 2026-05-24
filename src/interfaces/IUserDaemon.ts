@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import type { UserDaemonStartOptions } from "$types/daemon";
+=======
+>>>>>>> development
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
@@ -21,7 +24,10 @@ import type { IThemesUserContext } from "./contexts/IThemesUserContext";
 import type { IVersionUserContext } from "./contexts/IVersionUserContext";
 import type { IWallpaperUserContext } from "./contexts/IWallpaperUserContext";
 import type { IWorkspaceUserContext } from "./contexts/IWorkspaceUserContext";
+<<<<<<< HEAD
 import type { ICommandResult } from "./ICommandResult";
+=======
+>>>>>>> development
 import type { IProcess } from "./IProcess";
 import type { IServiceHost } from "./IServiceHost";
 import type { IServerConnector } from "./modules/IServerManager";
@@ -77,7 +83,10 @@ export interface IUserDaemon extends IProcess {
   updateGlobalDispatch(): void;
   getShell(): IShellRuntime | undefined;
   GetConnector<T extends IServerConnector>(name: string): T;
+<<<<<<< HEAD
   startUserDaemon(startOptions: UserDaemonStartOptions, broadcast: (m: string) => void): Promise<ICommandResult<IUserDaemon>>;
+=======
+>>>>>>> development
 }
 
 export interface IUserContext {

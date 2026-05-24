@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import type { IArcFindService } from "$interfaces/services/IArcFindService";
   import ServiceGate from "$lib/ServiceGate.svelte";
+=======
+>>>>>>> development
   import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore, StringStore } from "$types/writable";
   import Bottom from "./StartMenu/Bottom.svelte";

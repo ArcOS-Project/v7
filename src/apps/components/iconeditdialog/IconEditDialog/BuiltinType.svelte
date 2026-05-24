@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Daemon } from "$ts/env";
   import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IIconEditDialogRuntime } = $props();
   const { type, values } = process;

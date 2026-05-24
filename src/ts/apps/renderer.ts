@@ -2,9 +2,13 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+<<<<<<< HEAD
 import type { IIconService } from "$interfaces/services/IIconService";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { QuestionIcon } from "$ts/images/dialog";
+=======
+import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
+>>>>>>> development
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";

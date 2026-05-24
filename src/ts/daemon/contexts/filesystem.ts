@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
+=======
+import {
+  DummyFileProgress,
+  type FileProgressMutator,
+  type FsProgressOperation,
+} from "$apps/components/fsprogress/types";
+>>>>>>> development
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";

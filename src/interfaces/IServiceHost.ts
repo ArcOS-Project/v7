@@ -15,6 +15,7 @@ export interface IServiceHost extends IProcess {
   initialRun(broadcast?: (m: string) => void): Promise<void>;
   init(broadcast?: (m: string) => void): Promise<void>;
   stop(): Promise<void>;
+<<<<<<< HEAD
   readonly STORE: Map<ServiceIdentifier, Service>;
   loadStore(store: ServiceStore): boolean;
   getServiceInfo(id: ServiceIdentifier): Service | undefined;
@@ -50,3 +51,16 @@ export const ServiceIdentifiers = [
 ] as const;
 
 export type ServiceIdentifier = (typeof ServiceIdentifiers)[number];
+=======
+  readonly STORE: Map<string, Service>;
+  loadStore(store: ServiceStore): boolean;
+  getServiceInfo(id: string): Service | undefined;
+  startService(id: string): Promise<ServiceChangeResult>;
+  stopService(id: string): Promise<ServiceChangeResult>;
+  restartService(id: string): Promise<ServiceChangeResult>;
+  verifyServicesProcesses(): Promise<void>;
+  getService<T extends IBaseService = IBaseService>(id: string): T | undefined;
+  hasService(id: string): boolean;
+  spinDown(broadcast?: (message: string) => void): Promise<void>;
+}
+>>>>>>> development

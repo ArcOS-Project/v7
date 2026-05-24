@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import type { SearchItem } from "$types/search";
   import type { FuseResult } from "fuse.js";
 

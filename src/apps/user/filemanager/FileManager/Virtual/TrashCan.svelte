@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+<<<<<<< HEAD
   import ServiceGate from "$lib/ServiceGate.svelte";
+=======
+>>>>>>> development
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
@@ -14,10 +17,17 @@
   import type { TrashIndexNode } from "$types/trash";
   import { onMount } from "svelte";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
+<<<<<<< HEAD
   import type { Unsubscriber } from "$types/writable";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { selection } = process;
+=======
+
+  const { process }: { process: IFileManagerRuntime } = $props();
+  const { selection } = process;
+  const trash = Daemon?.serviceHost?.getService<ITrashCanService>("TrashSvc");
+>>>>>>> development
 
   let items = $state<[string, TrashIndexNode][]>([]);
   let unsub: Unsubscriber | undefined;

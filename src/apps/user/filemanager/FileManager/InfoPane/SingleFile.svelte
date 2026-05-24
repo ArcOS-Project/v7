@@ -5,6 +5,10 @@
   import type { ExpandedFileAssociationInfo } from "$types/assoc";
   import type { SummarizedFsModifiers } from "$types/fs";
   import dayjs from "dayjs";
+<<<<<<< HEAD
+=======
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+>>>>>>> development
 
   const {
     modifiers,

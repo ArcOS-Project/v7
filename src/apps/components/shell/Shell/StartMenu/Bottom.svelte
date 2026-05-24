@@ -1,7 +1,11 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import type { IArcFindService } from "$interfaces/services/IArcFindService";
   import ServiceGate from "$lib/ServiceGate.svelte";
+=======
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+>>>>>>> development
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import { StartMenuActions } from "../../store";

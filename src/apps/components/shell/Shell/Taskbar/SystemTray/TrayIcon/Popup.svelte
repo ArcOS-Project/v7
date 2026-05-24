@@ -1,6 +1,10 @@
 <script lang="ts">
+<<<<<<< HEAD
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
+=======
+  import type { IShellRuntime, ITrayIconProcess } from "$interfaces/runtimes/IShellRuntime";
+>>>>>>> development
 
   const { process, discriminator, icon }: { process: IShellRuntime; discriminator: string; icon: ITrayIconProcess } = $props();
   const { openedTrayPopup, userPreferences } = process;

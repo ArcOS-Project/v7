@@ -1,8 +1,14 @@
 <script lang="ts">
   import Icon from "$lib/Icon.svelte";
   import type { ElevationData } from "$types/elevation";
+<<<<<<< HEAD
 
   const { data }: { data: ElevationData } = $props();
+=======
+  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
+
+  const { data, process }: { data: ElevationData; process: ISecureContextRuntime } = $props();
+>>>>>>> development
 </script>
 
 <div class="display">

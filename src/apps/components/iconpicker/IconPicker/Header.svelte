@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IIconPickerRuntime } = $props();
   const { forWhat, selected, store } = process;

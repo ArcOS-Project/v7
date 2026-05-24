@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";

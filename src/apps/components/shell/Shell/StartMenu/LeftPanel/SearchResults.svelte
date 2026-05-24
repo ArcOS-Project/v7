@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import type { IArcFindService } from "$interfaces/services/IArcFindService";
+=======
+>>>>>>> development
   import Spinner from "$lib/Spinner.svelte";
   import SearchResult from "./SearchResults/SearchResult.svelte";
 

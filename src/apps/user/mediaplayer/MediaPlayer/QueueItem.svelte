@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon } from "$ts/env";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";

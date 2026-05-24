@@ -1,5 +1,10 @@
 <script lang="ts">
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+  import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+  const { process }: { process: IFirstRunRuntime } = $props();
+>>>>>>> development
 </script>
 
 <Icon icon="AppStoreIcon" />

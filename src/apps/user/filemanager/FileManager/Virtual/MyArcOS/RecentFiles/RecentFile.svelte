@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon, Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";

@@ -2,7 +2,10 @@
   import type { ShellTrayIcon } from "$apps/components/shell/types";
   import type { IProcess } from "$interfaces/IProcess";
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const {
     process,

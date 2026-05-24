@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
+=======
+import type { IArcFindRuntime } from "$interfaces/runtimes/IArcFindRuntime";
+import type { IShellRuntime, ITrayHostRuntime } from "$interfaces/runtimes/IShellRuntime";
+import { AppProcess } from "$ts/apps/process";
+import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { Sleep } from "$ts/sleep";
+>>>>>>> development
 import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/accelerator";
@@ -14,7 +22,10 @@ import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 import { weatherClasses, weatherMetadata } from "./store";
 import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
+<<<<<<< HEAD
 import type { IAppProcess } from "$interfaces/IAppProcess";
+=======
+>>>>>>> development
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);

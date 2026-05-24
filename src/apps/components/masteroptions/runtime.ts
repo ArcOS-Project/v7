@@ -1,7 +1,11 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
+<<<<<<< HEAD
 import { Stack } from "$ts/env";
+=======
+import { Daemon, Stack } from "$ts/env";
+>>>>>>> development
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";

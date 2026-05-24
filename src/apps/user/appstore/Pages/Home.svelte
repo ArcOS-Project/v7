@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import type { PartialStoreItem, StoreItem } from "$types/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";

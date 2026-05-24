@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";

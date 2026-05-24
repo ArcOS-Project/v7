@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
+=======
+>>>>>>> development
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
@@ -58,10 +61,13 @@ export function GetConnector<T extends IServerConnector>(name: string, token?: s
   return getKMod<IServerManager>("server").GetConn(name, token || "");
 }
 
+<<<<<<< HEAD
 export function GetService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined {
   return Daemon.serviceHost?.getService<T>(id);
 }
 
+=======
+>>>>>>> development
 export let Daemon: IUserDaemon;
 
 export function SetDaemon(daemon: IUserDaemon) {

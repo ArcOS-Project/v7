@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import type { ErrorButton, Notification } from "$types/notification";

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { StartMenuActions } from "$apps/components/shell/store";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 

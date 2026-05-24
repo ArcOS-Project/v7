@@ -3,6 +3,7 @@
   import Icon from "$lib/Icon.svelte";
 
   const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
+  const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
   const { expressions, selectedSource } = process;
 </script>
 

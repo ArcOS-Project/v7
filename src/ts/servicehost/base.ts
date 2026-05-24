@@ -1,7 +1,11 @@
 import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
+<<<<<<< HEAD
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { Daemon, Env, Stack } from "$ts/env";
+=======
+import { Daemon } from "$ts/env";
+>>>>>>> development
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 
 export class BaseService extends Process implements IBaseService {
@@ -9,10 +13,13 @@ export class BaseService extends Process implements IBaseService {
   activated: boolean = false;
   initBroadcast?: (msg: string) => void;
 
+<<<<<<< HEAD
   get shell() {
     return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
   }
 
+=======
+>>>>>>> development
   GetConnector<T extends IServerConnector>(name: string): T {
     return Daemon.GetConnector<T>(name);
   }

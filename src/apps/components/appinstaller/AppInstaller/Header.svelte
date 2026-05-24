@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IAppInstallerRuntime } = $props();
   const { completed, failReason, installing } = process.progress!;

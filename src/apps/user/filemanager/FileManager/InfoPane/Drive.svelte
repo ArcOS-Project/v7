@@ -1,6 +1,10 @@
 <script lang="ts">
   import CircularProgress from "$lib/CircularProgress.svelte";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+  import { Daemon } from "$ts/env";
+>>>>>>> development
   import { formatBytes } from "$ts/util/fs";
   import { DriveIconsMulticolor } from "../../store";
   import type { QuotedDrive } from "../../types";

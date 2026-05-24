@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Sleep } from "$ts/sleep";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Store } from "$ts/writable";

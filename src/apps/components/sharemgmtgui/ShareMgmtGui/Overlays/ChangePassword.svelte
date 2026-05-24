@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
   import type { IShareManager } from "$interfaces/services/IShareManager";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
 

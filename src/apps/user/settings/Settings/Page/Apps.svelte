@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import { Daemon } from "$ts/env";
   import { Glow } from "$ts/images/branding";
   import Section from "../Section.svelte";

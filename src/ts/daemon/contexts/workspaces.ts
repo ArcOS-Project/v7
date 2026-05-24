@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import FirstRunApp from "$apps/components/firstrun/FirstRun";
 import type { Constructs } from "$interfaces/common";
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
@@ -7,10 +8,20 @@ import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs, Stack } from "$ts/env";
 import { ServiceHost } from "$ts/servicehost";
+=======
+import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { AppProcess } from "$ts/apps/process";
+import { Daemon, Stack } from "$ts/env";
+>>>>>>> development
 import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
+<<<<<<< HEAD
 import type { UserPreferences, Workspace } from "$types/user";
+=======
+import type { UserPreferences } from "$types/user";
+>>>>>>> development
 import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext implements IWorkspaceUserContext {

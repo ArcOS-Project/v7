@@ -1,8 +1,14 @@
 <script lang="ts">
+<<<<<<< HEAD
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcess } from "$interfaces/IProcess";
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Icon from "$lib/Icon.svelte";
+=======
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcess } from "$interfaces/IProcess";
+>>>>>>> development
   import { AppProcess } from "$ts/apps/process";
   import { Daemon, Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";

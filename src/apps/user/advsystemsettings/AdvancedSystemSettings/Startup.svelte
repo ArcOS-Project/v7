@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IAdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;

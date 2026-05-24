@@ -1,5 +1,9 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
+<<<<<<< HEAD
 import type { UserPreferences, Workspace } from "$types/user";
+=======
+import type { UserPreferences } from "$types/user";
+>>>>>>> development
 
 export interface IWorkspaceUserContext extends IUserContext {
   virtualDesktop: HTMLDivElement | undefined;

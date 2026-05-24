@@ -7,6 +7,10 @@ import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
+<<<<<<< HEAD
+=======
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+>>>>>>> development
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
@@ -133,7 +137,11 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
     const userConnector = GetConnector<IUserConnector>("UserConnector");
 
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
+<<<<<<< HEAD
     this.profileImage.set(userConnector.PictureUrl(userDaemon.userInfo._id));
+=======
+    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userDaemon.userInfo._id));
+>>>>>>> development
 
     if (!this.safeMode && applyBackground) {
       this.loginBackground.set(userConnector.LoginBgUrl(userDaemon.userInfo._id));
@@ -156,6 +164,44 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       return;
     }
 
+<<<<<<< HEAD
+=======
+    this.loadingStatus.set("Saving token");
+    this.saveToken(userDaemon);
+    this.loadingStatus.set("Loading your settings");
+
+    const userInfoResult = await userDaemon.account!.getUserInfo();
+
+    if (!userInfoResult.success) {
+      this.loadingStatus.set("");
+      this.errorMessage.set(userInfoResult.errorMessage ?? "Failed to request user info");
+
+      return;
+    }
+
+    const userInfo = userInfoResult.result!;
+
+    this.profileImage.set(GetConnector<IUserConnector>("UserConnector").PictureUrl(userInfo._id));
+
+    if (userInfo.hasTotp && userInfo.restricted) {
+      this.loadingStatus.set("Requesting 2FA");
+
+      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
+
+      if (!unlocked) {
+        await userDaemon.account!.discontinueToken();
+        await userDaemon.killSelf();
+        this.resetCookies();
+        this.loadingStatus.set("");
+        this.errorMessage.set("You didn't enter a valid 2FA code!");
+        return;
+      }
+    }
+
+    this.loadingStatus.set(this.getWelcomeString());
+
+    const verbose = userDaemon.preferences().enableVerboseLogin;
+>>>>>>> development
     const broadcast = (message: string) => {
       if (!userDaemon?.preferences()?.enableVerboseLogin || !message) return;
       this.loadingStatus.set(message);
@@ -170,6 +216,45 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       this.loadingStatus.set("");
       this.errorMessage.set(result.errorMessage ?? "Unknown error");
     }
+<<<<<<< HEAD
+=======
+
+    broadcast("Notifying login activity");
+    await userDaemon.activity!.logActivity("login");
+
+    broadcast("Starting service host");
+    await userDaemon.init?.startServiceHost(broadcast);
+
+    broadcast("Welcome to ArcOS");
+    if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
+      await this.firstRun(userDaemon);
+    }
+
+    broadcast("Starting drive notifier watcher");
+    userDaemon.init!.startDriveNotifierWatcher();
+
+    broadcast("Indexing your files");
+    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
+
+    broadcast("Starting status refresh");
+    await userDaemon.init!.startSystemStatusRefresh();
+
+    broadcast("Let's go!");
+    await State?.loadState("desktop", { userDaemon }, true);
+    SoundBus.playSound("arcos.system.logon");
+    userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
+    userDaemon.checks!.checkNightly();
+
+    broadcast("Starting Workspaces");
+    await userDaemon.init!.startVirtualDesktops();
+
+    broadcast("Running autorun");
+    await userDaemon.apps!.spawnAutoload();
+    await userDaemon.checks!.checkForUpdates();
+    await userDaemon.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();
+
+    userDaemon._blockLeaveInvocations = false;
+>>>>>>> development
   }
 
   //#endregion

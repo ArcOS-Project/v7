@@ -1,11 +1,19 @@
 <script lang="ts">
+<<<<<<< HEAD
   import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
   import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
   import Icon from "$lib/Icon.svelte";
+=======
+  import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+>>>>>>> development
   import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
+<<<<<<< HEAD
+=======
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
+>>>>>>> development
 
   const { process }: { process: IAdvSysSetRuntime } = $props();
   const { userPreferences } = process;

@@ -2,7 +2,10 @@
   import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IMessageComposerRuntime } = $props();
   const { attachments, sending } = process;

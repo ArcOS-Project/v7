@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";

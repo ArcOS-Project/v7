@@ -3,7 +3,10 @@
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+<<<<<<< HEAD
   import Icon from "$lib/Icon.svelte";
+=======
+>>>>>>> development
 
   const { process }: { process: IShareMgmtOverlayRuntime } = $props();
   let newName = $state<string>();
