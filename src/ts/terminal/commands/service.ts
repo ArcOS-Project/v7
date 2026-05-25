@@ -1,10 +1,10 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { ServiceChangeResultCaptions } from "$ts/servicehost/store";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRWHITE, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRWHITE, RESET } from "../colors";
 
 export class ServiceCommand extends TerminalProcess {
   static keyword = "service";

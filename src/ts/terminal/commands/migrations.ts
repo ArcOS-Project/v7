@@ -1,9 +1,9 @@
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
+import { BRBLUE, BRWHITE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRWHITE, RESET } from "../store";
 
 export class MigrationsCommand extends TerminalProcess {
   static keyword = "migrations";

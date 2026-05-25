@@ -69,8 +69,7 @@ export class DevenvCommand extends TerminalProcess {
   }
 
   async disconnect(term: IArcTerminal) {
-    const service = term.daemon?.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
-    const service = this.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    const service = this.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Error("There is no development environment running");

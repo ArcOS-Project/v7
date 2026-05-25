@@ -1,9 +1,9 @@
-import type { IProcess } from "$interfaces/process";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { Arguments } from "$types/terminal";
+import { BRBLACK, BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, RESET } from "../store";
 
 export class LoadCommand extends TerminalProcess {
   static keyword = "load";
