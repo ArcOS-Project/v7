@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IconPickerRuntime } from "../runtime";
+  import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
 
-  const { process, id, icon }: { process: IconPickerRuntime; id: string; icon: string } = $props();
+  const { process, id, icon }: { process: IIconPickerRuntime; id: string; icon: string } = $props();
   const { selected } = process;
 
   let elm: HTMLButtonElement;

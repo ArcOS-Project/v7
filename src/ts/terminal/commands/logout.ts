@@ -1,7 +1,7 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { State } from "$ts/env";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
 
 export class LogoutCommand extends TerminalProcess {
   public static keyword = "logout";

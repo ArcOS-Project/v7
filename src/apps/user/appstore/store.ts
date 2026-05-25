@@ -1,4 +1,4 @@
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { groupByTimeFrame, sortByKey } from "$ts/util";
 import type { StoreItem } from "$types/package";
 import Everything from "./Pages/Everything.svelte";

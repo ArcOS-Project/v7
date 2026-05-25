@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { SecureContextRuntime } from "../runtime";
+  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
 
-  const { process }: { process: SecureContextRuntime } = $props();
+  const { process }: { process: ISecureContextRuntime } = $props();
   const { password, loading, userPreferences } = process;
 
   async function submit(e: SubmitEvent) {

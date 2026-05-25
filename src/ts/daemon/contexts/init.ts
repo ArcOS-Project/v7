@@ -1,11 +1,10 @@
-import type { IInitUserContext } from "$interfaces/contexts/init";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServiceHost } from "$interfaces/service";
-import { Env, Fs, Stack, State, SysDispatch } from "$ts/env";
+import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
 import { MessageBox } from "$ts/util/dialog";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {

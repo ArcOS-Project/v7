@@ -1,7 +1,7 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { ConfigurationBuilder } from "$ts/config";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
@@ -32,7 +32,7 @@ export class MigrationService extends BaseService implements IMigrationService {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, broadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, broadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, broadcast);
 
     this.setSource(__SOURCE__);

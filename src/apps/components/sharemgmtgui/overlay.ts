@@ -1,10 +1,10 @@
+import type { IShareMgmtGuiRuntime, IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
-import type { ShareMgmtGuiRuntime } from "./runtime";
 
-export class OverlayRuntime extends AppProcess {
-  parentProcess: ShareMgmtGuiRuntime;
+export class ShareMgmtOverlayRuntime extends AppProcess implements IShareMgmtOverlayRuntime {
+  parentProcess: IShareMgmtGuiRuntime;
 
   //#region LIFECYCLE
 

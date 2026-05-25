@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";

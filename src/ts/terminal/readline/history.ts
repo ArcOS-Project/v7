@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 
 /**

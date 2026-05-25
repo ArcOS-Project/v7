@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { ReadableStore } from "$types/writable";
-  import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
 
-  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info, process }: { info: ReadableStore<ItemInfo>; process: IItemInfoRuntime } = $props();
 </script>
 
 <ActionBar floating>

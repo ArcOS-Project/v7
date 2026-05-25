@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { IGlobalLoadIndicatorRuntime } from "$interfaces/runtimes/IGlobalLoadIndicatorRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import type { GlobalLoadIndicatorRuntime } from "./runtime";
 
-  const { process }: { process: GlobalLoadIndicatorRuntime } = $props();
+  const { process }: { process: IGlobalLoadIndicatorRuntime } = $props();
   const { caption, progress } = process;
 </script>
 

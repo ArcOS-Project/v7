@@ -3,7 +3,7 @@
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import { Pane, Splitpanes } from "svelte-splitpanes";
-  import type { SqeletonRuntime } from "./runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import ErrorList from "./Sqeleton/ErrorList.svelte";
   import HistoryList from "./Sqeleton/HistoryList.svelte";
   import Intro from "./Sqeleton/Intro.svelte";
@@ -12,7 +12,7 @@
   import StatusBar from "./Sqeleton/StatusBar.svelte";
   import Tabs from "./Sqeleton/Tabs.svelte";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { queries, queryIndex, openedFile, currentTab } = process;
 
   let sqlCode = Store<string>("");

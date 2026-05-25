@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { settingsPageStore } from "../store";
   import AccountButton from "./Sidebar/AccountButton.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage } = process;
 </script>
 

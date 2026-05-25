@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IExitRuntime } from "$interfaces/runtimes/IExitRuntime";
   import { onDestroy, onMount } from "svelte";
-  import { ExitRuntime } from "./runtime";
   import { ExitActions } from "./store";
 
-  const { process }: { process: ExitRuntime } = $props();
+  const { process }: { process: IExitRuntime } = $props();
   const { selected } = process;
 
   let shiftKey = $state<boolean>(false);

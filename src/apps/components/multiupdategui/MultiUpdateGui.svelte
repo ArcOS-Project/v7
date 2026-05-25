@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IMultiUpdateGuiRuntime } from "$interfaces/runtimes/IMultiUpdateGuiRuntime";
   import UserLink from "$lib/UserLink.svelte";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
   import { StoreItemIcon } from "$ts/util/distrib";
-  import type { MultiUpdateGuiRuntime } from "./runtime";
   import { StateIconTranslations } from "./types";
 
-  const { process }: { process: MultiUpdateGuiRuntime } = $props();
+  const { process }: { process: IMultiUpdateGuiRuntime } = $props();
   const { status, working, done, errored, currentPackage, logs, focused, showLog, unified } = process;
 
   focused.subscribe(async (v) => {

@@ -1,9 +1,9 @@
-import type { ILoginActivityUserContext } from "$interfaces/contexts/activity";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { ILoginActivityUserContext } from "$interfaces/contexts/ILoginActivityUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { toForm } from "$ts/util/form";
 import type { LoginActivity } from "$types/activity";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class LoginActivityUserContext extends UserContext implements ILoginActivityUserContext {

@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ExitAction } from "./types";
 
 export const ExitActions: Record<string, ExitAction> = {

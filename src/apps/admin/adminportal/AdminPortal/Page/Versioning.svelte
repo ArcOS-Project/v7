@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import type { IMigrationService } from "$interfaces/services/MigrationSvc";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import type { IMigrationService } from "$interfaces/services/IMigrationService";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import type { VersioningData, VersioningNode } from "../../types";
 
   const migrationService = Daemon.serviceHost?.getService<IMigrationService>("MigrationSvc");

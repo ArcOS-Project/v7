@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";

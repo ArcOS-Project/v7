@@ -1,10 +1,11 @@
+import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { State } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/app";
 
-export class BootScreenRuntime extends AppProcess {
+export class BootScreenRuntime extends AppProcess implements IBootScreenRuntime {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
 

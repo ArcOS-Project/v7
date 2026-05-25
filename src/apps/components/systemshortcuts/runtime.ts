@@ -1,9 +1,9 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import type { AppProcessData } from "$types/app";
 
-export class SystemShortcutsRuntime extends AppProcess {
+export class SystemShortcutsRuntime extends AppProcess implements IAppProcess {
   closingFocused = false;
 
   //#region LIFECYCLE

@@ -1,6 +1,6 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServiceHost } from "$interfaces/service";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";

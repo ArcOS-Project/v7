@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { QlorbRuntime } from "../../runtime";
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import Options from "./OnScreenDisplay/Options.svelte";
   import Score from "./OnScreenDisplay/Score.svelte";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
 </script>
 
 <div class="osd fullscreen">

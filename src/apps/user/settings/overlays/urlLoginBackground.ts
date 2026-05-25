@@ -1,5 +1,5 @@
 import type { App } from "$types/app";
-import { OverlayRuntime } from "../overlay";
+import { SettingsOverlayRuntime } from "../overlay";
 import UrlLoginBackgroundSvelte from "../Settings/Overlays/UrlLoginWallpaper.svelte";
 
 export const UrlLoginBackground: App = {
@@ -26,7 +26,7 @@ export const UrlLoginBackground: App = {
     close: false,
   },
   assets: {
-    runtime: OverlayRuntime,
+    runtime: SettingsOverlayRuntime,
     component: UrlLoginBackgroundSvelte as any,
   },
   overlay: true,

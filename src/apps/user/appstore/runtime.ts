@@ -1,8 +1,8 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
@@ -21,21 +21,21 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
 
-export class AppStoreRuntime extends AppProcess {
+export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
   searchQuery = Store<string>("");
   loadingPage = Store<boolean>(false);
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
   operations: Record<string, IInstallerProcessBase> = {};
-  distrib: DistributionServiceProcess;
+  distrib: IDistributionServiceProcess;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: number, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
 
     this.searchQuery.subscribe((v) => {
       if (!v) {
@@ -238,6 +238,8 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deprecateStoreItem(pkg._id);
 
     this.switchPage("manageStoreItem", { id: pkg._id }, true);
+
+    return true;
   }
 
   async deletePackage(pkg: StoreItem) {
@@ -256,6 +258,8 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deleteStoreItem(pkg._id);
 
     this.switchPage("madeByYou");
+
+    return true;
   }
 
   async publishPackage() {
@@ -268,7 +272,7 @@ export class AppStoreRuntime extends AppProcess {
       startDir: UserPaths.Documents,
     });
 
-    if (!path) return;
+    if (!path) return false;
 
     const prog = await Daemon!.files!.FileProgress(
       {

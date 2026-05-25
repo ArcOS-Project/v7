@@ -3,10 +3,10 @@
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
-  import type { ProcessManagerRuntime } from "../../runtime";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Service from "./Services/Service.svelte";
 
-  const { process }: { process: ProcessManagerRuntime } = $props();
+  const { process }: { process: IProcessManagerRuntime } = $props();
   const { Services } = process.host;
   const { selected } = process;
 

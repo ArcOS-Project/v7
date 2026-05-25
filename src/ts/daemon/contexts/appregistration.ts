@@ -1,8 +1,8 @@
-import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
@@ -10,7 +10,6 @@ import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse, validateObject } from "$ts/util/json";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 import { LogLevel } from "$types/logging";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {
@@ -18,12 +17,12 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     super(id, daemon);
   }
 
+  // Essential entrypoint: ApplicationStorage calls this method to obtain the list of installed user applications.
   async getUserApps(): Promise<AppStorage> {
     try {
       if (!Daemon!.preferences()) return [];
 
       await this.modeUserAppsToFs();
-
       const bulk = Object.fromEntries(
         Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
@@ -53,13 +52,12 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
-    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
 
+    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
     if (!distrib) return false;
 
     const prog = await Daemon!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
-
     await prog.stop();
 
     return result;
@@ -74,7 +72,6 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
       const json = tryJsonParse<InstalledApp>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";
-
       if (!json.metadata || !json.entrypoint) return "missing properties";
 
       (json as any).thirdParty = true;
@@ -121,7 +118,7 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
-    const appStore = this.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    const appStore = this.serviceHost?.getService("AppStorage") as IApplicationStorage;
     const app = appStore?.getAppSynchronous(appId);
 
     if (!app) return;

@@ -1,6 +1,7 @@
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcLicense } from "$ts/metadata/license";
 import { Sleep } from "$ts/sleep";
@@ -22,7 +23,7 @@ import { UserFontApp } from "./overlays/userFont";
 import { settingsPageStore } from "./store";
 import { SlideStore } from "./store/slides";
 
-export class SettingsRuntime extends AppProcess {
+export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   currentPage = Store<string>("");
   currentSlide = Store<string>("");
   slideVisible = Store<boolean>(false);
@@ -339,25 +340,9 @@ export class SettingsRuntime extends AppProcess {
 
     if (!elevated) return;
 
-    try {
-      Backend.delete("/totp", { headers: { Authorization: `Bearer ${Daemon?.token}` } });
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Delete();
 
-      MessageBox(
-        {
-          title: "ArcOS Security",
-          message:
-            "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
-          buttons: [
-            { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
-          ],
-          sound: "arcos.dialog.info",
-          image: "GoodStatusIcon",
-        },
-        this.pid,
-        true
-      );
-    } catch {
+    if (!result.success) {
       MessageBox(
         {
           title: "Something went wrong",
@@ -369,6 +354,23 @@ export class SettingsRuntime extends AppProcess {
         this.pid,
         true
       );
+      return;
     }
+
+    MessageBox(
+      {
+        title: "ArcOS Security",
+        message:
+          "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
+        buttons: [
+          { caption: "Restart later", action: () => {} },
+          { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
+        ],
+        sound: "arcos.dialog.info",
+        image: "GoodStatusIcon",
+      },
+      this.pid,
+      true
+    );
   }
 }

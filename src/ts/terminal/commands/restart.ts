@@ -1,9 +1,9 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { SysDispatch } from "$ts/env";
 import { logItemToStr } from "$ts/util";
 import type { LogItem } from "$types/logging";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
 
 export class RestartCommand extends TerminalProcess {
   public static keyword = "restart";

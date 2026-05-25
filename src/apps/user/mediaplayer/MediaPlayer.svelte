@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
-  import type { MediaPlayerRuntime } from "./runtime";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
   const { pinControls } = process;
-  
+
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
   let style = $state<string | undefined>();

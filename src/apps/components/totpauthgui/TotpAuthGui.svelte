@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ITotpAuthGuiRuntime } from "$interfaces/runtimes/ITotpAuthGuiRuntime";
   import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
-  import type { TotpAuthGuiRuntime } from "./runtime";
   import Input from "./TotpAuthGui/Input.svelte";
 
-  const { process }: { process: TotpAuthGuiRuntime } = $props();
+  const { process }: { process: ITotpAuthGuiRuntime } = $props();
 
   const code = Store<string>();
   let errored = $state(false);

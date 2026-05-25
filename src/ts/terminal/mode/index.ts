@@ -1,7 +1,10 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IArcTerminal, ITerminalMode } from "$interfaces/terminal";
+import type { IArcTerminal, ITerminalMode } from "$interfaces/IArcTerminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Server, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
@@ -9,8 +12,6 @@ import { ArcMode } from "$ts/metadata/mode";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { UserPaths } from "$ts/user/store";
-import { toForm } from "$ts/util/form";
-import type { UserInfo } from "$types/user";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -20,9 +21,8 @@ import "@xterm/xterm/css/xterm.css";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
 import { ArcTerminal } from "..";
-import type { MigrationService } from "../../servicehost/services/MigrationSvc";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../store";
 
 export class TerminalMode extends Process implements ITerminalMode {
   userDaemon?: IUserDaemon;
@@ -159,7 +159,7 @@ export class TerminalMode extends Process implements ITerminalMode {
       await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
 
       await userDaemon.serviceHost
-        ?.getService<MigrationService>("MigrationSvc")
+        ?.getService<IMigrationService>("MigrationSvc")
         ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
 
       broadcast(`Starting status refresh`);
@@ -227,15 +227,10 @@ export class TerminalMode extends Process implements ITerminalMode {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const result = await GetConnector<IUserConnector>("UserConnector", token).Self();
+    if (!result.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return result.result!;
   }
 
   resetCookies() {
@@ -318,16 +313,8 @@ export class TerminalMode extends Process implements ITerminalMode {
       return await this.askForTotp(token);
     }
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const result = await GetConnector<ITotpConnector>("totp", token).Unlock(code);
 
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return !!result.success;
   }
 }

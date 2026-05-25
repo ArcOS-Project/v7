@@ -1,10 +1,10 @@
-import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/distrib";
-import type { IDistributionServiceProcess } from "$interfaces/services/DistribSvc";
-import { Daemon } from "$ts/daemon";
-import { Fs, Stack } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IInstallerProcessBase, IInstallerProcessBaseConstructor } from "$interfaces/IInstallerProcessBase";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -13,7 +13,7 @@ import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { UpdateWriteOpResult } from "$types/mongo";
-import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
+import type { ArcPackage, StoreItem, UpdateInfo } from "$types/package";
 import type { Service } from "$types/service";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
@@ -33,7 +33,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.preferences = Daemon!.preferences;
@@ -364,13 +364,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   //#region STORE ITEMS
 
   async getAllStoreItems(): Promise<StoreItem[]> {
-    try {
-      const response = await Backend.get("/store/list", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-
-      return response.data as StoreItem[];
-    } catch {
-      return [];
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").GetAllStoreItems()).result ?? [];
   }
 
   async getStoreItemsByAuthor(userId: string): Promise<StoreItem[]> {
@@ -380,13 +374,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   }
 
   async storeItemReadme(id: string): Promise<string> {
-    try {
-      const response = await Backend.get(`/store/assets/${id}/readme`, { responseType: "text" });
-
-      return response.data as string;
-    } catch {
-      return "";
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").GetPackageReadme(id)).result ?? "";
   }
 
   async checkForStoreItemUpdate(id: string, installedList?: StoreItem[], allPackages?: StoreItem[]): Promise<UpdateInfo | false> {
@@ -451,15 +439,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async searchStoreItems(query: string) {
     this.Log(`searchStoreItems: ${query}`);
 
-    try {
-      const response = await Backend.get(`/store/search/${query}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data.results as PartialStoreItem[];
-    } catch {
-      return [];
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").SearchStoreItems(query)).result ?? [];
   }
 
   async getInstalledStoreItem(id: string, installedList?: StoreItem[], noCache?: boolean) {
@@ -469,59 +449,21 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
-    try {
-      const response = await Backend.get(`/store/package/id/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      const data = response.data as StoreItem;
-
-      data.user = await Daemon!.account!.getPublicUserInfoOf(data.userId);
-
-      return data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").GetPackageById(id)).result;
   }
 
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
-    try {
-      const response = await Backend.get(`/store/package/name/${name}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").GetPackageByName(name)).result;
   }
 
   async downloadStoreItem(id: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
     if (this.checkBusy("downloadStoreItem")) return undefined;
 
     this.BUSY = "downloadStoreItem";
+    const result = (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").Download(id, onProgress)).result;
+    this.BUSY = "";
 
-    try {
-      const response = await Backend.get(`/store/download/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
-      });
-
-      this.BUSY = "";
-
-      return response.data as ArrayBuffer;
-    } catch {
-      this.BUSY = "";
-
-      return undefined;
-    }
+    return result;
   }
 
   async storeItemInstaller(id: string, onProgress?: FilesystemProgressCallback) {
@@ -561,25 +503,10 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     if (this.checkBusy("publishing_publishPackage")) return false;
 
     this.BUSY = "publishing_publishPackage";
-    try {
-      const response = await Backend.post("/store/publish", data, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (ev) => {
-          onProgress?.({
-            max: ev.total || 0,
-            value: ev.loaded,
-            type: "size",
-            what: "Uploading package",
-          });
-        },
-      });
+    const result = await Daemon!.GetConnector<IStoreConnector>("StoreConnector").PublishStoreItem(data, onProgress);
+    this.BUSY = "";
 
-      this.BUSY = "";
-      return response.status === 200;
-    } catch {
-      this.BUSY = "";
-      return false;
-    }
+    return result.success;
   }
 
   async publishing_publishPackageFromPath(path: string, onProgress?: FilesystemProgressCallback): Promise<boolean> {
@@ -601,45 +528,19 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   }
 
   async publishing_getPublishedPackages(): Promise<StoreItem[]> {
-    try {
-      const response = await Backend.get("/store/publish/list", {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem[];
-    } catch {
-      return [];
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").GetPublishedStoreItems()).result ?? [];
   }
 
   async publishing_deprecateStoreItem(id: string): Promise<boolean> {
     this.Log(`publishing_deprecateStoreItem: ${id}`);
 
-    try {
-      const response = await Backend.post(
-        `/store/publish/deprecate/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").DeprecateStoreItem(id)).success;
   }
 
   async publishing_deleteStoreItem(id: string): Promise<boolean> {
     this.Log(`publishing_deleteStoreItem: ${id}`);
 
-    try {
-      const response = await Backend.delete(`/store/publish/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await Daemon!.GetConnector<IStoreConnector>("StoreConnector").DeleteStoreItem(id)).success;
   }
 
   async publishing_updateStoreItem(itemId: string, newData: Blob, onProgress?: FilesystemProgressCallback) {
@@ -649,34 +550,17 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
     this.BUSY = "publishing_updateStoreItem";
 
-    try {
-      const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (ev) => {
-          onProgress?.({
-            max: ev.total || 0,
-            value: ev.loaded,
-            type: "size",
-            what: "Uploading update package",
-          });
-        },
-      });
+    const result = await Daemon!.GetConnector<IStoreConnector>("StoreConnector").UpdateStoreItem(itemId, newData, onProgress);
 
-      this.BUSY = "";
-
-      return response.status === 200;
-    } catch {
-      this.BUSY = "";
-
-      return false;
-    }
+    this.BUSY = "";
+    return result.success;
   }
 
   async publishing_updateStoreItemFromPath(
     itemId: string,
     updatePath: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<CommandResult<UpdateWriteOpResult>> {
+  ): Promise<ICommandResult<UpdateWriteOpResult>> {
     this.Log(`publishing_updateStoreItemFromPath: ${itemId} -> ${updatePath}`);
 
     if (this.checkBusy("publishing_updateStoreItemFromPath")) return CommandResult.Error("Distribution Service is busy");
@@ -685,25 +569,10 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
       const contents = await Fs.readFile(updatePath, (p) => {
         onProgress?.({ ...p, what: "Loading update package" });
       });
-
       if (!contents) return CommandResult.Error("Failed to read the update file");
 
       const newData = arrayBufferToBlob(contents);
-      const response = await Backend.patch(`/store/publish/${itemId}`, newData, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (ev) => {
-          onProgress?.({
-            max: ev.total || 0,
-            value: ev.loaded,
-            type: "size",
-            what: "Uploading update package",
-          });
-        },
-      });
-
-      if (response.status !== 200) return CommandResult.AxiosError(response.data?.e ?? "Unknown error");
-
-      return CommandResult.Ok<UpdateWriteOpResult>(response.data);
+      return await Daemon!.GetConnector<IStoreConnector>("StoreConnector").UpdateStoreItem(itemId, newData, onProgress);
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IArcTermColorsRuntime } from "$interfaces/runtimes/IArcTermColorsRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import Custom from "./ArcTermColors/Custom.svelte";
   import Presets from "./ArcTermColors/Presets.svelte";
-  import type { ArcTermColorsRuntime } from "./runtime";
 
-  const { process }: { process: ArcTermColorsRuntime } = $props();
+  const { process }: { process: IArcTermColorsRuntime } = $props();
   const { mode, arcTermConfiguration, changed } = process;
 </script>
 

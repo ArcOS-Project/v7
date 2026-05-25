@@ -1,5 +1,5 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/daemon";
 import { Stack, State } from "$ts/env";
@@ -32,7 +32,7 @@ export class ExitCommand extends TerminalProcess {
     if (!(proc instanceof AppProcess)) {
       return 1;
     }
-    await proc.closeWindow();
+    await proc!.closeWindow();
 
     return -256;
   }

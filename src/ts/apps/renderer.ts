@@ -1,9 +1,8 @@
-import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import type { IAppProcess } from "$interfaces/app";
-import type { IAppRenderer } from "$interfaces/renderer";
-import { Daemon } from "$ts/daemon";
-import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
@@ -323,7 +322,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     menu.className = "alt-menu nodrag";
 
     const contextMenuPid = Env.get("contextmenu_pid");
-    const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    const contextMenu = Stack.getProcess<IContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
     process.altMenu.subscribe((v) => {
@@ -693,7 +692,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost
-      ?.getService<DistributionServiceProcess>("DistribSvc")
+      ?.getService<IDistributionServiceProcess>("DistribSvc")
       ?.getInstalledStoreItemByAppId(data.id);
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";

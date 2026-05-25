@@ -1,4 +1,4 @@
-import type { IUserContext, IUserDaemon } from "$interfaces/daemon";
+import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/logging";
 import type { UserInfo } from "$types/user";

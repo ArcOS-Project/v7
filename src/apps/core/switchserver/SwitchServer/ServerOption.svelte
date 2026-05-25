@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { ServerOption } from "$types/server";
   import { onMount } from "svelte";
-  import type { SwitchServerRuntime } from "../runtime";
+  import type { ISwitchServerRuntime } from "$interfaces/runtimes/ISwitchServerRuntime";
 
-  const { process, server }: { process: SwitchServerRuntime; server: ServerOption } = $props();
+  const { process, server }: { process: ISwitchServerRuntime; server: ServerOption } = $props();
   const { selected, loading } = process;
 
   let name = $state<string>(server.name || "");
