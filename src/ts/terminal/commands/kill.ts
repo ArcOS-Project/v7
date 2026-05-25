@@ -19,7 +19,7 @@ export class KillCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const pid = tryJsonParse<number>(argv[0]) as number;
     const process = Stack.getProcess(pid);
 
