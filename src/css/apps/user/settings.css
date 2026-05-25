@@ -85,6 +85,7 @@ button.lucide:active {
 #systemSettings > div.body div.page-content div.page-wrapper {
   max-width: 600px;
   margin: 0 auto;
+  height: 100%;
 }
 
 #systemSettings > div.body div.container h1.page-title {

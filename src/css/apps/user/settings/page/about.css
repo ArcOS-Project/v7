@@ -15,7 +15,7 @@
   margin-left: auto;
 }
 
-#systemSettings div.container.about div.page-content {
+#systemSettings div.container.about div.page-wrapper {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -23,13 +23,13 @@
   padding-top: 30px;
 }
 
-#systemSettings div.container.about div.page-content:not(.hide) {
+#systemSettings div.container.about div.page-wrapper:not(.hide) {
   animation: appear 0.5s 0.5s forwards !important;
   opacity: 0;
   scale: 0.9;
 }
 
-#systemSettings div.container.about div.page-content img {
+#systemSettings div.container.about div.page-wrapper img {
   height: 150px;
 }
 
