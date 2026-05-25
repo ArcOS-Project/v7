@@ -48,7 +48,7 @@ export class EchoCommand extends TerminalProcess {
         break;
     }
 
-    term.rl?.println(`${color}${result}${RESET}`);
+    this.rl?.println(`${color}${result}${RESET}`);
 
     return 0;
   }

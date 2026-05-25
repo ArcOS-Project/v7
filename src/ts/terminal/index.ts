@@ -1,7 +1,7 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { Constructs } from "$interfaces/common";
-import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IArcTerminal, ITerminalMode, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon, Env, Fs, Stack, State } from "$ts/env";
@@ -44,10 +44,18 @@ export class ArcTerminal extends Process implements IArcTerminal {
   configProvidedExternal = false;
   window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
+  terminalMode?: ITerminalMode;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, term: Terminal, path?: string, config?: ArcTermConfiguration) {
+  constructor(
+    pid: number,
+    parentPid: number,
+    term: Terminal,
+    path?: string,
+    config?: ArcTermConfiguration,
+    mode?: ITerminalMode
+  ) {
     super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
@@ -56,6 +64,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+    this.terminalMode = mode;
 
     if (config) {
       this.config = config;
@@ -275,7 +284,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     try {
       const contents = await Fs.readDir(path);
-      if (!contents) throw "";
+      if (!contents) throw `Directory not found: ${path}`;
 
       this.contents = contents;
     } catch (e) {
