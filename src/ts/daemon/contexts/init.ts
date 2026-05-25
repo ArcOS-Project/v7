@@ -148,7 +148,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     // Create the shellHost loading icon
     await trayHost?.createTrayIcon(this.pid, this.TRAY_AUTOLOAD, {
-      icon: Daemon.icons!.getIconCached("SpinnerIcon"),
+      icon: "SpinnerIcon",
     });
 
     this.Log(`Spawning autoload applications`);
@@ -185,7 +185,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 
-    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, Daemon.icons!.getIconCached("GoodStatusIcon"));
+    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, "GoodStatusIcon");
 
     await Sleep(1000); // Wait a second...
     await trayHost?.disposeTrayIcon(this.pid, this.TRAY_AUTOLOAD); // ...then dispose the tray iconF

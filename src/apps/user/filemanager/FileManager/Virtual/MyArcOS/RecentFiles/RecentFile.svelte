@@ -14,7 +14,7 @@
     selected = $bindable(),
   }: { path: string; service: IRecentFilesService; process: IFileManagerRuntime; selected: string } = $props();
 
-  const icon = Daemon.icons?.getIconCached(Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon");
+  const icon = Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon";
   const name = getItemNameFromPath(path);
   const parent = getParentDirectory(path);
 

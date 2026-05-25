@@ -411,7 +411,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       this.isVideo.set(fileAssociation?.friendlyName === "Video file");
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-      this.windowIcon.set(fileAssociation?.icon || this.getIconCached("MediaPlayerIcon"));
+      this.windowIcon.set(fileAssociation?.icon || "MediaPlayerIcon");
       this.Reset();
 
       await Sleep(10);

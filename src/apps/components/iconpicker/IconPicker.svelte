@@ -27,10 +27,7 @@
 
 <ActionBar floating>
   {#snippet leftContent()}
-    <ActionButton
-      onclick={() => ($selected = defaultIcon || process.getIconCached("DefaultIcon"))}
-      disabled={$selected === defaultIcon}
-    >
+    <ActionButton onclick={() => ($selected = defaultIcon || "DefaultIcon")} disabled={$selected === defaultIcon}>
       Reset
     </ActionButton>
     <ActionButton onclick={() => process.selectRandom()}>Random</ActionButton>

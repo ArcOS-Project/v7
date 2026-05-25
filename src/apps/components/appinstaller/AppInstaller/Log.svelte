@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Sleep } from "$ts/sleep";
 
   const { process }: { process: IAppInstallerRuntime } = $props();
@@ -36,12 +37,7 @@
           {/if}
         </p>
         <p class="content">{item.content}</p>
-        <img
-          src={process.getIconCached(
-            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
-          )}
-          alt=""
-        />
+        <Icon icon={item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"} />
       </div>
     {/each}
   {/if}

@@ -23,7 +23,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
   original = Store<string>("");
   input = Store<HTMLTextAreaElement>();
   drive = Store<IFilesystemDrive | undefined>();
-  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
+  mimeIcon = Store<string>("DefaultMimeIcon");
 
   protected overlayStore: Record<string, App> = {
     replace: ReplaceOverlay,
@@ -134,7 +134,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+      this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
     } catch (e) {
@@ -208,7 +208,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+    this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);

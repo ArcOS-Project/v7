@@ -62,7 +62,7 @@
     </Section>
   {:else}
     <Section>
-      <Option caption="ArcFind is disabled in Safe Mode" image={process.getIconCached("WarningIcon")}></Option>
+      <Option caption="ArcFind is disabled in Safe Mode" image="WarningIcon"></Option>
     </Section>
   {/if}
 </div>

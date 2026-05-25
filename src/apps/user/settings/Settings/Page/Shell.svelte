@@ -19,7 +19,7 @@
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some options are disabled" image={process.getIconCached("WarningIcon")}></Option>
+      <Option caption="Safe Mode - some options are disabled" image="WarningIcon"></Option>
     </Section>
   {/if}
 

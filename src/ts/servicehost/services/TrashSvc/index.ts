@@ -122,7 +122,7 @@ export class TrashCanService extends BaseService implements ITrashCanService {
         caption: "Emptying recycle bin",
         subtitle: "Please wait...",
         max: Object.entries(buffer).length,
-        icon: Daemon!.icons?.getIconCached("TrashIcon"),
+        icon: "TrashIcon",
       },
       +Env.get("shell_pid")
     );

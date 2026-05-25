@@ -47,9 +47,11 @@
     <span>{pageData?.name || "Settings"}</span>
   </CustomTitlebar>
   <div class="page-content" class:hide>
-    {#if Page}
-      <Page {process} />
-    {/if}
+    <div class="page-wrapper">
+      {#if Page}
+        <Page {process} />
+      {/if}
+    </div>
   </div>
   <Slide {process} />
 </div>

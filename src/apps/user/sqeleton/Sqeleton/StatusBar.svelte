@@ -27,7 +27,7 @@
 
 <StatusBar>
   {#snippet leftContent()}
-    <StatusSegment image={process.getIconCached("DbMimeIcon")}>{$openedFileName}</StatusSegment>
+    <StatusSegment image="DbMimeIcon">{$openedFileName}</StatusSegment>
     <StatusSegment>In query #{$queryIndex}</StatusSegment>
     <StatusSegment>{formatBytes($sqlCode.length)}</StatusSegment>
   {/snippet}

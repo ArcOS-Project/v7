@@ -55,7 +55,7 @@
   <Section caption="Danger Zone">
     <Option
       className="danger-zone {$userPreferences.security.disabled ? 'disabled' : ''}"
-      image={process.getIconCached($userPreferences.security.disabled ? "SecurityLowIcon" : "SecurityHighIcon")}
+      image={$userPreferences.security.disabled ? "SecurityLowIcon" : "SecurityHighIcon"}
       caption="Turn {$userPreferences.security.disabled ? 'on' : 'off'} system security"
       onclick={() => (showDangerZone = !showDangerZone)}
     >

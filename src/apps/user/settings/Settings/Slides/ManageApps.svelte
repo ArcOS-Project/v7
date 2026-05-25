@@ -4,8 +4,8 @@
   import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
-  import type { AppStorage } from "$types/app";
-  import Fuse from "fuse.js";
+  import type { App, AppStorage } from "$types/app";
+  import Fuse, { type IFuseOptions } from "fuse.js";
   import { onMount } from "svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
@@ -18,9 +18,10 @@
   let view = $state<string>("grid-small");
 
   function update() {
-    const options = {
+    const options: IFuseOptions<App> = {
       includeScore: true,
       keys: ["metadata.name", "id"],
+      threshold: 0.4
     };
 
     const fuse = new Fuse($buffer, options);

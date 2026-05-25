@@ -7,13 +7,13 @@ export const SystemSettings: App = {
   metadata: {
     name: "System Settings",
     author: "Izaak Kuipers",
-    version: "6.0.3",
+    version: "6.0.4",
     icon: "SettingsIcon",
     appGroup: "systemTools",
   },
   size: { w: 730, h: 560 },
   minSize: { w: 730, h: 560 },
-  maxSize: { w: 860, h: 650 },
+  maxSize: { w: 1000, h: 800 },
   position: { centered: true },
   state: {
     minimized: false,

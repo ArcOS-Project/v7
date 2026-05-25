@@ -92,7 +92,7 @@
       <div class="centered-layout">
         {#if process.safeMode}
           <Section>
-            <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
+            <Option caption="Safe Mode - login background is disabled" image="WarningIcon"></Option>
           </Section>
         {/if}
       </div>

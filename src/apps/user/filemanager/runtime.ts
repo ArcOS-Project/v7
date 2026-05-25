@@ -94,6 +94,28 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
     this.acceleratorStore.push(...FileManagerAccelerators(this));
   }
 
+  async start() {
+    // Convert the three viewMode booleans into one
+    if (!this.userPreferences().appPreferences.fileManager?.viewMode) {
+      this.userPreferences.update((pref) => {
+        const { fileManager } = pref.appPreferences;
+
+        if (fileManager.grid) {
+          pref.appPreferences.fileManager.viewMode = "grid";
+        } else if (fileManager.thumbnails) {
+          pref.appPreferences.fileManager.viewMode = "thumbnail";
+        } else {
+          pref.appPreferences.fileManager.viewMode = "list";
+        }
+
+        delete pref.appPreferences.fileManager.grid;
+        delete pref.appPreferences.fileManager.thumbnails;
+
+        return pref;
+      });
+    }
+  }
+
   //#endregion
   //#region NAVIGATION
 
@@ -796,7 +818,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
     if (!loadSave) return;
 
     this.windowTitle.set(loadSave.title);
-    this.windowIcon.set(this.getIconCached(loadSave.icon));
+    this.windowIcon.set(loadSave.icon);
     this.renderArgs.path = loadSave.startDir || UserPaths.Home;
 
     if (loadSave.isSave) {

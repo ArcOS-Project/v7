@@ -134,7 +134,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     }, 100);
 
     this.currentState.push(process.pid);
-    if (!data.core) this.focusPid(process.pid);
+    if (!data.core && !data.overlay) this.focusPid(process.pid);
 
     try {
       await process.__render__(body);

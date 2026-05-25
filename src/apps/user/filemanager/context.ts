@@ -115,39 +115,34 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
         subItems: [
           {
             caption: "Thumbnail view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "thumbnail",
             icon: "file-image",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = true;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "thumbnail";
                 return v;
               }),
           },
           {
             caption: "Grid view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "grid",
             icon: "columns-3",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = true;
+                v.appPreferences.fileManager.viewMode = "grid";
                 return v;
               }),
           },
           {
-            caption: "Thumbnail view",
-            isActive: () =>
-              !runtime.userPreferences().appPreferences.fileManager?.grid &&
-              !runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            caption: "List view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "list",
             icon: "list",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "list";
                 return v;
               }),
           },

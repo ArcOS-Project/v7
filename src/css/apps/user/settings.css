@@ -82,6 +82,11 @@ button.lucide:active {
   opacity: 0;
 }
 
+#systemSettings > div.body div.page-content div.page-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 #systemSettings > div.body div.container h1.page-title {
   font-size: 24px;
   margin: 12px 5px;

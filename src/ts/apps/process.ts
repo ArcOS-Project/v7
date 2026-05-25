@@ -118,7 +118,7 @@ export class AppProcess extends Process implements IAppProcess {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    Stack.renderer?.focusedPid.set(this.pid);
+    // Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 

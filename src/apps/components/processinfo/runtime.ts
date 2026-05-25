@@ -34,8 +34,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image:
-        this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
+      image: (proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
       description: proc instanceof AppProcess ? "Application" : "Process",
       level: ElevationLevel.high,

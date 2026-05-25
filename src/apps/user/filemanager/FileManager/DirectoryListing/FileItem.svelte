@@ -36,9 +36,9 @@
     const info = Daemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
-    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+    icon = info?.icon || "DefaultMimeIcon";
 
-    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
+    if (shortcut) shortcutIcon = shortcut.icon;
 
     if (
       info?.friendlyName === "Image file" &&

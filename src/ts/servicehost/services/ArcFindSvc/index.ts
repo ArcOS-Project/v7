@@ -89,7 +89,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         {
           caption: "Shut down",
           description: "Leave the desktop and turn off ArcOS",
-          image: Daemon.icons!.getIconCached("ShutdownIcon"),
+          image: "ShutdownIcon",
           action: () => {
             Daemon?.power?.shutdown();
           },
@@ -97,7 +97,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         {
           caption: "Restart",
           description: "Leave the desktop and restart ArcOS",
-          image: Daemon.icons!.getIconCached("RestartIcon"),
+          image: "RestartIcon",
           action: () => {
             Daemon?.power?.restart();
           },
@@ -105,7 +105,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         {
           caption: "Log off",
           description: "Leave the desktop and log out ArcOS",
-          image: Daemon.icons!.getIconCached("LogoutIcon"),
+          image: "LogoutIcon",
           action: () => {
             Daemon?.power?.logoff();
           },
@@ -137,10 +137,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         action: () => {
           Daemon?.files?.openFile(file.path, file.shortcut);
         },
-        // Not using getIconCached for info?.icon because FileAssocSvc already returns a resolved icon path
-        image:
-          (file.shortcut ? Daemon.icons!.getIconCached(file.shortcut.icon) : info?.icon) ||
-          Daemon.icons!.getIconCached("DefaultMimeIcon"),
+        image: (file.shortcut ? file.shortcut.icon : info?.icon) || "DefaultMimeIcon",
       });
     }
 
@@ -163,7 +160,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         result.push({
           caption: app.metadata.name,
           description: `By ${app.metadata.author}`,
-          image: Daemon.icons!.getIconCached(`@app::${app.id}`),
+          image: `@app::${app.id}`,
           action: () => {
             Daemon.spawn?.spawnApp(app.id, this.pid);
           },

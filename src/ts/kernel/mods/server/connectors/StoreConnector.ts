@@ -12,7 +12,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPackageById(id: string): Promise<ICommandResult<StoreItem>> {
     try {
-      return CommandResult.FromResponse(await this.server.get(`/id/${id}`));
+      return CommandResult.FromResponse(await this.server.get(`/package/id/${id}`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -20,7 +20,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPackageByName(name: string): Promise<ICommandResult<StoreItem>> {
     try {
-      return CommandResult.FromResponse(await this.server.get(`/name/${name}`));
+      return CommandResult.FromResponse(await this.server.get(`/package/name/${name}`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -44,7 +44,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPublishedStoreItems(): Promise<ICommandResult<StoreItem[]>> {
     try {
-      return CommandResult.FromResponse(await this.server.post(`/publish/list`));
+      return CommandResult.FromResponse(await this.server.get(`/publish/list`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -64,7 +64,9 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     onProgress?: FilesystemProgressCallback
   ): Promise<ICommandResult<UpdateWriteOpResult>> {
     try {
-      return CommandResult.FromResponse(await this.server.post(`/publish/${id}`, data));
+      return CommandResult.FromResponse(
+        await this.server.post(`/publish/${id}`, data, { onUploadProgress: ToAxiosProgress(onProgress) })
+      );
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

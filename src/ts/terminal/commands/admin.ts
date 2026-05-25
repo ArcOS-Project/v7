@@ -31,7 +31,7 @@ export class AdminCommand extends TerminalProcess {
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
       description: "Izaak Kuipers",
-      image: term.daemon?.icons?.getIconCached("ElevationIcon")!,
+      image: "ElevationIcon",
       level: ElevationLevel.medium,
     });
 
