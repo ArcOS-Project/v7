@@ -209,7 +209,7 @@ export class AppProcess extends Process implements IAppProcess {
 
     await this.render(this.renderArgs);
 
-    this.STATE = "running";
+    if (!this._disposed) this.STATE = "running";
   }
 
   //#endregion

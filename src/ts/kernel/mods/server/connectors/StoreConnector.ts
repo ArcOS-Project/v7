@@ -65,7 +65,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
   ): Promise<ICommandResult<UpdateWriteOpResult>> {
     try {
       return CommandResult.FromResponse(
-        await this.server.post(`/publish/${id}`, data, { onUploadProgress: ToAxiosProgress(onProgress) })
+        await this.server.patch(`/publish/${id}`, data, { onUploadProgress: ToAxiosProgress(onProgress) })
       );
     } catch (e) {
       return CommandResult.AxiosError(e);

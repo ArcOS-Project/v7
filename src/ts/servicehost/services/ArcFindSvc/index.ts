@@ -1,3 +1,4 @@
+import { settingsPageStore } from "$apps/user/settings/store";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import { Stack, Env, Daemon, Fs } from "$ts/env";
@@ -79,11 +80,13 @@ export class ArcFindService extends BaseService implements IArcFindService {
       filesystem: preferences.searchOptions.includeFilesystem,
       apps: preferences.searchOptions.includeApps,
       power: preferences.searchOptions.includePower,
+      settings: preferences.searchOptions.includeSettingsPages,
     };
     const items: SearchItem[] = [];
 
     if (sources.filesystem) items.push(...(await this.getFilesystemSearchSupplier(preferences)));
     if (sources.apps) items.push(...(await this.getAppSearchSupplier(preferences)));
+    if (sources.settings) items.push(...(await this.getSettingsSearchSupplier()));
     if (sources.power)
       items.push(
         {
@@ -198,6 +201,25 @@ export class ArcFindService extends BaseService implements IArcFindService {
     }
   }
 
+  getSettingsSearchSupplier() {
+    const result: SearchItem[] = [];
+
+    for (const [id, page] of [...settingsPageStore]) {
+      if (page.hidden) continue;
+
+      result.push({
+        caption: `${page.name}`,
+        description: `Settings page`,
+        image: page.icon,
+        action: async () => {
+          await Daemon.spawn?.spawnApp("systemSettings", this.shell?.pid, {}, id);
+        },
+      });
+    }
+
+    return result;
+  }
+
   //#endregion
   //#region ARCFIND
 
@@ -207,6 +229,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
     const options = {
       includeScore: true,
       keys: ["caption", "description"],
+      threshold: 0.3
     };
 
     const fuse = new Fuse(this.searchItems, options);

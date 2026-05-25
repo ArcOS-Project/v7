@@ -2,6 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/result";
 import { AxiosError, type AxiosResponse } from "axios";
 import { Log } from "./logging";
+import { LogLevel } from "$types/logging";
 
 export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;
@@ -18,13 +19,11 @@ export class CommandResult<T = any> implements ICommandResult<T> {
   }
 
   static Ok<T>(value?: T, successMessage?: string) {
-    Log(`CommandResult.Ok`, successMessage ?? "<no message>"); // DEBUG
-
     return new this<T>(value, { success: true, successMessage });
   }
 
   static Error<T = any>(errorMessage: string) {
-    Log(`CommandResult.Error`, errorMessage ?? "<no message>"); // DEBUG
+    Log(`CommandResult.Error`, errorMessage ?? "<no message>", LogLevel.error); // DEBUG
 
     return new this<T>(undefined, { errorMessage });
   }

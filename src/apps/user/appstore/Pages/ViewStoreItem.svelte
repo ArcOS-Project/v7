@@ -33,7 +33,11 @@
         </h1>
         <p class="description" title={pkg.pkg.description}>{pkg.pkg.description}</p>
         <p class="author">
-          <UserLink user={pkg?.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
+          <UserLink
+            userId={pkg?.userId}
+            user={pkg?.user!}
+            onClick={() => process.switchPage("userPage", { userId: pkg.userId })}
+          /> · {pkg.installCount}
           downloads
         </p>
       </div>

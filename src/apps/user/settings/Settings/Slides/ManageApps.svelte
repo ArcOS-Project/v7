@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
   import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
@@ -21,7 +22,7 @@
     const options: IFuseOptions<App> = {
       includeScore: true,
       keys: ["metadata.name", "id"],
-      threshold: 0.4
+      threshold: 0.4,
     };
 
     const fuse = new Fuse($buffer, options);
@@ -106,3 +107,15 @@
     {/each}
   {/if}
 </div>
+
+<ActionBar>
+  {#snippet leftContent()}
+    <span>{$buffer.length} loaded applications ({$store.length} shown)</span>
+  {/snippet}
+  {#snippet rightContent()}
+    <div class="checkbox-wrapper">
+      <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
+      <span>Show hidden apps</span>
+    </div>
+  {/snippet}
+</ActionBar>

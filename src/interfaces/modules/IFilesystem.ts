@@ -1,4 +1,5 @@
 import type { Constructs } from "$interfaces/common";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type {
   DirectoryReadReturn,
@@ -25,6 +26,7 @@ export interface IFilesystem extends IKernelModule {
   ): Promise<T | false>;
   getDriveIdByIdentifier(identifier: string): string;
   umountDrive(id: string, fromSystem?: boolean, onProgress?: FilesystemProgressCallback): Promise<boolean>;
+  umountAllOfType(identifiesAs: string, fromSystem?: boolean): Promise<ICommandResult>;
   getDriveByLetter(letter: string, error?: boolean): IFilesystemDrive;
   getDriveIdentifier(path: string): string;
   getDriveByPath(path: string): IFilesystemDrive;

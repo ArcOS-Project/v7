@@ -1,8 +1,16 @@
+#systemSettings div.slide.apps_manageApps {
+  padding: 0 !important;
+  padding-top: 50px !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
 #systemSettings div.apps_manageApps div.options {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-bottom: 10px;
+  padding: 0 10px;
 }
 
 #systemSettings div.apps_manageApps div.options div.view-mode {
@@ -52,10 +60,14 @@
   outline-offset: -1px;
 }
 #systemSettings div.apps_manageApps div.apps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 140px);
+  display: flex;
+  flex-wrap: wrap;
   gap: 5px;
   position: relative;
+  height: 0;
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: scroll;
 }
 
 #systemSettings div.apps_manageApps div.apps button.app {
@@ -73,14 +85,11 @@
   padding: 4px;
   outline: none;
   border-radius: 4px;
-}
-
-#systemSettings div.apps_manageApps div.apps.grid-large {
-  grid-template-columns: repeat(auto-fit, calc(50% - 10px));
+  width: 140px;
 }
 
 #systemSettings div.apps_manageApps div.apps.grid-large button.app {
-  grid-template-columns: 40px auto;
+  width: 200px
 }
 
 #systemSettings div.apps_manageApps div.apps button.app h1 {
@@ -114,8 +123,7 @@
 }
 
 #systemSettings div.apps_manageApps div.apps.list {
-  display: flex;
-  flex-direction: column;
+  display: block;
 }
 
 #systemSettings div.apps_manageApps div.apps.list button.app {
@@ -123,7 +131,14 @@
   align-items: center;
   --font-size: 14px;
   padding-right: 10px;
+  width: 100%;
+  transition: none;
 }
+
+#systemSettings div.apps_manageApps div.apps.list button.app:not(:hover):not(:active) {
+  background-color: transparent;
+}
+
 #systemSettings div.apps_manageApps div.apps button.app.disabled {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -131,8 +146,8 @@
 }
 
 #systemSettings div.apps_manageApps div.apps.list button.app img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 #systemSettings div.apps_manageApps div.apps.list button.app h1 {

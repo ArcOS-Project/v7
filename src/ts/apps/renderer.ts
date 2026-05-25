@@ -700,11 +700,12 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   async notifyCrash(data: App, reason: any, process?: IAppProcess) {
+    if (!data) return;
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost
       ?.getService<IDistributionServiceProcess>("DistribSvc")
-      ?.getInstalledStoreItemByAppId(data.id);
+      ?.getInstalledStoreItemByAppId(data?.id);
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 

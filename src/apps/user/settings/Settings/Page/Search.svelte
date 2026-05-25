@@ -16,13 +16,9 @@
   </div>
   {#if !process.safeMode}
     <Section caption="Options">
-      <!-- <Option caption="Include settings pages">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.searchOptions.includeSettingsPages}
-      />
-    </Option> -->
+      <Option caption="Include settings pages">
+        <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includeSettingsPages} />
+      </Option>
       <Option caption="Include apps">
         <input type="checkbox" class="switch" bind:checked={$userPreferences.searchOptions.includeApps} />
       </Option>

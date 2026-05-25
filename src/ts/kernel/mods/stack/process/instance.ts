@@ -21,6 +21,7 @@ export class Process implements IProcess {
   set STATE(value: ProcessState) {
     this.Log(`STATE UPDATE: ${value}`);
     this._state = value;
+    console.trace();
   }
 
   public get _disposed() {

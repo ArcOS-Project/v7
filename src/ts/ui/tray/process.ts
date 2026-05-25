@@ -57,7 +57,7 @@ export class TrayIconProcess extends Process implements ITrayIconProcess {
   async stop() {
     if (this.componentMount && Object.entries(this.componentMount).length) unmount(this.componentMount);
 
-    this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
+    if (this.STATE !== "stopping") this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
   }
 
   async renderPopup(popup: HTMLDivElement, target: IProcess) {}

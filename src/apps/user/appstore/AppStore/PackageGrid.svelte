@@ -39,6 +39,7 @@
           <h1>{item.pkg.name}</h1>
           <p class="author">
             <span>{item.pkg.version}</span>
+            <span>-</span>
             <span>{item.user?.displayName || item.user?.username}</span>
           </p>
         </div>

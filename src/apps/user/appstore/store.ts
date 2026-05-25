@@ -158,7 +158,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const results = await process.distrib.getStoreItemsByAuthor(userId);
         const user = await Daemon?.account?.getPublicUserInfoOf(userId);
 
-        return { results, user };
+        return { results, user, userId };
       },
     },
   ],

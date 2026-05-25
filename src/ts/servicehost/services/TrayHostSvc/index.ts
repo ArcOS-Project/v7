@@ -15,6 +15,14 @@ export class TrayHostService extends BaseService implements ITrayHostService {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
+  }
+
+  async start() {
+    // In case of a service restart, rescue the orphaned tray icons
+    const previousPid = +Env.get("TRAYHOST_PID");
+    if (previousPid && !Stack.isPid(previousPid)) {
+      this.rescueOrphans();
+    }
 
     Env.set("TRAYHOST_PID", this.pid);
   }
@@ -106,6 +114,27 @@ export class TrayHostService extends BaseService implements ITrayHostService {
       v[discriminator]!.icon = newIcon;
       return v;
     });
+  }
+
+  private async rescueOrphans() {
+    const trayIcons = this.trayIcons();
+    const processes = ([...Stack.store()] as [number, ITrayIconProcess][]).filter(([_, proc]) => proc instanceof TrayIconProcess);
+    const orphans: ITrayIconProcess[] = [];
+
+    for (const [pid, proc] of processes) {
+      const id: TrayIconDiscriminator = `${pid}#${proc.identifier}`;
+      if (!trayIcons[id]) {
+        trayIcons[id] = proc;
+        orphans.push(proc);
+      }
+    }
+
+    this.trayIcons.set(trayIcons);
+    await Sleep(0);
+
+    for (const orphan of orphans) {
+      orphan.__render();
+    }
   }
 }
 

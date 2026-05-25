@@ -1,9 +1,8 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IShareConnector } from "$interfaces/modules/server/IShareConnector";
 import type { IShareManager } from "$interfaces/services/IShareManager";
-import { Daemon, Fs } from "$ts/env";
+import { Fs } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { BaseService } from "$ts/servicehost/base";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { Service } from "$types/service";
@@ -25,6 +24,10 @@ export class ShareManager extends BaseService implements IShareManager {
   protected async start(): Promise<any> {
     this.initBroadcast?.("Mounting your shares");
     this.mountOwnedShares();
+  }
+
+  async stop() {
+    await Fs.umountAllOfType("share", true);
   }
 
   //#endregion

@@ -2,10 +2,10 @@
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
   import Icon from "$lib/Icon.svelte";
-  import { Daemon, Fs } from "$ts/env";
+  import { Daemon, Fs, SysDispatch } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   let {
     path,
@@ -19,13 +19,28 @@
   const parent = getParentDirectory(path);
 
   let driveIsMounted = $state<boolean>(true);
+  let umountSubscriber = -1;
+  let mountSubscriber = -1;
 
-  onMount(() => {
+  function determineIsMounted() {
     try {
       Fs.getDriveByPath(path);
+      driveIsMounted = true;
     } catch {
       driveIsMounted = false;
     }
+  }
+
+  onMount(() => {
+    umountSubscriber = SysDispatch.subscribe("fs-umount-drive", () => determineIsMounted());
+    mountSubscriber = SysDispatch.subscribe("fs-mount-drive", () => determineIsMounted());
+
+    determineIsMounted();
+  });
+
+  onDestroy(() => {
+    SysDispatch.unsubscribeId("fs-umount-drive", umountSubscriber);
+    SysDispatch.unsubscribeId("fs-mount-drive", mountSubscriber);
   });
 </script>
 

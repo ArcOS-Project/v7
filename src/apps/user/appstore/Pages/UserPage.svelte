@@ -5,14 +5,18 @@
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import UserHeader from "./UserPage/UserHeader.svelte";
 
-  const { results, process, user }: { results: StoreItem[]; process: IAppStoreRuntime; user?: PublicUserInfo } = $props();
+  const {
+    results,
+    process,
+    user,
+    userId,
+  }: { results: StoreItem[]; process: IAppStoreRuntime; user?: PublicUserInfo; userId: string } = $props();
 </script>
 
 {#if user && results?.length}
-  <UserHeader {process} {user} {results} />
+  <UserHeader {process} {user} {results} {userId} />
   {#if results?.length}
     <PackageGrid {process} items={results} name="" />
-    <p class="end">Looks like you've reached the end.</p>
   {:else}
     <p class="end">This user has no packages.</p>
   {/if}
