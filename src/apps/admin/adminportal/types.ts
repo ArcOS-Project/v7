@@ -1,5 +1,14 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
+import type {
+  Activity,
+  AuditLog,
+  BugReportSourceInformation,
+  ExpandedToken,
+  ServerLogItem,
+  ServerStatistics,
+  User,
+} from "$types/admin";
 import type { BugReport, ReportStatistics } from "$types/bughunt";
 import type { FsAccess } from "$types/fs";
 import type { StoreItem } from "$types/package";
@@ -46,6 +55,11 @@ export type BugHuntData = {
 export type ViewBugReportData = {
   report: BugReport;
   quickView?: ReadableStore<string>;
+};
+
+export type ViewBugReportSourceData = {
+  report: BugReport;
+  source: ICommandResult<BugReportSourceInformation>;
 };
 
 export type UsersData = {

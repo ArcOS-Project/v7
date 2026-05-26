@@ -3,6 +3,7 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Icon from "$lib/Icon.svelte";
   import { Daemon, Stack } from "$ts/env";
+  import { BlankIcon } from "$ts/images/general";
   import { contextProps } from "$ts/ui/context/actions.svelte";
 
   const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
@@ -27,8 +28,8 @@
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}
 >
-  <Icon icon={$windowIcon || "ComponentIcon"} className="backdrop" />
-  <Icon icon={$windowIcon || "ComponentIcon"} />
+  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} className="backdrop" />
+  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} />
   {#if $userPreferences.shell.taskbar.labels}
     <span class="title">{$windowTitle}</span>
   {/if}

@@ -29,6 +29,12 @@
     <Download {data} {process} />
     <UserData {data} {process} />
     <OpenLogs {data} {process} />
+    <button
+      class="lucide icon-code-xml"
+      aria-label="View source"
+      title="View source"
+      onclick={() => process.switchPage("viewBugReportSource", { id: report._id })}
+    ></button>
   </div>
   <div class="actions">
     <Close {process} {data} />

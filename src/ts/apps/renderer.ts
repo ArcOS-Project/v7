@@ -300,7 +300,8 @@ export class AppRenderer extends Process implements IAppRenderer {
     Daemon.serviceHost?.Gate<IIconService>(
       "IconService",
       () => {
-        titleIcon.src = process.getIconCached(`@app::${app.id}`) || process.getIconCached("ComponentIcon");
+        const icon = process.getIconCached(`@pp::${app.id}`) || process.getIconCached("ComponentIcon");
+        titleIcon.src = icon === `@app::${app.id}` ? BlankIcon : icon;
       },
       () => {
         titleIcon.src = BlankIcon;

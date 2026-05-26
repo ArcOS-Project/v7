@@ -143,5 +143,15 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
     this.switchPage("viewUser", { user });
   }
 
+  compileCrumbs(parent: string): string[] {
+    const result: string[] = [];
+    const parentData = AdminPortalPageStore.get(parent);
+
+    if (parentData?.parent) result.push(...this.compileCrumbs(parentData?.parent));
+    result.push(parentData?.name!);
+
+    return result;
+  }
+
   //#endregion
 }

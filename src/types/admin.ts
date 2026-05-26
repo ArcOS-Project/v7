@@ -178,3 +178,15 @@ export interface AuditLogQueryOptions extends QueryableOptions {
   targetUserId?: string;
   severity?: string;
 }
+
+export interface BugReportSourceInformation {
+	line: number;
+	column: number;
+	originalSource: string;
+	prettySource: string;
+	prettyLine?: number;
+	prettyColumn?: number;
+	errorMessage?: string;
+	fileUrl?: string;
+	filename?: string;
+}

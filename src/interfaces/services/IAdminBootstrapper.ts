@@ -5,6 +5,7 @@ import type {
   Activity,
   AuditLog,
   AuditLogQueryOptions,
+  BugReportSourceInformation,
   FSItem,
   IpAddress,
   PartialUserTotp,
@@ -116,4 +117,5 @@ export interface IAdminBootstrapper extends IBaseService {
   getRegisteredVersionFor(userId: string): Promise<string>;
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
   GetIpAddresses(): Promise<IpAddress[]>;
+  getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>>;
 }

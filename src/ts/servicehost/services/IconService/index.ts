@@ -3,7 +3,6 @@ import type { IIconService } from "$interfaces/services/IIconService";
 import { ConfigurationBuilder } from "$ts/config";
 import { Daemon, Fs } from "$ts/env";
 import { getAllImages, getGroupedIcons, iconIdFromPath, maybeIconId } from "$ts/images";
-import { BlankIcon } from "$ts/images/general";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
@@ -15,7 +14,7 @@ export class IconService extends BaseService implements IIconService {
   PATH = join(UserPaths.System, "IconSet.json");
   FILE_CACHE: Record<string, string> = {}; // R<id, url>
   ICON_TYPES = ["fs", "builtin", "app"];
-  DEFAULT_ICON = BlankIcon;
+  DEFAULT_ICON = "";
   Icons = Store<Record<string, string>>({});
   Configuration = new ConfigurationBuilder<Record<string, string>>()
     .ForProcess(this)

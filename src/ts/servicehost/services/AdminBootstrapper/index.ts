@@ -25,6 +25,7 @@ import type {
   Activity,
   AuditLog,
   AuditLogQueryOptions,
+  BugReportSourceInformation,
   FsAccess,
   FSItem,
   IpAddress,
@@ -49,6 +50,9 @@ import { AdminScopes } from "./store";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { QueryResult } from "$types/query";
 import { CommandResult } from "$ts/result";
+import { parse } from "stacktrace-parser";
+import beautify from "js-beautify";
+import axios from "axios";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -1319,6 +1323,56 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return response.data;
     } catch {
       return [];
+    }
+  }
+
+  async getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>> {
+    const trace = parse(report.body)
+      .filter(Boolean)
+      .filter((f) => (f.file?.startsWith("./assets") || f.file?.startsWith(report.location.origin)) && f.file.endsWith(".js"));
+
+    if (!trace.length) return CommandResult.Error("Didn't find a stack frame that matches");
+
+    const firstTrace = trace[0];
+    const fileUrl = firstTrace.file;
+
+    let url = new URL(report.location.origin);
+    if (!fileUrl?.startsWith("https")) url.pathname = fileUrl?.replace("./", "/") ?? "/";
+    else url = new URL(fileUrl);
+
+    if (url.toString().includes("team.arcweb.nl")) {
+      return CommandResult.Error("Previews are not supported because their JS files aren't retained");
+    }
+    console.log(url.toString());
+
+    try {
+      const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
+
+      const urlParts = url.toString().split("/");
+      const lines = file.split("\n");
+      const prepend = lines
+        .slice(0, (firstTrace.lineNumber ?? 0) - 1) // Get the lines before the main attraction
+        .map((l) => l.length + 1) // Get the lengths of the lines
+        .reduce((a, b) => (a ?? 0) + b, firstTrace.column); // Count up those lengths, adding the prefixed characters of the focus line
+      const prettySource = beautify.js_beautify(file, {});
+      const prettyPrependedSegment = beautify.js_beautify(file.slice(0, prepend ?? 0));
+      const segmentSplit = prettyPrependedSegment.split("\n");
+      const prettyLine = segmentSplit.length;
+      const prettyColumn = segmentSplit[segmentSplit.length - 1].length;
+
+      return CommandResult.Ok({
+        line: trace[0].lineNumber!,
+        column: trace[0].column!,
+        originalSource: file,
+        prettySource,
+        prettyColumn,
+        prettyLine,
+        errorMessage: report.body.split("\n")[0].trim(),
+        filename: urlParts[urlParts.length - 1],
+        fileUrl: url.toString(),
+      });
+    } catch (e) {
+      return CommandResult.Error(`${e} -- URL: ${url}`);
     }
   }
 }
