@@ -19,6 +19,18 @@ export function MinesweeperAltMenu(runtime: MinesweeperRuntime): ContextMenuItem
           caption: "Best times...",
           action: async () => await runtime.bestTimes(),
         },
+        { sep: true },
+
+        {
+          caption: "Compact",
+          icon: "list-chevrons-down-up",
+          action: () =>
+            runtime.userPreferences.update((v) => {
+              v.appPreferences.MinesweeperApp.compact = !v.appPreferences.MinesweeperApp.compact;
+              return v;
+            }),
+          isActive: () => !!runtime.userPreferences().appPreferences.MinesweeperApp.compact,
+        },
       ],
     },
   ];

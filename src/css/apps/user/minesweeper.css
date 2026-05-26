@@ -7,18 +7,14 @@
   --digit-backdrop: #660000;
   --digit-fg: #ff0000;
 }
-
+/* 
 #MinesweeperApp {
   max-width: 80% !important;
   max-height: 80% !important;
-}
+} */
 
 #MinesweeperApp,
 #MinesweeperApp > div.body {
   height: fit-content !important;
   width: fit-content !important;
-}
-
-#MinesweeperApp > div.body {
-  overflow-y: scroll !important;
 }

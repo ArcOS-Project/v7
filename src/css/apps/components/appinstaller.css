@@ -1,5 +1,8 @@
 #AppInstaller > div.body {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 #AppInstaller > div.body div.header {
@@ -25,8 +28,8 @@
   border: var(--win-border);
   padding: 15px;
   overflow-y: scroll;
-  height: calc(100% - 30px - 64px - 40px); /* actions - header - gapping */
-  margin: 20px 0;
+  height: 0;
+  flex-grow: 1;
 }
 
 #AppInstaller > div.body div.log div.item {

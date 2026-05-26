@@ -5,7 +5,7 @@
   import { UUID } from "$ts/util/uuid";
 
   const { process }: { process: MinesweeperRuntime } = $props();
-  const { grid, DEBUG, flagsLeft, duration, failed, won } = process;
+  const { grid, flagsLeft, duration, failed, won, userPreferences } = process;
 
   let clicked = $state(false);
 
@@ -41,7 +41,7 @@
 </div>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="grid" {onmousedown} {onmouseup}>
+<div class="grid" {onmousedown} {onmouseup} class:compact={$userPreferences.appPreferences.MinesweeperApp.compact}>
   {#each $grid as row}
     <div class="row">
       {#each row as cell (UUID())}

@@ -59,6 +59,8 @@
   width: calc(100% - 150px);
   height: 100%;
   background-color: var(--win-bg);
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal > div.body > div.container > div.titlebar {
@@ -66,7 +68,8 @@
 }
 
 #AdminPortal > div.body > div.container div.page-content {
-  height: calc(100% - 40px - 31px);
+  height: 0;
+  flex-grow: 1;
   overflow: hidden;
 }
 

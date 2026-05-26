@@ -1,9 +1,23 @@
 #MinesweeperApp > div.body div.grid {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   gap: 4px;
+}
+
+#MinesweeperApp > div.body div.grid.compact {
+  gap: 1px;
+}
+
+#MinesweeperApp > div.body div.grid.compact div.row {
+  gap: 1px;
+}
+
+#MinesweeperApp > div.body div.grid.compact button.cell {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
 }
 
 #MinesweeperApp > div.body div.grid div.row {
@@ -22,6 +36,7 @@
   color: var(--fg);
   border: 1px solid var(--button-glass-bg);
   border-radius: 4px;
+  padding: 0;
 }
 
 #MinesweeperApp > div.body button.cell.revealed {

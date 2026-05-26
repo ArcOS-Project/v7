@@ -29,7 +29,7 @@ div.window > div.body div.titlebar.custom div.window-title {
   display: flex;
   align-items: center;
   gap: 10px;
-  line-height: 18px;
+  line-height: normal;
   width: 0;
   flex-grow: 1;
   overflow: hidden;
