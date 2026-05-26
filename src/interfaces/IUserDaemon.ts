@@ -75,7 +75,6 @@ export interface IUserDaemon extends IProcess {
   appStorage(): IApplicationStorage | undefined;
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
-  getShell(): IShellRuntime | undefined;
   GetConnector<T extends IServerConnector>(name: string): T;
   startUserDaemon(startOptions: UserDaemonStartOptions, broadcast: (m: string) => void): Promise<ICommandResult<IUserDaemon>>;
 }
