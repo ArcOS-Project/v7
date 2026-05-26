@@ -1,7 +1,10 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";
+import type { Readline } from "./readline/readline";
 
 export class TerminalProcess extends Process {
   public static keyword: string;
@@ -11,6 +14,9 @@ export class TerminalProcess extends Process {
   protected term?: IArcTerminal;
   protected flags?: Arguments;
   protected argv?: string[];
+  protected daemon?: IUserDaemon;
+  protected serviceHost?: IServiceHost;
+  protected rl?: Readline;
   private exitCode: number = 0;
 
   //#region LIFECYCLE
@@ -32,6 +38,9 @@ export class TerminalProcess extends Process {
     this.term = term;
     this.flags = flags;
     this.argv = argv;
+    this.daemon = term.daemon;
+    this.serviceHost = this.daemon?.serviceHost;
+    this.rl = term.rl;
 
     const result = await new Promise((r) => {
       this.main(term, flags, argv).then((result) => r(result));
