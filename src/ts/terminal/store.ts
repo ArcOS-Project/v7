@@ -20,7 +20,9 @@ import { HistoryCommand } from "./commands/history";
 import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
 import { KlogCommand } from "./commands/klog";
+import { LoadCommand } from "./commands/load";
 import { LogoutCommand } from "./commands/logout";
+import { MigrationsCommand } from "./commands/migrations";
 import { MkdirCommand } from "./commands/mkdir";
 import { OpenCommand } from "./commands/open";
 import { PkgCommand } from "./commands/pkg";
@@ -28,6 +30,7 @@ import { QuotaCommand } from "./commands/quota";
 import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
+import { ServiceCommand } from "./commands/service";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
@@ -77,4 +80,7 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   SoundbusCommand,
   UuidCommand,
   TostrCommand,
+  ServiceCommand,
+  MigrationsCommand,
+  LoadCommand,
 ];

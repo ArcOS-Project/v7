@@ -18,7 +18,7 @@ export class ConfigCommand extends TerminalProcess {
 
   protected async main(term: IArcTerminal): Promise<number> {
     for (const [key, value] of Object.entries(term.config)) {
-      term.rl?.println(`# ${BRBLUE}${key}${BRBLACK}:${RESET} ${value}`);
+      this.rl?.println(`# ${BRBLUE}${key}${BRBLACK}:${RESET} ${value}`);
     }
     return 0;
   }
