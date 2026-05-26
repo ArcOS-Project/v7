@@ -4,6 +4,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface ISqeletonRuntime extends IAppProcess {
   openedFile: ReadableStore<string>;
   openedFileName: ReadableStore<string>;

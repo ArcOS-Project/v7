@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface AppKeyCombination {
   alt?: boolean;
   ctrl?: boolean;
@@ -8,3 +9,4 @@ export interface AppKeyCombination {
 }
 
 export type AppKeyCombinations = AppKeyCombination[];
+// !endtpa

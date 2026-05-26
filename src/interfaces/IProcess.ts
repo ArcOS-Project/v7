@@ -1,6 +1,7 @@
 import type { DispatchCallback } from "$types/dispatch";
 import type { ProcessState } from "$types/process";
 
+// !tpa-prop name=Process
 export interface IProcess {
   dispatch: IProcessDispatch;
   pid: number;
@@ -23,3 +24,5 @@ export interface IProcessDispatch {
   subscribe(event: string, callback: DispatchCallback): void;
   dispatch(event: string, ...args: any[]): Promise<boolean>;
 }
+
+// !endtpa

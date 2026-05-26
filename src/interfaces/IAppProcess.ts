@@ -8,6 +8,7 @@ import type { Draggable } from "@neodrag/vanilla";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
 
+// !tpa-prop name=AppProcess
 export interface IAppProcess extends IProcess {
   crashReason: string;
   windowTitle: ReadableStore<string>;
@@ -60,3 +61,4 @@ export interface IAppProcess extends IProcess {
   getIconStore(id: string): ReadableStore<string>;
   blink(): void;
 }
+// !endtpa

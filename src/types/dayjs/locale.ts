@@ -1,4 +1,5 @@
-declare interface ILocale {
+// !tpa-prop
+export interface ILocale {
   name: string;
   weekdays?: string[];
   months?: string[];
@@ -31,3 +32,4 @@ declare interface ILocale {
     yy: string;
   }>;
 }
+// !endtpa

@@ -3,6 +3,7 @@ import type { ReadableStore } from "$types/writable";
 import type { IAppProcess } from "./IAppProcess";
 import type { IProcess } from "./IProcess";
 
+// !tpa-prop
 export interface IAppRenderer extends IProcess {
   currentState: number[];
   target: HTMLDivElement;
@@ -31,3 +32,4 @@ export interface IAppRenderer extends IProcess {
   getAppInstances(id: string, originPid?: number): IAppProcess[];
   notifyCrash(data: App, reason: any, process?: IAppProcess): Promise<void>;
 }
+// !endtpa

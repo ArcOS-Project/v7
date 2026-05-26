@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface TrashIndexNode {
   name: string;
   icon: string;
@@ -5,3 +6,4 @@ export interface TrashIndexNode {
   deletedPath: string;
   timestamp: number;
 }
+// !endtpa

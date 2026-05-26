@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface LoginActivity {
   authorId: string;
   token?: string;
@@ -8,3 +9,4 @@ export interface LoginActivity {
   createdAt: string;
   updatedAt: string;
 }
+// !endtpa

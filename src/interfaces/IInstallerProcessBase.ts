@@ -5,6 +5,7 @@ import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";
 import type { IDistributionServiceProcess } from "./services/IDistributionServiceProcess";
 
+// !tpa-prop
 export interface IInstallerProcessBase extends IProcess {
   parent: IDistributionServiceProcess;
   failReason: ReadableStore<string>;
@@ -39,3 +40,4 @@ export interface IInstallerProcessBaseConstructor extends Constructs<IInstallerP
   validatePackage(metadata: ArcPackage, zip: JSZip): Promise<boolean>;
   uninstallPackage(metadata: ArcPackage, deleteFiles?: boolean, onStage?: (stage: string) => void): Promise<void>;
 }
+// !endtpa

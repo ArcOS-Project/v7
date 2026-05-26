@@ -1,5 +1,6 @@
 import type { MaybePromise } from "./common";
 
+// !tpa-prop
 export interface SearchItem {
   caption: string;
   action: (item?: SearchItem) => MaybePromise<void>;
@@ -8,3 +9,4 @@ export interface SearchItem {
 }
 
 export type SearchProvider = () => Promise<SearchItem[]> | SearchItem[];
+// !endtpa

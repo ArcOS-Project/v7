@@ -1,6 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { UserPreferences, Workspace } from "$types/user";
 
+// !tpa-prop
 export interface IWorkspaceUserContext extends IUserContext {
   virtualDesktop: HTMLDivElement | undefined;
   syncVirtualDesktops(v: UserPreferences): Promise<void>;
@@ -17,3 +18,4 @@ export interface IWorkspaceUserContext extends IUserContext {
   deleteVirtualDesktopAck(workspace: Workspace): Promise<void>;
   startVirtualDesktops(): Promise<void>;
 }
+// !endtpa

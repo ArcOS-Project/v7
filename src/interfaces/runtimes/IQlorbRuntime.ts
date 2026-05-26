@@ -2,6 +2,7 @@ import type { Box } from "$apps/user/qlorb/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IQlorbRuntime extends IAppProcess {
   readonly random: (m: number) => number;
   readonly Boxes: ReadableStore<Box[]>;

@@ -9,6 +9,7 @@ import type { LegacyConnectionInfo } from "$types/legacy";
 import type { ArcShortcut } from "$types/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 
+// !tpa-prop
 export interface IFilesystemUserContext extends IUserContext {
   TempFs?: IMemoryFilesystemDrive;
   fileHandlers: Record<string, FileHandler>;
@@ -34,3 +35,4 @@ export interface IFilesystemUserContext extends IUserContext {
   startFilesystemSupplier(): Promise<void>;
   startDriveNotifierWatcher(): void;
 }
+// !endtpa

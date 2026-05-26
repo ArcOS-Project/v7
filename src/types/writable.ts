@@ -1,3 +1,4 @@
+// !tpa-prop
 /** Callback to inform of a value updates. */
 export type Subscriber<T> = (value: T) => void;
 
@@ -35,3 +36,4 @@ export type ReadableStore<T> = Writable<T> & { (): T; get: () => T };
 export type BooleanStore = ReadableStore<boolean>;
 export type StringStore = ReadableStore<string>;
 export type NumberStore = ReadableStore<number>;
+// !endtpa

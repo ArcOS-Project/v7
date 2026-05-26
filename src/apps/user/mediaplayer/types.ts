@@ -1,3 +1,4 @@
+// !tpa-prop
 export enum LoopMode {
   None = 0,
   All = 1,
@@ -20,3 +21,4 @@ export interface AudioFileMetadata {
 }
 
 export type MetadataConfiguration = Record<string, AudioFileMetadata>; // R<path, meta>
+// !endtpa

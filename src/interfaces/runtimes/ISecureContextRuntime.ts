@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ElevationData } from "$types/elevation";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface ISecureContextRuntime extends IAppProcess {
   data: ElevationData;
   password: ReadableStore<string>;

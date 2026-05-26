@@ -1,6 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App } from "$types/app";
 
+// !tpa-prop
 export interface IApplicationsUserContext extends IUserContext {
   checkDisabled(appId: string, noSafeMode?: boolean): boolean;
   isVital(app: App): boolean | undefined;
@@ -10,3 +11,4 @@ export interface IApplicationsUserContext extends IUserContext {
   enableThirdParty(): Promise<void>;
   disableThirdParty(): Promise<void>;
 }
+// !endtpa

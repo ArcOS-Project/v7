@@ -1,3 +1,6 @@
+// !tpa-prop
+import type { ILocale } from "./dayjs/locale";
+
 export declare function dayjs(date?: dayjs.ConfigType): dayjs.Dayjs;
 
 export declare function dayjs(date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs;
@@ -427,5 +430,6 @@ export declare namespace dayjs {
 
   const Ls: { [key: string]: ILocale };
 }
+// !endtpa
 
 export * from "./dayjs/locale";

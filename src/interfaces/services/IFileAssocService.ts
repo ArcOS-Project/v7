@@ -1,6 +1,7 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
 
+// !tpa-prop
 export interface IFileAssocService extends IBaseService {
   start(): Promise<void>;
   updateConfiguration(

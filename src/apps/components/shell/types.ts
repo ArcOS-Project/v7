@@ -3,6 +3,7 @@ import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
 
+// !tpa-prop
 export interface WeatherMeta {
   caption: string;
   iconColor: string;
@@ -77,12 +78,13 @@ export interface CalendarDay {
   isToday?: boolean;
 }
 
-export const longWeekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 export interface StartMenuAction {
   caption: string;
   icon: string;
   action: (process: IShellRuntime) => void;
   className?: string;
 }
+// !endtpa
+
+export const longWeekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ServerInfo {
   validation: string;
   status: string;
@@ -17,3 +18,4 @@ export interface ServerOption {
   system?: boolean;
   icon?: string;
 }
+// !endtpa

@@ -3,6 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IMessageComposerRuntime extends IAppProcess {
   sending: ReadableStore<boolean>;
   recipients: ReadableStore<string[]>;

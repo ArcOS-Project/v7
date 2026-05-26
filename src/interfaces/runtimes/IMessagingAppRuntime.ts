@@ -7,6 +7,7 @@ import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
 import type { PublicUserInfo } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IMessagingAppRuntime extends IAppProcess {
   service: IMessagingInterface;
   page: ReadableStore<MessagingPage | undefined>;

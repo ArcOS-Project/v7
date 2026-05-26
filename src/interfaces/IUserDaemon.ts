@@ -31,6 +31,7 @@ import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
 
+// !tpa-prop name=daemon
 export interface IUserDaemon extends IProcess {
   username: string;
   token: string;
@@ -85,3 +86,5 @@ export interface IUserContext {
   __deactivate(): Promise<void>;
   _deactivate(): Promise<void>;
 }
+
+// !endtpa

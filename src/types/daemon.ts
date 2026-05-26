@@ -3,22 +3,20 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { UserInfo } from "./user";
 
-export const UserDaemonInitStages = [
-  "filesystem",
-  "preferencesSync",
-  "notifyLogin",
-  "serviceHost",
-  "firstRun",
-  "driveNotifierWatcher",
-  "indexing",
-  "statusRefresh",
-  "letsGo",
-  "workspaces",
-  "autorun"
-] as const;
-
+// !tpa-prop
 export type UserDaemonInitCallback = (daemon: IUserDaemon, broadcast: (m: string) => void) => MaybePromise<void>;
-export type UserDaemonInitStage = (typeof UserDaemonInitStages)[number];
+export type UserDaemonInitStage =
+  | "filesystem"
+  | "preferencesSync"
+  | "notifyLogin"
+  | "serviceHost"
+  | "firstRun"
+  | "driveNotifierWatcher"
+  | "indexing"
+  | "statusRefresh"
+  | "letsGo"
+  | "workspaces"
+  | "autorun";
 export type UserDaemonInitStagesSelection = Partial<UserDaemonInitStage[]>;
 export type UserDaemonInitCallbacks = Partial<Record<UserDaemonInitStage, UserDaemonInitCallback>>;
 
@@ -27,3 +25,4 @@ export interface UserDaemonStartOptions {
   stageCallbacks: UserDaemonInitCallbacks;
   onUserInfo: (info: UserInfo) => MaybePromise<ICommandResult>;
 }
+// !endtpa

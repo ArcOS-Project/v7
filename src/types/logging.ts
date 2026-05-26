@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface LogItem {
   source: string;
   message: string;
@@ -12,6 +13,7 @@ export enum LogLevel {
   error,
   critical,
 }
+// !endtpa
 
 export const LogLevelCaptions: Record<LogLevel, string> = {
   [LogLevel.info]: "Information",

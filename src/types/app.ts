@@ -6,6 +6,7 @@ import type { SvelteComponent } from "svelte";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
 
+// !tpa-props
 export interface App {
   metadata: AppMetadata;
   size: Size;
@@ -156,3 +157,4 @@ export interface TpaSpawnEntrypointResult<T = any> {
   runtime?: Constructs<IProcess>;
   returnValue?: T;
 }
+// !endtpa

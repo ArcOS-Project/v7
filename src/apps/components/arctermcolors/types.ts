@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ArcTermColors {
   red: string;
   green: string;
@@ -16,3 +17,4 @@ export interface ArcTermColorPreset extends ArcTermColors {
   author: string;
   variant: "light" | "dark";
 }
+// !endtpa

@@ -1,5 +1,6 @@
 import type { PublicUserInfo } from "./user";
 
+// !tpa-prop
 export interface Message {
   authorId: string; // userId
   title: string;
@@ -38,3 +39,4 @@ export interface MessageAttachment {
   signature: string; // sha256
   _id: string;
 }
+// !endtpa

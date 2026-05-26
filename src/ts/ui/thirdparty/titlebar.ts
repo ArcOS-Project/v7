@@ -1,8 +1,9 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICustomTitlebar } from "$interfaces/ICustomTitlebar";
 import { Stack } from "$ts/env";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 
-export class CustomTitlebar {
+export class CustomTitlebar implements ICustomTitlebar {
   #className = "";
   #process: IAppProcess;
   #titlebar?: HTMLDivElement;

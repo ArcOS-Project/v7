@@ -1,6 +1,7 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 
+// !tpa-prop
 export interface ArcProtocol {
   subCommand: string;
   command: string;
@@ -24,3 +25,4 @@ export interface ProtocolHandler {
   info: (payload: Record<string, any>, daemon: IUserDaemon) => { icon: string; caption: string; title?: string } | undefined;
   action: (payload: Record<string, any>, daemon: IUserDaemon, proto: ArcProtocol) => MaybePromise<boolean>;
 }
+// !endtpa

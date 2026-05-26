@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { BooleanStore, StringStore } from "$types/writable";
 
+// !tpa-prop
 export interface IAddServerRuntime extends IAppProcess {
   loading: BooleanStore;
   action: StringStore;

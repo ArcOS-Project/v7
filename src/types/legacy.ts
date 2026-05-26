@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface LegacyConnectionInfo {
   url: string;
   authCode?: string;
@@ -32,3 +33,4 @@ export interface FSQuota {
   free: number;
   used: number;
 }
+// !endtpa

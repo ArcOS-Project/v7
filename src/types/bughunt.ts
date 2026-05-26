@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { LogItem } from "./logging";
 
+// !tpa-prop
 export interface BugReport {
   authorId?: string;
   title: string;
@@ -83,3 +84,4 @@ export interface ReportOptions {
 export interface BugHuntProc extends IAppProcess {
   invalidateCaches: (restoreSelected?: boolean) => Promise<void>;
 }
+// !endtpa

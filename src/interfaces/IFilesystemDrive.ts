@@ -10,6 +10,7 @@ import type { LogLevel } from "$types/logging";
 import type { Constructs } from "./common";
 import type { IServerManager } from "./modules/IServerManager";
 
+// !tpa-prop
 export interface IFilesystemDrive {
   server: IServerManager;
   driveLetter: string | undefined;
@@ -58,3 +59,4 @@ export interface IFilesystemProxy {
 export interface IFilesystemProxyConstructor extends Constructs<IFilesystemProxy, [string]> {
   PROXY_UUID: string;
 }
+// !endtpa

@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { App } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IAppInfoRuntime extends IAppProcess {
   targetApp: ReadableStore<App>;
   targetAppId: string;

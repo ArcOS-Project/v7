@@ -3,6 +3,7 @@ import type { UserPreferences } from "$types/user";
 import type { ReadableStore, Unsubscriber } from "$types/writable";
 import type { Component } from "svelte";
 
+// !tpa-prop
 export interface IAdvSysSetRuntime extends IAppProcess {
   currentTab: ReadableStore<string>;
   tabs: Record<string, Component>;

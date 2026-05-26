@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IShareConnGuiRuntime extends IAppProcess {
   shareUsername: ReadableStore<string>;
   shareName: ReadableStore<string>;

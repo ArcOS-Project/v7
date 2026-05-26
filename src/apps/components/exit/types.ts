@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 
+// !tpa-prop
 export interface ExitAction {
   caption: string;
   action: (daemon: IUserDaemon) => void;
@@ -7,3 +8,4 @@ export interface ExitAction {
   alternateCaption?: string;
   icon: string;
 }
+// !endtpa

@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ProcessContext {
   pid: number;
   userId: string | "SYSTEM";
@@ -14,19 +15,9 @@ export type ProcessKillResult =
   | "err_noExist"
   | "err_killCancel";
 
-export const ProcessStates = [
-  "starting",
-  "running",
-  "stopping",
-  "error",
-  "constructing",
-  "unknown",
-  "disposed",
-  "rendering",
-] as const;
+export type ProcessState = "unknown" | "starting" | "running" | "stopping" | "error" | "constructing" | "disposed" | "rendering";
 
-export type ProcessState = (typeof ProcessStates)[number];
-
+// !endtpa
 export const ProcessStateIcons: Record<ProcessState, string> = {
   starting: "rocket",
   running: "play",

@@ -3,6 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { ProcessKillResult } from "$types/process";
 
+// !tpa-prop
 export interface IProcessInfoRuntime extends IAppProcess {
   parent?: IProcess;
   proc?: IProcess;

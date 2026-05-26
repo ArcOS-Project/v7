@@ -4,6 +4,7 @@ import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUser
 import type { BugHuntProc } from "$types/bughunt";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IBugHuntCreatorRuntime extends IAppProcess {
   parent: BugHuntProc | undefined;
   title: ReadableStore<string>;

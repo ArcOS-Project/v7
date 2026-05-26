@@ -2,6 +2,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { BatteryType } from "$types/navigator";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IPowerUserContext extends IUserContext {
   battery: ReadableStore<BatteryType | undefined>;
   logoff(force?: boolean): Promise<void>;
@@ -12,3 +13,4 @@ export interface IPowerUserContext extends IUserContext {
   closeOpenedApps(type: string, props?: Record<string, any>, force?: boolean): Promise<boolean>;
   batteryInfo(): Promise<BatteryType | undefined>;
 }
+// !endtpa

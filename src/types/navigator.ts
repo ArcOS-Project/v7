@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface BatteryType {
   charging: boolean;
   chargingTime: number;
@@ -8,3 +9,4 @@ export interface BatteryType {
   ondischargingtimechange: number | null;
   onlevelchange: number | null;
 }
+// !endtpa

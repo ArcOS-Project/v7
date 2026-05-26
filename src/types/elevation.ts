@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ElevationData {
   what: string;
   image: string;
@@ -11,3 +12,4 @@ export enum ElevationLevel {
   medium,
   high,
 }
+// !endtpa

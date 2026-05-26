@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ArcShortcut {
   icon: string;
   name: string;
@@ -6,3 +7,4 @@ export interface ArcShortcut {
 }
 
 export type ShortcutStore = Record<string, ArcShortcut>;
+// !endtpa

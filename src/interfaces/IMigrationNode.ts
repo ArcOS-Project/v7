@@ -3,6 +3,7 @@ import type { MigrationResult, MigrationStatusCallback } from "$types/migrations
 import type { Constructs } from "./common";
 import type { IMigrationService } from "./services/IMigrationService";
 
+// !tpa-prop
 export interface IMigrationNode {
   svc: IMigrationService;
   _runMigration(cb?: MigrationStatusCallback): Promise<MigrationResult>;
@@ -16,3 +17,4 @@ export interface IMigrationNodeConstructor extends Constructs<IMigrationNode, [I
   deprecated: boolean;
   version: number;
 }
+// !endtpa

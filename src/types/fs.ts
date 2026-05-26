@@ -3,6 +3,7 @@ import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
 
+// !tpa-prop
 export interface FileEntry {
   name: string;
   size: number;
@@ -64,14 +65,6 @@ export interface UserQuota extends Record<string, number | boolean | undefined> 
   percentage: number;
   unknown?: boolean;
 }
-
-export const DefaultUserQuota: UserQuota = {
-  used: 0,
-  max: 100,
-  free: 100,
-  percentage: 0,
-  unknown: true,
-};
 
 export interface SingleUploadReturn {
   path: string;
@@ -172,3 +165,12 @@ export interface FsProxyInfo {
   path: string;
   displayName?: string;
 }
+// !endtpa
+
+export const DefaultUserQuota: UserQuota = {
+  used: 0,
+  max: 100,
+  free: 100,
+  percentage: 0,
+  unknown: true,
+};

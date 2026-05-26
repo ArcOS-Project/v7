@@ -2,6 +2,7 @@ import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore }
 import type { IProcess } from "./IProcess";
 import type { IServerConnector } from "./modules/IServerManager";
 
+// !tpa-prop
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;
@@ -28,25 +29,23 @@ export interface IServiceHost extends IProcess {
   Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void): void;
 }
 
-export const ServiceIdentifiers = [
-  "TrashSvc",
-  "BugHuntUsp",
-  "ShareMgmt",
-  "AppStorage",
-  "ArcFindSvc",
-  "SystemShortcutsSvc",
-  "ProtoService",
-  "TrayHostSvc",
-  "AdminBootstrapper",
-  "FileAssocSvc",
-  "GlobalDispatch",
-  "MessagingService",
-  "DevEnvironment",
-  "DistribSvc",
-  "IconService",
-  "LibMgmtSvc",
-  "MigrationSvc",
-  "RecentFilesSvc",
-] as const;
-
-export type ServiceIdentifier = (typeof ServiceIdentifiers)[number];
+export type ServiceIdentifier =
+  | "TrashSvc"
+  | "BugHuntUsp"
+  | "ShareMgmt"
+  | "AppStorage"
+  | "ArcFindSvc"
+  | "SystemShortcutsSvc"
+  | "ProtoService"
+  | "TrayHostSvc"
+  | "AdminBootstrapper"
+  | "FileAssocSvc"
+  | "GlobalDispatch"
+  | "MessagingService"
+  | "DevEnvironment"
+  | "DistribSvc"
+  | "IconService"
+  | "LibMgmtSvc"
+  | "MigrationSvc"
+  | "RecentFilesSvc";
+// !endtpa

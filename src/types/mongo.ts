@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface UpdateResult {
   acknowledged: boolean;
   matchedCount: number;
@@ -12,3 +13,4 @@ export declare interface DeleteResult {
 }
 
 export type UpdateWriteOpResult = UpdateResult;
+// !endtpa

@@ -3,6 +3,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { Service } from "$types/service";
 import type { ReadableStore, Unsubscriber } from "$types/writable";
 
+// !tpa-prop
 export interface IServiceInfoRuntime extends IAppProcess {
   serviceId: string;
   service: ReadableStore<Service | undefined>;

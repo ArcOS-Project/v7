@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { FileOpenerResult } from "$types/fs";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IOpenWithRuntime extends IAppProcess {
   available: ReadableStore<FileOpenerResult[]>;
   all: ReadableStore<FileOpenerResult[]>;

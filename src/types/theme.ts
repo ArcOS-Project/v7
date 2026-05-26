@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface UserTheme {
   author: string;
   version: string;
@@ -19,6 +20,7 @@ export interface UserTheme {
 export type UserThemeNoMeta = Omit<Omit<Omit<UserTheme, "author">, "version">, "name">;
 
 export type ThemeStore = { [key: string]: UserTheme };
+// !endtpa
 
 export const UserThemeKeys = [
   "taskbarLabels",
@@ -33,8 +35,10 @@ export const UserThemeKeys = [
   "desktopTheme",
 ];
 
+// !tpa-prop
 export enum ExportLocalWallpaperResolution {
   NoSave,
   SaveLocal,
   SaveWithoutLocal,
 }
+// !endtpa

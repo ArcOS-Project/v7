@@ -3,6 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { InstallStatus, StoreItem } from "$types/package";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IMultiUpdateGuiRuntime extends IAppProcess {
   status: ReadableStore<MultiUpdateStatus>;
   currentPackage: ReadableStore<StoreItem | undefined>;

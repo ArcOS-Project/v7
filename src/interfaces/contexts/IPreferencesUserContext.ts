@@ -2,6 +2,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { UserPreferences } from "$types/user";
 import type { ReadableStore, Unsubscriber } from "$types/writable";
 
+// !tpa-prop
 export interface IPreferencesUserContext extends IUserContext {
   syncLock: boolean;
   preferencesUnsubscribe: Unsubscriber | undefined;
@@ -16,3 +17,4 @@ export interface IPreferencesUserContext extends IUserContext {
   changeShell(id: string): Promise<boolean>;
   startPreferencesSync(): Promise<void>;
 }
+// !endtpa

@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface ItemInfo {
   meta: {
     sort: "file" | "folder";
@@ -17,3 +18,4 @@ export interface ItemInfo {
   isShortcut: boolean;
   name: string;
 }
+// !endtpa

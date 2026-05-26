@@ -1,5 +1,6 @@
 import type { PublicUserInfo } from "./user";
 
+// !tpa-prop
 export interface ArcPackage {
   _id?: string;
   name: string;
@@ -85,3 +86,4 @@ export interface UpdateInfo {
   newVer: string;
   pkg: StoreItem;
 }
+// !endtpa

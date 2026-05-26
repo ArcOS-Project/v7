@@ -3,6 +3,7 @@ import type { UserPreferences } from "$types/user";
 import type { Wallpaper } from "$types/wallpaper";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IWallpaperUserContext extends IUserContext {
   Wallpaper: ReadableStore<Wallpaper>;
   lastWallpaper: ReadableStore<string>;
@@ -12,3 +13,4 @@ export interface IWallpaperUserContext extends IUserContext {
   deleteLocalWallpaper(id: string): Promise<boolean>;
   getLocalWallpaper(id: string): Promise<Wallpaper>;
 }
+// !endtpa

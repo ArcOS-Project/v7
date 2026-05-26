@@ -1,6 +1,7 @@
 import type { CommandResultOptions } from "$types/result";
 import type { Constructs } from "./common";
 
+// !tpa-prop
 export interface ICommandResult<T = any> {
   result: T | undefined;
   error?: Error;
@@ -15,3 +16,4 @@ export interface ICommandResultConstructor extends Constructs<ICommandResult> {
 
   new <T>(result?: T, options?: CommandResultOptions): ICommandResult<T>;
 }
+// !endtpa

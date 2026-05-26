@@ -1,5 +1,6 @@
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 
+// !tpa-prop
 export interface FirstRunPage {
   name: string;
   component: any;
@@ -27,3 +28,4 @@ export interface FirstRunTheme {
     accent: string;
   };
 }
+// !endtpa

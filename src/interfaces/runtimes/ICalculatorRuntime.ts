@@ -3,6 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { AppKeyCombination } from "$types/accelerator";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface ICalculatorRuntime extends IAppProcess {
   Value: ReadableStore<string>;
   Store: ICalculatorStore;

@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface SharedDriveType {
   userId: string;
   accessors: string[];
@@ -17,3 +18,4 @@ export interface ShareCreateOptions {
   shareName: string;
   password: string;
 }
+// !endtpa

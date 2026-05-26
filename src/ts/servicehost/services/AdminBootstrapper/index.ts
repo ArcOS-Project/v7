@@ -1343,8 +1343,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (url.toString().includes("team.arcweb.nl")) {
       return CommandResult.Error("Previews are not supported because their JS files aren't retained");
     }
-    console.log(url.toString());
-
+  
     try {
       const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
 

@@ -1,3 +1,4 @@
+// !tpa-prop
 export interface Wallpaper {
   author: string;
   name: string;
@@ -6,3 +7,4 @@ export interface Wallpaper {
   thumb: string;
   builtin?: boolean;
 }
+// !endtpa

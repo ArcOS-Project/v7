@@ -1,4 +1,5 @@
 // TypeScript Version: 4.7
+// !tpa-prop
 export type AxiosHeaderValue = AxiosHeaders | string | string[] | number | boolean | null;
 
 export interface RawAxiosHeaders {
@@ -612,5 +613,5 @@ export interface AxiosStatic extends AxiosInstance {
 }
 
 export declare const axios: AxiosStatic;
-
+// !endtpa
 export default axios;

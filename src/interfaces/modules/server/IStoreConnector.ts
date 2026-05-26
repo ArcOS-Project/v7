@@ -4,6 +4,7 @@ import type { UpdateWriteOpResult } from "$types/mongo";
 import type { PartialStoreItem, StoreItem } from "$types/package";
 import type { IServerConnector } from "../IServerManager";
 
+// !tpa-prop
 export interface IStoreConnector extends IServerConnector {
   GetPackageById(id: string): Promise<ICommandResult<StoreItem>>;
   GetPackageByName(name: string): Promise<ICommandResult<StoreItem>>;

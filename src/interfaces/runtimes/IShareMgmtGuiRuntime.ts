@@ -3,6 +3,7 @@ import type { IShareManager } from "$interfaces/services/IShareManager";
 import type { SharedDriveType } from "$types/shares";
 import type { ReadableStore, StringStore } from "$types/writable";
 
+// !tpa-prop
 export interface IShareMgmtGuiRuntime extends IAppProcess {
   members: ReadableStore<Record<string, string>>;
   info?: SharedDriveType;

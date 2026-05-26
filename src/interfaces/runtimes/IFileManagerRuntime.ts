@@ -10,6 +10,7 @@ import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
 import type { ShortcutStore } from "$types/shortcut";
 import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
 
+// !tpa-prop
 export interface IFileManagerRuntime extends IAppProcess {
   path: StringStore;
   contents: ReadableStore<DirectoryReadReturn | undefined>;

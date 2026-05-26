@@ -3,6 +3,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { FilesystemProgressCallback } from "$types/fs";
 import type { SharedDriveType } from "$types/shares";
 
+// !tpa-prop
 export interface IShareManager extends IBaseService {
   getOwnedShares(): Promise<SharedDriveType[]>;
   mountOwnedShares(): Promise<void>;

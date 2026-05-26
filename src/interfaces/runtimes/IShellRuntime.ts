@@ -1,14 +1,14 @@
-import type { CalendarMonth, TrayPopup, WeatherInformation } from "$apps/components/shell/types";
+import type { CalendarMonth, WeatherInformation } from "$apps/components/shell/types";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
-import type { AppContextMenu, ContextMenuItem } from "$types/app";
+import type { AppContextMenu } from "$types/app";
 import type { RecursiveDirectoryReadReturn } from "$types/fs";
 import type { SearchItem } from "$types/search";
 import type { Workspace } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { IAppProcess } from "../IAppProcess";
-import type { IProcess } from "../IProcess";
 
+// !tpa-prop
 export interface IShellRuntime extends IAppProcess {
   startMenuOpened: ReadableStore<boolean>;
   actionCenterOpened: ReadableStore<boolean>;
@@ -40,18 +40,4 @@ export interface IShellRuntime extends IAppProcess {
   updateFullscreenCount(): void;
   changeShell(id: string): Promise<false | undefined>;
 }
-
-export interface ITrayIconProcess extends IProcess {
-  targetPid: number;
-  identifier: string;
-  popup?: TrayPopup;
-  context?: ContextMenuItem[];
-  action?: (targetedProcess: IProcess) => void;
-  componentMount: Record<string, any>;
-  icon: string;
-  shell: IShellRuntime;
-  __render(): Promise<void>;
-  stop(): Promise<void>;
-  renderPopup(popup: HTMLDivElement, target: IProcess): Promise<void>;
-  getPopupBody(): Element | null;
-}
+// !endtpa

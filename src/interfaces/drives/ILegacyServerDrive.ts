@@ -1,6 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { FSQuota, UserDirectory } from "$types/legacy";
 
+// !tpa-prop
 export interface ILegacyServerDrive extends IFilesystemDrive {
   TEST_MODES: [boolean, number][];
   DEFAULT_DIRECTORY: UserDirectory;
@@ -11,3 +12,4 @@ export interface ILegacyServerDrive extends IFilesystemDrive {
   legacy_generateToken(username: string, password: string): Promise<boolean>;
   legacy_quota(): Promise<FSQuota>;
 }
+// !end-tpa

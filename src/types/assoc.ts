@@ -1,6 +1,7 @@
 import type { App } from "./app";
 import type { FileHandler } from "./fs";
 
+// !tpa-prop
 export interface FileDefinition {
   friendlyName: string;
   icon: string; // maybeIconId()
@@ -33,3 +34,4 @@ export interface ExpandedFileAssociationInfo {
   icon: string;
   friendlyName: string;
 }
+// !endtpa

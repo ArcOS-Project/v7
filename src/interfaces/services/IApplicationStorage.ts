@@ -3,6 +3,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IApplicationStorage extends IBaseService {
   buffer: ReadableStore<AppStorage>;
   appIconCache: Record<string, string>;

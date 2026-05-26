@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IIconService } from "$interfaces/services/IIconService";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface IIconEditorRuntime extends IAppProcess {
   iconGroups: ReadableStore<Record<string, string[]>>;
   icons: ReadableStore<Record<string, string>>;

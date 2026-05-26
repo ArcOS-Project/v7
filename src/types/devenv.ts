@@ -1,5 +1,6 @@
 import type { ArcPackage } from "./package";
 
+// !tpa-prop
 export interface ProjectMetadata {
   metadata: ArcPackage;
   devPort?: number;
@@ -18,7 +19,7 @@ export type DevEnvActivationResult =
   | "already_connected"
   | "websock_failed"
   | "drivemnt_failed";
-
+// !endtpa
 export const DevEnvActivationResultCaptions: Record<DevEnvActivationResult, string> = {
   success: "Connected successfully",
   ping_failed: "Tried to ping the ArcDev server, but got no response",

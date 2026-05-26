@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface ISettingsRuntime extends IAppProcess {
   currentPage: ReadableStore<string>;
   currentSlide: ReadableStore<string>;

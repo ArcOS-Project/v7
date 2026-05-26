@@ -3,6 +3,7 @@ import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
 import type { ReadableStore } from "./writable";
 
+// !tpa-prop
 export interface UserInfo {
   username: string;
   preferences: UserPreferences;
@@ -155,6 +156,7 @@ export type WallpaperGetters = [string, (id: string) => Wallpaper | Promise<Wall
 
 export type PasswordStrength = "tooWeak" | "weak" | "medium" | "strong";
 
+// !endtpa
 export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
   tooWeak: "too weak",
   weak: "weak",
@@ -162,6 +164,7 @@ export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
   strong: "strong",
 };
 
+// !tpa-prop
 export interface TotpSetupResponse {
   url: string;
 }
@@ -197,3 +200,5 @@ export interface CategorizedDiskUsage {
   free: number;
   total: number;
 }
+
+// !endtpa

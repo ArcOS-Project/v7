@@ -6,6 +6,7 @@ import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ContextMenuItem } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
+// !tpa-prop
 export interface ITrayHostService extends IBaseService {
   trayIcons: ReadableStore<Record<`${number}#${string}`, ITrayIconProcess>>;
   createTrayIcon(pid: number, identifier: string, options: TrayIconOptions, process?: Constructs<IProcess>): Promise<boolean>;
@@ -14,7 +15,9 @@ export interface ITrayHostService extends IBaseService {
   disposeAllTrayIcons(): Promise<void>;
   changeIcon(pid: number, identifier: string, newIcon: string): void;
 }
+// !endtpa
 
+// !tpa-prop name=TrayIconProcess
 export interface ITrayIconProcess extends IProcess {
   targetPid: number;
   identifier: string;
@@ -29,3 +32,4 @@ export interface ITrayIconProcess extends IProcess {
   renderPopup(popup: HTMLDivElement, target: IProcess): Promise<void>;
   getPopupBody(): Element | null;
 }
+// !endtpa

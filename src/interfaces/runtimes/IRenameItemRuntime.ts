@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { StringStore } from "$types/writable";
 
+// !tpa-prop
 export interface IRenameItemRuntime extends IAppProcess {
   newName: StringStore;
   parentDir: string;

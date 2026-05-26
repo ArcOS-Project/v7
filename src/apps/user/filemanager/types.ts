@@ -14,6 +14,7 @@ export interface Location {
   component: any;
 }
 
+// !tpa-prop
 export type QuotedDrive = { data: IFilesystemDrive; quota: UserQuota };
 
 export interface LoadSaveDialogData {
@@ -41,3 +42,5 @@ export interface VirtualFileManagerLocation {
   component: Component;
   hidden?: boolean;
 }
+
+// !endtpa
