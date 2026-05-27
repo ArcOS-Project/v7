@@ -22,7 +22,6 @@ const paths = ["src/types/**/*.ts", "src/interfaces/**/*.ts", "src/apps/**/*/typ
 async function parseFile(file) {
   const result = [];
   const contents = (await readFile(file.fullpath(), "utf-8"))
-    .replaceAll("\r", "")
     .replaceAll("export declare", "export")
     .split("\n")
     .filter((l) => !l.startsWith("import type"));
@@ -65,7 +64,7 @@ export async function generateTypes() {
   try {
     await mkdir(OUTPUT_DIR);
   } catch (e) {
-    console.log(`Failed to create output directory: ${e}`);
+    console.log(`\nTYPES: Failed to create output directory: ${e.message}\n`);
   }
   let output = `// @ts-nocheck
 /// ARCOS GLOBAL TYPE DEFINITIONS V2
@@ -82,6 +81,8 @@ ${await getTpaInclusions()}
 }
 
 export {};`;
+
+  output = output.replaceAll("\r\n", "\n");
 
   await writeFile(OUTPUT_FILE, output, "utf-8");
   console.log(`\n✅ ${OUTPUT_FILE} written.\n`);

@@ -156,15 +156,6 @@ export type WallpaperGetters = [string, (id: string) => Wallpaper | Promise<Wall
 
 export type PasswordStrength = "tooWeak" | "weak" | "medium" | "strong";
 
-// !endtpa
-export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
-  tooWeak: "too weak",
-  weak: "weak",
-  medium: "medium",
-  strong: "strong",
-};
-
-// !tpa
 export interface TotpSetupResponse {
   url: string;
 }
@@ -202,3 +193,10 @@ export interface CategorizedDiskUsage {
 }
 
 // !endtpa
+
+export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
+  tooWeak: "too weak",
+  weak: "weak",
+  medium: "medium",
+  strong: "strong",
+};
