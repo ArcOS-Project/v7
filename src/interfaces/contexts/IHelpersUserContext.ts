@@ -3,8 +3,9 @@ import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { ExpandedTerminal } from "$types/terminal";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IHelpersUserContext extends IUserContext {
   GlobalLoadIndicator(
     caption?: string,
@@ -25,3 +26,4 @@ export interface IHelpersUserContext extends IUserContext {
   safeModeNotice(): void;
   iHaveFeedback(process: IAppProcess): void;
 }
+// !endtpa

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import AccentedLogo from "$lib/AccentedLogo.svelte";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
 
   const { process }: { process: IShellRuntime } = $props();
@@ -13,7 +14,7 @@
 
 <button class="start-button" class:active={$startMenuOpened} onclick={toggle}>
   {#if !$userPreferences.shell.taskbar.accentedStartButton}
-    <img src={Logo()} alt="ArcOS" />
+    <Icon icon={Logo()} />
   {:else}
     <AccentedLogo width={30} height={30} />
   {/if}

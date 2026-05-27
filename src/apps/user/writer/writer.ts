@@ -1,5 +1,5 @@
 import "$css/apps/user/writer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { WriterRuntime } from "./runtime";
 import Writer from "./Writer.svelte";
 

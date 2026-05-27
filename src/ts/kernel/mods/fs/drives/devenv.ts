@@ -10,7 +10,7 @@ import type {
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 import type { AxiosInstance } from "axios";
 
 export class DevDrive extends FilesystemDrive implements IFilesystemDrive {

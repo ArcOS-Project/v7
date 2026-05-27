@@ -1,7 +1,8 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ReadableStore, StringStore } from "$types/writable";
+import type { ReadableStore, StringStore } from "$types/shared/writable";
 
+// !tpa
 export interface IGlobalLoadIndicatorRuntime extends IAppProcess {
   caption: StringStore;
   progress: ReadableStore<GlobalLoadIndicatorProgress | undefined>;

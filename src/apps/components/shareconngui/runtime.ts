@@ -5,7 +5,7 @@ import { Daemon, Env, Stack } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class ShareConnGuiRuntime extends AppProcess implements IShareConnGuiRuntime {
   shareUsername = Store<string>();

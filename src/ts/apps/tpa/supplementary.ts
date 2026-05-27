@@ -6,6 +6,7 @@ import { detectJavaScript } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
+import { ThirdPartyProcess } from "./process";
 
 export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
   return {
@@ -37,6 +38,12 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
     },
     runApp: async (process: Constructs<IThirdPartyAppProcess>, metadataPath: string, parentPid?: number, ...args: any[]) => {
+      if (process instanceof ThirdPartyProcess) {
+        throw new Error(
+          "Can't use runApp with a ThirdPartyProcess (non-app). Please directly return the process from the entrypoint."
+        );
+      }
+
       const app = engine.app;
 
       if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);
@@ -70,7 +77,12 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
         throw e;
       }
     },
-    runAppDirect: async (process: Constructs<IThirdPartyAppProcess>, metadataPath: string, parentPid?: number, ...args: any[]) => {
+    runAppDirect: async (
+      process: Constructs<IThirdPartyAppProcess>,
+      metadataPath: string,
+      parentPid?: number,
+      ...args: any[]
+    ) => {
       const app = engine.app;
 
       if (!app || !Daemon) throw new Error(`Illegal runApp operation on a non-app JsExec`);

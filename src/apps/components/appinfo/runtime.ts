@@ -2,8 +2,8 @@ import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
+import type { App, AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
 
 export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
   targetApp = Store<App>();
@@ -48,7 +48,7 @@ export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
 
     const elevated = await Daemon?.elevation?.manuallyElevate({
       what: `ArcOS needs your permission to kill all instances of an app`,
-      image: Daemon?.icons?.getAppIcon(this.targetApp()) || this.getIconCached("ComponentIcon"),
+      image: `@app::${this.targetAppId}`,
       title: this.targetApp().metadata.name,
       description: this.targetAppId,
       level: ElevationLevel.high,

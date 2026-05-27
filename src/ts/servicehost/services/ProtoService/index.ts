@@ -4,8 +4,8 @@ import { Daemon } from "$ts/env";
 import { KernelParams } from "$ts/kernel/getters";
 import { BaseService } from "$ts/servicehost/base";
 import { tryJsonParse } from "$ts/util/json";
-import type { ArcProtocol, ProtocolHandler } from "$types/proto";
-import type { Service } from "$types/service";
+import type { ArcProtocol, ProtocolHandler } from "$types/services/proto";
+import type { Service } from "$types/services/service";
 import { SpawnAppHandler } from "./handlers/spawn";
 
 export class ProtocolServiceProcess extends BaseService implements IProtocolServiceProcess {

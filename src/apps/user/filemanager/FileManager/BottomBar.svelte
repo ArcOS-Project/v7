@@ -33,30 +33,6 @@
       }
     });
   });
-
-  function thumbnails() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.thumbnails = true;
-      return v;
-    });
-  }
-
-  function grid() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = true;
-      v.appPreferences.fileManager.thumbnails = false;
-      return v;
-    });
-  }
-
-  function list() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.thumbnails = false;
-      return v;
-    });
-  }
 </script>
 
 <ActionBar>
@@ -86,22 +62,22 @@
     <ActionGroup>
       <ActionIconButton
         icon="file-image"
-        suggested={$userPreferences.appPreferences.fileManager!.thumbnails}
-        onclick={thumbnails}
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "thumbnail"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "thumbnail")}
         disabled={!!$virtual}
         title="Thumbnail view"
       ></ActionIconButton>
       <ActionIconButton
         icon="columns-3"
-        suggested={$userPreferences.appPreferences.fileManager!.grid}
-        onclick={grid}
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "grid"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "grid")}
         disabled={!!$virtual}
-        title="Compact view"
+        title="Grid view"
       ></ActionIconButton>
       <ActionIconButton
         icon="list"
-        suggested={!$userPreferences.appPreferences.fileManager!.grid && !$userPreferences.appPreferences.fileManager!.thumbnails}
-        onclick={list}
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "list"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "list")}
         disabled={!!$virtual}
         title="List view"
       ></ActionIconButton>

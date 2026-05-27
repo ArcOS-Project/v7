@@ -16,8 +16,8 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
-import type { App } from "$types/app";
-import type { ThirdPartyPropMap } from "$types/thirdparty";
+import type { App } from "$types/apps/app";
+import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
 import * as walk from "acorn-walk";
 

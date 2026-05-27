@@ -7,16 +7,22 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { MaybePromise } from "$types/common";
-import { type ElevationData } from "$types/elevation";
-import { LogLevel } from "$types/logging";
-import type { RenderArgs } from "$types/process";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { MaybePromise } from "$types/shared/common";
+import { type ElevationData } from "$types/system/elevation";
+import { LogLevel } from "$types/shared/logging";
+import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
+import {
+  type App,
+  type AppContextMenu,
+  type AppProcessData,
+  type ContextMenuItem,
+  type ToastMessage,
+} from "../../types/apps/app";
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
@@ -43,12 +49,16 @@ export class AppProcess extends Process implements IAppProcess {
   public windowFullscreen = Store<boolean>(false);
   public blinking = Store<boolean>(false);
 
+  get shell() {
+    return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
+  }
+
   draggable: Draggable | undefined;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
-    super(pid, parentPid);
+    super(pid, parentPid, app, ...args);
 
     this.app = {
       data: { ...app.data },
@@ -70,7 +80,7 @@ export class AppProcess extends Process implements IAppProcess {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${app.id}`);
 
     SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
@@ -114,7 +124,7 @@ export class AppProcess extends Process implements IAppProcess {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    Stack.renderer?.focusedPid.set(this.pid);
+    // Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -203,11 +213,9 @@ export class AppProcess extends Process implements IAppProcess {
         },
       });
 
-    const result = this.render(this.renderArgs);
+    await this.render(this.renderArgs);
 
-    // Below lines make sure render methods can be either asynchronous or synchronous.
-    if (result instanceof Promise) result.then(() => (this.STATE = "running"));
-    else this.STATE = "running";
+    if (!this._disposed) this.STATE = "running";
   }
 
   //#endregion

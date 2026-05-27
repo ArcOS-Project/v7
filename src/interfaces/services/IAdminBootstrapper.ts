@@ -1,8 +1,11 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type {
   Activity,
   AuditLog,
+  AuditLogQueryOptions,
+  BugReportSourceInformation,
   FSItem,
   IpAddress,
   PartialUserTotp,
@@ -11,11 +14,12 @@ import type {
   Token,
   UserStatistics,
   UserTotp,
-} from "$types/admin";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
-import type { StoreItem } from "$types/package";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/server/admin";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
+import type { QueryResult } from "$types/server/query";
+import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 
 export interface IAdminBootstrapper extends IBaseService {
@@ -31,6 +35,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getUserByUsername(username: string): Promise<UserInfo | undefined>;
   getServerLogs(): Promise<ServerLogItem[]>;
   getAuditLog(): Promise<AuditLog[]>;
+  queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>>;
   grantAdmin(username: string): Promise<boolean>;
   revokeAdmin(username: string): Promise<boolean>;
   getPreferencesOf(username: string): Promise<UserPreferences | undefined>;
@@ -112,4 +117,5 @@ export interface IAdminBootstrapper extends IBaseService {
   getRegisteredVersionFor(userId: string): Promise<string>;
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
   GetIpAddresses(): Promise<IpAddress[]>;
+  getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>>;
 }

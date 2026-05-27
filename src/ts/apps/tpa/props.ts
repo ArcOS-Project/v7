@@ -29,10 +29,11 @@ import {
 } from "$ts/util/fs";
 import { tryJsonStringify } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { ThirdPartyPropMap } from "$types/thirdparty";
+import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { ThirdPartyProcess } from "./process";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
@@ -71,6 +72,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     Process,
     AppProcess,
     ThirdPartyAppProcess,
+    ThirdPartyProcess,
     FilesystemDrive,
     argv: engine.args,
     app: engine.app,

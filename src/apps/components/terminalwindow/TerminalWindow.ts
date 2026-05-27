@@ -1,5 +1,5 @@
 import "$css/apps/components/terminalwindow.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import "@xterm/xterm/css/xterm.css";
 import { TerminalWindowRuntime } from "./runtime";
 import TerminalWindow from "./TerminalWindow.svelte";

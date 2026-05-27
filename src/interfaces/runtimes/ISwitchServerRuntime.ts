@@ -1,7 +1,8 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ServerOption } from "$types/server";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface ISwitchServerRuntime extends IAppProcess {
   servers: ReadableStore<ServerOption[]>;
   selected: ReadableStore<string>;

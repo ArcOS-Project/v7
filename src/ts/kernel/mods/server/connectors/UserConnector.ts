@@ -4,7 +4,7 @@ import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { authcode } from "$ts/util";
 import { toForm } from "$ts/util/form";
-import type { GlobalDispatchClient } from "$types/dispatch";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { ServerConnector } from ".";
 
@@ -102,5 +102,10 @@ export class UserConnector extends ServerConnector implements IUserConnector {
   PictureUrl(userId: string) {
     const code = authcode();
     return `${Server.url}/user/pfp/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
+  }
+
+  LoginBgUrl(userId: string) {
+    const code = authcode();
+    return `${Server.url}/user/loginbg/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
   }
 }

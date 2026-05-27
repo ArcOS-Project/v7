@@ -1,5 +1,5 @@
 import "$css/apps/components/firstrun.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import FirstRun from "./FirstRun.svelte";
 import { FirstRunRuntime } from "./runtime";
 

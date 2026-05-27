@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
+  import Icon from "$lib/Icon.svelte";
 
   const { process, id, icon }: { process: IIconPickerRuntime; id: string; icon: string } = $props();
   const { selected } = process;
@@ -15,5 +16,5 @@
 </script>
 
 <button bind:this={elm} class="icon" onclick={() => ($selected = id)} class:selected={id === $selected} title={id}>
-  <img src={icon} alt="" />
+  <Icon {icon} />
 </button>

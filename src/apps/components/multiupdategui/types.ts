@@ -1,11 +1,15 @@
-import type { StoreItem } from "$types/package";
+import type { StoreItem } from "$types/tpa/package";
 
+// !tpa-props
 export interface MultiUpdateStatusNode {
   state: "pending" | "working" | "success" | "failed" | "downloading";
   max: number;
   done: number;
   pkg: StoreItem;
 }
+
+export type MultiUpdateStatus = MultiUpdateStatusNode[];
+// !endtpa
 
 export const StateIconTranslations: Record<string, string> = {
   pending: "ellipsis",
@@ -14,5 +18,3 @@ export const StateIconTranslations: Record<string, string> = {
   failed: "triangle-alert",
   downloading: "download",
 };
-
-export type MultiUpdateStatus = MultiUpdateStatusNode[];

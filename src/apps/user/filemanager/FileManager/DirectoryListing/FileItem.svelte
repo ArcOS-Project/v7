@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
-  import type { FileEntry } from "$types/fs";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { FileEntry } from "$types/system/fs";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
@@ -35,9 +36,9 @@
     const info = Daemon?.assoc?.getFileAssociation(thisPath);
     extension = `.${split[split.length - 1]}`;
     mime = info?.friendlyName || "Unknown";
-    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+    icon = info?.icon || "DefaultMimeIcon";
 
-    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
+    if (shortcut) shortcutIcon = shortcut.icon;
 
     if (
       info?.friendlyName === "Image file" &&
@@ -85,7 +86,7 @@
     class:is-shortcut={shortcut}
   >
     <div class="segment icon">
-      <img src={shortcut ? shortcutIcon : thumbnail || icon} alt="" />
+      <Icon icon={(shortcut ? shortcutIcon : thumbnail || icon) || "DefaultMimeIcon"} />
       {#if shortcut}
         <span class="icon-arrow-up-right"></span>
       {/if}

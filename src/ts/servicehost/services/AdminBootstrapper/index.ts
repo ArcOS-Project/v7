@@ -24,6 +24,8 @@ import { compareVersion } from "$ts/util/version";
 import type {
   Activity,
   AuditLog,
+  AuditLogQueryOptions,
+  BugReportSourceInformation,
   FsAccess,
   FSItem,
   IpAddress,
@@ -33,18 +35,24 @@ import type {
   Token,
   UserStatistics,
   UserTotp,
-} from "$types/admin";
-import type { App, InstalledApp } from "$types/app";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
-import type { Service } from "$types/service";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/server/admin";
+import type { App, InstalledApp } from "$types/apps/app";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
+import type { Service } from "$types/services/service";
+import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { QueryResult } from "$types/server/query";
+import { CommandResult } from "$ts/result";
+import { parse } from "stacktrace-parser";
+import beautify from "js-beautify";
+import axios from "axios";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -63,6 +71,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     await this.getUserInfo();
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
 
+    this.initBroadcast?.("Admin: loading admin apps");
     await this._loadAdminApps();
     const proto = this.host.getService<IProtocolServiceProcess>("ProtoService");
 
@@ -71,6 +80,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
 
     try {
+      this.initBroadcast?.("Admin: Creating temp directory");
       await Fs.createDirectory("T:/AdminBootstrapper");
       await Fs.mountDrive("admin", AdminFileSystem, "A", undefined);
     } catch {}
@@ -101,6 +111,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
           this.Log(
             `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
           );
+
+          this.initBroadcast?.(`Admin: Loaded ${appCopy.metadata.name}`);
 
           return appCopy;
         } catch (e) {
@@ -204,6 +216,19 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return response.data as AuditLog[];
     } catch {
       return [];
+    }
+  }
+
+  async queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>> {
+    try {
+      return CommandResult.FromResponse(
+        await Backend.get(`/admin/audit/query`, {
+          params: query,
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 
@@ -1298,6 +1323,55 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return response.data;
     } catch {
       return [];
+    }
+  }
+
+  async getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>> {
+    const trace = parse(report.body)
+      .filter(Boolean)
+      .filter((f) => (f.file?.startsWith("./assets") || f.file?.startsWith(report.location.origin)) && f.file.endsWith(".js"));
+
+    if (!trace.length) return CommandResult.Error("Didn't find a stack frame that matches");
+
+    const firstTrace = trace[0];
+    const fileUrl = firstTrace.file;
+
+    let url = new URL(report.location.origin);
+    if (!fileUrl?.startsWith("https")) url.pathname = fileUrl?.replace("./", "/") ?? "/";
+    else url = new URL(fileUrl);
+
+    if (url.toString().includes("team.arcweb.nl")) {
+      return CommandResult.Error("Previews are not supported because their JS files aren't retained");
+    }
+  
+    try {
+      const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
+
+      const urlParts = url.toString().split("/");
+      const lines = file.split("\n");
+      const prepend = lines
+        .slice(0, (firstTrace.lineNumber ?? 0) - 1) // Get the lines before the main attraction
+        .map((l) => l.length + 1) // Get the lengths of the lines
+        .reduce((a, b) => (a ?? 0) + b, firstTrace.column); // Count up those lengths, adding the prefixed characters of the focus line
+      const prettySource = beautify.js_beautify(file, {});
+      const prettyPrependedSegment = beautify.js_beautify(file.slice(0, prepend ?? 0));
+      const segmentSplit = prettyPrependedSegment.split("\n");
+      const prettyLine = segmentSplit.length;
+      const prettyColumn = segmentSplit[segmentSplit.length - 1].length;
+
+      return CommandResult.Ok({
+        line: trace[0].lineNumber!,
+        column: trace[0].column!,
+        originalSource: file,
+        prettySource,
+        prettyColumn,
+        prettyLine,
+        errorMessage: report.body.split("\n")[0].trim(),
+        filename: urlParts[urlParts.length - 1],
+        fileUrl: url.toString(),
+      });
+    } catch (e) {
+      return CommandResult.Error(`${e} -- URL: ${url}`);
     }
   }
 }

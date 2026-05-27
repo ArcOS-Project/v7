@@ -2,9 +2,9 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import { CommandResult } from "$ts/result";
 import { ToAxiosProgress } from "$ts/util";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { PartialStoreItem, StoreItem } from "$types/package";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
 import { ServerConnector } from ".";
 
 export class StoreConnector extends ServerConnector implements IStoreConnector {
@@ -12,7 +12,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPackageById(id: string): Promise<ICommandResult<StoreItem>> {
     try {
-      return CommandResult.FromResponse(await this.server.get(`/id/${id}`));
+      return CommandResult.FromResponse(await this.server.get(`/package/id/${id}`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -20,7 +20,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPackageByName(name: string): Promise<ICommandResult<StoreItem>> {
     try {
-      return CommandResult.FromResponse(await this.server.get(`/name/${name}`));
+      return CommandResult.FromResponse(await this.server.get(`/package/name/${name}`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -44,7 +44,7 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
 
   async GetPublishedStoreItems(): Promise<ICommandResult<StoreItem[]>> {
     try {
-      return CommandResult.FromResponse(await this.server.post(`/publish/list`));
+      return CommandResult.FromResponse(await this.server.get(`/publish/list`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -64,7 +64,9 @@ export class StoreConnector extends ServerConnector implements IStoreConnector {
     onProgress?: FilesystemProgressCallback
   ): Promise<ICommandResult<UpdateWriteOpResult>> {
     try {
-      return CommandResult.FromResponse(await this.server.post(`/publish/${id}`, data));
+      return CommandResult.FromResponse(
+        await this.server.patch(`/publish/${id}`, data, { onUploadProgress: ToAxiosProgress(onProgress) })
+      );
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

@@ -1,8 +1,9 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { GlobalDispatchClient } from "$types/dispatch";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
 import type { IServerConnector } from "../IServerManager";
 
+// !tpa
 export declare class IUserConnector extends IServerConnector {
   Self(): Promise<ICommandResult<UserInfo>>;
   Rename(newUsername: string): Promise<ICommandResult>;
@@ -14,4 +15,5 @@ export declare class IUserConnector extends IServerConnector {
   DispatchGet(): Promise<ICommandResult<GlobalDispatchClient[]>>;
   DispatchKick(clientId: string): Promise<ICommandResult>;
   PictureUrl(userId: string): string;
+  LoginBgUrl(userId: string): string;
 }

@@ -3,7 +3,6 @@
   import { Daemon, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { DefaultUserPreferences } from "$ts/user/default";
-  import { authcode } from "$ts/util";
   import type { UserPreferences } from "$types/user";
   import { onMount } from "svelte";
 
@@ -14,8 +13,10 @@
     className?: string;
     showOnline?: boolean;
     online?: boolean;
+    userId?: string;
   }
-  const { fallback = "", pfp = "", height, className = "", showOnline = false, online = false }: Props = $props();
+
+  const { fallback = "", pfp = "", height, className = "", showOnline = false, online = false, userId = "" }: Props = $props();
   const { preferences } = Daemon || {}!;
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
@@ -30,12 +31,9 @@
 
   async function update(v: UserPreferences) {
     if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
-
     if (url) await Sleep(100);
 
-    const code = authcode();
-    url = fallback || Daemon!.GetConnector<IUserConnector>("UserConnector").PictureUrl(Daemon!.userInfo!._id);
-
+    url = fallback || Daemon!.GetConnector<IUserConnector>("UserConnector").PictureUrl(userId || Daemon!.userInfo!._id);
     currentPfp = pfp || v.account.profilePicture!;
   }
 </script>

@@ -13,8 +13,8 @@ import {
   type FsAccess,
   type RecursiveDirectoryReadReturn,
   type UserQuota,
-} from "$types/fs";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/system/fs";
+import type { SharedDriveType } from "$types/server/shares";
 import { ServerConnector } from ".";
 
 export class ShareConnector extends ServerConnector implements IShareConnector {
@@ -112,7 +112,7 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
       const response = CommandResult.FromResponse(await this.server.post<FsAccess>(`/accessor/${shareId}/${path}`));
       if (!response.success) return response as ICommandResult<string>;
 
-      return CommandResult.Ok(this.server.getUri({ baseURL: `/direct/${shareId}/${response.result!.accessor}` }));
+      return CommandResult.Ok(this.server.getUri({ url: `/direct/${shareId}/${response.result!.accessor}` }));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

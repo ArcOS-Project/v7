@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
-  import { Daemon, Fs } from "$ts/env";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon, Fs, SysDispatch } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   let {
     path,
@@ -13,18 +14,33 @@
     selected = $bindable(),
   }: { path: string; service: IRecentFilesService; process: IFileManagerRuntime; selected: string } = $props();
 
-  const icon = Daemon.icons?.getIconCached(Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon");
+  const icon = Daemon.assoc?.getFileAssociation(path)?.icon || "DefaultMimeIcon";
   const name = getItemNameFromPath(path);
   const parent = getParentDirectory(path);
 
   let driveIsMounted = $state<boolean>(true);
+  let umountSubscriber = -1;
+  let mountSubscriber = -1;
 
-  onMount(() => {
+  function determineIsMounted() {
     try {
       Fs.getDriveByPath(path);
+      driveIsMounted = true;
     } catch {
       driveIsMounted = false;
     }
+  }
+
+  onMount(() => {
+    umountSubscriber = SysDispatch.subscribe("fs-umount-drive", () => determineIsMounted());
+    mountSubscriber = SysDispatch.subscribe("fs-mount-drive", () => determineIsMounted());
+
+    determineIsMounted();
+  });
+
+  onDestroy(() => {
+    SysDispatch.unsubscribeId("fs-umount-drive", umountSubscriber);
+    SysDispatch.unsubscribeId("fs-mount-drive", mountSubscriber);
   });
 </script>
 
@@ -62,7 +78,7 @@
     process,
   ]}
 >
-  <img src={icon} alt="" />
+  <Icon icon={icon ?? "DefaultMimeIcon"} />
   <span class="name" title={name}>{name}</span>
   <span class="path">{driveIsMounted ? "" : "(Not mounted) "}{parent}</span>
 </button>

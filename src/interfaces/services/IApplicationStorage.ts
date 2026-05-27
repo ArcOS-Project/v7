@@ -1,15 +1,16 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IApplicationStorage extends IBaseService {
   buffer: ReadableStore<AppStorage>;
   appIconCache: Record<string, string>;
   loadOrigin(id: string, store: AppStoreCb): boolean;
   unloadOrigin(id: string): boolean;
   loadApp(app: App): false | App;
-  loadAppModuleFile(path: string): Promise<boolean>;
+  loadAppModuleFile(path: string, noVerify?: boolean): Promise<ICommandResult<App>>;
   injected(): App[];
   refresh(): Promise<void>;
   get(): Promise<AppStorage>;

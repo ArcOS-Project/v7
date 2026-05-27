@@ -10,8 +10,8 @@ import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import { ElevationLevel, type ElevationData } from "$types/elevation";
+import type { App, AppProcessData } from "$types/apps/app";
+import { ElevationLevel, type ElevationData } from "$types/system/elevation";
 import { SettingsContext } from "./context";
 import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
@@ -116,7 +116,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
     this.currentPage.set(pageId);
 
     this.windowTitle.set(`${page?.name}`);
-    this.windowIcon.set(this.getIconCached(page?.icon || "SettingsIcon"));
+    this.windowIcon.set(page?.icon || "SettingsIcon");
   }
 
   async showSlide(id: string) {

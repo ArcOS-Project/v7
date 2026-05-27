@@ -1,7 +1,8 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IWriterRuntime extends IAppProcess {
   buffer: ReadableStore<string>;
   openedFile: ReadableStore<string>;

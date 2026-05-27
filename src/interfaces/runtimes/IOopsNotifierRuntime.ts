@@ -1,7 +1,8 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { App } from "$types/app";
-import type { ParsedStackFrame } from "$types/error";
+import type { App } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
+// !tpa
 export interface IOopsNotifierRuntime extends IAppProcess {
   data: App;
   exception: Error | PromiseRejectionEvent;

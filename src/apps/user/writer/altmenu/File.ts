@@ -1,7 +1,7 @@
 import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
 import { Env } from "$ts/env";
 import { getParentDirectory } from "$ts/util/fs";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function FileMenu(runtime: IWriterRuntime): ContextMenuItem {
   return {

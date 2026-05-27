@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import AddressBar from "./FileManager/AddressBar.svelte";
   import BottomBar from "./FileManager/BottomBar.svelte";
   import DirectoryListing from "./FileManager/DirectoryListing.svelte";
@@ -35,5 +35,5 @@
     </div>
   </div>
 {:else}
-  <Splash {process} />
+  <Splash />
 {/if}

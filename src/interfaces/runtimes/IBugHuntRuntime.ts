@@ -1,8 +1,9 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
-import type { BugReport } from "$types/bughunt";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
+import type { BugReport } from "$types/server/bughunt";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 
+// !tpa
 export interface IBugHuntRuntime extends IAppProcess {
   loading: BooleanStore;
   currentTab: StringStore;

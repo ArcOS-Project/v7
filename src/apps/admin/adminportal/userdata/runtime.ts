@@ -1,6 +1,6 @@
 import type { IBugHuntUserDataRuntime } from "$interfaces/runtimes/IBugHuntUserDataRuntime";
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { UserInfo } from "$types/user";
 import hljs, { type HLJSApi } from "highlight.js";
 import json from "highlight.js/lib/languages/json";

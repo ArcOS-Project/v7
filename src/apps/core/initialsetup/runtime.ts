@@ -13,7 +13,7 @@ import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -359,8 +359,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
         );
 
         await this.#userDaemon?.account?.getUserInfo();
-        await this.#userDaemon?.init?.startPreferencesSync();
-        await this.#userDaemon?.init?.startFilesystemSupplier();
+        await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+        await this.#userDaemon?.files?.startFilesystemSupplier();
 
         this.#userDaemon?.preferences.update((v) => {
           v.isDefault = false;
@@ -415,8 +415,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     Env.set("DISPATCH_SOCK_ID", UUID());
 
     await this.#userDaemon?.account?.getUserInfo();
-    await this.#userDaemon?.init?.startPreferencesSync();
-    await this.#userDaemon?.init?.startFilesystemSupplier();
+    await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+    await this.#userDaemon?.files?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
       v.isDefault = false;
       v.account.displayName = this.displayName();

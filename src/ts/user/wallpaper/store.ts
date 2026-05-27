@@ -70,7 +70,7 @@ import img35Thumb from "$assets/bg/thumbnails/imgthumb35.jpg";
 import img36Thumb from "$assets/bg/thumbnails/imgthumb36.jpg";
 import img37Thumb from "$assets/bg/thumbnails/imgthumb37.png";
 import img38Thumb from "$assets/bg/thumbnails/imgthumb38.png";
-import type { Wallpaper } from "$types/wallpaper";
+import type { Wallpaper } from "$types/user/wallpaper";
 export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 
 export const Wallpapers: { [key: string]: Wallpaper } = {

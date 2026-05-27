@@ -1,5 +1,5 @@
 import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
-import type { AppKeyCombinations } from "$types/accelerator";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
 export function CodAccelerators(runtime: ICodRuntime): AppKeyCombinations {
   return [

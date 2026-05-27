@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileOpenerResult } from "$types/fs";
+  import type { FileOpenerResult } from "$types/system/fs";
   import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
   import Option from "./Options/Option.svelte";
 

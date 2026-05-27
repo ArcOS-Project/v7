@@ -1,6 +1,7 @@
 import type { BindParams, Database } from "sql.js";
 import type { IProcess } from "./IProcess";
 
+// !tpa
 export interface ISqlInterfaceProcess extends IProcess {
   db?: Database;
   isFresh: boolean;

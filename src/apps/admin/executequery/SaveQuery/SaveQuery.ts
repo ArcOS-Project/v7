@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import SaveQueryOverlay from "../Overlays/SaveQueryOverlay.svelte";
 import { SaveQueryOverlayRuntime } from "./runtime";
 

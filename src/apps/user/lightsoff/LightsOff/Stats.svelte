@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { App } from "$types/app";
+  import type { App } from "$types/apps/app";
   import type { LightsOffRuntime } from "../runtime";
 
   const { app, process }: { app: App; process: LightsOffRuntime } = $props();

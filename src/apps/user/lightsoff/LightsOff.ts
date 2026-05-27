@@ -1,5 +1,5 @@
 import "$css/apps/user/lightsoff.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import LightsOff from "./LightsOff.svelte";
 import { LightsOffRuntime } from "./runtime";
 

@@ -1,5 +1,5 @@
 import "$css/apps/core/switchserver.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SwitchServerRuntime } from "./runtime";
 import SwitchServer from "./SwitchServer.svelte";
 

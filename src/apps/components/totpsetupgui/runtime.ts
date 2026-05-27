@@ -3,7 +3,7 @@ import type { ITotpSetupGuiRuntime } from "$interfaces/runtimes/ITotpSetupGuiRun
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class TotpSetupGuiRuntime extends AppProcess implements ITotpSetupGuiRuntime {
   public code = Store<string>("");

@@ -1,7 +1,8 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ContextMenuInstance, ContextMenuItem } from "$types/app";
-import type { ReadableStore, StringStore } from "$types/writable";
+import type { ContextMenuInstance, ContextMenuItem } from "$types/apps/app";
+import type { ReadableStore, StringStore } from "$types/shared/writable";
 
+// !tpa
 export interface IContextMenuRuntime extends IAppProcess {
   contextData: ReadableStore<ContextMenuInstance | null>;
   CLICKLOCKED: boolean;

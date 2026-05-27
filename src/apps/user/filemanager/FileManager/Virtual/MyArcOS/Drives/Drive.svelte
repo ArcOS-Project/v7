@@ -3,6 +3,7 @@
   import type { QuotedDrive } from "$apps/user/filemanager/types";
   import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { contextProps } from "$ts/ui/context/actions.svelte";
 
   const { drive, id, process }: { drive: QuotedDrive; id: string; process: IFileManagerRuntime } = $props();
@@ -11,7 +12,6 @@
   const isShare = drive.data.IDENTIFIES_AS === "share";
   const isLocked = isShare && (drive.data as ISharedDrive)?.shareInfo?.locked;
   const usagePercentage = (100 / drive.quota.max) * drive.quota.used;
-  const icon = process.getIconCached(DriveIconsMulticolor[drive.data.IDENTIFIES_AS] || "DriveIcon");
 </script>
 
 {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
@@ -22,7 +22,7 @@
     use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
     disabled={isLocked}
   >
-    <img src={icon} alt="" />
+    <Icon icon={DriveIconsMulticolor[drive.data.IDENTIFIES_AS] || "DriveIcon"} />
     <div>
       <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
       <p class="fs">{drive.data.FILESYSTEM_LONG}</p>

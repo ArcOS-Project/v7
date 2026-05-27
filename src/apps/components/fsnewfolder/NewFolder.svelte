@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { INewFolderRuntime } from "$interfaces/runtimes/INewFolderRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
@@ -8,7 +9,7 @@
 </script>
 
 <div class="top">
-  <img src={process.getIconCached("FolderIcon")} alt="" />
+  <Icon icon="FolderIcon" />
   <div class="right">
     <h1>New folder</h1>
     <p>Think of a wonderful name for this new folder:</p>

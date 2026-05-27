@@ -8,6 +8,12 @@ export class TostrCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
+  }
+
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const radix = Number.isInteger(+flags.radix) ? (+flags.radix as number) : 16;
     const join = flags.join;
@@ -23,7 +29,7 @@ export class TostrCommand extends TerminalProcess {
       .map((s) => s.charCodeAt(0).toString(radix));
 
     const result = input.join(typeof join === "string" && join ? join : "");
-    term.rl?.println(result);
+    this.rl?.println(result);
     return 0;
   }
 

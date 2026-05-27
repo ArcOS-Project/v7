@@ -3,7 +3,7 @@ import { AppProcess } from "$ts/apps/process";
 import { State } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class BootScreenRuntime extends AppProcess implements IBootScreenRuntime {
   public progress = Store<boolean>(false);

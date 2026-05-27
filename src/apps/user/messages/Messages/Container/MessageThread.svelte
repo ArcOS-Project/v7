@@ -2,7 +2,7 @@
   import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import { GetConnector } from "$ts/env";
-  import type { ExpandedMessageNode } from "$types/messaging";
+  import type { ExpandedMessageNode } from "$types/server/messaging";
   import Header from "./MessageContent/Header.svelte";
   import MessageThread from "./MessageThread.svelte";
 

@@ -1,10 +1,11 @@
-import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } from "$types/package";
-import type { ReadableStore } from "$types/writable";
+import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } from "$types/tpa/package";
+import type { ReadableStore } from "$types/shared/writable";
 import type JSZip from "jszip";
 import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";
 import type { IDistributionServiceProcess } from "./services/IDistributionServiceProcess";
 
+// !tpa
 export interface IInstallerProcessBase extends IProcess {
   parent: IDistributionServiceProcess;
   failReason: ReadableStore<string>;
@@ -39,3 +40,4 @@ export interface IInstallerProcessBaseConstructor extends Constructs<IInstallerP
   validatePackage(metadata: ArcPackage, zip: JSZip): Promise<boolean>;
   uninstallPackage(metadata: ArcPackage, deleteFiles?: boolean, onStage?: (stage: string) => void): Promise<void>;
 }
+// !endtpa

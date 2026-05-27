@@ -1,5 +1,5 @@
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-import type { AppKeyCombinations } from "$types/accelerator";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
 export function FileManagerAccelerators(runtime: IFileManagerRuntime): AppKeyCombinations {
   return [

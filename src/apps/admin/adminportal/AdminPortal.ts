@@ -1,5 +1,5 @@
 import "$css/apps/admin/adminportal.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AdminPortal from "./AdminPortal.svelte";
 import { AdminPortalRuntime } from "./runtime";
 

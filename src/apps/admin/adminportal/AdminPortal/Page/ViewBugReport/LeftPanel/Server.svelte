@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
 
   const { report }: { report: BugReport } = $props();
 </script>

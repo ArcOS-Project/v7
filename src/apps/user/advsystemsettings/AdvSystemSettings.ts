@@ -1,5 +1,5 @@
 import "$css/apps/user/advsystemsettings.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AdvancedSystemSettings from "./AdvancedSystemSettings.svelte";
 import { AdvSysSetRuntime } from "./runtime";
 

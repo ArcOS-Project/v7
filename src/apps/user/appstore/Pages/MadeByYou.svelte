@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
 
   const { process, unblocked, blocked }: { process: IAppStoreRuntime; unblocked: StoreItem[]; blocked: StoreItem[] } = $props();
 </script>
@@ -21,7 +22,7 @@
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div class="app-row" onclick={() => process.switchPage("manageStoreItem", { id: pkg._id })}>
-            <img src={StoreItemIcon(pkg)} alt="" />
+            <Icon icon={StoreItemIcon(pkg)} title={pkg.pkg.name} />
             <p class="name">{pkg.pkg?.name || pkg.name}</p>
             <p class="author">{pkg.installCount} installs</p>
             <p class="version">v{pkg.pkg.version}</p>
@@ -41,7 +42,7 @@
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div class="app-row" onclick={() => process.switchPage("manageStoreItem", { id: pkg._id })}>
-              <img src={StoreItemIcon(pkg)} alt="" />
+              <Icon icon={StoreItemIcon(pkg)} />
               <p class="name">{pkg.pkg?.name || pkg.name}</p>
               <p class="author">{pkg.installCount} installs</p>
               <p class="version">v{pkg.pkg.version}</p>

@@ -2,9 +2,9 @@ import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime
 import { AppProcess } from "$ts/apps/process";
 import { SoundBus } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
-import type { MessageBoxData } from "$types/messagebox";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import type { MessageBoxData } from "$types/shared/messagebox";
 
 export class MessageBoxRuntime extends AppProcess implements IMessageBoxRuntime {
   data: MessageBoxData | undefined;

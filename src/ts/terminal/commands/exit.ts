@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
-import { Stack } from "$ts/env";
+import { Stack, State, Daemon } from "$ts/env";
 import { TerminalProcess } from "../process";
 
 export class ExitCommand extends TerminalProcess {
@@ -20,6 +20,13 @@ export class ExitCommand extends TerminalProcess {
 
   protected async main(term: IArcTerminal): Promise<number> {
     const proc = Stack.getProcess<IAppProcess>(term.parentPid);
+
+    if (term?.IS_ARCTERM_MODE) {
+      await Daemon?.killSelf();
+      await term?.killSelf();
+      State.loadState("turnedOff");
+      return -256;
+    }
 
     if (!(proc instanceof AppProcess)) {
       return 1;

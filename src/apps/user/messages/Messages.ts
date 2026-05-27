@@ -1,5 +1,5 @@
 import "$css/apps/user/messages.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Messages from "./Messages.svelte";
 import { MessagingAppRuntime } from "./runtime";
 

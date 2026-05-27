@@ -3,8 +3,8 @@ import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { Fs, getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import { calculateMemory } from "$ts/util";
-import { LogLevel } from "$types/logging";
-import type { ProcessState } from "$types/process";
+import { LogLevel } from "$types/shared/logging";
+import type { ProcessState } from "$types/system/process";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
@@ -12,6 +12,17 @@ export class Process implements IProcess {
   public pid: number;
   public parentPid: number;
   public name = "";
+  private _state: ProcessState = "unknown";
+
+  get STATE() {
+    return this._state;
+  }
+
+  set STATE(value: ProcessState) {
+    this.Log(`STATE UPDATE: ${value}`);
+    this._state = value;
+  }
+
   public get _disposed() {
     return this.STATE === "disposed" || this.STATE === "error";
   }
@@ -19,7 +30,6 @@ export class Process implements IProcess {
   public _criticalProcess = false;
   public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
-  public STATE: ProcessState = "unknown";
 
   constructor(pid: number, parentPid?: number, ...args: any[]) {
     this.STATE = "constructing";

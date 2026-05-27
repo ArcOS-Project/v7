@@ -1,6 +1,6 @@
 import type { Readline } from "$ts/terminal/readline/readline";
-import type { ElevationData } from "$types/elevation";
-import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { ElevationData } from "$types/system/elevation";
+import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { ArcTermConfiguration, Arguments, StaticVariableStore } from "$types/terminal";
 import type ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
@@ -10,6 +10,7 @@ import type { IFilesystemDrive } from "./IFilesystemDrive";
 import type { IProcess } from "./IProcess";
 import type { IUserDaemon } from "./IUserDaemon";
 
+// !tpa
 export interface IArcTerminal extends IProcess {
   readonly CONFIG_PATH: string;
   IS_ARCTERM_MODE: boolean;
@@ -17,6 +18,7 @@ export interface IArcTerminal extends IProcess {
   path: string;
   drive: IFilesystemDrive | undefined;
   term: Terminal;
+  terminalMode?: ITerminalMode;
   rl: Readline | undefined;
   var: IArcTermVariables | undefined;
   contents: DirectoryReadReturn | undefined;
@@ -78,4 +80,19 @@ export interface IArcTermVariables {
   set(key: string, value: string): Promise<boolean>;
   delete(key: string): Promise<boolean>;
   replace(str: string): string;
+}
+
+export interface ITerminalMode extends IProcess {
+  userDaemon?: IUserDaemon;
+  target: HTMLDivElement;
+  term?: Terminal;
+  rl?: Readline;
+  arcTerm?: IArcTerminal;
+  initializeTerminal(): Promise<void>;
+  proceed(username: string, password: string): Promise<boolean>;
+  startDaemon(token: string, username: string): Promise<boolean>;
+  resetCookies(): void;
+  serverPrompt(): Promise<boolean>;
+  loginPrompt(clear?: boolean): Promise<boolean>;
+  askForTotp(token: string): Promise<boolean>;
 }

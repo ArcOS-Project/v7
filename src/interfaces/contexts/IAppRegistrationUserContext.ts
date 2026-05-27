@@ -1,6 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { App, AppStorage, InstalledApp } from "$types/app";
+import type { App, AppStorage, InstalledApp } from "$types/apps/app";
 
+// !tpa
 export interface IAppRegistrationUserContext extends IUserContext {
   getUserApps(): Promise<AppStorage>;
   registerApp(data: InstalledApp): Promise<void>;
@@ -17,3 +18,4 @@ export interface IAppRegistrationUserContext extends IUserContext {
   updateStartMenuFolder(quiet?: boolean): Promise<void>;
   modeUserAppsToFs(): Promise<void>;
 }
+// !endtpa

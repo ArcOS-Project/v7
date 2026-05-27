@@ -1,9 +1,9 @@
 import type { ICalculatorRuntime } from "$interfaces/runtimes/ICalculatorRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppProcessData } from "$types/apps/app";
+import type { RenderArgs } from "$types/system/process";
 import { CalculatorStore } from "./store";
 import type { CalculatorKey, CalculatorKeys, CalculatorOverrides } from "./types";
 

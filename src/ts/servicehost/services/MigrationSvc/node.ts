@@ -1,8 +1,8 @@
 import type { IMigrationNode, IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
 import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { Log } from "$ts/logging";
-import { LogLevel } from "$types/logging";
-import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
+import { LogLevel } from "$types/shared/logging";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
 import packageJson from "../../../../../package.json";
 
 export class MigrationNode implements IMigrationNode {

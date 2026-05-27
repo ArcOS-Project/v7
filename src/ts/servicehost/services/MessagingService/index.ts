@@ -10,9 +10,9 @@ import { BaseService } from "$ts/servicehost/base";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
-import type { Service } from "$types/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/server/messaging";
+import type { Service } from "$types/services/service";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {

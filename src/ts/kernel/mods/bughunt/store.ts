@@ -1,4 +1,4 @@
-import type { ReportOptions } from "$types/bughunt";
+import type { ReportOptions } from "$types/server/bughunt";
 
 export const defaultReportOptions: ReportOptions = {
   title: "Auto-generated report",

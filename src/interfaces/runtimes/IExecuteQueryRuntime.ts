@@ -7,7 +7,7 @@ import type {
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { ExpandedUserInfo } from "$types/user";
-import type { BooleanStore, NumberStore, ReadableStore, StringStore } from "$types/writable";
+import type { BooleanStore, NumberStore, ReadableStore, StringStore } from "$types/shared/writable";
 
 export interface IExecuteQueryRuntime extends IAppProcess {
   result: ReadableStore<any[]>;

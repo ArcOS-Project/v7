@@ -1,5 +1,5 @@
 import "$css/apps/user/imageviewer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ImageViewer from "./ImageViewer.svelte";
 import { ImageViewerRuntime } from "./runtime";
 

@@ -1,10 +1,11 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IServiceHost } from "$interfaces/IServiceHost";
-import type { ProcessKillResult } from "$types/process";
-import type { ReadableStore } from "$types/writable";
+import type { ProcessKillResult } from "$types/system/process";
+import type { ReadableStore } from "$types/shared/writable";
 import type { Component } from "svelte";
 
+// !tpa
 export interface IProcessManagerRuntime extends IAppProcess {
   selected: ReadableStore<string>;
   running: ReadableStore<number>;

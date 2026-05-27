@@ -1,8 +1,8 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
+import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
@@ -24,17 +24,19 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     workingDirectory: string,
     ...args: any[]
   ) {
-    super(pid, parentPid, app);
+    super(pid, parentPid, app, operationId, workingDirectory, ...args);
 
     this.workingDirectory = workingDirectory;
     this.operationId = operationId;
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${this.app.id}`);
 
     this.setSource(__SOURCE__);
   }
 
   async __render__(body: HTMLDivElement): Promise<void> {
     this.Log("Rendering window contents");
+
+    this.STATE = "rendering";
 
     const elementsToProcess = {
       a: "href",

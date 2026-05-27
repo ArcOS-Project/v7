@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon } from "$ts/env";
-  import type { GlobalDispatchClient } from "$types/dispatch";
+  import type { GlobalDispatchClient } from "$types/system/dispatch";
   import { onMount } from "svelte";
 
   let clients = $state<GlobalDispatchClient[]>([]);

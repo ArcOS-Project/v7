@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { onMount } from "svelte";
@@ -51,7 +52,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={valid ? wallpaper : process.getIconCached("DesktopIcon")} alt="" />
+    <Icon icon={valid ? wallpaper : "DesktopIcon"} />
   </div>
   <div class="right">
     <h1>Change Wallpaper</h1>

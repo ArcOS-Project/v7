@@ -5,11 +5,12 @@ import type {
   FilesystemStat,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import type { LogLevel } from "$types/logging";
+} from "$types/system/fs";
+import type { LogLevel } from "$types/shared/logging";
 import type { Constructs } from "./common";
 import type { IServerManager } from "./modules/IServerManager";
 
+// !tpa
 export interface IFilesystemDrive {
   server: IServerManager;
   driveLetter: string | undefined;
@@ -58,3 +59,4 @@ export interface IFilesystemProxy {
 export interface IFilesystemProxyConstructor extends Constructs<IFilesystemProxy, [string]> {
   PROXY_UUID: string;
 }
+// !endtpa

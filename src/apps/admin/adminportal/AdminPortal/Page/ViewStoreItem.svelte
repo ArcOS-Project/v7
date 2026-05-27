@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon, Env } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import { StoreItemIcon } from "$ts/util/distrib";
@@ -242,7 +243,7 @@
 {#if item}
   <div class="left">
     <div class="header">
-      <img src={StoreItemIcon(item)} alt="" />
+      <Icon icon={StoreItemIcon(item)} />
       <div class="info">
         <h1>
           {item.name}

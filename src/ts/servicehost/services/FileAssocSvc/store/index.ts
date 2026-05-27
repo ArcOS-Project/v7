@@ -1,4 +1,4 @@
-import type { FileDefinition } from "$types/assoc";
+import type { FileDefinition } from "$types/system/assoc";
 import { AudioFileDefinitions } from "./audio";
 import { ImageFileDefinitions } from "./image";
 import { VideoFileDefinitions } from "./video";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
   import { Daemon } from "$ts/env";
-  import type { Wallpaper } from "$types/wallpaper";
+  import type { Wallpaper } from "$types/user/wallpaper";
   import { onMount } from "svelte";
   import ThemesHeader from "../ThemesHeader.svelte";
 

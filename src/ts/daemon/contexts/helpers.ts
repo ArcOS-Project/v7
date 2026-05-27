@@ -11,7 +11,7 @@ import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import type { ExpandedTerminal } from "$types/terminal";
 import { UserContext } from "../context";
 

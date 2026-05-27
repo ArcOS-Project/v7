@@ -1,6 +1,6 @@
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn } from "$types/fs";
-import type { GitFolder } from "$types/git";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import type { GitFolder } from "$types/external/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemProxy } from "./generic";

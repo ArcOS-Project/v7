@@ -3,7 +3,7 @@ import { Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import type { FileHandler } from "$types/fs";
+import type { FileHandler } from "$types/system/fs";
 
 const runTpaFile: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {

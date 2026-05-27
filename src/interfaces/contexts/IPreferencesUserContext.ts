@@ -1,7 +1,8 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore, Unsubscriber } from "$types/writable";
+import type { ReadableStore, Unsubscriber } from "$types/shared/writable";
 
+// !tpa
 export interface IPreferencesUserContext extends IUserContext {
   syncLock: boolean;
   preferencesUnsubscribe: Unsubscriber | undefined;
@@ -13,4 +14,7 @@ export interface IPreferencesUserContext extends IUserContext {
   setGlobalSetting(key: string, value: any): void;
   changeProfilePicture(newValue: string | number): void;
   uploadProfilePicture(): Promise<string | undefined>;
+  changeShell(id: string): Promise<boolean>;
+  startPreferencesSync(): Promise<void>;
 }
+// !endtpa

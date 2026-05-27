@@ -1,19 +1,20 @@
 <script lang="ts">
   import type { IFsProgressFailRuntime } from "$interfaces/runtimes/IFsProgressFailRuntime";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IFsProgressFailRuntime } = $props();
   const { title, icon, errors } = process;
 </script>
 
 <div class="header">
-  <img src={icon} alt="" />
+  <Icon {icon} />
   <h1>{title}</h1>
   <p>This file operation encountered an error.</p>
 </div>
 <div class="errors">
   {#each errors as error}
     <div class="error">
-      <img src={process.getIconCached("BadStatusIcon")} alt="" />
+      <Icon icon="BadStatusIcon" />
       <span>{error}</span>
     </div>
   {/each}

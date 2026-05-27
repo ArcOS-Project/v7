@@ -1,4 +1,4 @@
-import type { FileDefinition } from "$types/assoc";
+import type { FileDefinition } from "$types/system/assoc";
 
 export const ImageFileDefinitions: Record<string, FileDefinition> = {
   ".png": {

@@ -1,15 +1,17 @@
 <script lang="ts">
-  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IProcess } from "$interfaces/IProcess";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { AppProcess } from "$ts/apps/process";
   import { Daemon, Stack, SysDispatch } from "$ts/env";
   import { BaseService } from "$ts/servicehost/base";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import { ProcessStateIcons } from "$types/process";
+  import { ProcessStateIcons } from "$types/system/process";
   import { onDestroy, onMount } from "svelte";
   import Row from "./Row.svelte";
+  import { ProcessesHelper } from "$ts/helpers/processes";
 
   const {
     pid,
@@ -34,15 +36,13 @@
       children = Stack.getSubProcesses(proc.pid);
     });
 
-    memoryInterval = setInterval(() => {
-      memory = proc.MEMORY;
-    }, 2000); // every 2 seconds
+    memory = proc.MEMORY; // only once because laggy
 
-    if (proc instanceof AppProcess) {
+    if (ProcessesHelper.IsAnyAppProcess(proc)) {
       const { app } = proc;
 
       name = app.data.metadata.name;
-      icon = Daemon?.icons?.getAppIconByProcess(proc);
+      icon = `@app::${app.id}`;
       appId = app.id;
 
       const dispatcher = SysDispatch.subscribe("window-closing", ([pid]) => {
@@ -56,7 +56,7 @@
     }
 
     name = proc.name;
-    icon = process.getIconCached("DefaultIcon");
+    icon = "DefaultIcon";
   });
 
   onDestroy(() => {
@@ -80,7 +80,7 @@
         },
         {
           caption: "App info",
-          disabled: () => !(proc instanceof AppProcess),
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
           action: () => process.appInfoFor(proc as IAppProcess),
           icon: "app-window-mac",
         },
@@ -93,7 +93,7 @@
         { sep: true },
         {
           caption: "Focus",
-          disabled: () => !(proc instanceof AppProcess),
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
           action: () => Stack.renderer?.focusPid(proc.pid),
           icon: "flag",
         },
@@ -112,12 +112,12 @@
     class:critical={proc._criticalProcess}
   >
     <div class="segment name">
-      <img src={icon} alt="" />
+      <Icon icon={icon ?? "DefaultIcon"} />
       <span>{name}{orphan ? " (orphaned)" : ""}</span>
       <span class="lucide icon-{ProcessStateIcons[proc.STATE]}"></span>
     </div>
     <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
-      <img src={process.getIconCached("FlagIcon")} alt="" class="flag" />
+      <Icon icon="FlagIcon" className="flag" />
       <span>{proc.pid}</span>
     </div>
     <div class="segment memory">

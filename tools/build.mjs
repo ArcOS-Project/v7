@@ -3,6 +3,7 @@ import { program } from "commander";
 import { build } from "vite";
 import packageJson from "../package.json" with { type: "json" };
 import { checkParameters } from "./check-params.mjs";
+import { generateTypes } from "./collect-tpa-props.mjs";
 import { checkConsoleUsages } from "./console-usage.mjs";
 import { checkRuntimeInterfaces } from "./runtime-interfaces.mjs";
 import { checkTypeOutblow } from "./typeoutblow.mjs";
@@ -72,7 +73,7 @@ async function buildIt() {
 
 async function doTypedefs() {
   console.log(`Generating type definitions for ${packageJson.version}...`);
-  await sh("npm run build:types:all");
+  await generateTypes();
 }
 
 async function doGitHash() {

@@ -4,10 +4,11 @@
 
   const {
     user,
+    userId = "",
     fallback = "",
     noPfp = false,
     onClick,
-  }: { user: PublicUserInfo; fallback?: string; noPfp?: boolean; onClick?: () => void } = $props();
+  }: { user: PublicUserInfo; userId?: string; fallback?: string; noPfp?: boolean; onClick?: () => void } = $props();
 
   function onclick() {
     onClick?.();
@@ -18,7 +19,7 @@
 {#if user?.displayName || user?.username || fallback}
   <button class="link user-link" title={user?.username || fallback} {onclick}>
     {#if !noPfp}
-      <ProfilePicture height={14} fallback={user?.profilePicture} />
+      <ProfilePicture height={14} {userId} />
     {/if}
     <span>{user?.displayName || user?.username || fallback}</span>
   </button>

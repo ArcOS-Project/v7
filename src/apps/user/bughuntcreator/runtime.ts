@@ -4,8 +4,8 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { BugHuntProc } from "$types/bughunt";
+import type { AppProcessData } from "$types/apps/app";
+import type { BugHuntProc } from "$types/server/bughunt";
 import DataPrivacy from "./Creator/DataPrivacy.svelte";
 import type { BugHuntCreatorOptions } from "./types";
 

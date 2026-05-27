@@ -5,6 +5,8 @@
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
+  import Icon from "./Icon.svelte";
+  import { BlankIcon } from "$ts/images/general";
 
   const { process, children, className = "" }: { process: IAppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
@@ -42,7 +44,7 @@
     {#if children}
       {@render children()}
     {:else}
-      <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
+      <Icon icon={$windowIcon} fallback={BlankIcon} />
       <span>{$windowTitle}</span>
     {/if}
     {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty}

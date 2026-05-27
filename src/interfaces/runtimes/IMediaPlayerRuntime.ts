@@ -2,9 +2,10 @@ import type { AudioFileMetadata, LoopMode, MetadataConfiguration, PlayerState } 
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IConfigurator } from "$interfaces/IConfigurator";
-import type { BooleanStore, NumberStore, ReadableStore, StringStore } from "$types/writable";
+import type { BooleanStore, NumberStore, ReadableStore, StringStore } from "$types/shared/writable";
 import type { IAudioMetadata } from "music-metadata";
 
+// !tpa
 export interface IMediaPlayerRuntime extends IAppProcess {
   queue: ReadableStore<string[]>;
   queueIndex: NumberStore;

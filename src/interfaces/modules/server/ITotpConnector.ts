@@ -1,8 +1,9 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { DeleteResult, UpdateWriteOpResult } from "$types/mongo";
+import type { DeleteResult, UpdateWriteOpResult } from "$types/external/mongo";
 import type { TotpSetupResponse } from "$types/user";
 import type { IServerConnector } from "../IServerManager";
 
+// !tpa
 export interface ITotpConnector extends IServerConnector {
   Activate(code: string): Promise<ICommandResult>;
   Auth(code: string): Promise<ICommandResult>;

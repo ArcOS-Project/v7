@@ -1,18 +1,19 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
-import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ProcessKillResult } from "$types/process";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ProcessKillResult } from "$types/system/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
+import { ProcessesHelper } from "$ts/helpers/processes";
 
 export class ProcessManagerRuntime extends AppProcess implements IProcessManagerRuntime {
   public selected = Store<string>();
@@ -48,13 +49,13 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
   async kill(proc: IProcess) {
     this.Log(`kill: ${proc.pid}`);
 
-    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+    const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
+      image: ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: name,
-      description: proc instanceof AppProcess ? "Application" : "Process",
+      description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
       level: ElevationLevel.high,
     });
 
@@ -107,7 +108,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async stopService(id: string) {
+  async stopService(id: ServiceIdentifier) {
     this.Log(`stopService: ${id}`);
 
     if (!this.host.getService(id)) return;
@@ -136,7 +137,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async restartService(id: string) {
+  async restartService(id: ServiceIdentifier) {
     this.Log("Restarting selected service");
 
     MessageBox(
@@ -161,14 +162,14 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     );
   }
 
-  async startService(id: string) {
+  async startService(id: ServiceIdentifier) {
     this.Log(`startService: ${id}`);
 
     if (this.host.getService(id)) return;
     Daemon?.serviceHost?.startService(id);
   }
 
-  serviceInfoFor(id: string) {
+  serviceInfoFor(id: ServiceIdentifier) {
     this.Log(`serviceInfoFor: ${id}`);
 
     if (!this.host.hasService(id)) return;

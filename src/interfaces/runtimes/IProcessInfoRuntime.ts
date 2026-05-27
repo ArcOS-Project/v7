@@ -1,8 +1,9 @@
 import type { Constructs } from "$interfaces/common";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
-import type { ProcessKillResult } from "$types/process";
+import type { ProcessKillResult } from "$types/system/process";
 
+// !tpa
 export interface IProcessInfoRuntime extends IAppProcess {
   parent?: IProcess;
   proc?: IProcess;

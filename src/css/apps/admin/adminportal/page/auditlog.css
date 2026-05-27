@@ -1,27 +1,43 @@
 #AdminPortal .auditLog {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal .auditLog > div.page-content {
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal .auditLog div.header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   height: 30px;
   padding-left: 10px;
+  border-bottom: var(--win-border);
 }
 #AdminPortal .auditLog div.header h1 {
   font-weight: bold;
   opacity: 0.5;
+  margin-right: auto;
+}
+#AdminPortal .auditLog div.header button.lucide {
+  width: 29px;
+  height: 30px;
+  border-left: var(--win-border);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
+  font-weight: normal !important;
 }
 
 #AdminPortal .auditLog div.audit-list {
   padding: 10px;
-  height: calc(100% - 30px);
-  border-top: var(--win-border);
+  height: 0;
+  flex-grow: 1;
   overflow-y: scroll;
 }
 
@@ -109,4 +125,45 @@ details.audit-log span.severity {
 details.audit-log.has-data span.severity {
   border-right: var(--border-clr) 1px solid;
   display: block;
+}
+
+#AdminPortal .auditLog div.filter-bar {
+  padding: 0;
+}
+
+#AdminPortal .auditLog div.filter-bar div.from-to {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#AdminPortal .auditLog div.filter-bar div.from-to span.lucide {
+  opacity: 0.5;
+}
+
+#AdminPortal .auditLog div.filter-bar select,
+#AdminPortal .auditLog div.filter-bar input {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  padding: 0 8px;
+}
+
+#AdminPortal .auditLog div.filter-bar input.search {
+  flex-grow: 1;
+  border-right: var(--win-border);
+}
+
+#AdminPortal .auditLog div.filter-bar div.from-to select {
+  border-right: var(--win-border);
+  appearance: none;
+}
+
+#AdminPortal .auditLog div.filter-bar div.from-to select:last-of-type {
+  border-left: var(--win-border);
+}
+
+#AdminPortal .auditLog div.filter-bar select.severity {
+  margin-right: 5px;
 }

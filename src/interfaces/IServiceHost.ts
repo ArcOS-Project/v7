@@ -1,7 +1,8 @@
-import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/services/service";
 import type { IProcess } from "./IProcess";
 import type { IServerConnector } from "./modules/IServerManager";
 
+// !tpa
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;
@@ -15,14 +16,36 @@ export interface IServiceHost extends IProcess {
   initialRun(broadcast?: (m: string) => void): Promise<void>;
   init(broadcast?: (m: string) => void): Promise<void>;
   stop(): Promise<void>;
-  readonly STORE: Map<string, Service>;
+  readonly STORE: Map<ServiceIdentifier, Service>;
   loadStore(store: ServiceStore): boolean;
-  getServiceInfo(id: string): Service | undefined;
-  startService(id: string): Promise<ServiceChangeResult>;
-  stopService(id: string): Promise<ServiceChangeResult>;
-  restartService(id: string): Promise<ServiceChangeResult>;
+  getServiceInfo(id: ServiceIdentifier): Service | undefined;
+  startService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
+  stopService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
+  restartService(id: ServiceIdentifier): Promise<ServiceChangeResult>;
   verifyServicesProcesses(): Promise<void>;
-  getService<T extends IBaseService = IBaseService>(id: string): T | undefined;
-  hasService(id: string): boolean;
+  getService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined;
+  hasService(id: ServiceIdentifier): boolean;
   spinDown(broadcast?: (message: string) => void): Promise<void>;
+  Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void): void;
 }
+
+export type ServiceIdentifier =
+  | "TrashSvc"
+  | "BugHuntUsp"
+  | "ShareMgmt"
+  | "AppStorage"
+  | "ArcFindSvc"
+  | "SystemShortcutsSvc"
+  | "ProtoService"
+  | "TrayHostSvc"
+  | "AdminBootstrapper"
+  | "FileAssocSvc"
+  | "GlobalDispatch"
+  | "MessagingService"
+  | "DevEnvironment"
+  | "DistribSvc"
+  | "IconService"
+  | "LibMgmtSvc"
+  | "MigrationSvc"
+  | "RecentFilesSvc";
+// !endtpa

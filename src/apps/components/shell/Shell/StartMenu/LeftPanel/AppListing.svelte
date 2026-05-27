@@ -2,7 +2,7 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Daemon } from "$ts/env";
   import { sortByKey } from "$ts/util";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import { onMount } from "svelte";
   import ListItem from "./ListItem.svelte";
 

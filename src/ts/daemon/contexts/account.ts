@@ -7,7 +7,7 @@ import { Daemon, Env, SysDispatch } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { CommandResult } from "$ts/result";
 import { MessageBox } from "$ts/util/dialog";
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel } from "$types/system/elevation";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 import Cookies from "js-cookie";
 import { UserContext } from "../context";

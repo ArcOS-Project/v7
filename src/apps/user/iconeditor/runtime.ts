@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class IconEditorRuntime extends AppProcess implements IIconEditorRuntime {
   iconGroups = Store<Record<string, string[]>>({});

@@ -8,8 +8,8 @@ import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { BugReport } from "$types/bughunt";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { BugReport } from "$types/server/bughunt";
 import axios from "axios";
 import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
@@ -141,6 +141,16 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
 
     this.switchPage("viewUser", { user });
+  }
+
+  compileCrumbs(parent: string): string[] {
+    const result: string[] = [];
+    const parentData = AdminPortalPageStore.get(parent);
+
+    if (parentData?.parent) result.push(...this.compileCrumbs(parentData?.parent));
+    result.push(parentData?.name!);
+
+    return result;
   }
 
   //#endregion

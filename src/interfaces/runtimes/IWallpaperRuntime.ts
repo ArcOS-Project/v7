@@ -1,10 +1,11 @@
 import type { DesktopIcons } from "$apps/components/wallpaper/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IConfigurator } from "$interfaces/IConfigurator";
-import type { DirectoryReadReturn } from "$types/fs";
-import type { ShortcutStore } from "$types/shortcut";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import type { ShortcutStore } from "$types/system/shortcut";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 
+// !tpa
 export interface IWallpaperRuntime extends IAppProcess {
   CONFIG_PATH: string;
   contents: ReadableStore<DirectoryReadReturn | undefined>;

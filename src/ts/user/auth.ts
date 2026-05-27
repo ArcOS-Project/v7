@@ -3,7 +3,7 @@ import { Backend } from "$ts/kernel/mods/server/axios";
 import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
 import { toForm } from "$ts/util/form";
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import { AxiosError } from "axios";
 
 export async function LoginUser(identity: string, password: string): Promise<ICommandResult<string>> {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { StoreItemScreenshot } from "$ts/util/distrib";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
 
   const { pkg, process }: { pkg: StoreItem; process: IAppStoreRuntime } = $props();
 

@@ -2,9 +2,9 @@ import type { ILightsOffLevels, ILightsOffRuntime } from "$interfaces/runtimes/I
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
-import type { ReadableStore } from "$types/writable";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
 import { LightsOffLevels } from "./levels";
 import type { LightsOffGrid } from "./types";
 

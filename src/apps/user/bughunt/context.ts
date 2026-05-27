@@ -1,5 +1,5 @@
 import type { IBugHuntRuntime } from "$interfaces/runtimes/IBugHuntRuntime";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export const BugHuntAltMenu: (p: IBugHuntRuntime) => ContextMenuItem[] = (process) => {
   return [
