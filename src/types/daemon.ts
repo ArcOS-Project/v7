@@ -3,7 +3,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { UserInfo } from "./user";
 
-// !tpa-prop
+// !tpa
 export type UserDaemonInitCallback = (daemon: IUserDaemon, broadcast: (m: string) => void) => MaybePromise<void>;
 export type UserDaemonInitStage =
   | "filesystem"

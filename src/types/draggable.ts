@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 type DragBoundsCoords = {
   /** Number of pixels from left of the document */
   left: number;

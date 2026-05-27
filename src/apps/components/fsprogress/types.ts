@@ -2,7 +2,7 @@ import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime
 import { Store } from "$ts/writable";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface FsProgressOperation {
   type: "quantity" | "size" | "none";
   icon: string;

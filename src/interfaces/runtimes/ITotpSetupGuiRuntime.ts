@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface ITotpSetupGuiRuntime extends IAppProcess {
   code: ReadableStore<string>;
   url: ReadableStore<string>;

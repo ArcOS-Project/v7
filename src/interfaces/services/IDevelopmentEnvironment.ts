@@ -1,7 +1,7 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
 
-// !tpa-prop
+// !tpa
 export interface IDevelopmentEnvironment extends IBaseService {
   connected: boolean;
   meta?: ProjectMetadata;

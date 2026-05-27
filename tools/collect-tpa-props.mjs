@@ -7,9 +7,12 @@
  *
  * © IzKuipers 2026. Licensed under GPLv3.
  */
-import { readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import { glob } from "glob";
 import { extractTypesFromThirdPartyPropMap } from "./build-globals.mjs";
+
+const OUTPUT_DIR = `./dist`;
+const OUTPUT_FILE = `${OUTPUT_DIR}/arcos.d.ts`;
 
 const paths = ["src/types/**/*.ts", "src/interfaces/**/*.ts", "src/apps/**/*/types.ts"];
 
@@ -23,19 +26,19 @@ async function parseFile(file) {
     .replaceAll("export declare", "export")
     .split("\n")
     .filter((l) => !l.startsWith("import type"));
-  const seen = [];
 
   for (let i = 0; i < contents.length; i++) {
     const line = contents[i];
     const segment = contents.slice(i);
 
     if (line.startsWith("// !tpa")) {
+      const end = contents.findIndex((l, idx) => idx > i && l === "// !endtpa");
+
+      console.log(`TYPES: lines ${i + 2} till ${end > 0 ? end : contents.length - 1} in ${file.relative()}`);
+
       result.push(
         contents
-          .slice(
-            i + 1,
-            contents.findIndex((l, idx) => idx > i && l === "// !endtpa")
-          )
+          .slice(i + 1, end)
           .map((l) => `  ${l}`) // padding
           .join("\n")
       );
@@ -59,6 +62,11 @@ export async function getTpaInclusions() {
 }
 
 export async function generateTypes() {
+  try {
+    await mkdir(OUTPUT_DIR);
+  } catch (e) {
+    console.log(`Failed to create output directory: ${e}`);
+  }
   let output = `// @ts-nocheck
 /// ARCOS GLOBAL TYPE DEFINITIONS V2
 ///
@@ -75,6 +83,6 @@ ${await getTpaInclusions()}
 
 export {};`;
 
-  await writeFile("dist/arcos.d.ts", output, "utf-8");
-  console.log("\n✅ dist/arcos.d.ts written.\n");
+  await writeFile(OUTPUT_FILE, output, "utf-8");
+  console.log(`\n✅ ${OUTPUT_FILE} written.\n`);
 }

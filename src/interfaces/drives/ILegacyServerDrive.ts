@@ -1,7 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { FSQuota, UserDirectory } from "$types/legacy";
 
-// !tpa-prop
+// !tpa
 export interface ILegacyServerDrive extends IFilesystemDrive {
   TEST_MODES: [boolean, number][];
   DEFAULT_DIRECTORY: UserDirectory;

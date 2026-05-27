@@ -1,7 +1,7 @@
 import type { SystemDispatchResult } from "$types/dispatch";
 import type { IKernelModule } from "./IKernelModule";
 
-// !tpa-prop
+// !tpa
 export interface ISystemDispatch extends IKernelModule {
   subscribers: Record<string, Record<number, (data: any) => void>>;
 

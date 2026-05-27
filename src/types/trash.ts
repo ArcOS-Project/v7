@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface TrashIndexNode {
   name: string;
   icon: string;

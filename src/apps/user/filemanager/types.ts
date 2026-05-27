@@ -14,7 +14,7 @@ export interface Location {
   component: any;
 }
 
-// !tpa-prop
+// !tpa
 export type QuotedDrive = { data: IFilesystemDrive; quota: UserQuota };
 
 export interface LoadSaveDialogData {

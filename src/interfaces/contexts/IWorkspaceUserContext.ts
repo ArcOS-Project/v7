@@ -1,7 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { UserPreferences, Workspace } from "$types/user";
 
-// !tpa-prop
+// !tpa
 export interface IWorkspaceUserContext extends IUserContext {
   virtualDesktop: HTMLDivElement | undefined;
   syncVirtualDesktops(v: UserPreferences): Promise<void>;

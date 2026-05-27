@@ -2,7 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { PublicUserInfo, UserInfo } from "$types/user";
 
-// !tpa-prop
+// !tpa
 export interface IAccountUserContext extends IUserContext {
   discontinueToken(token?: string): Promise<boolean | undefined>;
   getUserInfo(): Promise<ICommandResult<UserInfo>>;

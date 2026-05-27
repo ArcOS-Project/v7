@@ -8,7 +8,7 @@ import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types
 import type { UserPreferencesStore } from "$types/user";
 import type JSZip from "jszip";
 
-// !tpa-prop
+// !tpa
 export interface IDistributionServiceProcess extends IBaseService {
   _BUSY: string;
   preferences: UserPreferencesStore;

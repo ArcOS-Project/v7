@@ -2,7 +2,7 @@ import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTermi
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { Terminal } from "xterm";
 
-// !tpa-prop
+// !tpa
 export interface TerminalCommand {
   keyword: string;
   description: string;

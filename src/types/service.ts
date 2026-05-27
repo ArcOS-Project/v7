@@ -4,7 +4,7 @@ import type { IUserDaemon } from "../interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 import type { ReadableStore } from "./writable";
 
-// !tpa-prop
+// !tpa
 export interface Service {
   name: string;
   description: string;

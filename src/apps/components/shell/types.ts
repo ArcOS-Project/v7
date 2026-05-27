@@ -3,7 +3,7 @@ import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ContextMenuItem } from "$types/app";
 import type { Component } from "svelte";
 
-// !tpa-prop
+// !tpa
 export interface WeatherMeta {
   caption: string;
   iconColor: string;

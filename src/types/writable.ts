@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 /** Callback to inform of a value updates. */
 export type Subscriber<T> = (value: T) => void;
 

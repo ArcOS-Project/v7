@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface Attachment {
   data: File;
   uuid: string;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface ItemInfo {
   meta: {
     sort: "file" | "folder";

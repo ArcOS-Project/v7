@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface DesktopIconPos {
   x: number;
   y: number;

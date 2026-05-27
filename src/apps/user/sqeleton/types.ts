@@ -1,7 +1,7 @@
 import type { IntBool } from "$types/common";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface SqlTable {
   uuid: string;
   name: string;

@@ -1,7 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App } from "$types/app";
 
-// !tpa-prop
+// !tpa
 export interface IApplicationsUserContext extends IUserContext {
   checkDisabled(appId: string, noSafeMode?: boolean): boolean;
   isVital(app: App): boolean | undefined;

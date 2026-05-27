@@ -1,6 +1,6 @@
 import type { MaybePromise } from "./common";
 
-// !tpa-prop
+// !tpa
 export interface SearchItem {
   caption: string;
   action: (item?: SearchItem) => MaybePromise<void>;

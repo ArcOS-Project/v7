@@ -1,5 +1,5 @@
 // TypeScript Version: 4.7
-// !tpa-prop
+// !tpa
 export type AxiosHeaderValue = AxiosHeaders | string | string[] | number | boolean | null;
 
 export interface RawAxiosHeaders {

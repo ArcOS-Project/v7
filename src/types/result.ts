@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface CommandResultOptions {
   errorMessage?: string;
   successMessage?: string;

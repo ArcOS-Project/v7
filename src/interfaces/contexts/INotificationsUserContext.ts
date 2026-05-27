@@ -1,7 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { Notification } from "$types/notification";
 
-// !tpa-prop
+// !tpa
 export interface INotificationsUserContext extends IUserContext {
   notifications: Map<string, Notification>;
   sendNotification(data: Notification): string | undefined;

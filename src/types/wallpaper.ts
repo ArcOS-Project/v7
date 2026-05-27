@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface Wallpaper {
   author: string;
   name: string;

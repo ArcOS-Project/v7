@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface IconPickerData {
   forWhat: string;
   defaultIcon: string;

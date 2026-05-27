@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { LogItem } from "$types/logging";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface ILoggingRuntime extends IAppProcess {
   groups: ReadableStore<Map<string, LogItem[]>>;
   sources: ReadableStore<LogSource[]>;

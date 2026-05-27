@@ -1,6 +1,6 @@
 import type { PublicUserInfo } from "./user";
 
-// !tpa-prop
+// !tpa
 export interface ArcPackage {
   _id?: string;
   name: string;

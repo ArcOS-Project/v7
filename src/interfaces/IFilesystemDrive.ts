@@ -10,7 +10,7 @@ import type { LogLevel } from "$types/logging";
 import type { Constructs } from "./common";
 import type { IServerManager } from "./modules/IServerManager";
 
-// !tpa-prop
+// !tpa
 export interface IFilesystemDrive {
   server: IServerManager;
   driveLetter: string | undefined;

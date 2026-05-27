@@ -3,7 +3,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { UserQuota } from "$types/fs";
 import type { CategorizedDiskUsage } from "$types/user";
 
-// !tpa-prop
+// !tpa
 export interface IDriveInfoRuntime extends IAppProcess {
   drive?: IFilesystemDrive;
   isUserFs: boolean;

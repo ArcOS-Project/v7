@@ -1,6 +1,6 @@
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 
-// !tpa-prop
+// !tpa
 export interface FirstRunPage {
   name: string;
   component: any;

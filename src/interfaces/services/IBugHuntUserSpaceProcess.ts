@@ -2,7 +2,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { BugReport, ReportOptions } from "$types/bughunt";
 
-// !tpa-prop
+// !tpa
 export interface IBugHuntUserSpaceProcess extends IBaseService {
   INVALIDATION_THRESHOLD: number;
   privateCache: BugReport[];

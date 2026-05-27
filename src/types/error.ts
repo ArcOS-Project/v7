@@ -1,6 +1,6 @@
 import type { LiteralUnion } from "$interfaces/common";
 
-// !tpa-prop
+// !tpa
 export interface ParsedStackUrl {
   userId?: string;
   timestamp?: string;

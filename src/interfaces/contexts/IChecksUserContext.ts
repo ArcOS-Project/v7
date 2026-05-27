@@ -1,6 +1,6 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 
-// !tpa-prop
+// !tpa
 export interface IChecksUserContext extends IUserContext {
   NIGHTLY: boolean;
   checkReducedMotion(): void;

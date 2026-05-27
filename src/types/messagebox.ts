@@ -1,7 +1,7 @@
 import type { Component } from "svelte";
 import type { MaybePromise } from "./common";
 
-// !tpa-prop
+// !tpa
 export interface MessageBoxData {
   title: string;
   message?: string;

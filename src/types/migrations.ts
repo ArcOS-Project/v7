@@ -1,6 +1,6 @@
 import type { IMigrationNode } from "$interfaces/IMigrationNode";
 
-// !tpa-prop
+// !tpa
 export interface MigrationStatusItem {
   caption: string;
   migration: IMigrationNode;

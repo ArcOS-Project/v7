@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ArcShortcut } from "$types/shortcut";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IItemInfoRuntime extends IAppProcess {
   info: ReadableStore<ItemInfo>;
   shortcut: ReadableStore<ArcShortcut>;

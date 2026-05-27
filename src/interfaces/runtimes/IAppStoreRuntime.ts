@@ -5,7 +5,7 @@ import type { FilesystemProgressCallback } from "$types/fs";
 import type { StoreItem } from "$types/package";
 import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IAppStoreRuntime extends IAppProcess {
   searchQuery: StringStore;
   loadingPage: BooleanStore;

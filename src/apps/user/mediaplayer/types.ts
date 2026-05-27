@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export enum LoopMode {
   None = 0,
   All = 1,

@@ -2,7 +2,7 @@ import type { App } from "$types/app";
 import type { BugReport, OutgoingBugReport, ReportOptions } from "$types/bughunt";
 import type { IKernelModule } from "./IKernelModule";
 
-// !tpa-prop
+// !tpa
 export interface IBugHunt extends IKernelModule {
   _init(): Promise<void>;
   createReport(options?: ReportOptions, app?: App, storeItemId?: string): OutgoingBugReport;

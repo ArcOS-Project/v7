@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface BugHuntCreatorOptions {
   sendAnonymously: boolean;
   excludeLogs: boolean;

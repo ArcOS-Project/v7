@@ -1,7 +1,7 @@
 import type { DispatchCallback } from "$types/dispatch";
 import type { ProcessState } from "$types/process";
 
-// !tpa-prop name=Process
+// !tpa
 export interface IProcess {
   dispatch: IProcessDispatch;
   pid: number;

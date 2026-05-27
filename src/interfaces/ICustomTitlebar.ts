@@ -1,4 +1,4 @@
-// !tpa-prop name=CustomTitlebar
+// !tpa
 export interface ICustomTitlebar {
   render(target: HTMLElement): void;
   dispose(): void;

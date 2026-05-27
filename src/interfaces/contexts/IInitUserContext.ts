@@ -1,6 +1,6 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 
-// !tpa-prop
+// !tpa
 export interface IInitUserContext extends IUserContext {
   anchorInterceptObserver?: MutationObserver;
   _init(): Promise<void>;

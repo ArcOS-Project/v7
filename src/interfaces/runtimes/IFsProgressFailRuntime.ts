@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFsProgressRuntime } from "./IFsProgressRuntime";
 
-// !tpa-prop
+// !tpa
 export interface IFsProgressFailRuntime extends IAppProcess {
   prog?: IFsProgressRuntime;
   errors: string[];

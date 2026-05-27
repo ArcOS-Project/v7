@@ -1,7 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App, AppStorage, InstalledApp } from "$types/app";
 
-// !tpa-prop
+// !tpa
 export interface IAppRegistrationUserContext extends IUserContext {
   getUserApps(): Promise<AppStorage>;
   registerApp(data: InstalledApp): Promise<void>;

@@ -2,7 +2,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { UserTheme } from "$types/theme";
 import type { UserPreferences } from "$types/user";
 
-// !tpa-prop
+// !tpa
 export interface IThemesUserContext extends IUserContext {
   themeFromUserPreferences(data: UserPreferences, name: string, author: string, version: string): UserTheme;
   saveCurrentTheme(name: string): void;

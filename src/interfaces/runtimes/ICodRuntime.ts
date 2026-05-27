@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { ReadableStore, StringStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface ICodRuntime extends IAppProcess {
   language: ReadableStore<CodLang>;
   buffer: StringStore;

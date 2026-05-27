@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface UserTheme {
   author: string;
   version: string;
@@ -35,7 +35,7 @@ export const UserThemeKeys = [
   "desktopTheme",
 ];
 
-// !tpa-prop
+// !tpa
 export enum ExportLocalWallpaperResolution {
   NoSave,
   SaveLocal,

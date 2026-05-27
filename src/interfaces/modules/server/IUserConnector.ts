@@ -3,7 +3,7 @@ import type { GlobalDispatchClient } from "$types/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
 import type { IServerConnector } from "../IServerManager";
 
-// !tpa-prop
+// !tpa
 export declare class IUserConnector extends IServerConnector {
   Self(): Promise<ICommandResult<UserInfo>>;
   Rename(newUsername: string): Promise<ICommandResult>;

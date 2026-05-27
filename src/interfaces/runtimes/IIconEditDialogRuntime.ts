@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore, StringStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IIconEditDialogRuntime extends IAppProcess {
   iconName?: string;
   returnId?: string;

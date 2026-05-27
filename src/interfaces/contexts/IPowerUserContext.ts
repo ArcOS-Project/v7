@@ -2,7 +2,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { BatteryType } from "$types/navigator";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IPowerUserContext extends IUserContext {
   battery: ReadableStore<BatteryType | undefined>;
   logoff(force?: boolean): Promise<void>;

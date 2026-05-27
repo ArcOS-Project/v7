@@ -3,7 +3,7 @@ import type { App } from "./app";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "./user";
 
-// !tpa-prop
+// !tpa
 export interface FileEntry {
   name: string;
   size: number;

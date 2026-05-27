@@ -9,7 +9,7 @@ import type {
 import type { SharedDriveType } from "$types/shares";
 import type { IServerConnector } from "../IServerManager";
 
-// !tpa-prop
+// !tpa
 export interface IShareConnector extends IServerConnector {
   DirGet(shareId: string, path?: string): Promise<ICommandResult<DirectoryReadReturn>>;
   DirPost(shareId: string, path: string): Promise<ICommandResult>;

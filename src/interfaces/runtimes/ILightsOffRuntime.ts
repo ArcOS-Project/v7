@@ -2,7 +2,7 @@ import type { LightsOffGrid } from "$apps/user/lightsoff/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { BooleanStore, NumberStore, ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface ILightsOffRuntime extends IAppProcess {
   xModifiers: number[];
   yModifiers: number[];

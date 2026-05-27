@@ -31,7 +31,7 @@ import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
 
-// !tpa-prop name=daemon
+// !tpa
 export interface IUserDaemon extends IProcess {
   username: string;
   token: string;

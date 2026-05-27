@@ -1,7 +1,7 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { MaybePromise } from "./common";
 
-// !tpa-prop
+// !tpa
 export interface ArcProtocol {
   subCommand: string;
   command: string;

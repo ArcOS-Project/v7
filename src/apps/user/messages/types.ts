@@ -1,7 +1,7 @@
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 import type { ExpandedMessage } from "$types/messaging";
 
-// !tpa-prop
+// !tpa
 export interface MessagingPage {
   name: string;
   icon: string;

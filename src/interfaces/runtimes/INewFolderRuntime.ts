@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { StringStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface INewFolderRuntime extends IAppProcess {
   newFolder: StringStore;
   path: string;

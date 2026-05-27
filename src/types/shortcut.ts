@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface ArcShortcut {
   icon: string;
   name: string;

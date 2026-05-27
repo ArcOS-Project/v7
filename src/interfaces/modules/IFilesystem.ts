@@ -12,7 +12,7 @@ import type {
 } from "$types/fs";
 import type { IKernelModule } from "./IKernelModule";
 
-// !tpa-prop name=fs
+// !tpa
 export interface IFilesystem extends IKernelModule {
   drives: Record<string, IFilesystemDrive>;
   loadedProxies: IFilesystemProxy[];

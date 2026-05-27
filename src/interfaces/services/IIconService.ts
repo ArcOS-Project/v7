@@ -2,7 +2,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { App } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IIconService extends IBaseService {
   PATH: string;
   FILE_CACHE: Record<string, string>;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface AppKeyCombination {
   alt?: boolean;
   ctrl?: boolean;

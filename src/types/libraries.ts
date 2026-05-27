@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface TpaLibrary {
   identifier: string;
   author: string;

@@ -5,7 +5,7 @@ import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";
 import type { IDistributionServiceProcess } from "./services/IDistributionServiceProcess";
 
-// !tpa-prop
+// !tpa
 export interface IInstallerProcessBase extends IProcess {
   parent: IDistributionServiceProcess;
   failReason: ReadableStore<string>;

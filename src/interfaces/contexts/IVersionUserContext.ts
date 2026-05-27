@@ -1,7 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
 
-// !tpa-prop
+// !tpa
 export interface IVersionUserContext extends IUserContext {
   isRegisteredVersionOutdated(): Promise<boolean>;
   updateRegisteredVersion(): Promise<void>;

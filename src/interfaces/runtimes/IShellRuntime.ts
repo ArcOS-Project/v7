@@ -8,7 +8,7 @@ import type { Workspace } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { IAppProcess } from "../IAppProcess";
 
-// !tpa-prop
+// !tpa
 export interface IShellRuntime extends IAppProcess {
   startMenuOpened: ReadableStore<boolean>;
   actionCenterOpened: ReadableStore<boolean>;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface SharedDriveType {
   userId: string;
   accessors: string[];

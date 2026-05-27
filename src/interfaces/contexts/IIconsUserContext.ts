@@ -3,7 +3,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App } from "$types/app";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IIconsUserContext extends IUserContext {
   getAppIcon(app: App): string;
   getAppIconByProcess(process: IAppProcess): string;

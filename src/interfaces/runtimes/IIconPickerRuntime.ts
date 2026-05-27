@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { StringStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IIconPickerRuntime extends IAppProcess {
   forWhat?: string; // good question
   defaultIcon?: string;

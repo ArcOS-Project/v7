@@ -1,6 +1,6 @@
 import type { ArcPackage } from "./package";
 
-// !tpa-prop
+// !tpa
 export interface ProjectMetadata {
   metadata: ArcPackage;
   devPort?: number;

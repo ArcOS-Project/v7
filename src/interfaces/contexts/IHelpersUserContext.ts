@@ -5,7 +5,7 @@ import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { ExpandedTerminal } from "$types/terminal";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface IHelpersUserContext extends IUserContext {
   GlobalLoadIndicator(
     caption?: string,

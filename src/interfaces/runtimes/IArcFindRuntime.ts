@@ -5,7 +5,7 @@ import type { UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/writable";
 import type { FuseResult, FuseResultMatch } from "fuse.js";
 
-// !tpa-prop
+// !tpa
 export interface IArcFindService extends IBaseService {
   loading: ReadableStore<boolean>;
   searchQuery: ReadableStore<string>;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface LegacyConnectionInfo {
   url: string;
   authCode?: string;

@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { LogItem } from "./logging";
 
-// !tpa-prop
+// !tpa
 export interface BugReport {
   authorId?: string;
   title: string;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface LogItem {
   source: string;
   message: string;

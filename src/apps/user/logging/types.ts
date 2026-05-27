@@ -1,7 +1,7 @@
 import type { LogItem, LogLevel } from "$types/logging";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export type CollectorResult = { [key: string]: LogItem[] };
 export type IterableCollectorResult = [string, LogItem[]][];
 export type FilterLevel = LogLevel | "all";

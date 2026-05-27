@@ -5,7 +5,7 @@ import type { ProcessKillResult } from "$types/process";
 import type { ReadableStore } from "$types/writable";
 import type { Component } from "svelte";
 
-// !tpa-prop
+// !tpa
 export interface IProcessManagerRuntime extends IAppProcess {
   selected: ReadableStore<string>;
   running: ReadableStore<number>;

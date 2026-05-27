@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface ElevationData {
   what: string;
   image: string;

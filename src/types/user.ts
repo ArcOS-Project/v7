@@ -3,7 +3,7 @@ import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
 import type { ReadableStore } from "./writable";
 
-// !tpa-prop
+// !tpa
 export interface UserInfo {
   username: string;
   preferences: UserPreferences;
@@ -164,7 +164,7 @@ export const PasswordStrengthCaptions: Record<PasswordStrength, string> = {
   strong: "strong",
 };
 
-// !tpa-prop
+// !tpa
 export interface TotpSetupResponse {
   url: string;
 }

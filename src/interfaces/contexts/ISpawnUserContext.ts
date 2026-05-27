@@ -3,7 +3,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { App, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/app";
 
-// !tpa-prop
+// !tpa
 export interface ISpawnUserContext extends IUserContext {
   spawnAppMeta<T extends IProcess>(
     app: App,

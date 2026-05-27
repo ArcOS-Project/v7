@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface BatteryType {
   charging: boolean;
   chargingTime: number;

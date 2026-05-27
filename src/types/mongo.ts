@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface UpdateResult {
   acknowledged: boolean;
   matchedCount: number;

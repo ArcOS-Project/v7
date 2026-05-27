@@ -5,7 +5,7 @@ import type { ProcessContext, ProcessKillResult } from "$types/process";
 import type { ReadableStore } from "$types/writable";
 import type { IKernelModule } from "./IKernelModule";
 
-// !tpa-prop name=stack
+// !tpa
 export interface IProcessHandler extends IKernelModule {
   BUSY: string;
   IS_BUSY: boolean;

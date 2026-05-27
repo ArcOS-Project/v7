@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface ILocale {
   name: string;
   weekdays?: string[];

@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 
-// !tpa-prop
+// !tpa
 export interface ITotpAuthGuiRuntime extends IAppProcess {
   validate(code: string): boolean;
   verifyTotp(code: string): Promise<boolean>;

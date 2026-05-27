@@ -5,7 +5,7 @@ import type { IConfigurator } from "$interfaces/IConfigurator";
 import type { BooleanStore, NumberStore, ReadableStore, StringStore } from "$types/writable";
 import type { IAudioMetadata } from "music-metadata";
 
-// !tpa-prop
+// !tpa
 export interface IMediaPlayerRuntime extends IAppProcess {
   queue: ReadableStore<string[]>;
   queueIndex: NumberStore;

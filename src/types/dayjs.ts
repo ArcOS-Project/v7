@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 import type { ILocale } from "./dayjs/locale";
 
 export declare function dayjs(date?: dayjs.ConfigType): dayjs.Dayjs;

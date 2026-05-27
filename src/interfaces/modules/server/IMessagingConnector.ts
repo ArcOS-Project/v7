@@ -3,7 +3,7 @@ import type { FilesystemProgressCallback } from "$types/fs";
 import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
 import type { IServerConnector } from "../IServerManager";
 
-// !tpa-prop
+// !tpa
 export interface IMessagingConnector extends IServerConnector {
   AttachmentRead(
     messageId: string,

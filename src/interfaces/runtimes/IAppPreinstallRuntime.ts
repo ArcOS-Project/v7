@@ -3,7 +3,7 @@ import type { ArcPackage } from "$types/package";
 import type { ReadableStore } from "$types/writable";
 import type JSZip from "jszip";
 
-// !tpa-prop
+// !tpa
 export interface IAppPreInstallRuntime extends IAppProcess {
   pkgPath: string;
   zip?: JSZip;

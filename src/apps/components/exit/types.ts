@@ -1,6 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 
-// !tpa-prop
+// !tpa
 export interface ExitAction {
   caption: string;
   action: (daemon: IUserDaemon) => void;

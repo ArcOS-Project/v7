@@ -2,7 +2,7 @@ import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore }
 import type { IProcess } from "./IProcess";
 import type { IServerConnector } from "./modules/IServerManager";
 
-// !tpa-prop
+// !tpa
 export interface IBaseService extends IProcess {
   host: IServiceHost;
   activated: boolean;

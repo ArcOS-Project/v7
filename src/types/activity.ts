@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface LoginActivity {
   authorId: string;
   token?: string;

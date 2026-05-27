@@ -1,7 +1,7 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
 
-// !tpa-prop
+// !tpa
 export interface IAppRendererUserContext extends IUserContext {
   _deactivate(): Promise<void>;
   getAppRendererStyle(accent: string): string;

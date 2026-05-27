@@ -3,7 +3,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { TrashIndexNode } from "$types/trash";
 import type { ReadableStore } from "$types/writable";
 
-// !tpa-prop
+// !tpa
 export interface ITrashCanService extends IBaseService {
   INDEX_PATH: string;
   IndexBuffer: ReadableStore<Record<string, TrashIndexNode>>;

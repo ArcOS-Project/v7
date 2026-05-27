@@ -1,6 +1,6 @@
 import type { IAppProcess } from "./IAppProcess";
 
-// !tpa-prop name=ThirdPartyAppProcess
+// !tpa
 export interface IThirdPartyAppProcess extends IAppProcess {
   workingDirectory: string;
   operationId: string;

@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface ServerInfo {
   validation: string;
   status: string;

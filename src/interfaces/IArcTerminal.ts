@@ -10,7 +10,7 @@ import type { IFilesystemDrive } from "./IFilesystemDrive";
 import type { IProcess } from "./IProcess";
 import type { IUserDaemon } from "./IUserDaemon";
 
-// !tpa-prop
+// !tpa
 export interface IArcTerminal extends IProcess {
   readonly CONFIG_PATH: string;
   IS_ARCTERM_MODE: boolean;

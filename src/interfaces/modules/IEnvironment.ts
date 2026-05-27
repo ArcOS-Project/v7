@@ -1,6 +1,6 @@
 import type { IKernelModule } from "./IKernelModule";
 
-// !tpa-prop name=env
+// !tpa
 export interface IEnvironment extends IKernelModule {
   _init(): Promise<void>;
   delete(key: string): boolean;

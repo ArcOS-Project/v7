@@ -8,7 +8,7 @@ import type { Draggable } from "@neodrag/vanilla";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
 
-// !tpa-prop name=AppProcess
+// !tpa
 export interface IAppProcess extends IProcess {
   crashReason: string;
   windowTitle: ReadableStore<string>;

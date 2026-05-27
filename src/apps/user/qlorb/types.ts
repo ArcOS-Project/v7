@@ -1,4 +1,4 @@
-// !tpa-prop
+// !tpa
 export interface Box {
   modifier: number;
   class: string;
