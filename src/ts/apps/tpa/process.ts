@@ -1,6 +1,8 @@
 import type { IThirdPartyProcess } from "$interfaces/IThirdPartyProcess";
-import { Daemon, Stack } from "$ts/env";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Sleep } from "$ts/sleep";
+import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import { AppRuntimeError } from "../error";
@@ -20,6 +22,7 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
   windowTitle = Store<string>();
   componentMount = {};
   overridePopulatable?: boolean;
+  elements: Record<string, HTMLLinkElement> = {};
   get username() {
     return Daemon!.username;
   }
@@ -74,5 +77,35 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
     });
 
     return instances.map(([pid, proc]) => proc) as this[];
+  }
+
+  async loadCSS(path: string) {
+    const absolutePath = join(this.workingDirectory, path);
+    const linkElement = this.elements[path] ?? document.createElement("link");
+    const existing = !!this.elements[path];
+    const url = await Fs.direct(absolutePath);
+
+    if (!url) throw new Error("Failed to read CSS file");
+
+    if (existing) {
+      linkElement.href = "";
+      await Sleep(0);
+    }
+
+    linkElement.rel = "stylesheet";
+    linkElement.href = url;
+    linkElement.dataset["appid"] = this.app.id;
+    linkElement.dataset["pid"] = `${this.pid}`;
+
+    this.elements[path] = linkElement;
+    document.head.append(linkElement);
+  }
+
+  async __stop(): Promise<any> {
+    for (const path in this.elements) {
+      this.elements[path]?.remove();
+    }
+
+    return await this.stop();
   }
 }

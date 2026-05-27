@@ -122,7 +122,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: Daemon?.icons!.getIconCached("ErrorIcon"),
+            image: "ErrorIcon",
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
