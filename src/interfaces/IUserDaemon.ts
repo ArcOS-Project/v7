@@ -1,6 +1,6 @@
 import type { UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo, UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
 import type { IApplicationsUserContext } from "./contexts/IApplicationsUserContext";
 import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";

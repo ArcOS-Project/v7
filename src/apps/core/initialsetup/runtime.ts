@@ -13,7 +13,7 @@ import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";

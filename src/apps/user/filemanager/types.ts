@@ -1,5 +1,5 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { UserQuota } from "$types/fs";
+import type { UserQuota } from "$types/system/fs";
 import type { Component } from "svelte";
 
 export interface Tab {

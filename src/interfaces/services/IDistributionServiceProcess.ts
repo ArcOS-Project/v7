@@ -2,9 +2,9 @@ import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import type JSZip from "jszip";
 

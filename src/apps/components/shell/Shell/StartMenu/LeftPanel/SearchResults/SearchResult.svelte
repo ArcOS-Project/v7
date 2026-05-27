@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Icon from "$lib/Icon.svelte";
-  import type { SearchItem } from "$types/search";
+  import type { SearchItem } from "$types/services/search";
   import type { FuseResult } from "fuse.js";
 
   const { result, i, process }: { result: FuseResult<SearchItem>; i: number; process: IShellRuntime } = $props();

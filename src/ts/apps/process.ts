@@ -7,16 +7,22 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { MaybePromise } from "$types/common";
-import { type ElevationData } from "$types/elevation";
-import { LogLevel } from "$types/logging";
-import type { RenderArgs } from "$types/process";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { MaybePromise } from "$types/shared/common";
+import { type ElevationData } from "$types/system/elevation";
+import { LogLevel } from "$types/shared/logging";
+import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
+import {
+  type App,
+  type AppContextMenu,
+  type AppProcessData,
+  type ContextMenuItem,
+  type ToastMessage,
+} from "../../types/apps/app";
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
@@ -52,7 +58,7 @@ export class AppProcess extends Process implements IAppProcess {
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
-    super(pid, parentPid);
+    super(pid, parentPid, app, ...args);
 
     this.app = {
       data: { ...app.data },

@@ -1,5 +1,5 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
+import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/system/assoc";
 
 // !tpa
 export interface IFileAssocService extends IBaseService {

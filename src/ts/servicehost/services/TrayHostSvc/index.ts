@@ -1,4 +1,3 @@
-import type { TrayIconDiscriminator, TrayIconOptions } from "$apps/components/shell/types";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { ITrayHostService, ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
@@ -6,7 +5,8 @@ import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
 import { TrayIconProcess } from "$ts/ui/tray/process";
 import { Store } from "$ts/writable";
-import type { Service } from "$types/service";
+import type { Service } from "$types/services/service";
+import type { TrayIconDiscriminator, TrayIconOptions } from "$types/services/tray";
 
 export class TrayHostService extends BaseService implements ITrayHostService {
   public trayIcons = Store<Record<TrayIconDiscriminator, ITrayIconProcess>>({});

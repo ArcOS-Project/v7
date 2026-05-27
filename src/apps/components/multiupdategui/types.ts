@@ -1,4 +1,4 @@
-import type { StoreItem } from "$types/package";
+import type { StoreItem } from "$types/tpa/package";
 
 // !tpa-props
 export interface MultiUpdateStatusNode {

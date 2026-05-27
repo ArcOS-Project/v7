@@ -1,4 +1,4 @@
-import type { App } from "./app";
+import type { App } from "../apps/app";
 import type { FileHandler } from "./fs";
 
 // !tpa

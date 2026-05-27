@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 
 // !tpa
 export interface IApplicationsUserContext extends IUserContext {

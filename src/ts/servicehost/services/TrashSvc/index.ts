@@ -7,8 +7,8 @@ import { UserPaths } from "$ts/user/store";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { Service } from "$types/service";
-import type { TrashIndexNode } from "$types/trash";
+import type { Service } from "$types/services/service";
+import type { TrashIndexNode } from "$types/services/trash";
 
 export class TrashCanService extends BaseService implements ITrashCanService {
   INDEX_PATH = join(UserPaths.System, `TrashIndex.json`);

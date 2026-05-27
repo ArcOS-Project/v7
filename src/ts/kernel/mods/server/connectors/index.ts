@@ -2,7 +2,7 @@ import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import type { AxiosInstance } from "axios";
 import { Backend } from "../axios";
 

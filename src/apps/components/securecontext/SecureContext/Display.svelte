@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "$lib/Icon.svelte";
-  import type { ElevationData } from "$types/elevation";
+  import type { ElevationData } from "$types/system/elevation";
 
   const { data }: { data: ElevationData } = $props();
 </script>

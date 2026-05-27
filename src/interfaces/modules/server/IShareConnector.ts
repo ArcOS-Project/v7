@@ -5,8 +5,8 @@ import type {
   FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/system/fs";
+import type { SharedDriveType } from "$types/server/shares";
 import type { IServerConnector } from "../IServerManager";
 
 // !tpa

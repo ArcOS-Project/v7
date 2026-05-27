@@ -1,4 +1,4 @@
-import type { ServiceChangeResult } from "$types/service";
+import type { ServiceChangeResult } from "$types/services/service";
 
 export const ServiceChangeResultCaptions: Record<ServiceChangeResult, string> = {
   err_noExist: "The specified service could not be found",

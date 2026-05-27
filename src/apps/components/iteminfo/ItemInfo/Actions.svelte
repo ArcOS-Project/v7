@@ -2,7 +2,7 @@
   import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { ItemInfo } from "../types";
 
   const { info, process }: { info: ReadableStore<ItemInfo>; process: IItemInfoRuntime } = $props();

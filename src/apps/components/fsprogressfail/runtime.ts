@@ -1,7 +1,7 @@
 import type { IFsProgressFailRuntime } from "$interfaces/runtimes/IFsProgressFailRuntime";
 import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class FsProgressFailRuntime extends AppProcess implements IFsProgressFailRuntime {
   prog?: IFsProgressRuntime;

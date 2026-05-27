@@ -1,5 +1,5 @@
 import "$css/apps/components/masteroptions.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MasterOptions from "./MasterOptions.svelte";
 import { MasterOptionsRuntime } from "./runtime";
 

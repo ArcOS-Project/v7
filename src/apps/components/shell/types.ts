@@ -1,59 +1,6 @@
-import type { IProcess } from "$interfaces/IProcess";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-import type { ContextMenuItem } from "$types/app";
-import type { Component } from "svelte";
 
 // !tpa
-export interface WeatherMeta {
-  caption: string;
-  iconColor: string;
-  icon: string;
-  gradient: {
-    start: string;
-    end: string;
-  };
-}
-
-export type WeatherInformation =
-  | {
-      temperature: number;
-      condition: string;
-      code: number;
-      className: string;
-      gradient:
-        | {
-            start: string;
-            end: string;
-          }
-        | undefined;
-      icon: string;
-      iconColor: string;
-      isNight: boolean;
-    }
-  | false;
-
-export interface ShellTrayIcon {
-  pid: number;
-  identifier: string;
-  popup?: TrayPopup;
-  icon: string;
-  context?: ContextMenuItem[];
-  action?: (targetedProcess: IProcess) => void;
-}
-
-export interface TrayIconOptions {
-  popup?: TrayPopup;
-  icon: string;
-  context?: ContextMenuItem[];
-  action?: (targetedProcess: IProcess) => void;
-}
-
-export interface TrayPopup {
-  component?: Component;
-  width: number;
-  height: number;
-  className?: string;
-}
 
 export interface QuickSetting {
   isActive: (process: IShellRuntime) => boolean | Promise<boolean>;
@@ -63,28 +10,11 @@ export interface QuickSetting {
   caption: string;
 }
 
-export type TrayIconDiscriminator = `${number}#${string}`;
-
-export interface CalendarMonth {
-  prepended: CalendarDay[];
-  current: CalendarDay[];
-  appended: CalendarDay[];
-}
-
-export interface CalendarDay {
-  fullDate: string;
-  caption: string;
-  dayOfMonth: number;
-  isToday?: boolean;
-}
-
 export interface StartMenuAction {
   caption: string;
   icon: string;
   action: (process: IShellRuntime) => void;
   className?: string;
 }
-// !endtpa
 
-export const longWeekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-export const shortWeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+// !endtpa

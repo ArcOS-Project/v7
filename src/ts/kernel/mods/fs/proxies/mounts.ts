@@ -1,6 +1,6 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Fs } from "$ts/env";
-import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
+import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/system/fs";
 import { FilesystemProxy } from "./generic";
 
 export class MountsFilesystemProxy extends FilesystemProxy {

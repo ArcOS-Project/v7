@@ -1,5 +1,5 @@
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
-import type { ExpandedMessage } from "$types/messaging";
+import type { ExpandedMessage } from "$types/server/messaging";
 
 // !tpa
 export interface MessagingPage {

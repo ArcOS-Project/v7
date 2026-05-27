@@ -9,7 +9,7 @@ import type {
   FsProxyInfo,
   RecursiveDirectoryReadReturn,
   UploadReturn,
-} from "$types/fs";
+} from "$types/system/fs";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa

@@ -2,7 +2,7 @@
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Store } from "$ts/writable";
-  import type { ContextMenuItem } from "$types/app";
+  import type { ContextMenuItem } from "$types/apps/app";
   import Item from "../Item.svelte";
 
   interface Props {

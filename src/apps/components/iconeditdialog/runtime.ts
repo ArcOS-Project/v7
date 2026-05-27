@@ -2,7 +2,7 @@ import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialo
 import { AppProcess } from "$ts/apps/process";
 import { SysDispatch } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class IconEditDialogRuntime extends AppProcess implements IIconEditDialogRuntime {
   iconName?: string;

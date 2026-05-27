@@ -10,7 +10,7 @@
 import path from "path";
 import ts from "typescript";
 
-const THIRDPARTY_TYPES_PATH = path.resolve("src/types/thirdparty.ts");
+const THIRDPARTY_TYPES_PATH = path.resolve("src/types/tpa/thirdparty.ts");
 
 export function extractTypesFromThirdPartyPropMap() {
   const program = ts.createProgram([THIRDPARTY_TYPES_PATH], {

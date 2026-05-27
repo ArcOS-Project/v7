@@ -7,8 +7,8 @@ import { Backend } from "$ts/kernel/mods/server/axios";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { App } from "$types/app";
-import type { BugReport, OutgoingBugReport } from "$types/bughunt";
+import type { App } from "$types/apps/app";
+import type { BugReport, OutgoingBugReport } from "$types/server/bughunt";
 import { defaultReportOptions } from "./store";
 
 export class BugHunt extends KernelModule implements IBugHunt {

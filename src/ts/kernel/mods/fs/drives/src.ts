@@ -1,7 +1,7 @@
 import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/fs";
-import type { GitFolder } from "$types/git";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/system/fs";
+import type { GitFolder } from "$types/external/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";

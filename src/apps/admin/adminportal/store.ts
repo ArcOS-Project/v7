@@ -1,6 +1,6 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { PartialUserTotp, Token } from "$types/admin";
+import type { PartialUserTotp, Token } from "$types/server/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";

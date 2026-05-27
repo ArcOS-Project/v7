@@ -13,8 +13,8 @@ import {
   type FsAccess,
   type RecursiveDirectoryReadReturn,
   type UserQuota,
-} from "$types/fs";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/system/fs";
+import type { SharedDriveType } from "$types/server/shares";
 import { ServerConnector } from ".";
 
 export class ShareConnector extends ServerConnector implements IShareConnector {

@@ -4,7 +4,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
   import { Plural } from "$ts/util";
-  import type { PartialStoreItem } from "$types/package";
+  import type { PartialStoreItem } from "$types/tpa/package";
   import type { PublicUserInfo } from "$types/user";
 
   const {

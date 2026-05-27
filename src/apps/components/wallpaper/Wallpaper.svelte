@@ -2,7 +2,7 @@
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Daemon } from "$ts/env";
   import { Wallpapers } from "$ts/user/wallpaper/store";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import File from "./Wallpaper/DesktopIcon/File.svelte";
   import Folder from "./Wallpaper/DesktopIcon/Folder.svelte";
 

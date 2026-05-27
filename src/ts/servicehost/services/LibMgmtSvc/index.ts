@@ -5,9 +5,9 @@ import { JsExec } from "$ts/jsexec";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { TpaLibrary } from "$types/libraries";
-import { LogLevel } from "$types/logging";
-import type { Service } from "$types/service";
+import type { TpaLibrary } from "$types/tpa/libraries";
+import { LogLevel } from "$types/shared/logging";
+import type { Service } from "$types/services/service";
 
 export class LibraryManagement extends BaseService implements ILibraryManagement {
   Index: Map<string, TpaLibrary> = new Map([]);

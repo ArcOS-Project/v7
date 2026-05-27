@@ -1,5 +1,5 @@
 import "$css/apps/user/filemanager.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import FileManager from "./FileManager.svelte";
 import { FileManagerRuntime } from "./runtime";
 

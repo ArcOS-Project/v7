@@ -4,9 +4,9 @@ import type { IDistributionServiceProcess } from "$interfaces/services/IDistribu
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
-import type { AppProcessData } from "$types/app";
-import type { ArcPackage } from "$types/package";
-import type { ReadableStore } from "$types/writable";
+import type { AppProcessData } from "$types/apps/app";
+import type { ArcPackage } from "$types/tpa/package";
+import type { ReadableStore } from "$types/shared/writable";
 import JSZip from "jszip";
 
 export class AppInstallerRuntime extends AppProcess implements IAppInstallerRuntime {

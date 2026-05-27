@@ -2,9 +2,9 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import { CommandResult } from "$ts/result";
 import { ToAxiosProgress } from "$ts/util";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { PartialStoreItem, StoreItem } from "$types/package";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
 import { ServerConnector } from ".";
 
 export class StoreConnector extends ServerConnector implements IStoreConnector {

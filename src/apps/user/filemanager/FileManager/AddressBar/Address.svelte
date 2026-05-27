@@ -4,7 +4,7 @@
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
-  import type { FsProxyInfo } from "$types/fs";
+  import type { FsProxyInfo } from "$types/system/fs";
   import { onMount } from "svelte";
   import { DriveIcons } from "../../store";
   import Icon from "$lib/Icon.svelte";

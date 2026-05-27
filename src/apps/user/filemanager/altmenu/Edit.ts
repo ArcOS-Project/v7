@@ -1,6 +1,6 @@
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 import { Daemon } from "$ts/env";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function EditMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {

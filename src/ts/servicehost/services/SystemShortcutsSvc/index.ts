@@ -2,8 +2,8 @@ import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import { AppProcess, bannedKeys } from "$ts/apps/process";
 import { State, Stack, Daemon, Env } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { Service } from "$types/service";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { Service } from "$types/services/service";
 
 export class SystemShortcutsService extends BaseService implements IBaseService {
   closingFocused = false;

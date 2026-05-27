@@ -1,5 +1,5 @@
 import type { QueryableOptions } from "./query";
-import type { ExpandedUserInfo } from "./user";
+import type { ExpandedUserInfo } from "../user";
 
 export interface Activity {
   authorId: string;

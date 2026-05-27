@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { MessageBoxData } from "$types/messagebox";
-import type { BooleanStore } from "$types/writable";
+import type { MessageBoxData } from "$types/shared/messagebox";
+import type { BooleanStore } from "$types/shared/writable";
 
 // !tpa
 export interface IMessageBoxRuntime extends IAppProcess {

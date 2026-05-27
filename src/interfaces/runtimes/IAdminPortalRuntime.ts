@@ -1,6 +1,6 @@
 import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
-import type { BugReport } from "$types/bughunt";
-import type { ReadableStore } from "$types/writable";
+import type { BugReport } from "$types/server/bughunt";
+import type { ReadableStore } from "$types/shared/writable";
 import type { IAppProcess } from "../IAppProcess";
 import type { IAdminBootstrapper } from "../services/IAdminBootstrapper";
 import type { IShareManager } from "../services/IShareManager";

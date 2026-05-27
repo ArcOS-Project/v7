@@ -1,4 +1,4 @@
-import type { MaybePromise } from "./common";
+import type { MaybePromise } from "../shared/common";
 
 // !tpa
 export interface SearchItem {

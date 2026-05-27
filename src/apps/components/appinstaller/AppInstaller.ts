@@ -1,5 +1,5 @@
 import "$css/apps/components/appinstaller.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AppInstaller from "./AppInstaller.svelte";
 import { AppInstallerRuntime } from "./runtime";
 

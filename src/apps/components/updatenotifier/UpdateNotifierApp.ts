@@ -1,5 +1,5 @@
 import "$css/apps/components/updatenotifier.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { UpdateNotifierRuntime } from "./runtime";
 import UpdateNotifier from "./UpdateNotifier.svelte";
 

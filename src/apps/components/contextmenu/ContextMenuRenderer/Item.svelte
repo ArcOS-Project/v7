@@ -2,8 +2,8 @@
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Sleep } from "$ts/sleep";
-  import type { ContextMenuItem } from "$types/app";
-  import type { ReadableStore } from "$types/writable";
+  import type { ContextMenuItem } from "$types/apps/app";
+  import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
   import SubItems from "./Item/SubItems.svelte";
   import Icon from "$lib/Icon.svelte";

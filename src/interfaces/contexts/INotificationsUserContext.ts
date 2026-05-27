@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { Notification } from "$types/notification";
+import type { Notification } from "$types/system/notification";
 
 // !tpa
 export interface INotificationsUserContext extends IUserContext {

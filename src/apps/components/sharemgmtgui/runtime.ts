@@ -4,8 +4,8 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { SharedDriveType } from "$types/shares";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { SharedDriveType } from "$types/server/shares";
 import { ChangePasswordApp } from "./overlays/changepassword";
 import { RenameShareApp } from "./overlays/renameShare";
 

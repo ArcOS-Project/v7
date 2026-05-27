@@ -2,7 +2,7 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Icon from "$lib/Icon.svelte";
   import { contextProps } from "$ts/ui/context/actions.svelte";
-  import type { App } from "$types/app";
+  import type { App } from "$types/apps/app";
   import { onMount } from "svelte";
 
   const { appId, process }: { appId: string; process: IShellRuntime } = $props();

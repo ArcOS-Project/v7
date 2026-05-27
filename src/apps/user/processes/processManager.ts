@@ -1,5 +1,5 @@
 import "$css/apps/user/processmanager.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ProcessManager from "./ProcessManager.svelte";
 import { ProcessManagerRuntime } from "./runtime";
 

@@ -3,8 +3,8 @@ import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { Fs, getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import { calculateMemory } from "$ts/util";
-import { LogLevel } from "$types/logging";
-import type { ProcessState } from "$types/process";
+import { LogLevel } from "$types/shared/logging";
+import type { ProcessState } from "$types/system/process";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
@@ -21,7 +21,6 @@ export class Process implements IProcess {
   set STATE(value: ProcessState) {
     this.Log(`STATE UPDATE: ${value}`);
     this._state = value;
-    console.trace();
   }
 
   public get _disposed() {

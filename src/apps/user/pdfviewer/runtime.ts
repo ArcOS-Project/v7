@@ -5,7 +5,7 @@ import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class PdfViewerRuntime extends AppProcess implements IPdfViewerRuntime {
   openedFile = Store<string>();

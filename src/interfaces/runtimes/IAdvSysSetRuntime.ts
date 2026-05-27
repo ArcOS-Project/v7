@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore, Unsubscriber } from "$types/writable";
+import type { ReadableStore, Unsubscriber } from "$types/shared/writable";
 import type { Component } from "svelte";
 
 // !tpa

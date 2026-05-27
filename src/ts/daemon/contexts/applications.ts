@@ -7,8 +7,8 @@ import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { isPopulatable } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
-import type { App } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
+import type { App } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {

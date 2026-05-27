@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { ArcShortcut } from "$types/shortcut";
+import type { ArcShortcut } from "$types/system/shortcut";
 
 // !tpa
 export interface IShortcutsUserContext extends IUserContext {

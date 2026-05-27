@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IIconService } from "$interfaces/services/IIconService";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IIconEditorRuntime extends IAppProcess {

@@ -2,7 +2,7 @@
   import { Daemon } from "$ts/env";
   import { TimeFrames } from "$ts/user/store";
   import { groupByTimeFrame } from "$ts/util";
-  import type { LoginActivity } from "$types/activity";
+  import type { LoginActivity } from "$types/user/activity";
   import { onMount } from "svelte";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";

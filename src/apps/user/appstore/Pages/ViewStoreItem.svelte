@@ -3,7 +3,7 @@
   import UserLink from "$lib/UserLink.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";

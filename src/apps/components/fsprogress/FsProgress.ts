@@ -1,5 +1,5 @@
 import "$css/apps/components/fsprogress.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import FsProgress from "./FsProgress.svelte";
 import { FsProgressRuntime } from "./runtime";
 

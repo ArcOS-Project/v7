@@ -1,5 +1,5 @@
 import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 import { FileMenu } from "./altmenu/File";
 import { LanguageMenu } from "./altmenu/Language";
 

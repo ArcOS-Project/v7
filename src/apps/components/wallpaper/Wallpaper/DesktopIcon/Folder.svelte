@@ -2,7 +2,7 @@
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Env, Fs } from "$ts/env";
   import { join } from "$ts/util/fs";
-  import type { FolderEntry } from "$types/fs";
+  import type { FolderEntry } from "$types/system/fs";
   import DesktopIcon from "../DesktopIcon.svelte";
 
   const { process, folder, i }: { process: IWallpaperRuntime; folder: FolderEntry; i: number } = $props();

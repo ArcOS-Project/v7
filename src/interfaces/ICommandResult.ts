@@ -1,4 +1,4 @@
-import type { CommandResultOptions } from "$types/result";
+import type { CommandResultOptions } from "$types/shared/result";
 import type { Constructs } from "./common";
 
 // !tpa

@@ -1,4 +1,4 @@
-import type { ArcPackage } from "./package";
+import type { ArcPackage } from "../tpa/package";
 
 // !tpa
 export interface ProjectMetadata {

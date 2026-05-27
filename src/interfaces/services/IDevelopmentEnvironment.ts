@@ -1,5 +1,5 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
+import type { DevEnvActivationResult, ProjectMetadata } from "$types/services/devenv";
 
 // !tpa
 export interface IDevelopmentEnvironment extends IBaseService {

@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ArcPackage } from "$types/package";
-import type { ReadableStore } from "$types/writable";
+import type { ArcPackage } from "$types/tpa/package";
+import type { ReadableStore } from "$types/shared/writable";
 import type JSZip from "jszip";
 
 // !tpa

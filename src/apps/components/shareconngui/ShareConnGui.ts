@@ -1,5 +1,5 @@
 import "$css/apps/components/shareconngui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareConnGuiRuntime } from "./runtime";
 import ShareConnGui from "./ShareConnGui.svelte";
 

@@ -1,5 +1,5 @@
 import "$css/apps/user/appstore.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AppStore from "./AppStore.svelte";
 import { AppStoreRuntime } from "./runtime";
 

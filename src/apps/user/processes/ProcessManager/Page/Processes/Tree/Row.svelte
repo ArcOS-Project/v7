@@ -8,7 +8,7 @@
   import { BaseService } from "$ts/servicehost/base";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import { ProcessStateIcons } from "$types/process";
+  import { ProcessStateIcons } from "$types/system/process";
   import { onDestroy, onMount } from "svelte";
   import Row from "./Row.svelte";
 

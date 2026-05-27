@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { LoginActivity } from "$types/activity";
+import type { LoginActivity } from "$types/user/activity";
 
 // !tpa
 export interface ILoginActivityUserContext extends IUserContext {

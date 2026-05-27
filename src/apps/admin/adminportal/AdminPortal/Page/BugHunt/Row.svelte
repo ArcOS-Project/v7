@@ -3,8 +3,8 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Icon from "$lib/Icon.svelte";
   import { StoreItemIconPrimitive } from "$ts/util/distrib";
-  import type { BugReport } from "$types/bughunt";
-  import type { ReadableStore } from "$types/writable";
+  import type { BugReport } from "$types/server/bughunt";
+  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
 
   const {

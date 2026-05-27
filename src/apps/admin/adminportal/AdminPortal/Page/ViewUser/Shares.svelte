@@ -3,7 +3,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import { Store } from "$ts/writable";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
   import ShareRow from "./Shares/ShareRow.svelte";

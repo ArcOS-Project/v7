@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CalendarDay } from "$apps/components/shell/types";
+  import type { CalendarDay } from "$types/shared/calendar";
 
   const {
     past = false,

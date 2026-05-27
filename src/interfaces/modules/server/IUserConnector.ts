@@ -1,5 +1,5 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { GlobalDispatchClient } from "$types/dispatch";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
 import type { IServerConnector } from "../IServerManager";
 

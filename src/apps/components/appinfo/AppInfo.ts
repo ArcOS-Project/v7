@@ -1,5 +1,5 @@
 import "$css/apps/components/appinfo.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AppInfo from "./AppInfo.svelte";
 import { AppInfoRuntime } from "./runtime";
 

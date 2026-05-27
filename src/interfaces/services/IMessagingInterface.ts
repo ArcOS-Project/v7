@@ -1,6 +1,6 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/messaging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/server/messaging";
 
 // !tpa
 export interface IMessagingInterface extends IBaseService {

@@ -1,5 +1,5 @@
-import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } from "$types/package";
-import type { ReadableStore } from "$types/writable";
+import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType } from "$types/tpa/package";
+import type { ReadableStore } from "$types/shared/writable";
 import type JSZip from "jszip";
 import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";

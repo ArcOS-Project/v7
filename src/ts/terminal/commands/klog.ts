@@ -1,6 +1,6 @@
 import { SysDispatch } from "$ts/env";
 import { logItemToStr } from "$ts/util";
-import type { LogItem } from "$types/logging";
+import type { LogItem } from "$types/shared/logging";
 import { TerminalProcess } from "../process";
 
 export class KlogCommand extends TerminalProcess {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import Actions from "./SecureContext/Actions.svelte";
   import Display from "./SecureContext/Display.svelte";
   import Header from "./SecureContext/Header.svelte";

@@ -18,7 +18,7 @@ import {
   type FsProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
-} from "$types/fs";
+} from "$types/system/fs";
 import { MountsFilesystemProxy } from "./proxies/mounts";
 import { SourceFilesystemProxy } from "./proxies/src";
 

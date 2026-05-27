@@ -1,5 +1,5 @@
 import "$css/apps/user/bughunt.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import BugHunt from "./BugHunt.svelte";
 import { BugHuntRuntime } from "./runtime";
 

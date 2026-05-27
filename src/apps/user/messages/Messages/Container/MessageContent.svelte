@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import type { ExpandedMessageNode } from "$types/messaging";
+  import type { ExpandedMessageNode } from "$types/server/messaging";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import Header from "./MessageContent/Header.svelte";

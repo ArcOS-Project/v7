@@ -2,7 +2,7 @@ import type { ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/colors";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";

@@ -2,7 +2,7 @@ import type { IWriterReplaceRuntime } from "$interfaces/runtimes/IWriterReplaceR
 import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class WriterReplaceRuntime extends AppProcess implements IWriterReplaceRuntime {
   parent: IWriterRuntime;

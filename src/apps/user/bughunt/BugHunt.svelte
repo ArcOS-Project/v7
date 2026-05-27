@@ -1,6 +1,6 @@
 <script lang="ts">
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import dayjs from "dayjs";
   import ActionBar from "./BugHunt/ActionBar.svelte";
   import Loading from "./BugHunt/Loading.svelte";

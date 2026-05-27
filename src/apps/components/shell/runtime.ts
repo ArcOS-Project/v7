@@ -6,17 +6,13 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { RecursiveDirectoryReadReturn } from "$types/fs";
-import type { SearchItem } from "$types/search";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { SearchItem } from "$types/services/search";
+import type { RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { Workspace } from "$types/user";
-import dayjs from "dayjs";
-import { fetchWeatherApi } from "openmeteo";
 import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
-import { weatherClasses, weatherMetadata } from "./store";
-import { shortWeekDays, type CalendarMonth, type WeatherInformation } from "./types";
 
 export class ShellRuntime extends AppProcess implements IShellRuntime {
   public startMenuOpened = Store<boolean>(false);
@@ -225,106 +221,8 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   //#endregion
   //#region CALENDAR
 
-  getCalendarMonth(date = dayjs().format("YYYY-MM-DD")): CalendarMonth {
-    const result: CalendarMonth = {
-      prepended: [],
-      current: [],
-      appended: [],
-    };
-
-    const today = dayjs().format("YYYY-MM-DD");
-    const lastMonth = dayjs(date).subtract(1, "month").format("YYYY-MM");
-    const thisMonth = dayjs(date).format("YYYY-MM");
-    const nextMonth = dayjs(date).add(1, "month").format("YYYY-MM");
-    const daysInCurrent = dayjs(date).daysInMonth();
-    const firstDayOfCurrent = dayjs(date).format(`${thisMonth}-01`);
-    const daysInPast = dayjs(date).subtract(1, "month").daysInMonth();
-    const firstWeekdayCurrent = dayjs(firstDayOfCurrent).day();
-    const prepended = firstWeekdayCurrent === 0 ? 0 : firstWeekdayCurrent;
-    const appended = 42 - prepended - daysInCurrent;
-
-    if (prepended > 0) {
-      for (let i = prepended - 1; i >= 0; i--) {
-        const dayOfMonth = daysInPast - i;
-        const fullDate = `${lastMonth}-${String(dayOfMonth).padStart(2, "0")}`;
-        const dayOfWeek = dayjs(fullDate).day();
-
-        result.prepended.push({
-          caption: shortWeekDays[dayOfWeek],
-          dayOfMonth,
-          fullDate,
-          isToday: fullDate === today,
-        });
-      }
-    }
-
-    for (let i = 0; i < daysInCurrent; i++) {
-      const dayOfMonth = i + 1;
-      const fullDate = `${thisMonth}-${String(dayOfMonth).padStart(2, "0")}`;
-      const dayOfWeek = dayjs(fullDate).day();
-
-      result.current.push({
-        caption: shortWeekDays[dayOfWeek],
-        dayOfMonth,
-        fullDate,
-        isToday: fullDate === today,
-      });
-    }
-
-    for (let i = 0; i < appended; i++) {
-      const dayOfMonth = i + 1;
-      const fullDate = `${nextMonth}-${String(dayOfMonth).padStart(2, "0")}`;
-      const dayOfWeek = dayjs(fullDate).day();
-
-      result.appended.push({
-        caption: shortWeekDays[dayOfWeek],
-        dayOfMonth,
-        fullDate,
-        isToday: fullDate === today,
-      });
-    }
-
-    return result;
-  }
-
   //#endregion
   //#region WEATHER
-
-  async getWeather(): Promise<WeatherInformation> {
-    this.Log(`Retrieving weather`);
-
-    const preferences = this.userPreferences();
-    const params = {
-      latitude: preferences.shell.actionCenter.weatherLocation.latitude,
-      longitude: preferences.shell.actionCenter.weatherLocation.longitude,
-      current: ["temperature_2m", "weather_code", "is_day"],
-    };
-    const url = "https://api.open-meteo.com/v1/forecast";
-
-    try {
-      const responses = await fetchWeatherApi(url, params); // Fetch some weather stuff
-
-      const response = responses[0];
-      const current = response.current()!;
-      const temperature_2m = current.variables(0)!.value();
-      const weather_code = current.variables(1)!.value();
-      const is_day = current.variables(2)!.value();
-      const metadata = weatherMetadata[weather_code]!;
-
-      return {
-        code: weather_code,
-        condition: metadata.caption,
-        temperature: temperature_2m,
-        className: weatherClasses[weather_code],
-        gradient: metadata.gradient,
-        icon: metadata.icon,
-        iconColor: metadata.iconColor,
-        isNight: !is_day,
-      };
-    } catch {
-      return false;
-    }
-  }
 
   async exit() {
     this.startMenuOpened.set(false); // First close the start menu

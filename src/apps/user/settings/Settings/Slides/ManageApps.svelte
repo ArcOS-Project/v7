@@ -5,7 +5,7 @@
   import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
-  import type { App, AppStorage } from "$types/app";
+  import type { App, AppStorage } from "$types/apps/app";
   import Fuse, { type IFuseOptions } from "fuse.js";
   import { onMount } from "svelte";
 

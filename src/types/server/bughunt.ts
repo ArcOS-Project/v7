@@ -1,5 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { LogItem } from "./logging";
+import type { LogItem } from "../shared/logging";
 
 // !tpa
 export interface BugReport {

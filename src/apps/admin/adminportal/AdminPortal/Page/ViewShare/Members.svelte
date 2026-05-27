@@ -2,7 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import MemberRow from "./Members/MemberRow.svelte";
 

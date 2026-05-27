@@ -1,7 +1,7 @@
 import type { CalculatorKeys, CalculatorOverrides } from "$apps/user/calculator/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { AppKeyCombination } from "$types/accelerator";
-import type { ReadableStore } from "$types/writable";
+import type { AppKeyCombination } from "$types/apps/accelerator";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface ICalculatorRuntime extends IAppProcess {

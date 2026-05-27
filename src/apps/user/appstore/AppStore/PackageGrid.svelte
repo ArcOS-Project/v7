@@ -3,7 +3,7 @@
   import Icon from "$lib/Icon.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { UUID } from "$ts/util/uuid";
-  import type { PartialStoreItem } from "$types/package";
+  import type { PartialStoreItem } from "$types/tpa/package";
   import PackageInstallAction from "./PackageInstallAction.svelte";
 
   interface Props {

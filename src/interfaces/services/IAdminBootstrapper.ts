@@ -14,12 +14,12 @@ import type {
   Token,
   UserStatistics,
   UserTotp,
-} from "$types/admin";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/fs";
-import type { StoreItem } from "$types/package";
-import type { QueryResult } from "$types/query";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/server/admin";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
+import type { QueryResult } from "$types/server/query";
+import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 
 export interface IAdminBootstrapper extends IBaseService {

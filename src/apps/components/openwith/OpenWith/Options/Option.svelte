@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
   import Icon from "$lib/Icon.svelte";
-  import type { FileOpenerResult } from "$types/fs";
+  import type { FileOpenerResult } from "$types/system/fs";
 
   const {
     process,

@@ -3,8 +3,8 @@
   import { Daemon, Fs } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-  import type { ExpandedFileAssociationInfo } from "$types/assoc";
-  import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
+  import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
+  import type { ExtendedStat, SummarizedFsModifiers } from "$types/system/fs";
   import { onMount } from "svelte";
   import type { QuotedDrive } from "../types";
   import Drive from "./InfoPane/Drive.svelte";

@@ -1,6 +1,6 @@
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { Env } from "$ts/env";
-import type { ProtocolHandler } from "$types/proto";
+import type { ProtocolHandler } from "$types/services/proto";
 
 export const  SpawnAppHandler: ProtocolHandler = {
   name: "Spawn app",

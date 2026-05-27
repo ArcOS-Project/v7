@@ -1,6 +1,6 @@
 import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { Store } from "$ts/writable";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface FsProgressOperation {

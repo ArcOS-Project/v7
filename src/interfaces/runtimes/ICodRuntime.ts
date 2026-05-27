@@ -1,7 +1,7 @@
 import type { CodLang } from "$apps/user/cod/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { ReadableStore, StringStore } from "$types/writable";
+import type { ReadableStore, StringStore } from "$types/shared/writable";
 
 // !tpa
 export interface ICodRuntime extends IAppProcess {

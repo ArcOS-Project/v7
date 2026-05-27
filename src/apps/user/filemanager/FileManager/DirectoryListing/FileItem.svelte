@@ -5,8 +5,8 @@
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes, join } from "$ts/util/fs";
-  import type { FileEntry } from "$types/fs";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { FileEntry } from "$types/system/fs";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

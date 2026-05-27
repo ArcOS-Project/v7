@@ -1,5 +1,5 @@
 import "$css/apps/user/settings.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SettingsRuntime } from "./runtime";
 import Settings from "./Settings.svelte";
 

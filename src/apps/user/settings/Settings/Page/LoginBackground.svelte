@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Daemon } from "$ts/env";
   import { Wallpapers } from "$ts/user/wallpaper/store";
-  import type { Wallpaper } from "$types/wallpaper";
+  import type { Wallpaper } from "$types/user/wallpaper";
   import { onMount } from "svelte";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";

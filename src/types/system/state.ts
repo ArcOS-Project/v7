@@ -1,5 +1,5 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
-import type { App } from "./app";
+import type { App } from "../apps/app";
 
 export type AppModuleLoader = () => Promise<{ default: App }>;
 

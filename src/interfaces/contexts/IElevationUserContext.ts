@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { ElevationData } from "$types/elevation";
+import type { ElevationData } from "$types/system/elevation";
 
 // !tpa
 export interface IElevationUserContext extends IUserContext {

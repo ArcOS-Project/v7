@@ -11,10 +11,10 @@
   import { Daemon } from "$ts/env";
   import { Plural } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
-  import type { TrashIndexNode } from "$types/trash";
+  import type { TrashIndexNode } from "$types/services/trash";
   import { onMount } from "svelte";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
-  import type { Unsubscriber } from "$types/writable";
+  import type { Unsubscriber } from "$types/shared/writable";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { selection } = process;

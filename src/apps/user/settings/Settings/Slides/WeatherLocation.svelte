@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Env, Stack } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
+  import type { WeatherSearchResponse, WeatherSearchResult } from "$types/external/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;

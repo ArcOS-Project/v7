@@ -1,7 +1,7 @@
 import type { IConfigurator } from "$interfaces/IConfigurator";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { TrashIndexNode } from "$types/trash";
-import type { ReadableStore } from "$types/writable";
+import type { TrashIndexNode } from "$types/services/trash";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface ITrashCanService extends IBaseService {

@@ -1,5 +1,5 @@
 import "$css/apps/components/globalloadindicator.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import GlobalLoadIndicator from "./GlobalLoadIndicator.svelte";
 import { GlobalLoadIndicatorRuntime } from "./runtime";
 

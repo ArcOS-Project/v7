@@ -5,8 +5,8 @@ import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { FileEntry, FolderEntry } from "$types/fs";
+import type { AppContextMenu } from "$types/apps/app";
+import type { FileEntry, FolderEntry } from "$types/system/fs";
 import type { QuotedDrive } from "./types";
 
 export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContextMenu {

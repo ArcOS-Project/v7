@@ -3,7 +3,7 @@
   import { Logo } from "$ts/branding";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
   import type { StoreData, StorePageFilters } from "../../types";
   import StoreRow from "./Store/StoreRow.svelte";

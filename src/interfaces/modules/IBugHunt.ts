@@ -1,5 +1,5 @@
-import type { App } from "$types/app";
-import type { BugReport, OutgoingBugReport, ReportOptions } from "$types/bughunt";
+import type { App } from "$types/apps/app";
+import type { BugReport, OutgoingBugReport, ReportOptions } from "$types/server/bughunt";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa

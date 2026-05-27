@@ -1,7 +1,7 @@
 <script lang="ts">
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { ElevationLevel } from "$types/elevation";
+  import { ElevationLevel } from "$types/system/elevation";
   import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
 
   const { process }: { process: ISecureContextRuntime } = $props();

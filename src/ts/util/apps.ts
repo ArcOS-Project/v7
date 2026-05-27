@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import { DefaultAppData } from "$ts/user/store";
-import type { App, RegisteredProcess } from "$types/app";
+import type { App, RegisteredProcess } from "$types/apps/app";
 
 export function isPopulatable(app: App) {
   return !app.hidden && !app.core && !app.overlay;

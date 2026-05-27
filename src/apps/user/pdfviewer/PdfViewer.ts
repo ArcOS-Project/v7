@@ -1,5 +1,5 @@
 import "$css/apps/user/pdfviewer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import PdfViewer from "./PdfViewer.svelte";
 import { PdfViewerRuntime } from "./runtime";
 

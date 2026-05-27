@@ -2,7 +2,7 @@
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import Icon from "$lib/Icon.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
-  import type { PartialStoreItem, StoreItem } from "$types/package";
+  import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
 
   interface Props {

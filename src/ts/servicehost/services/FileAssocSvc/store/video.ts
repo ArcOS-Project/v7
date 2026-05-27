@@ -1,4 +1,4 @@
-import type { FileDefinition } from "$types/assoc";
+import type { FileDefinition } from "$types/system/assoc";
 
 export const VideoFileDefinitions: Record<string, FileDefinition> = {
   ".mp4": {

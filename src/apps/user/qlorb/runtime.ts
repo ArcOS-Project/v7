@@ -1,8 +1,8 @@
 import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
 import type { Box } from "./types";
 
 export class QlorbRuntime extends AppProcess implements IQlorbRuntime {

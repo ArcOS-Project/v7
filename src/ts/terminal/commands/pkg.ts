@@ -4,7 +4,7 @@ import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel } from "$types/system/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";

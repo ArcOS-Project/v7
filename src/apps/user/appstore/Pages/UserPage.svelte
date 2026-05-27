@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import type { PublicUserInfo } from "$types/user";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import UserHeader from "./UserPage/UserHeader.svelte";

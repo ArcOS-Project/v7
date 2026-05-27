@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import { LogItemIcons } from "$apps/user/logging/store";
-  import { LogLevel, type LogItem } from "$types/logging";
+  import { LogLevel, type LogItem } from "$types/shared/logging";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import Icon from "$lib/Icon.svelte";

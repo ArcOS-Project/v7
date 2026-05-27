@@ -1,5 +1,5 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { UserTheme } from "$types/theme";
+import type { UserTheme } from "$types/user/theme";
 import type { UserPreferences } from "$types/user";
 
 // !tpa

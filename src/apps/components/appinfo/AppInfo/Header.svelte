@@ -2,7 +2,7 @@
   import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
   import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
-  import type { App } from "$types/app";
+  import type { App } from "$types/apps/app";
   import { onMount } from "svelte";
 
   interface Props {

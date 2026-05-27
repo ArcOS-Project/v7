@@ -4,7 +4,7 @@ import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Daemon, Stack } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import type { AppContextMenu } from "$types/app";
+import type { AppContextMenu } from "$types/apps/app";
 
 export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
   return {

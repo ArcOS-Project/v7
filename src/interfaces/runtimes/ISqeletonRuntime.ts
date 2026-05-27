@@ -2,7 +2,7 @@ import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable } from 
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface ISqeletonRuntime extends IAppProcess {

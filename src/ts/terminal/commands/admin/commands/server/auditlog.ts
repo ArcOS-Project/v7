@@ -1,5 +1,5 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import { AuditSeverity } from "$types/admin";
+import { AuditSeverity } from "$types/server/admin";
 import type { AdminCommandType } from "$types/terminal";
 import dayjs from "dayjs";
 

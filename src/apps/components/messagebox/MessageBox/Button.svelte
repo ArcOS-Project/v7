@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import type { MessageBoxButton } from "$types/messagebox";
+  import type { MessageBoxButton } from "$types/shared/messagebox";
   import { onMount } from "svelte";
 
   let disabled = $state(false);

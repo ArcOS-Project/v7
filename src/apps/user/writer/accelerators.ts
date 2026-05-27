@@ -1,5 +1,5 @@
 import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
-import type { AppKeyCombinations } from "$types/accelerator";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
 export function WriterAccelerators(runtime: IWriterRuntime): AppKeyCombinations {
   return [

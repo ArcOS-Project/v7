@@ -1,5 +1,5 @@
 import "$css/apps/components/contextmenu.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ContextMenuRenderer from "./ContextMenuRenderer.svelte";
 import { ContextMenuRuntime } from "./runtime";
 

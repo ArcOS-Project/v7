@@ -6,7 +6,7 @@
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import dayjs from "dayjs";
 
   const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem | undefined } = $props();

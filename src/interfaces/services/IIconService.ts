@@ -1,6 +1,6 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { App } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IIconService extends IBaseService {

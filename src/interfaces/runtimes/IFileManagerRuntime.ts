@@ -6,9 +6,9 @@ import type {
 } from "$apps/user/filemanager/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
-import type { ShortcutStore } from "$types/shortcut";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
+import type { DirectoryReadReturn, FolderEntry } from "$types/system/fs";
+import type { ShortcutStore } from "$types/system/shortcut";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 
 // !tpa
 export interface IFileManagerRuntime extends IAppProcess {

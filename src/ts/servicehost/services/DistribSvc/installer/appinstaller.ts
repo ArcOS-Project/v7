@@ -3,7 +3,7 @@ import type { IDistributionServiceProcess } from "$interfaces/services/IDistribu
 import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type JSZip from "jszip";
 import { InstallerProcessBase } from "./base";
 

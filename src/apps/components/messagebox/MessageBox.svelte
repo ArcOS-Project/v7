@@ -3,7 +3,7 @@
   import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import Button from "./MessageBox/Button.svelte";
 
   const { process }: AppComponentProps<IMessageBoxRuntime> = $props();

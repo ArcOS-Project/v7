@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IShareManager } from "$interfaces/services/IShareManager";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IShareCreateGuiRuntime extends IAppProcess {

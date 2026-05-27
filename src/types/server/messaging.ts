@@ -1,4 +1,4 @@
-import type { PublicUserInfo } from "./user";
+import type { PublicUserInfo } from "../user";
 
 // !tpa
 export interface Message {

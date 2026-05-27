@@ -7,7 +7,7 @@
   import { AppGroups, UserPaths } from "$ts/user/store";
   import { join } from "$ts/util/fs";
   import { Store } from "$ts/writable";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { ArcShortcut } from "$types/system/shortcut";
 
   const { process, shortcuts, name }: { process: IShellRuntime; shortcuts: Record<string, ArcShortcut>; name: string } = $props();
   const { userPreferences, startMenuOpened } = process;

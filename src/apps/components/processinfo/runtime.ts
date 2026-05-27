@@ -5,9 +5,9 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ProcessKillResult } from "$types/process";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ProcessKillResult } from "$types/system/process";
 
 export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntime {
   parent?: IProcess;

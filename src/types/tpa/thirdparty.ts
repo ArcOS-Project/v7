@@ -5,15 +5,16 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import type { IThirdPartyProcess } from "$interfaces/IThirdPartyProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
-import type { App } from "./app";
-import type { AxiosInstance } from "./axios";
-import type { MessageBoxData } from "./messagebox";
-import type { ReadableStore } from "./writable";
+import type { App } from "../apps/app";
+import type { AxiosInstance } from "../libraries/axios";
+import type { MessageBoxData } from "../shared/messagebox";
+import type { ReadableStore } from "../shared/writable";
 
 export interface ThirdPartyPropMap {
   env: IEnvironment;
@@ -51,6 +52,7 @@ export interface ThirdPartyPropMap {
   Process: Constructs<IProcess>;
   AppProcess: Constructs<IAppProcess>;
   ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>;
+  ThirdPartyProcess: Constructs<IThirdPartyProcess>;
   FilesystemDrive: Constructs<IFilesystemDrive>;
   argv: any[];
   app: App;

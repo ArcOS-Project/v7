@@ -1,7 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { App, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/app";
+import type { App, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/apps/app";
 
 // !tpa
 export interface ISpawnUserContext extends IUserContext {

@@ -1,6 +1,6 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
-import { DevEnvActivationResultCaptions } from "$types/devenv";
+import { DevEnvActivationResultCaptions } from "$types/services/devenv";
 import type { Arguments } from "$types/terminal";
 import { BRGREEN, RESET } from "../colors";
 import { TerminalProcess } from "../process";

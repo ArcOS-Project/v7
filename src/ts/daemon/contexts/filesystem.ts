@@ -19,10 +19,10 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import { ElevationLevel } from "$types/elevation";
-import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { LegacyConnectionInfo } from "$types/legacy";
-import type { ArcShortcut } from "$types/shortcut";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FileHandler, FileOpenerResult } from "$types/system/fs";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { UserContext } from "../context";
 

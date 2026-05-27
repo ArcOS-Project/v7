@@ -1,8 +1,8 @@
 import type { Constructs } from "$interfaces/common";
 import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
-import type { IUserDaemon } from "../interfaces/IUserDaemon";
-import type { MaybePromise } from "./common";
-import type { ReadableStore } from "./writable";
+import type { IUserDaemon } from "../../interfaces/IUserDaemon";
+import type { MaybePromise } from "../shared/common";
+import type { ReadableStore } from "../shared/writable";
 
 // !tpa
 export interface Service {

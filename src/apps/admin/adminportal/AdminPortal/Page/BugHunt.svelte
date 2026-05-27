@@ -5,7 +5,7 @@
   import { sortByKey } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";

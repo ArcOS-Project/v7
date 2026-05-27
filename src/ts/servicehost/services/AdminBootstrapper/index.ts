@@ -35,20 +35,20 @@ import type {
   Token,
   UserStatistics,
   UserTotp,
-} from "$types/admin";
-import type { App, InstalledApp } from "$types/app";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
-import type { Service } from "$types/service";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/server/admin";
+import type { App, InstalledApp } from "$types/apps/app";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
+import type { Service } from "$types/services/service";
+import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { QueryResult } from "$types/query";
+import type { QueryResult } from "$types/server/query";
 import { CommandResult } from "$ts/result";
 import { parse } from "stacktrace-parser";
 import beautify from "js-beautify";

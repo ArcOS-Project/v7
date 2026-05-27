@@ -1,5 +1,5 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IRecentFilesService extends IBaseService {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { Store } from "$ts/writable";
-  import { type AuditLogQueryOptions, type AuditLog, AuditSeverity } from "$types/admin";
-  import type { QueryResult } from "$types/query";
+  import { type AuditLogQueryOptions, type AuditLog, AuditSeverity } from "$types/server/admin";
+  import type { QueryResult } from "$types/server/query";
   import { onMount } from "svelte";
   import type { AuditLogData } from "../../types";
   import Pagination from "../Pagination.svelte";

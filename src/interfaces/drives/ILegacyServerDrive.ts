@@ -1,5 +1,5 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { FSQuota, UserDirectory } from "$types/legacy";
+import type { FSQuota, UserDirectory } from "$types/external/legacy";
 
 // !tpa
 export interface ILegacyServerDrive extends IFilesystemDrive {

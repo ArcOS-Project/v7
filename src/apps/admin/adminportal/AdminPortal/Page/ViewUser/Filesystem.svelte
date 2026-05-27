@@ -4,7 +4,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
+  import type { UserQuota } from "$types/system/fs";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 

@@ -3,8 +3,8 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { SvelteComponent } from "svelte";
-import type { MaybePromise } from "./common";
-import type { ReadableStore } from "./writable";
+import type { MaybePromise } from "../shared/common";
+import type { ReadableStore } from "../shared/writable";
 
 // !tpa-props
 export interface App {

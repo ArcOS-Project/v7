@@ -1,6 +1,6 @@
 import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
 
 // !tpa
 export interface IMigrationService extends IBaseService {

@@ -1,6 +1,6 @@
 import type { Box } from "$apps/user/qlorb/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IQlorbRuntime extends IAppProcess {

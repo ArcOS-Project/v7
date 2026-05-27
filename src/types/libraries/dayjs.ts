@@ -1,5 +1,5 @@
 // !tpa
-import type { ILocale } from "./dayjs/locale";
+import type { ILocale } from "../dayjs/locale";
 
 export declare function dayjs(date?: dayjs.ConfigType): dayjs.Dayjs;
 
@@ -432,4 +432,4 @@ export declare namespace dayjs {
 }
 // !endtpa
 
-export * from "./dayjs/locale";
+export * from "../dayjs/locale";

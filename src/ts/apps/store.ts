@@ -1,4 +1,4 @@
-import type { AppKeyCombinations } from "$types/accelerator";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",

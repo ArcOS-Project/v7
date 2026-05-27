@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { BatteryType } from "$types/navigator";
+import type { BatteryType } from "$types/system/navigator";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext implements IPowerUserContext {

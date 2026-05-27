@@ -1,5 +1,5 @@
 import "$css/apps/components/sharelistgui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareListGuiRuntime } from "./runtime";
 import ShareListGui from "./ShareListGui.svelte";
 

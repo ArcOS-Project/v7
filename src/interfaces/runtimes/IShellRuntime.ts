@@ -1,11 +1,10 @@
-import type { CalendarMonth, WeatherInformation } from "$apps/components/shell/types";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
-import type { AppContextMenu } from "$types/app";
-import type { RecursiveDirectoryReadReturn } from "$types/fs";
-import type { SearchItem } from "$types/search";
+import type { AppContextMenu } from "$types/apps/app";
+import type { SearchItem } from "$types/services/search";
+import type { ReadableStore } from "$types/shared/writable";
+import type { RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { Workspace } from "$types/user";
-import type { ReadableStore } from "$types/writable";
 import type { IAppProcess } from "../IAppProcess";
 
 // !tpa
@@ -34,8 +33,6 @@ export interface IShellRuntime extends IAppProcess {
   Trigger(result: SearchItem): Promise<void>;
   Submit(): void;
   refreshStartMenu(): Promise<void>;
-  getCalendarMonth(date?: string): CalendarMonth;
-  getWeather(): Promise<WeatherInformation>;
   exit(): Promise<void>;
   updateFullscreenCount(): void;
   changeShell(id: string): Promise<false | undefined>;

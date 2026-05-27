@@ -2,7 +2,7 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { IArcFindService } from "$interfaces/services/IArcFindService";
   import { Daemon } from "$ts/env";
-  import type { StringStore } from "$types/writable";
+  import type { StringStore } from "$types/shared/writable";
   import { onMount } from "svelte";
   import AppGroups from "./LeftPanel/AppGroups.svelte";
   import AppListing from "./LeftPanel/AppListing.svelte";

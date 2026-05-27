@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SettingsOverlayRuntime } from "../overlay";
 import UrlProfilePictureSvelte from "../Settings/Overlays/UrlProfilePicture.svelte";
 

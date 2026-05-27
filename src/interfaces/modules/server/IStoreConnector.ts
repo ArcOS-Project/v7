@@ -1,7 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { PartialStoreItem, StoreItem } from "$types/package";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
 import type { IServerConnector } from "../IServerManager";
 
 // !tpa

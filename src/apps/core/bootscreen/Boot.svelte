@@ -6,7 +6,7 @@
   import { ArcOSVersion, BETA, Server } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import { onMount } from "svelte";
 
   const { process }: AppComponentProps<IBootScreenRuntime> = $props();

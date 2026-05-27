@@ -2,8 +2,8 @@
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import type { ExpandedFileAssociationInfo } from "$types/assoc";
-  import type { SummarizedFsModifiers } from "$types/fs";
+  import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
+  import type { SummarizedFsModifiers } from "$types/system/fs";
   import dayjs from "dayjs";
 
   const {

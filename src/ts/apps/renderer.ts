@@ -4,17 +4,16 @@ import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRunti
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import type { IIconService } from "$interfaces/services/IIconService";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
-import { QuestionIcon } from "$ts/images/dialog";
+import { BlankIcon } from "$ts/images/general";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData, WindowResizer } from "../../types/app";
+import type { App, AppProcessData, WindowResizer } from "../../types/apps/app";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
-import { BlankIcon } from "$ts/images/general";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];

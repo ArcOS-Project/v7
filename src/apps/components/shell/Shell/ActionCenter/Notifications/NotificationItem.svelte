@@ -4,7 +4,7 @@
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ErrorButton, Notification } from "$types/notification";
+  import type { ErrorButton, Notification } from "$types/system/notification";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

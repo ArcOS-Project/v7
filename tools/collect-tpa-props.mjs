@@ -31,15 +31,17 @@ async function parseFile(file) {
     const segment = contents.slice(i);
 
     if (line.startsWith("// !tpa")) {
-      const end = contents.findIndex((l, idx) => idx > i && l === "// !endtpa");
+      const end = contents.findIndex((l, idx) => idx > i && l.startsWith("// !endtpa"));
 
       console.log(`TYPES: lines ${i + 2} till ${end > 0 ? end : contents.length - 1} in ${file.relative()}`);
 
+      const fileComment = `\n  /// SOURCE FILE: ${file.relative()} ///\n\n`;
+
       result.push(
-        contents
+        `${fileComment}${contents
           .slice(i + 1, end)
           .map((l) => `  ${l}`) // padding
-          .join("\n")
+          .join("\n")}`
       );
     }
   }

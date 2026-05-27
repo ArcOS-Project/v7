@@ -1,4 +1,4 @@
-import type { CPU } from "$types/device";
+import type { CPU } from "$types/system/device";
 
 export function getCPU(): CPU {
   const cpu = {

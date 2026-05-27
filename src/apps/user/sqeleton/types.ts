@@ -1,5 +1,5 @@
-import type { IntBool } from "$types/common";
-import type { ReadableStore } from "$types/writable";
+import type { IntBool } from "$types/shared/common";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface SqlTable {

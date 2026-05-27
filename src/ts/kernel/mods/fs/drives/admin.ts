@@ -13,7 +13,7 @@ import type {
   FilesystemStat,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 
 export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive {
   override READONLY = false;

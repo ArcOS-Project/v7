@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { FileOpenerResult } from "$types/fs";
-import type { ReadableStore } from "$types/writable";
+import type { FileOpenerResult } from "$types/system/fs";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IOpenWithRuntime extends IAppProcess {

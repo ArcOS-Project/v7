@@ -1,7 +1,7 @@
 <script lang="ts" generics="T extends IBaseService">
   import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
   import { Daemon } from "$ts/env";
-  import type { Unsubscriber } from "$types/writable";
+  import type { Unsubscriber } from "$types/shared/writable";
   import { onDestroy, onMount, type Snippet } from "svelte";
 
   let {

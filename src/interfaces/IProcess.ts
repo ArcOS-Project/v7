@@ -1,5 +1,5 @@
-import type { DispatchCallback } from "$types/dispatch";
-import type { ProcessState } from "$types/process";
+import type { DispatchCallback } from "$types/system/dispatch";
+import type { ProcessState } from "$types/system/process";
 
 // !tpa
 export interface IProcess {

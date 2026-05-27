@@ -2,7 +2,7 @@
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import Icon from "$lib/Icon.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
 
   const { process, unblocked, blocked }: { process: IAppStoreRuntime; unblocked: StoreItem[]; blocked: StoreItem[] } = $props();
 </script>

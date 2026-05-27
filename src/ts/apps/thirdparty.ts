@@ -2,7 +2,7 @@ import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
@@ -24,7 +24,7 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     workingDirectory: string,
     ...args: any[]
   ) {
-    super(pid, parentPid, app);
+    super(pid, parentPid, app, operationId, workingDirectory, ...args);
 
     this.workingDirectory = workingDirectory;
     this.operationId = operationId;
@@ -35,6 +35,8 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
 
   async __render__(body: HTMLDivElement): Promise<void> {
     this.Log("Rendering window contents");
+
+    this.STATE = "rendering";
 
     const elementsToProcess = {
       a: "href",

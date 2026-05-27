@@ -1,4 +1,4 @@
-import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/service";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/services/service";
 import type { IProcess } from "./IProcess";
 import type { IServerConnector } from "./modules/IServerManager";
 

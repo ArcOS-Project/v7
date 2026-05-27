@@ -3,7 +3,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
   import Client from "./LeftPanel/Client.svelte";
   import CreatedBy from "./LeftPanel/CreatedBy.svelte";

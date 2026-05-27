@@ -1,7 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { MaybePromise } from "./common";
-import type { UserInfo } from "./user";
+import type { MaybePromise } from "../shared/common";
+import type { UserInfo } from "../user";
 
 // !tpa
 export type UserDaemonInitCallback = (daemon: IUserDaemon, broadcast: (m: string) => void) => MaybePromise<void>;

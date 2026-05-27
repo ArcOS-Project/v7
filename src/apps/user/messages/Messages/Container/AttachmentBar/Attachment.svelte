@@ -4,7 +4,7 @@
   import { Daemon } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { MessageAttachment } from "$types/messaging";
+  import type { MessageAttachment } from "$types/server/messaging";
 
   const { process, attachment }: { process: IMessagingAppRuntime; attachment: MessageAttachment } = $props();
   const { message } = process;

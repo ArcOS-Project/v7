@@ -1,5 +1,5 @@
-import type { App, AppProcessData, WindowResizer } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App, AppProcessData, WindowResizer } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 import type { IAppProcess } from "./IAppProcess";
 import type { IProcess } from "./IProcess";
 

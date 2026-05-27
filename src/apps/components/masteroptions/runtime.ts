@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRuntime {
   loading = Store<boolean>(false);

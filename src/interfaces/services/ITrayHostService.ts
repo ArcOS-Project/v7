@@ -1,10 +1,10 @@
-import type { TrayIconOptions, TrayPopup } from "$apps/components/shell/types";
 import type { Constructs } from "$interfaces/common";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-import type { ContextMenuItem } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { ContextMenuItem } from "$types/apps/app";
+import type { TrayIconOptions, TrayPopup } from "$types/services/tray";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface ITrayHostService extends IBaseService {

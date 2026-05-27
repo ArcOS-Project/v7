@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { BugHuntUserDataRuntime } from "./runtime";
 import UserData from "./UserData.svelte";
 

@@ -3,7 +3,7 @@
   import Icon from "$lib/Icon.svelte";
   import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ErrorButton, Notification } from "$types/notification";
+  import type { ErrorButton, Notification } from "$types/system/notification";
   import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();

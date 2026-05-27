@@ -2,7 +2,7 @@
   import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Sleep } from "$ts/sleep";
   import { Store } from "$ts/writable";
-  import type { ContextMenuInstance } from "$types/app";
+  import type { ContextMenuInstance } from "$types/apps/app";
   import { onMount } from "svelte";
   import Item from "./ContextMenuRenderer/Item.svelte";
 

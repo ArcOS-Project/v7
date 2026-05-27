@@ -2,7 +2,7 @@
   import { LogoTranslations } from "$apps/admin/adminportal/store";
   import Icon from "$lib/Icon.svelte";
   import { GrayLogo } from "$ts/images/branding";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
 
   const { report }: { report: BugReport } = $props();
 </script>

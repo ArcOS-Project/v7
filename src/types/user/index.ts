@@ -1,7 +1,7 @@
-import type { App } from "./app";
+import type { App } from "../apps/app";
 import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
-import type { ReadableStore } from "./writable";
+import type { ReadableStore } from "../shared/writable";
 
 // !tpa
 export interface UserInfo {

@@ -2,8 +2,8 @@
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Daemon } from "$ts/env";
   import { formatBytes, join } from "$ts/util/fs";
-  import type { FileEntry } from "$types/fs";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { FileEntry } from "$types/system/fs";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import { onMount } from "svelte";
   import DesktopIcon from "../DesktopIcon.svelte";
 

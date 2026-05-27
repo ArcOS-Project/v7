@@ -1,10 +1,10 @@
-import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Env, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
+import type { ShellTrayIcon, TrayPopup } from "$types/services/tray";
 import { mount, unmount } from "svelte";
 
 export class TrayIconProcess extends Process implements ITrayIconProcess {

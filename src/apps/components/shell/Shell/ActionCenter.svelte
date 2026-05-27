@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { UserPreferencesStore } from "$types/user";
-  import type { BooleanStore } from "$types/writable";
+  import type { BooleanStore } from "$types/shared/writable";
   import { QuickSettings } from "../store";
   import CardStack from "./ActionCenter/CardStack.svelte";
   import Clock from "./ActionCenter/Clock.svelte";

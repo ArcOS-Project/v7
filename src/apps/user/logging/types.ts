@@ -1,5 +1,5 @@
-import type { LogItem, LogLevel } from "$types/logging";
-import type { ReadableStore } from "$types/writable";
+import type { LogItem, LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export type CollectorResult = { [key: string]: LogItem[] };

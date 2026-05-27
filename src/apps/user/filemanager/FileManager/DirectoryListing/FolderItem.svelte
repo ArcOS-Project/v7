@@ -2,7 +2,7 @@
   import { RelativeTimeMod } from "$ts/dayjs";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { join } from "$ts/util/fs";
-  import type { FsProxyInfo, FolderEntry } from "$types/fs";
+  import type { FsProxyInfo, FolderEntry } from "$types/system/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

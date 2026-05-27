@@ -1,4 +1,4 @@
-import type { SystemDispatchResult } from "$types/dispatch";
+import type { SystemDispatchResult } from "$types/system/dispatch";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa

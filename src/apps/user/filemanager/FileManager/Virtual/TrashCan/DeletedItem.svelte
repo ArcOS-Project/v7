@@ -2,7 +2,7 @@
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import type { TrashIndexNode } from "$types/trash";
+  import type { TrashIndexNode } from "$types/services/trash";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

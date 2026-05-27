@@ -1,6 +1,6 @@
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
-import type { InstallStatus } from "./package";
-import type { ReadableStore } from "./writable";
+import type { InstallStatus } from "../tpa/package";
+import type { ReadableStore } from "../shared/writable";
 
 export interface InstallerProcProgressNode {
   proc: IInstallerProcessBase | undefined;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Icon from "$lib/Icon.svelte";
-  import type { Service } from "$types/service";
+  import type { Service } from "$types/services/service";
 
   const { process, service, id }: { process: IProcessManagerRuntime; service: Service; id: string } = $props();
   const { selected } = process;
