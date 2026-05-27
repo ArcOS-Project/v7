@@ -8,8 +8,8 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { App, AppProcessData } from "$types/app";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { App, AppProcessData } from "$types/apps/app";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
@@ -23,7 +23,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
   original = Store<string>("");
   input = Store<HTMLTextAreaElement>();
   drive = Store<IFilesystemDrive | undefined>();
-  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
+  mimeIcon = Store<string>("DefaultMimeIcon");
 
   protected overlayStore: Record<string, App> = {
     replace: ReplaceOverlay,
@@ -134,7 +134,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+      this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
     } catch (e) {
@@ -208,7 +208,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+    this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);

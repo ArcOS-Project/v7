@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Creator from "./Creator.svelte";
 import { BugHuntCreatorRuntime } from "./runtime";
 

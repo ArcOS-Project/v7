@@ -2,7 +2,7 @@ import type { IElevationUserContext } from "$interfaces/contexts/IElevationUserC
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon, Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
-import type { ElevationData } from "$types/elevation";
+import type { ElevationData } from "$types/system/elevation";
 import { UserContext } from "../context";
 
 export class ElevationUserContext extends UserContext implements IElevationUserContext {

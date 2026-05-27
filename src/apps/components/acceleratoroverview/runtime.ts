@@ -3,7 +3,7 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData, AppStorage } from "$types/app";
+import type { AppProcessData, AppStorage } from "$types/apps/app";
 
 export class AcceleratorOverviewRuntime extends AppProcess implements IAcceleratorOverviewRuntime {
   // Very gross array containing keys known to the accelerator handlers

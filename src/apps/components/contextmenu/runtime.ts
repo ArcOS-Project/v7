@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Env, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/app";
+import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/apps/app";
 import { WindowSystemContextMenu } from "./system";
 
 export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntime {
@@ -21,9 +21,11 @@ export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntim
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    Env.set("contextmenu_pid", this.pid);
-
     this.setSource(__SOURCE__);
+  }
+
+  async start() {
+    Env.set("contextmenu_pid", this.pid);
   }
 
   async stop() {

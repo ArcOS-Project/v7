@@ -11,6 +11,7 @@
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Header from "./Processes/Header.svelte";
   import Tree from "./Processes/Tree.svelte";
+  import { ProcessesHelper } from "$ts/helpers/processes";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
   const { running, selected } = process;
@@ -32,19 +33,19 @@
     <ActionSubtle text="{$running} running {Plural('task', $running)}"></ActionSubtle>
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton disabled={!proc || !(proc instanceof AppProcess)} onclick={() => process.appInfoFor(proc as IAppProcess)}>
+    <ActionButton disabled={!proc || !ProcessesHelper.IsAnyAppProcess(proc)} onclick={() => process.appInfoFor(proc as IAppProcess)}>
       App Info
     </ActionButton>
     <ActionButton disabled={!proc} onclick={() => process.processInfoFor(proc!)}>Process Info</ActionButton>
     <ActionButton
-      disabled={!proc || !(proc instanceof AppProcess) || proc.app.data.overlay}
+      disabled={!proc || !ProcessesHelper.IsAnyAppProcess(proc) || proc.app.data.overlay}
       onclick={() => proc && Stack.renderer?.focusPid(proc.pid)}
     >
       Focus
     </ActionButton>
     <ActionSeparator />
     <ActionButton suggested onclick={() => proc && process.kill(proc)} disabled={!proc}>
-      Kill {proc && proc instanceof AppProcess ? "App" : "Process"}
+      Kill {proc && ProcessesHelper.IsAnyAppProcess(proc) ? "App" : "Process"}
     </ActionButton>
     {#if process.app.data.overlay}
       <ActionSeparator />

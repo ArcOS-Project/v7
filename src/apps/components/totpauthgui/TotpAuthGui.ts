@@ -1,5 +1,5 @@
 import "$css/apps/components/totpauthgui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { TotpAuthGuiRuntime } from "./runtime";
 import TotpAuthGui from "./TotpAuthGui.svelte";
 

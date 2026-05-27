@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
-  import type { ExpandedMessage } from "$types/messaging";
+  import type { ExpandedMessage } from "$types/server/messaging";
   import Message from "./Message.svelte";
 
   const { process, messages }: { process: IMessagingAppRuntime; messages: ExpandedMessage[] } = $props();

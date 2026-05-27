@@ -1,5 +1,5 @@
 import "$css/apps/components/exit.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Exit from "./Exit.svelte";
 import { ExitRuntime } from "./runtime";
 

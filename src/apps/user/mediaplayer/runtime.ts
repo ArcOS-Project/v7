@@ -13,9 +13,9 @@ import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { FileEntry } from "$types/fs";
-import type { RenderArgs } from "$types/process";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { FileEntry } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
 import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
@@ -411,7 +411,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       this.isVideo.set(fileAssociation?.friendlyName === "Video file");
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-      this.windowIcon.set(fileAssociation?.icon || this.getIconCached("MediaPlayerIcon"));
+      this.windowIcon.set(fileAssociation?.icon || "MediaPlayerIcon");
       this.Reset();
 
       await Sleep(10);

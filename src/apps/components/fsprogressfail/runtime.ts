@@ -1,7 +1,7 @@
 import type { IFsProgressFailRuntime } from "$interfaces/runtimes/IFsProgressFailRuntime";
 import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class FsProgressFailRuntime extends AppProcess implements IFsProgressFailRuntime {
   prog?: IFsProgressRuntime;
@@ -25,7 +25,7 @@ export class FsProgressFailRuntime extends AppProcess implements IFsProgressFail
     const progress = this.prog.Progress();
 
     this.errors = progress.errors;
-    this.icon = this.getIconCached(progress.icon) || progress.icon;
+    this.icon = progress.icon;
     this.title = progress.caption;
   }
 

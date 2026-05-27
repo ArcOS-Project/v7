@@ -1,7 +1,7 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { isPopulatable } from "$ts/util/apps";
-import type { App, InstalledApp } from "$types/app";
+import type { App, InstalledApp } from "$types/apps/app";
 import type { Arguments } from "$types/terminal";
 import { BRBLUE, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";

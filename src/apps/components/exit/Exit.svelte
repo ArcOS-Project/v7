@@ -2,6 +2,7 @@
   import type { IExitRuntime } from "$interfaces/runtimes/IExitRuntime";
   import { onDestroy, onMount } from "svelte";
   import { ExitActions } from "./store";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IExitRuntime } = $props();
   const { selected } = process;
@@ -40,7 +41,7 @@
       ondblclick={(e) => process.go(action, e.shiftKey)}
       class:selected={$selected == id}
     >
-      <img src={process.getIconCached(action.icon)} alt="" class="icon" />
+      <Icon icon={action.icon} className="icon" />
       <p>{shiftKey && action.alternateCaption ? action.alternateCaption : action.caption}</p>
     </button>
   {/each}

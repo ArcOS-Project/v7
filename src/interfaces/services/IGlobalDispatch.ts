@@ -1,8 +1,9 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
-import type { GlobalDispatchClient } from "$types/dispatch";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { Socket } from "socket.io-client";
 
+// !tpa
 export interface IGlobalDispatch extends IBaseService {
   client: Socket | undefined;
   server: IServerManager;

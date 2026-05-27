@@ -1,7 +1,7 @@
 import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
 import type { IIconService } from "$interfaces/services/IIconService";
 import type { IMigrationService } from "$interfaces/services/IMigrationService";
-import type { MigrationResult } from "$types/migrations";
+import type { MigrationResult } from "$types/services/migrations";
 import { MigrationNode } from "../node";
 
 export class IconConfigurationMigration extends MigrationNode {

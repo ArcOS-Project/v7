@@ -10,11 +10,11 @@ import { Plural, sortByKey } from "$ts/util";
 import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/util/dialog";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/fs";
-import { LogLevel } from "$types/logging";
-import type { RenderArgs } from "$types/process";
-import type { ShortcutStore } from "$types/shortcut";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/system/fs";
+import { LogLevel } from "$types/shared/logging";
+import type { RenderArgs } from "$types/system/process";
+import type { ShortcutStore } from "$types/system/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
 import { FileManagerAltMenu } from "./altmenu";
 import { FileManagerContextMenu } from "./context";
@@ -92,6 +92,28 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
     });
 
     this.acceleratorStore.push(...FileManagerAccelerators(this));
+  }
+
+  async start() {
+    // Convert the three viewMode booleans into one
+    if (!this.userPreferences().appPreferences.fileManager?.viewMode) {
+      this.userPreferences.update((pref) => {
+        const { fileManager } = pref.appPreferences;
+
+        if (fileManager.grid) {
+          pref.appPreferences.fileManager.viewMode = "grid";
+        } else if (fileManager.thumbnails) {
+          pref.appPreferences.fileManager.viewMode = "thumbnail";
+        } else {
+          pref.appPreferences.fileManager.viewMode = "list";
+        }
+
+        delete pref.appPreferences.fileManager.grid;
+        delete pref.appPreferences.fileManager.thumbnails;
+
+        return pref;
+      });
+    }
   }
 
   //#endregion
@@ -407,7 +429,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       {
         type: folder ? "folder" : "file",
         target: path,
-        icon: folder ? "FolderIcon" : info?.icon || this.getIconCached("DefaultMimeIcon"),
+        icon: folder ? "FolderIcon" : info?.icon || "DefaultMimeIcon",
         name: `${name} - Shortcut`,
       },
       join(paths[0], `${name}.arclnk`)
@@ -796,7 +818,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
     if (!loadSave) return;
 
     this.windowTitle.set(loadSave.title);
-    this.windowIcon.set(this.getIconCached(loadSave.icon));
+    this.windowIcon.set(loadSave.icon);
     this.renderArgs.path = loadSave.startDir || UserPaths.Home;
 
     if (loadSave.isSave) {

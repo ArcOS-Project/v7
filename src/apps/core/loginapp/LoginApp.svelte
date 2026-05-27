@@ -2,7 +2,7 @@
   import safeModeBg from "$assets/bg/safemode.png";
   import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
   import { Server } from "$ts/env";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
   import LoginForm from "./LoginForm.svelte";

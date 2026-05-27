@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { IUserDaemon } from "$interfaces/IUserDaemon";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ErrorButton, Notification } from "$types/notification";
+  import type { ErrorButton, Notification } from "$types/system/notification";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
@@ -69,7 +70,7 @@
     {#if !hideContent}
       {#if notification.image}
         <div class="left">
-          <img src={userDaemon.icons!.getIconCached(notification.image) || notification.image} alt="" class="icon" />
+          <Icon icon={notification.image} className="icon" />
         </div>
       {:else if notification.icon}
         <div class="left">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import hljs from "highlight.js";
   import css from "highlight.js/lib/languages/css";
   import ini from "highlight.js/lib/languages/ini";

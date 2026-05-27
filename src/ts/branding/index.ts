@@ -9,7 +9,7 @@ export const Logo = () => {
     // Check whether to enable the Christmas logo
     return ChristmasLogo;
 
-  const defaultLogo = Daemon?.icons!.getIconCached?.("ReleaseLogo") || ReleaseLogo;
+  const defaultLogo = Daemon?.icons?.getIconCached?.("ReleaseLogo") || ReleaseLogo;
 
-  return (Daemon ? Daemon.icons!.getIconCached(ALIASED_MODES[ArcMode()]) : MODES[ArcMode()]) || defaultLogo;
+  return (Daemon ? Daemon.icons?.getIconCached(ALIASED_MODES[ArcMode()]) : MODES[ArcMode()]) || defaultLogo;
 };

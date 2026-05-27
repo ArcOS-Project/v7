@@ -1,9 +1,9 @@
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import type { AppContextMenu, ContextMenuItem } from "$types/app";
-import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
-import type { ReadableStore } from "$types/writable";
+import type { AppContextMenu, ContextMenuItem } from "$types/apps/app";
+import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
+import type { ReadableStore } from "$types/shared/writable";
 
 export function MessagesContextMenu(runtime: IMessagingAppRuntime): AppContextMenu {
   return { "message-attachment": [AttachmentItems(runtime)] };

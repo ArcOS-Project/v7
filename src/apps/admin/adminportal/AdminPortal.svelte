@@ -7,6 +7,8 @@
   import StatusBar from "./AdminPortal/StatusBar.svelte";
   import { AdminPortalPageStore } from "./store";
   import type { AdminPortalPage } from "./types";
+  import Icon from "$lib/Icon.svelte";
+  import { BlankIcon } from "$ts/images/general";
 
   const { process }: { process: IAdminPortalRuntime } = $props();
   const { currentPage, switchPageProps, ready, windowTitle, windowIcon } = process;
@@ -59,7 +61,7 @@
         title="Parent directory"
       ></button>
     {/if}
-    <img src={$windowIcon} alt="" />
+    <Icon icon={$windowIcon} fallback={BlankIcon} />
     <span>{$windowTitle}</span>
   </CustomTitlebar>
   <div class="page-content">

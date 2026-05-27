@@ -5,7 +5,7 @@
   import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { CommandResult } from "$ts/result";
-  import type { ExpandedMessage } from "$types/messaging";
+  import type { ExpandedMessage } from "$types/server/messaging";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";

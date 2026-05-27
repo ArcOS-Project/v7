@@ -1,6 +1,6 @@
 import { AdminScopeCaptions, AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { BugReport } from "$types/bughunt";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import type { BugReport } from "$types/server/bughunt";
+import { ShortLogLevelCaptions, type LogItem } from "$types/shared/logging";
 import dayjs from "dayjs";
 
 export function scopeToScopeCaption(scope: string) {

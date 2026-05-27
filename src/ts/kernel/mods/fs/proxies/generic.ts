@@ -1,5 +1,5 @@
 import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
-import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/fs";
+import type { DirectoryReadReturn, FilesystemProgressCallback } from "$types/system/fs";
 
 export class FilesystemProxy implements IFilesystemProxy {
   static PROXY_UUID = "";

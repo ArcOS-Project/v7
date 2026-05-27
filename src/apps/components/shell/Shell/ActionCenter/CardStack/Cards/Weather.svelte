@@ -1,9 +1,10 @@
 <script lang="ts">
-  import type { WeatherInformation } from "$apps/components/shell/types";
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
+  import { WeatherHelper } from "$ts/helpers/weather";
   import { Sleep } from "$ts/sleep";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import type { WeatherInformation } from "$types/external/weather";
   import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();
@@ -25,7 +26,7 @@
       process.actionCenterOpened.set(true);
     }
     loading = true;
-    data = await process.getWeather();
+    data = await WeatherHelper.getWeather();
     loading = false;
   }
 

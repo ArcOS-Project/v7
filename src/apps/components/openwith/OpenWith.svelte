@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
@@ -13,9 +14,7 @@
   <div class="header">
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
-      <img src={Daemon?.assoc?.getFileAssociation($path)?.icon || process.getIconCached("DefaultMimeIcon")} alt="" /><span
-        >{$path}</span
-      >
+      <Icon icon={Daemon?.assoc?.getFileAssociation($path)?.icon || "DefaultMimeIcon"} /><span>{$path}</span>
     </p>
   </div>
   <div class="options">

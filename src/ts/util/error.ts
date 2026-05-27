@@ -1,4 +1,4 @@
-import type { ParsedStackFrame, ParsedStackUrl } from "$types/error";
+import type { ParsedStackFrame, ParsedStackUrl } from "$types/libraries/error";
 import { parse } from "stacktrace-parser";
 
 export class ErrorUtils {

@@ -1,5 +1,6 @@
+import type { UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo, UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
 import type { IApplicationsUserContext } from "./contexts/IApplicationsUserContext";
 import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";
@@ -20,6 +21,7 @@ import type { IThemesUserContext } from "./contexts/IThemesUserContext";
 import type { IVersionUserContext } from "./contexts/IVersionUserContext";
 import type { IWallpaperUserContext } from "./contexts/IWallpaperUserContext";
 import type { IWorkspaceUserContext } from "./contexts/IWorkspaceUserContext";
+import type { ICommandResult } from "./ICommandResult";
 import type { IProcess } from "./IProcess";
 import type { IServiceHost } from "./IServiceHost";
 import type { IServerConnector } from "./modules/IServerManager";
@@ -29,6 +31,7 @@ import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
 
+// !tpa
 export interface IUserDaemon extends IProcess {
   username: string;
   token: string;
@@ -74,6 +77,7 @@ export interface IUserDaemon extends IProcess {
   getShell(): IShellRuntime | undefined;
   updateGlobalDispatch(): void;
   GetConnector<T extends IServerConnector>(name: string): T;
+  startUserDaemon(startOptions: UserDaemonStartOptions, broadcast: (m: string) => void): Promise<ICommandResult<IUserDaemon>>;
 }
 
 export interface IUserContext {
@@ -82,3 +86,5 @@ export interface IUserContext {
   __deactivate(): Promise<void>;
   _deactivate(): Promise<void>;
 }
+
+// !endtpa

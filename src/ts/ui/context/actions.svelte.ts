@@ -1,19 +1,14 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
-import { Env, getKMod, Stack } from "$ts/env";
+import { Env, Stack } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function contextProps(node: HTMLElement, args: any[]) {
-  const env = getKMod<IEnvironment>("env", true);
-  const stack = getKMod<IProcessHandler>("stack", true);
-
-  const contextMenuPid = env?.get("contextmenu_pid");
+  const contextMenuPid = Env?.get("contextmenu_pid");
   if (!contextMenuPid) return;
 
-  const contextmenu = stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
+  const contextmenu = Stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
   if (!contextmenu) return;
 
   const uuid = UUID();

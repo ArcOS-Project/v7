@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { getReportIcon } from "$ts/util/admin";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import Close from "./Header/Close.svelte";
   import Copy from "./Header/Copy.svelte";
   import Delete from "./Header/Delete.svelte";
@@ -16,7 +18,7 @@
 
 <div class="header">
   <div class="title">
-    <img src={getReportIcon(report)} alt="" />
+    <Icon icon={getReportIcon(report)} />
     <span>{report.title}</span>
   </div>
   <div class="shortcuts">
@@ -27,6 +29,12 @@
     <Download {data} {process} />
     <UserData {data} {process} />
     <OpenLogs {data} {process} />
+    <button
+      class="lucide icon-code-xml"
+      aria-label="View source"
+      title="View source"
+      onclick={() => process.switchPage("viewBugReportSource", { id: report._id })}
+    ></button>
   </div>
   <div class="actions">
     <Close {process} {data} />

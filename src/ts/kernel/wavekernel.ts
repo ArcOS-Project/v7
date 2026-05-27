@@ -9,7 +9,7 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
+import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/shared/logging";
 import { handleGlobalErrors } from "../error";
 import { InitProcess } from "./init";
 import { EchoIntro } from "./intro";

@@ -8,8 +8,8 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppProcessData } from "$types/app";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppProcessData } from "$types/apps/app";
 import { CodAccelerators } from "./accelerators";
 import { CodAltMenu } from "./altmenu";
 import { CodTranslations } from "./store";
@@ -24,7 +24,7 @@ export class CodRuntime extends AppProcess implements ICodRuntime {
   directoryName = Store<string>("");
   original = Store<string>("");
   drive = Store<IFilesystemDrive | undefined>();
-  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
+  mimeIcon = Store<string>("DefaultMimeIcon");
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
 
   //#region LIFECYCLE
@@ -134,7 +134,7 @@ export class CodRuntime extends AppProcess implements ICodRuntime {
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+      this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
 
@@ -213,7 +213,7 @@ export class CodRuntime extends AppProcess implements ICodRuntime {
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+    this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);

@@ -5,11 +5,12 @@
   import { sortByKey } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
@@ -136,7 +137,7 @@
   </div>
   <div class="listing">
     <div class="row head">
-      <div class="segment mode-icon"><img src={Logo()} alt="" /></div>
+      <div class="segment mode-icon"><Icon icon={Logo()} /></div>
       <div class="segment timestamp">Timestamp</div>
       <div class="segment title">Title</div>
       <div class="segment author">Author</div>

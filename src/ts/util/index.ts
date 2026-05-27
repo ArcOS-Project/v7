@@ -1,7 +1,7 @@
 import type { IProcess } from "$interfaces/IProcess";
-import type { AxiosProgressEvent } from "$types/axios";
-import type { FilesystemProgressCallback } from "$types/fs";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import type { AxiosProgressEvent } from "$types/libraries/axios";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import { ShortLogLevelCaptions, type LogItem } from "$types/shared/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";

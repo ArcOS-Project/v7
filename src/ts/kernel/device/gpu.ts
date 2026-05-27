@@ -1,7 +1,7 @@
 // Parsed from v3.windows93.xyz, all rights belong to their respective owners.
 // Code cleanup and Typescript conversion by IzKuipers <izaak.kuipers@gmail.com>
 
-import type { GPU } from "$types/device";
+import type { GPU } from "$types/system/device";
 
 const GPU_VENDOR_REGEX = /(intel|nvidia|sis|amd|apple|powervr)\W? (.+)/i;
 const GPU_RENDERER_REGEX = /(((?:radeon|adreno|geforce|mali).+))/i;

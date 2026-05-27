@@ -3,8 +3,8 @@ import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { Daemon, getKMod } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import type { BugReport, ReportOptions } from "$types/bughunt";
-import type { Service } from "$types/service";
+import type { BugReport, ReportOptions } from "$types/server/bughunt";
+import type { Service } from "$types/services/service";
 
 export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUserSpaceProcess {
   INVALIDATION_THRESHOLD = 10;
@@ -52,7 +52,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getUserBugReports(Daemon!.token!)).reverse();
+    const reports = (await this.module.getUserBugReports(Daemon.token)).reverse();
 
     this.privateCache = reports;
 
@@ -71,7 +71,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getPublicBugReports()).reverse();
+    const reports = (await this.module.getPublicBugReports(Daemon.token)).reverse();
 
     this.publicCache = reports;
 

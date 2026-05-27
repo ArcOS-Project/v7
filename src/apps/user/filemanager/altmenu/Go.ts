@@ -1,7 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 import { HiddenUserPaths, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function GoMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {

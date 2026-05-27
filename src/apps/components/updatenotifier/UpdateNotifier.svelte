@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import Icon from "$lib/Icon.svelte";
   import { ArcOSVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { MessageBox } from "$ts/util/dialog";
@@ -32,10 +33,10 @@
   }
 </script>
 
-<img src={process.getIconCached("PersonalizationIcon")} alt="" class="backdrop" />
+<Icon icon="PersonalizationIcon" className="backdrop" />
 
 <div class="header">
-  <img src={process.getIconCached("UpdateIcon")} alt="" />
+  <Icon icon="UpdateIcon" />
   <h1>ArcOS has been updated</h1>
   <p>Welcome to ArcOS {ArcOSVersion}!</p>
 </div>

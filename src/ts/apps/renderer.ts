@@ -2,12 +2,14 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { BlankIcon } from "$ts/images/general";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData, WindowResizer } from "../../types/app";
+import type { App, AppProcessData, WindowResizer } from "../../types/apps/app";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
@@ -131,7 +133,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     }, 100);
 
     this.currentState.push(process.pid);
-    if (!data.core) this.focusPid(process.pid);
+    if (!data.core && !data.overlay) this.focusPid(process.pid);
 
     try {
       await process.__render__(body);
@@ -294,7 +296,16 @@ export class AppRenderer extends Process implements IAppRenderer {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = Daemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    Daemon.serviceHost?.Gate<IIconService>(
+      "IconService",
+      () => {
+        const icon = process.getIconCached(`@app::${app.id}`) || process.getIconCached("ComponentIcon");
+        titleIcon.src = icon === `@app::${app.id}` ? BlankIcon : icon;
+      },
+      () => {
+        titleIcon.src = BlankIcon;
+      }
+    );
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));
@@ -689,11 +700,12 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   async notifyCrash(data: App, reason: any, process?: IAppProcess) {
+    if (!data) return;
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost
       ?.getService<IDistributionServiceProcess>("DistribSvc")
-      ?.getInstalledStoreItemByAppId(data.id);
+      ?.getInstalledStoreItemByAppId(data?.id);
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 

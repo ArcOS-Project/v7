@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$lib/Icon.svelte";
   import type { Snippet } from "svelte";
 
   const {
@@ -13,7 +14,7 @@
 <div class={`status-segment ${className}`.trim()} class:unimportant {title}>
   {#if image}
     <!-- Assuming the process gives a resolved icon URL to this component-->
-    <img src={image} alt="" />
+    <Icon icon={image} />
   {/if}
   <div class="content">
     {@render children()}

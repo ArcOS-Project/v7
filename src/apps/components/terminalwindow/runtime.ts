@@ -1,8 +1,9 @@
 import type { ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { DefaultColors } from "$ts/terminal/colors";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -75,7 +76,7 @@ export class TerminalWindowRuntime extends AppProcess implements ITerminalWindow
     setTimeout(() => {
       const parent = Stack.getProcess(this.parentPid);
 
-      if (!parent || parent instanceof AppProcess) return;
+      if (!parent || ProcessesHelper.IsAnyAppProcess(parent)) return;
 
       const children = Stack.getSubProcesses(this.parentPid);
 

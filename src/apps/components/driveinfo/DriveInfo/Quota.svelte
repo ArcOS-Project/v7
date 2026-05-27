@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
+  import type { UserQuota } from "$types/system/fs";
 
   const { quota }: { quota: UserQuota } = $props();
 </script>

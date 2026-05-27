@@ -1,8 +1,8 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 
+// !tpa
 export interface IApplicationsUserContext extends IUserContext {
-  spawnAutoload(): Promise<void>;
   checkDisabled(appId: string, noSafeMode?: boolean): boolean;
   isVital(app: App): boolean | undefined;
   isPopulatableByAppIdSync(appId: string): boolean;
@@ -11,3 +11,4 @@ export interface IApplicationsUserContext extends IUserContext {
   enableThirdParty(): Promise<void>;
   disableThirdParty(): Promise<void>;
 }
+// !endtpa

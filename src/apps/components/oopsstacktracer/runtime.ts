@@ -1,8 +1,8 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import type { App, AppProcessData } from "$types/app";
-import type { ParsedStackFrame } from "$types/error";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
 export class OopsStackTracerRuntime extends AppProcess implements IOopsStackTracerRuntime {
   data: App;

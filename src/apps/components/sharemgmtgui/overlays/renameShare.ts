@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareMgmtOverlayRuntime } from "../overlay";
 import RenameShare from "../ShareMgmtGui/Overlays/RenameShare.svelte";
 

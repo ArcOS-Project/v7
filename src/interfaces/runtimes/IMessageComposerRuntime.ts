@@ -1,8 +1,9 @@
 import type { Attachment } from "$apps/components/messagecomposer/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IMessageComposerRuntime extends IAppProcess {
   sending: ReadableStore<boolean>;
   recipients: ReadableStore<string[]>;

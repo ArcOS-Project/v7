@@ -10,7 +10,7 @@ import LicenseDeclinedRender from "../../state/licensedeclined/render";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
 import TurnedOffHtml from "../../state/turnedoff/turnedoff.html?url";
-import type { AppModuleLoader, State } from "../../types/state";
+import type { AppModuleLoader, State } from "../../types/system/state";
 
 const globs = Object.values(
   import.meta.glob([

@@ -8,7 +8,7 @@ import { UserPaths } from "$ts/user/store";
 import { hexToRgb } from "$ts/util/color";
 import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { ArcTermConfiguration } from "$types/terminal";
 
 export class ArcTermRuntime extends Process {

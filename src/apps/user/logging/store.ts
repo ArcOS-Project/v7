@@ -1,4 +1,4 @@
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import type { FilterLevel } from "./types";
 
 export const FilterLevels: FilterLevel[] = [LogLevel.info, LogLevel.warning, LogLevel.error, LogLevel.critical];

@@ -3,7 +3,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/user/store";
   import { sliceIntoChunks } from "$ts/util";
-  import type { ExpandedActivity } from "$types/admin";
+  import type { ExpandedActivity } from "$types/server/admin";
   import dayjs from "dayjs";
   import type { ActivitiesData } from "../../types";
   import Pagination from "../Pagination.svelte";

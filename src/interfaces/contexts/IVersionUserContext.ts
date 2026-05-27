@@ -1,6 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
 
+// !tpa
 export interface IVersionUserContext extends IUserContext {
   isRegisteredVersionOutdated(): Promise<boolean>;
   updateRegisteredVersion(): Promise<void>;
@@ -8,3 +9,4 @@ export interface IVersionUserContext extends IUserContext {
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
   enableSourceDrive(openAlso?: boolean): Promise<boolean>;
 }
+// !endtpa

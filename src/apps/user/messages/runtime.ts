@@ -12,8 +12,8 @@ import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
@@ -498,7 +498,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
           title: `'${attachment.filename}' unavailable`,
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
+          image: info?.icon || "DefaultMimeIcon",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },

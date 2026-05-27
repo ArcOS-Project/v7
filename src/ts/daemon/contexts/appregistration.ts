@@ -8,8 +8,8 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse, validateObject } from "$ts/util/json";
-import type { App, AppStorage, InstalledApp } from "$types/app";
-import { LogLevel } from "$types/logging";
+import type { App, AppStorage, InstalledApp } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {

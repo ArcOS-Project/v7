@@ -1,7 +1,7 @@
 import type { IExecuteQueryRuntime, ILoadQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class LoadQueryOverlayRuntime extends AppProcess implements ILoadQueryOverlayRuntime {
   parent: IExecuteQueryRuntime;

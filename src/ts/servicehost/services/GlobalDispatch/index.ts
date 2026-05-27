@@ -6,8 +6,8 @@ import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon, Env, getKMod, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
-import type { GlobalDispatchClient } from "$types/dispatch";
-import type { Service } from "$types/service";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
+import type { Service } from "$types/services/service";
 import type { UserPreferences } from "$types/user";
 import io, { Socket } from "socket.io-client";
 

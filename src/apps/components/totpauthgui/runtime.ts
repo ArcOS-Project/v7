@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, SysDispatch } from "$ts/env";
 import { InfoIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class TotpAuthGuiRuntime extends AppProcess implements ITotpAuthGuiRuntime {
   private dispatchId: string;

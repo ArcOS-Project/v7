@@ -3,7 +3,7 @@ import type { IDistributionServiceProcess } from "$interfaces/services/IDistribu
 import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type JSZip from "jszip";
 import { InstallerProcessBase } from "./base";
 
@@ -73,7 +73,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
       Daemon?.notifications?.sendNotification({
         title: `Open ${this.metadata?.name}`,
         message: `Do you want open ${this.metadata?.name}?`,
-        image: Daemon?.icons!.getAppIcon(app),
+        image: `@app::${app.id}`,
         buttons: [
           {
             caption: "Open",
@@ -87,7 +87,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
       Daemon?.notifications?.sendNotification({
         title: `Pin ${this.metadata?.name}`,
         message: `Do you want to pin ${this.metadata?.name} to the taskbar so that you can easily launch it in the future?`,
-        image: Daemon?.icons!.getAppIcon(app),
+        image: `@app::${app.id}`,
         buttons: [
           {
             caption: "Pin to taskbar",

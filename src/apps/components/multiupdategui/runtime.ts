@@ -4,9 +4,9 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, SysDispatch } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { InstallStatus, StoreItem, UpdateInfo } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { InstallStatus, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { MultiUpdateStatus, MultiUpdateStatusNode } from "./types";
 
 export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGuiRuntime {

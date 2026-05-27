@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
   import type { IShareManager } from "$interfaces/services/IShareManager";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
 
@@ -62,7 +63,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("PasswordIcon")} alt="" />
+    <Icon icon="PasswordIcon" />
   </div>
   <div class="right">
     <h1>Change share password</h1>

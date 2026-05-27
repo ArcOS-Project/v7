@@ -17,8 +17,8 @@ import { join } from "$ts/util/fs";
 import { validateObject } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import { Store } from "$ts/writable";
-import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
-import type { Service } from "$types/service";
+import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/apps/app";
+import type { Service } from "$types/services/service";
 
 export class ApplicationStorage extends BaseService implements IApplicationStorage {
   private origins = new Map<string, AppStoreCb>([]);

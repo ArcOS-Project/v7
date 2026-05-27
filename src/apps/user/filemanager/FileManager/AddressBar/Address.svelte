@@ -4,9 +4,10 @@
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
-  import type { FsProxyInfo } from "$types/fs";
+  import type { FsProxyInfo } from "$types/system/fs";
   import { onMount } from "svelte";
   import { DriveIcons } from "../../store";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { path, virtual } = process;
@@ -85,7 +86,7 @@
     </div>
     {#if name && !$virtual}
       <div class="current-dir">
-        <img src={process.getIconCached(proxy ? "DefaultIcon" : "FolderIcon")} alt="" />
+        <Icon icon={proxy ? "DefaultIcon" : "FolderIcon"} />
         <span>
           {#if proxy}
             {proxy.displayName}
@@ -102,7 +103,7 @@
       </div>
     {/if}
   {:else}
-    <img src={process.getIconCached("FolderIcon")} alt="" />
+    <Icon icon="FolderIcon" />
     <!-- svelte-ignore a11y_autofocus -->
     <input type="text" {onkeydown} onblur={() => (isManuallyEntering = false)} bind:value={manualPath} autofocus />
   {/if}

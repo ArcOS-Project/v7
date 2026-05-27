@@ -3,7 +3,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
   import { Daemon } from "$ts/env";
-  import type { ExpandedMessage } from "$types/messaging";
+  import type { ExpandedMessage } from "$types/server/messaging";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

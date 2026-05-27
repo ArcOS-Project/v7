@@ -1,5 +1,5 @@
 import "$css/apps/user/logging.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Logging from "./Logging.svelte";
 import { LoggingRuntime } from "./runtime";
 

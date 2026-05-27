@@ -1,6 +1,7 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { ArcProtocol, ProtocolHandler } from "$types/proto";
+import type { ArcProtocol, ProtocolHandler } from "$types/services/proto";
 
+// !tpa
 export interface IProtocolServiceProcess extends IBaseService {
   lockObserver: boolean;
   observer?: MutationObserver;

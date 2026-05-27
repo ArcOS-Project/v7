@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class UpdateNotifierRuntime extends AppProcess implements IAppProcess {
   //#region LIFECYCLE

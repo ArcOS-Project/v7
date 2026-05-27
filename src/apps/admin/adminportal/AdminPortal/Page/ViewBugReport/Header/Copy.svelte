@@ -2,7 +2,7 @@
   import type { ViewBugReportData } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { MessageBox } from "$ts/util/dialog";
-  import type { MessageCreateData } from "$types/messaging";
+  import type { MessageCreateData } from "$types/server/messaging";
 
   const { data, process }: { data: ViewBugReportData; process: IAdminPortalRuntime } = $props();
   const { report } = data;

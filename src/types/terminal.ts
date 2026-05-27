@@ -2,6 +2,7 @@ import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTermi
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { Terminal } from "xterm";
 
+// !tpa
 export interface TerminalCommand {
   keyword: string;
   description: string;
@@ -40,3 +41,4 @@ export interface ArcTermConfiguration {
 }
 export type ExpandedTerminal = Terminal & { process?: ITerminalWindowRuntime };
 export type AdminCommandType = (term: IArcTerminal, admin: IAdminBootstrapper, argv: string[]) => Promise<number>;
+// !endtpa

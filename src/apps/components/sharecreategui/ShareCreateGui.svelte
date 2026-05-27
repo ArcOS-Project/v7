@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShareCreateGuiRuntime } from "$interfaces/runtimes/IShareCreateGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
@@ -11,7 +12,7 @@
 </script>
 
 <div class="header">
-  <img src={process.getIconCached("ShareIcon")} alt="" />
+  <Icon icon="ShareIcon" />
   <h1>Create a share</h1>
   <p>Fill out the fields to create a share. Each share is 512MB. You can create 5 shares in total.</p>
 </div>

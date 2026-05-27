@@ -3,8 +3,8 @@ import { Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
-import type { FileHandler } from "$types/fs";
-import type { UserTheme } from "$types/theme";
+import type { FileHandler } from "$types/system/fs";
+import type { UserTheme } from "$types/user/theme";
 
 const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
   isHandler: true,

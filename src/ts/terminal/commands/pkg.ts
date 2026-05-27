@@ -4,7 +4,7 @@ import { Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel } from "$types/system/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
@@ -467,7 +467,7 @@ export class PkgCommand extends TerminalProcess {
   async elevate(): Promise<boolean> {
     return await this.term!.elevate({
       what: "ArcOS needs your permission to run the pkg command.",
-      image: this.term?.daemon?.icons?.getIconCached("ArcTermIcon")!,
+      image: "ArcTermIcon",
       title: "Package manager",
       description: "ArcTerm command",
       level: ElevationLevel.medium,

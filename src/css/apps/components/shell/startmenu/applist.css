@@ -106,6 +106,19 @@ div.shell div.startmenu div.top div.app-groups div.inner div.panel {
   padding-right: 0;
 }
 
+div.shell div.startmenu div.top div.app-groups div.inner div.panel.listing {
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+div.shell div.startmenu div.top div.app-groups div.inner div.panel.listing:has(.spinner-center) {
+  overflow: hidden;
+}
+
+div.shell div.startmenu div.top div.app-groups div.inner.shift div.panel.listing {
+  opacity: 0;
+}
+
 div.shell div.startmenu div.top div.app-groups div.inner div.panel.listing button span.lucide {
   margin-left: auto;
   opacity: 0.5;
@@ -121,11 +134,17 @@ div.shell div.startmenu div.top div.app-groups div.inner button.back span.lucide
   height: 24px;
 }
 
+div.shell div.startmenu div.top div.app-groups div.inner:not(.shift) div.panel.group {
+  opacity: 0;
+}
+
 div.shell div.startmenu div.top div.app-groups div.inner div.panel.group {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: opacity 0.2s;
 }
+
 div.shell div.startmenu div.top div.app-groups div.inner div.panel.group div.group-list {
   height: 0;
   flex-grow: 1;

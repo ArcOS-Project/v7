@@ -1,8 +1,4 @@
-import {
-  DummyFileProgress,
-  type FileProgressMutator,
-  type FsProgressOperation,
-} from "$apps/components/fsprogress/types";
+import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
@@ -15,6 +11,7 @@ import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
@@ -22,10 +19,10 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import { ElevationLevel } from "$types/elevation";
-import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { LegacyConnectionInfo } from "$types/legacy";
-import type { ArcShortcut } from "$types/shortcut";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FileHandler, FileOpenerResult } from "$types/system/fs";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { UserContext } from "../context";
 
@@ -576,5 +573,54 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
+  }
+
+  async startFilesystemSupplier() {
+    if (this._disposed) return;
+
+    this.Log(`Starting filesystem supplier`);
+
+    try {
+      await Fs.mountDrive("userfs", UserDrive, "U", undefined);
+    } catch {
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
+    }
+  }
+
+  startDriveNotifierWatcher() {
+    if (this._disposed) return;
+
+    this.Log("Starting drive notifier watcher");
+
+    SysDispatch.subscribe<string>("fs-mount-drive", (id) => {
+      if (this._disposed) return;
+
+      try {
+        const drive = Fs.getDriveById(id);
+        if (!drive) return;
+
+        Daemon!.files?.mountedDrives.push(id);
+        if (!drive.REMOVABLE) return;
+
+        const notificationId = Daemon!.notifications?.sendNotification({
+          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+          message: "This drive just got mounted! Click the button to view it in the file manager",
+          buttons: [
+            {
+              caption: "Open Drive",
+              action: () => {
+                Daemon!.spawn?.spawnApp("fileManager", undefined, {}, `${drive.driveLetter || drive.uuid}:/`);
+
+                if (notificationId) Daemon!.notifications?.deleteNotification(notificationId);
+              },
+            },
+          ],
+          image: "DriveIcon",
+          timeout: 3000,
+        });
+      } catch {
+        return;
+      }
+    });
   }
 }

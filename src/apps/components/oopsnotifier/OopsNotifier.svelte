@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
-  import { Daemon } from "$ts/env";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IOopsNotifierRuntime } = $props();
   const { data } = process;
 </script>
 
 <div class="header">
-  <img src={Daemon?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <Icon icon="@app::{data.id}" />
   <h1>{data?.id === "ArcOS" ? "System error occurred" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
     {#if data?.id === "ArcOS"}

@@ -7,6 +7,7 @@
   import Slide from "./Settings/Slide.svelte";
   import { settingsPageStore } from "./store";
   import type { SettingsPage } from "./types";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage, slideVisible, userPreferences } = process;
@@ -42,13 +43,15 @@
       <button class="lucide icon-arrow-left" title="Go back" aria-label="Go back" onclick={() => ($slideVisible = false)}
       ></button>
     {/if}
-    <img src={process.getIconCached(pageData?.icon || "SettingsIcon")} alt="" />
+    <Icon icon={pageData?.icon || "SettingsIcon"} />
     <span>{pageData?.name || "Settings"}</span>
   </CustomTitlebar>
   <div class="page-content" class:hide>
-    {#if Page}
-      <Page {process} />
-    {/if}
+    <div class="page-wrapper">
+      {#if Page}
+        <Page {process} />
+      {/if}
+    </div>
   </div>
   <Slide {process} />
 </div>

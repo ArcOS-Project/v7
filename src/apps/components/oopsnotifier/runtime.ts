@@ -4,8 +4,8 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, SoundBus } from "$ts/env";
 import { ErrorUtils } from "$ts/util/error";
-import type { App, AppProcessData } from "$types/app";
-import type { ParsedStackFrame } from "$types/error";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
 export class OopsNotifierRuntime extends AppProcess implements IOopsNotifierRuntime {
   data: App;

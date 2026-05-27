@@ -1,5 +1,5 @@
 import "$css/apps/components/addserver.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AddServer from "./AddServer.svelte";
 import { AddServerRuntime } from "./runtime";
 

@@ -1,5 +1,5 @@
 import "$css/apps/user/mediaplayer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MediaPlayer from "./MediaPlayer.svelte";
 import { MediaPlayerRuntime } from "./runtime";
 

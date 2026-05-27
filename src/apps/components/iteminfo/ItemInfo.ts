@@ -1,5 +1,5 @@
 import "$css/apps/components/iteminfo.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ItemInfo from "./ItemInfo.svelte";
 import { ItemInfoRuntime } from "./runtime";
 

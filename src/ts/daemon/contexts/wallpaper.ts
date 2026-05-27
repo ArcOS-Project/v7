@@ -6,9 +6,9 @@ import { Wallpapers } from "$ts/user/wallpaper/store";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import type { UserPreferences, WallpaperGetters } from "$types/user";
-import type { Wallpaper } from "$types/wallpaper";
+import type { Wallpaper } from "$types/user/wallpaper";
 import { UserContext } from "../context";
 
 export class WallpaperUserContext extends UserContext implements IWallpaperUserContext {

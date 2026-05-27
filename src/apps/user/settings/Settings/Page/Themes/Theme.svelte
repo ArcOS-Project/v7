@@ -3,7 +3,7 @@
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { MessageBox } from "$ts/util/dialog";
-  import type { UserTheme } from "$types/theme";
+  import type { UserTheme } from "$types/user/theme";
   import { onMount } from "svelte";
 
   interface Props {

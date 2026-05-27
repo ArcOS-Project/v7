@@ -2,7 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { sliceIntoChunks, sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
-  import type { ExpandedToken } from "$types/admin";
+  import type { ExpandedToken } from "$types/server/admin";
   import { onMount } from "svelte";
   import type { TokensData } from "../../types";
   import Pagination from "../Pagination.svelte";

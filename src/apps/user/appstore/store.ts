@@ -1,6 +1,6 @@
 import { Daemon } from "$ts/env";
 import { groupByTimeFrame, sortByKey } from "$ts/util";
-import type { StoreItem } from "$types/package";
+import type { StoreItem } from "$types/tpa/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
@@ -158,7 +158,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         const results = await process.distrib.getStoreItemsByAuthor(userId);
         const user = await Daemon?.account?.getPublicUserInfoOf(userId);
 
-        return { results, user };
+        return { results, user, userId };
       },
     },
   ],

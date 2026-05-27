@@ -10,8 +10,8 @@ import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import { calculateMemory } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
-import type { ProcessContext, ProcessKillResult } from "$types/process";
+import type { App } from "$types/apps/app";
+import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import { parse } from "stacktrace-parser";
 import { KernelModule } from "../../module";
 

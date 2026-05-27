@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
@@ -62,7 +63,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("PasswordIcon")} alt="" />
+    <Icon icon="PasswordIcon" />
   </div>
   <div class="right">
     <h1>Change your password</h1>

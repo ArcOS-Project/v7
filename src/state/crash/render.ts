@@ -1,5 +1,5 @@
 import { Sleep } from "$ts/sleep";
-import type { StateProps } from "../../types/state";
+import type { StateProps } from "../../types/system/state";
 
 export default async function render(props: StateProps) {
   // Necessary timeout to prevent certain conflicts

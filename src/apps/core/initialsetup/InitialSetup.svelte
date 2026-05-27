@@ -2,7 +2,7 @@
   import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
   import { BETA } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import type { Component } from "svelte";
   import Actions from "./InitialSetup/Actions.svelte";
 

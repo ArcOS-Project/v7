@@ -1,4 +1,4 @@
-import type { DriveCapabilities } from "$types/fs";
+import type { DriveCapabilities } from "$types/system/fs";
 
 export const DriveCapabilityShorts: Record<DriveCapabilities, string> = {
   readDir: "r",

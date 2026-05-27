@@ -1,4 +1,4 @@
-import type { State } from "$types/state";
+import type { State } from "$types/system/state";
 import type { IAppProcess } from "./IAppProcess";
 import type { IProcess } from "./IProcess";
 

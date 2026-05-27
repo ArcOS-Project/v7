@@ -1,5 +1,5 @@
 import "$css/apps/components/iconeditdialog.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import IconEditDialog from "./IconEditDialog.svelte";
 import { IconEditDialogRuntime } from "./runtime";
 

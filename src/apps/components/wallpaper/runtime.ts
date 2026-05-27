@@ -6,10 +6,10 @@ import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { DirectoryReadReturn } from "$types/fs";
-import { LogLevel } from "$types/logging";
-import type { ShortcutStore } from "$types/shortcut";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import { LogLevel } from "$types/shared/logging";
+import type { ShortcutStore } from "$types/system/shortcut";
 import { WallpaperContextMenu } from "./context";
 import type { DesktopIcons } from "./types";
 

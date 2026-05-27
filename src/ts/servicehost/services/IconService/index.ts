@@ -7,8 +7,8 @@ import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
-import type { Service } from "$types/service";
+import type { App } from "$types/apps/app";
+import type { Service } from "$types/services/service";
 
 export class IconService extends BaseService implements IIconService {
   PATH = join(UserPaths.System, "IconSet.json");

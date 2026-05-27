@@ -1,6 +1,7 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { TpaLibrary } from "$types/libraries";
+import type { TpaLibrary } from "$types/tpa/libraries";
 
+// !tpa
 export interface ILibraryManagement extends IBaseService {
   Index: Map<string, TpaLibrary>;
   start(): Promise<void>;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
 
   const { process }: { process: IAppPreInstallRuntime } = $props();
@@ -8,7 +9,7 @@
 
 {#if $metadata}
   <div class="header">
-    <img src={process.getIconCached("ArcAppMimeIcon")} alt="" />
+    <Icon icon="ArcAppMimeIcon" />
     <h1>{$metadata.name}</h1>
     <p>Do you want to install this package?</p>
   </div>

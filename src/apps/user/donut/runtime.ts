@@ -2,7 +2,7 @@ import type { IDonutAppRuntime } from "$interfaces/runtimes/IDonutAppRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { DonutAltMenu } from "./altmenu";
 
 export class DonutAppRuntime extends AppProcess implements IDonutAppRuntime {

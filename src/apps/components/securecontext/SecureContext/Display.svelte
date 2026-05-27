@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { ElevationData } from "$types/elevation";
-  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import type { ElevationData } from "$types/system/elevation";
 
-  const { data, process }: { data: ElevationData; process: ISecureContextRuntime } = $props();
+  const { data }: { data: ElevationData } = $props();
 </script>
 
 <div class="display">
-  <img src={process.getIconCached(data.image) || data.image} alt={data.title} />
+  <Icon icon={data.image} />
   <div class="context">
     <p class="title">{data.title}</p>
     <p class="description">{data.description}</p>

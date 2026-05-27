@@ -1,8 +1,8 @@
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { Daemon } from "$ts/env";
-import type { App } from "$types/app";
-import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
-import type { ErrorButton } from "$types/notification";
+import type { App } from "$types/apps/app";
+import type { ConfirmationData, MessageBoxData } from "$types/shared/messagebox";
+import type { ErrorButton } from "$types/system/notification";
 import { getKMod } from "../env";
 
 export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {

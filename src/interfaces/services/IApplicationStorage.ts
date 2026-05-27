@@ -1,8 +1,9 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IApplicationStorage extends IBaseService {
   buffer: ReadableStore<AppStorage>;
   appIconCache: Record<string, string>;

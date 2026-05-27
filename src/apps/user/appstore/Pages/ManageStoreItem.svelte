@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import dayjs from "dayjs";
 
   const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem | undefined } = $props();
@@ -13,7 +14,7 @@
 
 {#if pkg}
   <div class="header">
-    <img src={StoreItemIcon(pkg)} alt="" />
+    <Icon icon={StoreItemIcon(pkg)} />
     <div class="info">
       <h1>
         <span class="name">{pkg.pkg.name}</span>

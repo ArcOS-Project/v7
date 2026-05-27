@@ -2,6 +2,7 @@ import type { ServerInfo, ServerOption } from "$types/server";
 import type { AxiosInstance } from "axios";
 import type { IKernelModule } from "./IKernelModule";
 
+// !tpa-props
 export interface IServerManager extends IKernelModule {
   connected: boolean;
   serverInfo?: ServerInfo;
@@ -27,3 +28,4 @@ export declare class IServerConnector {
   name: string;
   get server(): AxiosInstance;
 }
+// !endtpa

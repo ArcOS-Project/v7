@@ -2,8 +2,8 @@
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
   import { Daemon } from "$ts/env";
   import { formatBytes, join } from "$ts/util/fs";
-  import type { FileEntry } from "$types/fs";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { FileEntry } from "$types/system/fs";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import { onMount } from "svelte";
   import DesktopIcon from "../DesktopIcon.svelte";
 
@@ -20,8 +20,8 @@
   onMount(async () => {
     const info = Daemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    if (shortcut) shortcutIcon = await process.getIcon(shortcut.icon);
-    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+    if (shortcut) shortcutIcon = shortcut.icon;
+    icon = info?.icon || "DefaultMimeIcon";
     if (info?.friendlyName === "Image file") icon = (await Daemon?.files?.getThumbnailFor(path)) || icon;
     render = true;
   });
@@ -31,7 +31,7 @@
   <DesktopIcon
     {process}
     caption={shortcut?.name || file.name}
-    icon={(shortcut ? shortcutIcon : icon) || process.getIconCached("DefaultMimeIcon")}
+    icon={(shortcut ? shortcutIcon : icon) || "DefaultMimeIcon"}
     alt={shortcut
       ? `Target: ${shortcut.target}\nType: Shortcut (${shortcut.type})`
       : `Location: ${path}\nType: ${file.mimeType}\nSize: ${size}`}

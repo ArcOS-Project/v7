@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
   import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+  import Icon from "$lib/Icon.svelte";
   import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
   const { process }: { process: IAdvSysSetRuntime } = $props();
   const { userPreferences } = process;
@@ -13,7 +14,7 @@
 </script>
 
 <div class="left">
-  <img src={process.getIconCached("ArcSystemIcon")} alt="" />
+  <Icon icon="ArcSystemIcon" />
   <div class="main-actions">
     <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +Env.get("shell_pid"))}>Report a bug...</button>
   </div>

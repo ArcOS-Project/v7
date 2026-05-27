@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IImageViewerRuntime extends IAppProcess {
   openedFile: ReadableStore<string>;
   imageUrl: ReadableStore<string>;

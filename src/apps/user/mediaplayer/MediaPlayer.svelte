@@ -7,6 +7,7 @@
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IMediaPlayerRuntime } = $props();
   const { pinControls } = process;
@@ -75,7 +76,7 @@
     <Controls {process} />
   {:else}
     <div class="no-file">
-      <img src={process.getIconCached("MediaPlayerIcon")} alt="" />
+      <Icon icon={"MediaPlayerIcon"} />
       <h2>No File Opened!</h2>
       <p>Select a file to play from the File Menu or by pressing Alt+O.</p>
     </div>

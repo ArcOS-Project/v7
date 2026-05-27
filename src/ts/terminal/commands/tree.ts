@@ -1,7 +1,7 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Plural } from "$ts/util";
 import { join } from "$ts/util/fs";
-import type { RecursiveDirectory } from "$types/fs";
+import type { RecursiveDirectory } from "$types/system/fs";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, RESET } from "../colors";

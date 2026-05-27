@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Sleep } from "$ts/sleep";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { Store } from "$ts/writable";
@@ -118,7 +119,7 @@
   on:neodrag={dragging}
 >
   <div class="img">
-    <img src={icon} alt="" />
+    <Icon {icon} />
     {#if cornerIcon}
       <span class="lucide icon-{cornerIcon}"></span>
     {/if}
@@ -127,7 +128,7 @@
 </button>
 <div class="ghost" style="--top: {movingY}px; --left: {movingX}px;" class:moving={$moving}>
   <div class="img">
-    <img src={icon} alt="" />
+    <Icon {icon} />
     {#if cornerIcon}
       <span class="lucide icon-{cornerIcon}"></span>
     {/if}

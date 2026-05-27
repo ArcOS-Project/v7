@@ -73,6 +73,10 @@ div.window div.body button:not(.reset).suggested * {
   color: var(--accent-suggested-fg);
 }
 
+div.window div.body button:not(.reset).suggested.lucide {
+  font-weight: normal !important;
+}
+
 div.window div.body button:not(.reset).suggested:disabled {
   opacity: 0.5 !important;
 }
