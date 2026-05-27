@@ -4,6 +4,7 @@ import type { IArcFindService } from "$interfaces/services/IArcFindService";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
@@ -232,7 +233,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   updateFullscreenCount() {
     const fullscreenCount: Record<string, Set<number>> = {};
     const procs: Record<number, IAppProcess> = Object.fromEntries(
-      ([...Stack.store()] as [number, IAppProcess][]).filter(([_, proc]) => proc instanceof AppProcess)
+      ([...Stack.store()] as [number, IAppProcess][]).filter(([_, proc]) => ProcessesHelper.IsAnyGraphicalAppProcess(proc))
     );
     const preferences = this.userPreferences();
 

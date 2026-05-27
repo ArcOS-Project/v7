@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -50,7 +51,11 @@ export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRu
     const userApps: IAppProcess[] = [...Stack.store()]
       .map(([_, v]) => v as IAppProcess)
       .filter(
-        (proc) => proc instanceof AppProcess && !proc.app.data.core && proc.app.id !== "arcShell" && proc.app.id !== "wallpaper"
+        (proc) =>
+          ProcessesHelper.IsAnyAppProcess(proc) &&
+          !proc.app.data.core &&
+          proc.app.id !== "arcShell" &&
+          proc.app.id !== "wallpaper"
       );
 
     for (const proc of userApps) {

@@ -7,15 +7,15 @@
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { AppProcess } from "$ts/apps/process";
   import { Daemon, Env, Stack } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
   import { Sleep } from "$ts/sleep";
   import { formatBytes } from "$ts/util/fs";
 
   const { process }: { process: IProcessInfoRuntime } = $props();
   const { proc, parent, procConstructor: inherit } = process;
 
-  const icon = proc instanceof AppProcess ? `@app::${proc.app.id}` : "ComponentIcon";
+  const icon = ProcessesHelper.IsAnyAppProcess(proc!) ? `@app::${proc.app.id}` : "ComponentIcon";
   const children = Stack.getSubProcesses(proc!.pid);
   const context = Stack.getProcessContext(proc!.pid);
 
@@ -61,7 +61,7 @@
       <Segment title="Source Type">{proc.sourceUrl ? "Original" : "Interpreted"}</Segment>
     </InfoRow>
   </InfoBlock>
-  {#if proc instanceof AppProcess}
+  {#if ProcessesHelper.IsAnyAppProcess(proc)}
     <InfoBlock>
       <InfoRow>
         <Segment title="App ID" alt={proc.app.id}>{proc.app.id}</Segment>
@@ -78,7 +78,7 @@
       {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}
         <ActionButton onclick={viewSourceFile}>View source</ActionButton>
       {/if}
-      <ActionButton onclick={info} disabled={!(proc instanceof AppProcess)}>App Info</ActionButton>
+      <ActionButton onclick={info} disabled={!ProcessesHelper.IsAnyAppProcess(proc)}>App Info</ActionButton>
       <ActionButton suggested onclick={() => process.closeWindow()}>Okay</ActionButton>
     {/snippet}
   </ActionBar>

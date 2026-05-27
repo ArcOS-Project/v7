@@ -3,6 +3,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/apps/app";
@@ -34,15 +35,15 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: (proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
+      image: (ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
-      description: proc instanceof AppProcess ? "Application" : "Process",
+      description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
       level: ElevationLevel.high,
     });
 
     if (!elevated) return;
 
-    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+    const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 
     MessageBox(
       {

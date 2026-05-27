@@ -8,4 +8,12 @@ export class ProcessesHelper extends BaseHelper {
   static IsAnyAppProcess(proc: IProcess) {
     return proc instanceof AppProcess || proc instanceof ThirdPartyAppProcess || proc instanceof ThirdPartyProcess;
   }
+
+  static IsAnyGraphicalAppProcess(proc: IProcess) {
+    return proc instanceof AppProcess || proc instanceof ThirdPartyAppProcess;
+  }
+
+  static IsAnyThirdPartyProcess(proc: IProcess) {
+    return proc instanceof ThirdPartyProcess || proc instanceof ThirdPartyAppProcess;
+  }
 }

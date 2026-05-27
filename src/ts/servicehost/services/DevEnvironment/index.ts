@@ -1,8 +1,8 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
-import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
 import { ArcBuild } from "$ts/metadata/build";
 import { BaseService } from "$ts/servicehost/base";
@@ -84,16 +84,14 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
       },
     });
 
-    Stack.store.subscribe((v) => {
+    Stack.store.subscribe(() => {
       if (this._disposed) return;
 
-      const procs = [...v]
-        .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
-        .map(([pid]) => pid);
+      const pids = this.getPids();
 
       if (this.connected) {
-        this.client?.emit("pids", procs);
-        this.pids = procs;
+        this.client?.emit("pids", pids);
+        this.pids = pids;
       }
     });
 
@@ -201,11 +199,9 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
   async killTpa() {
     if (this._disposed) return this.disconnect();
 
-    const procs = [...Stack.store()]
-      .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
-      .map(([pid]) => pid);
+    const pids = this.getPids();
 
-    for (const pid of procs) {
+    for (const pid of pids) {
       await Stack.kill(pid, true);
     }
   }
@@ -224,6 +220,17 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
         }, 0);
       }
     }
+  }
+
+  private getPids() {
+    return [...Stack.store()]
+      .filter(
+        ([_, proc]) =>
+          ProcessesHelper.IsAnyThirdPartyProcess(proc) &&
+          proc.app.id === this.meta?.metadata.appId &&
+          proc.workingDirectory === `V:/`
+      )
+      .map(([pid]) => pid);
   }
 }
 

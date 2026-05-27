@@ -11,6 +11,7 @@
   import { ProcessStateIcons } from "$types/system/process";
   import { onDestroy, onMount } from "svelte";
   import Row from "./Row.svelte";
+  import { ProcessesHelper } from "$ts/helpers/processes";
 
   const {
     pid,
@@ -37,7 +38,7 @@
 
     memory = proc.MEMORY; // only once because laggy
 
-    if (proc instanceof AppProcess) {
+    if (ProcessesHelper.IsAnyAppProcess(proc)) {
       const { app } = proc;
 
       name = app.data.metadata.name;
@@ -79,7 +80,7 @@
         },
         {
           caption: "App info",
-          disabled: () => !(proc instanceof AppProcess),
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
           action: () => process.appInfoFor(proc as IAppProcess),
           icon: "app-window-mac",
         },
@@ -92,7 +93,7 @@
         { sep: true },
         {
           caption: "Focus",
-          disabled: () => !(proc instanceof AppProcess),
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
           action: () => Stack.renderer?.focusPid(proc.pid),
           icon: "flag",
         },

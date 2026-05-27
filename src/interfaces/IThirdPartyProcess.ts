@@ -1,4 +1,6 @@
 import type { AppProcessData } from "$types/apps/app";
+import type { ReadableStore, StringStore } from "$types/shared/writable";
+import type { UserPreferencesStore } from "$types/user";
 import type { IProcess } from "./IProcess";
 import type { IProcessHandler } from "./modules/IProcessHandler";
 
@@ -10,6 +12,12 @@ export interface IThirdPartyProcess extends IProcess {
   handler: IProcessHandler;
   app: AppProcessData;
   args: any[];
+  userPreferences: UserPreferencesStore;
+  windowIcon: StringStore;
+  crashReason: string;
+  windowTitle: ReadableStore<string>;
+  componentMount: Record<string, any>;
+  username: string;
 
   closeIfSecondInstance(): Promise<this | undefined>;
   getSingleton(): this[];

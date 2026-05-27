@@ -1,6 +1,7 @@
 import type { IThirdPartyProcess } from "$interfaces/IThirdPartyProcess";
-import { Stack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import { AppRuntimeError } from "../error";
 import { ThirdPartyAppProcess } from "../thirdparty";
@@ -13,6 +14,15 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
   handler = Stack; // TEMP
   app: AppProcessData;
   args: any[];
+  windowIcon = Store<string>();
+  userPreferences = Daemon.preferences;
+  crashReason: string = "";
+  windowTitle = Store<string>();
+  componentMount = {};
+  overridePopulatable?: boolean;
+  get username() {
+    return Daemon!.username;
+  }
 
   //#region LIFECYCLE
   constructor(
@@ -31,13 +41,15 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
     this.operationId = operationId;
 
     this.setSource(__SOURCE__);
+
+    this.windowIcon.set(`@app::${app.id}`);
   }
   //#endregion
 
   async closeIfSecondInstance(): Promise<this | undefined> {
-    if (this.STATE !== "rendering") {
+    if (this.STATE !== "starting") {
       throw new AppRuntimeError(
-        "Violation: only call closeIfSecondInstance in IThirdPartyProcess.render so that it doesn't hang the stack."
+        "Violation: only call closeIfSecondInstance in IThirdPartyProcess.start so that it doesn't hang the stack."
       );
     }
     this.Log("Closing if second instance");

@@ -13,6 +13,7 @@ import type { ProcessKillResult } from "$types/system/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
+import { ProcessesHelper } from "$ts/helpers/processes";
 
 export class ProcessManagerRuntime extends AppProcess implements IProcessManagerRuntime {
   public selected = Store<string>();
@@ -48,13 +49,13 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
   async kill(proc: IProcess) {
     this.Log(`kill: ${proc.pid}`);
 
-    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+    const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
+      image: ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: name,
-      description: proc instanceof AppProcess ? "Application" : "Process",
+      description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
       level: ElevationLevel.high,
     });
 

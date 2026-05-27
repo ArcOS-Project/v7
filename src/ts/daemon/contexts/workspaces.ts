@@ -6,6 +6,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { ServiceHost } from "$ts/servicehost";
 import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
@@ -100,7 +101,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
   }
 
   async deleteVirtualDesktopAck(workspace: Workspace) {
-    const windowCount = [...Stack.store()].filter(([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
+    const windowCount = [...Stack.store()].filter(([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
 
     if (windowCount > 0) {
       MessageBox(
@@ -193,7 +194,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
     const processes = Stack.store();
 
     for (const [_, proc] of [...processes]) {
-      if (!(proc instanceof AppProcess)) continue;
+      if (!ProcessesHelper.IsAnyGraphicalAppProcess(proc)) continue;
 
       if (proc.app.desktop === uuid) await proc.closeWindow();
 
@@ -246,7 +247,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
     const destinationWorkspace = this.virtualDesktops[destination];
     const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
 
-    if (!proc || !(proc instanceof AppProcess) || !destinationWorkspace || !window) return;
+    if (!proc || !ProcessesHelper.IsAnyGraphicalAppProcess(proc) || !destinationWorkspace || !window) return;
 
     const currentWorkspace = proc.app.desktop;
 
