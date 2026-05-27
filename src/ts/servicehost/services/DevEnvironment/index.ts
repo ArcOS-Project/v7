@@ -210,8 +210,8 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
     const processes = this.pids.map((pid) => Stack.getProcess<IThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
 
     for (const proc of processes) {
-      if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {
-        const link = proc.elements[filename];
+      if (proc.elements?.[filename] && proc.elements?.[filename] instanceof HTMLLinkElement) {
+        const link = proc.elements?.[filename]!;
         const href = `${link.href}`;
 
         link.href = "";
