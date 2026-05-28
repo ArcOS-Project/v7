@@ -21,7 +21,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import { MediaPlayerIcon } from "$ts/images/apps";
+import mime from "mime";
 
 export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -152,15 +152,13 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       return;
     }
 
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler("play", this.Play.bind(this));
-      navigator.mediaSession.setActionHandler("pause", this.Pause.bind(this));
-      navigator.mediaSession.setActionHandler("previoustrack", this.previousSong.bind(this));
-      navigator.mediaSession.setActionHandler("nexttrack", this.nextSong.bind(this));
-      navigator.mediaSession.setActionHandler("seekto", (details) => {
-        this.SeekTo(details.seekTime!);
-      });
-    }
+    navigator.mediaSession?.setActionHandler("play", this.Play.bind(this));
+    navigator.mediaSession?.setActionHandler("pause", this.Pause.bind(this));
+    navigator.mediaSession?.setActionHandler("previoustrack", this.previousSong.bind(this));
+    navigator.mediaSession?.setActionHandler("nexttrack", this.nextSong.bind(this));
+    navigator.mediaSession?.setActionHandler("seekto", (details) => {
+      this.SeekTo(details.seekTime!);
+    });
 
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
@@ -699,23 +697,18 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       this.Log("updating mediaSession");
 
       const albumCoverURL = metadata?.coverImagePath ? await Fs.direct(metadata!.coverImagePath!) : undefined;
+      const albumCoverMime = metadata?.coverImagePath ? mime.getType(metadata!.coverImagePath!) : null;
 
       navigator.mediaSession.metadata = new MediaMetadata({
         title: metadata?.title ?? "ArcOS Media Player",
         artist: metadata?.artist ?? "Unknown Artist",
         album: metadata?.album ?? "Unknown Album",
-        artwork: albumCoverURL
-          ? [
-              {
-                src: albumCoverURL,
-              },
-            ]
-          : [
-              {
-                src: MediaPlayerIcon,
-                type: "image/svg+xml",
-              },
-            ],
+        artwork: [
+          {
+            src: albumCoverURL ?? this.getIconCached("MediaPlayerIcon"),
+            type: albumCoverMime ?? "image/svg+xml",
+          },
+        ],
       });
     }
   }
