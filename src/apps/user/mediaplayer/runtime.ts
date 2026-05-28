@@ -82,17 +82,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     this.State.subscribe((v) => {
       if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
     });
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler("play", this.Play.bind(this));
-      navigator.mediaSession.setActionHandler("pause", this.Pause.bind(this));
-      navigator.mediaSession.setActionHandler("previoustrack", this.previousSong.bind(this));
-      navigator.mediaSession.setActionHandler("nexttrack", this.nextSong.bind(this));
-      navigator.mediaSession.setActionHandler("seekto", (details) => {
-        this.Pause();
-        this.SeekTo(details.seekTime!);
-        this.Play();
-      });
-    }
 
     this.queue.subscribe((v) => {
       if (!v.length) {
@@ -126,9 +115,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   async onClose() {
     this.Reset();
     this.player?.remove();
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.playbackState = "none";
-    }
     return true;
   }
 
@@ -137,7 +123,9 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     await Fs.createDirectory(this.COVERIMAGES_PATH);
     await this.Configuration.initialize();
 
-    this.CurrentMediaMetadata.subscribe((v) => {
+    this.CurrentMediaMetadata.subscribe(async (v) => {
+      this.setMediaSessionMetadata(v);
+
       if (!v?.title) return;
 
       this.windowTitle.set(v.title);
@@ -145,6 +133,9 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   }
 
   protected async stop(): Promise<any> {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+    }
     this.Reset();
     this.player?.remove();
   }
@@ -159,6 +150,16 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       }
 
       return;
+    }
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler("play", this.Play.bind(this));
+      navigator.mediaSession.setActionHandler("pause", this.Pause.bind(this));
+      navigator.mediaSession.setActionHandler("previoustrack", this.previousSong.bind(this));
+      navigator.mediaSession.setActionHandler("nexttrack", this.nextSong.bind(this));
+      navigator.mediaSession.setActionHandler("seekto", (details) => {
+        this.SeekTo(details.seekTime!);
+      });
     }
 
     if (file) {
@@ -206,9 +207,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
 
     try {
       await this.player.play();
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.playbackState = "playing";
-      }
     } catch {}
   }
 
@@ -219,9 +217,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
 
     try {
       this.player.pause();
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.playbackState = "paused";
-      }
     } catch {}
   }
 
@@ -299,6 +294,10 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       current: this.player.currentTime,
       duration: this.player.duration,
     };
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = state.paused ? "paused" : "playing";
+    }
 
     this.State.set(state);
   }
@@ -439,7 +438,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       await this.player?.play();
 
       this.parseMetadata(path);
-      this.updateMediaSessionMetadata();
 
       this.Loaded.set(true);
     } catch (e) {
@@ -615,7 +613,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       this.pid,
       true
     );
-    this.updateMediaSessionMetadata();
     this.Loaded.set(true);
   }
 
@@ -697,18 +694,16 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     }
   }
 
-  async updateMediaSessionMetadata() {
+  async setMediaSessionMetadata(metadata?: AudioFileMetadata): Promise<void> {
     if ("mediaSession" in navigator) {
       this.Log("updating mediaSession");
 
-      const albumCoverURL = this.CurrentMediaMetadata()?.coverImagePath
-        ? await Fs.direct(this.CurrentMediaMetadata()!.coverImagePath!)
-        : undefined;
+      const albumCoverURL = metadata?.coverImagePath ? await Fs.direct(metadata!.coverImagePath!) : undefined;
 
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: this.CurrentMediaMetadata()?.title ?? "ArcOS Media Player",
-        artist: this.CurrentMediaMetadata()?.artist ?? "Unknown Artist",
-        album: this.CurrentMediaMetadata()?.album ?? "Unknown Album",
+        title: metadata?.title ?? "ArcOS Media Player",
+        artist: metadata?.artist ?? "Unknown Artist",
+        album: metadata?.album ?? "Unknown Album",
         artwork: albumCoverURL
           ? [
               {
