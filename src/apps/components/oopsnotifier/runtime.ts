@@ -35,7 +35,6 @@ export class OopsNotifierRuntime extends AppProcess implements IOopsNotifierRunt
   }
 
   async start() {
-    console.log(this.exception, this.process, this.data);
     SoundBus.playSound("arcos.dialog.error");
 
     try {

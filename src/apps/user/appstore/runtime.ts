@@ -36,16 +36,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     super(pid, parentPid, app);
 
     this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
-
-    this.searchQuery.subscribe((v) => {
-      if (!v) {
-        this.searching.set(false);
-        if (this.currentPage() === "search") this.switchPage("home");
-      }
-    });
-
     this.renderArgs = { page, props };
-
     this.setSource(__SOURCE__);
   }
 
@@ -66,6 +57,13 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
 
       return false;
     }
+
+    this.searchQuery.subscribe((v) => {
+      if (!v) {
+        this.searching.set(false);
+        if (this.currentPage() === "search") this.switchPage("home");
+      }
+    });
 
     SysDispatch.subscribe("mugui-done", () => {
       this.switchPage(this.currentPage(), this.pageProps(), true);

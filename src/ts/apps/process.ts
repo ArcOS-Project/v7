@@ -305,6 +305,8 @@ export class AppProcess extends Process implements IAppProcess {
     this.Log(`STOPPING PROCESS`);
 
     this.stopAcceleratorListener();
+    this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
+    
     return await this.stop();
   }
 

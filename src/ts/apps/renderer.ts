@@ -14,6 +14,7 @@ import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { ProcessesHelper } from "$ts/helpers/processes";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -133,7 +134,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     }, 100);
 
     this.currentState.push(process.pid);
-    if (!data.core && !data.overlay) this.focusPid(process.pid);
+    if (!data.core && !data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(process)) this.focusPid(process.pid);
 
     try {
       await process.__render__(body);

@@ -53,7 +53,7 @@
     {:else if changelog}
       View Changelog
     {:else}
-      <!-- Changelog not available yet! -->
+      Changelog not available yet!
     {/if}
   </button>
   <button onclick={() => process.closeWindow()}>Start using ArcOS {ArcOSVersion}</button>

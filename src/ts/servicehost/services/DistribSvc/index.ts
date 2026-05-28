@@ -167,10 +167,10 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   //#endregion
   //#region PACKAGE CONFIG
 
-  async addPackageToInstalled(item: ArcPackage) {
+  async addPackageToInstalled(item: ArcPackage, force = false) {
     this.Log(`addPackageToInstalled: '${item.appId}'`);
 
-    if (this.checkBusy("addPackageToInstalled")) return undefined;
+    if (this.checkBusy("addPackageToInstalled") && !force) return undefined;
 
     const list = await this.loadInstalledPackageList();
 
@@ -262,6 +262,8 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     this.BUSY = "uninstallPackage";
 
     const installedPkg = await this.getInstalledPackageByAppId(appId);
+
+    console.log(appId, installedPkg);
 
     if (!installedPkg) {
       this.BUSY = "";

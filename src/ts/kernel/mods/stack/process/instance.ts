@@ -8,7 +8,7 @@ import type { ProcessState } from "$types/system/process";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
-  public dispatch: IProcessDispatch;
+  public dispatch!: IProcessDispatch;
   public pid: number;
   public parentPid: number;
   public name = "";
@@ -36,7 +36,6 @@ export class Process implements IProcess {
     this.pid = pid;
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
-    this.dispatch = new ProcessDispatch(this);
   }
 
   get MEMORY(): number {
@@ -55,6 +54,7 @@ export class Process implements IProcess {
     this.STATE = "starting";
     this.Log(`STARTING PROCESS`);
 
+    this.dispatch = new ProcessDispatch(this);
     if (this.sourceUrl === "undetermined") {
       this.Log(`Source URL of process class not set!`, LogLevel.warning);
     }

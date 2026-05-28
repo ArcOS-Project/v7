@@ -109,6 +109,8 @@ export class AppInstallerProcess extends InstallerProcessBase {
       const result = await Daemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
+        this.parent.BUSY = "";
+        await this.parent.addPackageToInstalled(this.metadata!);
         return true;
       }
 

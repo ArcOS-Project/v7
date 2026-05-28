@@ -1,12 +1,10 @@
 import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IShareManager } from "$interfaces/services/IShareManager";
-import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
-import { Sleep } from "$ts/sleep";
+import { Daemon, Stack, SysDispatch } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { isPopulatable } from "$ts/util/apps";
-import { MessageBox } from "$ts/util/dialog";
 import type { App } from "$types/apps/app";
 import { ElevationLevel } from "$types/system/elevation";
 import { UserContext } from "../context";
@@ -71,7 +69,9 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       return v;
     });
 
-    const instances = Stack.renderer?.getAppInstances(appId);
+    const instances: IAppProcess[] = [...Stack.store()]
+      .map(([_, v]) => v as IAppProcess)
+      .filter((proc) => ProcessesHelper.IsAnyAppProcess(proc) && proc.app.id === appId);
 
     if (instances)
       for (const instance of instances) {

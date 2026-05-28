@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
@@ -6,21 +7,17 @@ import type { IDistributionServiceProcess } from "$interfaces/services/IDistribu
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
-import { ArcOSVersion, Daemon, Env, Fs, Server } from "$ts/env";
+import { Daemon, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
-import { deepCopyWithBlobs } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { compareVersion } from "$ts/util/version";
 import type {
   Activity,
   AuditLog,
@@ -36,23 +33,20 @@ import type {
   UserStatistics,
   UserTotp,
 } from "$types/server/admin";
-import type { App, InstalledApp } from "$types/apps/app";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { QueryResult } from "$types/server/query";
+import type { SharedDriveType } from "$types/server/shares";
+import type { Service } from "$types/services/service";
 import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
 import type { ArcPackage, StoreItem } from "$types/tpa/package";
-import type { Service } from "$types/services/service";
-import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import axios from "axios";
 import { fromExtension } from "human-filetypes";
+import beautify from "js-beautify";
 import JSZip from "jszip";
+import { parse } from "stacktrace-parser";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
-import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { QueryResult } from "$types/server/query";
-import { CommandResult } from "$ts/result";
-import { parse } from "stacktrace-parser";
-import beautify from "js-beautify";
-import axios from "axios";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -88,51 +82,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   private async _loadAdminApps() {
     const appStore = Daemon.appStorage()!;
-    const adminApps = await Promise.all(
-      Object.keys(AdminAppImportPathAbsolutes).map(async (path) => {
-        try {
-          const start = performance.now();
-          const mod = await AdminAppImportPathAbsolutes[path]();
-          const app = (mod as any).default as App;
-
-          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
-            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
-
-          if (app._internalSysVer || app._internalOriginalPath)
-            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
-
-          const end = performance.now() - start;
-          const appCopy = await deepCopyWithBlobs<App>(app);
-
-          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}-${ArcBuild()}`;
-          appCopy._internalOriginalPath = path;
-          appCopy._internalLoadTime = end;
-
-          this.Log(
-            `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
-          );
-
-          this.initBroadcast?.(`Admin: Loaded ${appCopy.metadata.name}`);
-
-          return appCopy;
-        } catch (e) {
-          await new Promise<void>((r) => {
-            MessageBox(
-              {
-                title: "Admin app load error",
-                message: `ArcOS failed to load an administrative application because of an error. ${e}.`,
-                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-                image: "WarningIcon",
-              },
-              +Env.get("loginapp_pid"),
-              true
-            );
-            this.Log(`Failed to load admin app ${path}: ${e}`);
-            return null;
-          });
-        }
-      })
-    ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
+    const adminApps = await appStore.loadAppsFromViteModules(AdminAppImportPathAbsolutes);
 
     appStore?.loadOrigin("admin", () => adminApps);
 
@@ -1343,7 +1293,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (url.toString().includes("team.arcweb.nl")) {
       return CommandResult.Error("Previews are not supported because their JS files aren't retained");
     }
-  
+
     try {
       const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
 

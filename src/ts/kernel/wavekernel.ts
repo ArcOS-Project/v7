@@ -133,10 +133,17 @@ export class WaveKernel implements IWaveKernel {
 
     this.Logs.push(data);
 
+    const mapping: Record<LogLevel, (...args: any[]) => void> = {
+      [LogLevel.info]: __Console__.log.bind(__Console__),
+      [LogLevel.warning]: __Console__.warn.bind(__Console__),
+      [LogLevel.error]: __Console__.error.bind(__Console__),
+      [LogLevel.critical]: __Console__.error.bind(__Console__),
+    };
+
     const dispatch = this.getModule<ISystemDispatch>("dispatch", true);
     dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
 
-    __Console__.log(
+    mapping[level](
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }

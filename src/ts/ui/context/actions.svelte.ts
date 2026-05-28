@@ -6,11 +6,9 @@ import type { ContextMenuItem } from "$types/apps/app";
 
 export function contextProps(node: HTMLElement, args: any[]) {
   const contextMenuPid = Env?.get("contextmenu_pid");
-  console.log(node, contextMenuPid);
   if (!contextMenuPid) return;
 
   const contextmenu = Stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
-  console.log(contextmenu);
   if (!contextmenu) return;
 
   const uuid = UUID();
