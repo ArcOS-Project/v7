@@ -1,5 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
@@ -370,7 +370,7 @@ export class AppProcess extends Process implements IAppProcess {
     }
 
     const proc = await Stack.spawn<IAppProcess>(
-      metadata.assets.runtime as Constructs<IAppProcess>,
+      metadata.assets.runtime as IAppProcessConstructor,
       undefined,
       Daemon?.userInfo?._id,
       this.pid,

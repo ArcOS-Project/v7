@@ -36,7 +36,7 @@
             Status
           {/if}
         </p>
-        <p class="content">{item.content}</p>
+        <p class="content" title={item.content}>{item.content}</p>
         <Icon icon={item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"} />
       </div>
     {/each}

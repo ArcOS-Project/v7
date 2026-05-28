@@ -17,9 +17,8 @@ import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/apps/app";
-import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
+import type { ParsedImportStatement, ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
-import * as walk from "acorn-walk";
 
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
@@ -104,7 +103,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayBufferToText((await Fs.readFile(this.filePath!))!);
+    const unwrapped = this.convertImportStatementsToRegex(arrayBufferToText((await Fs.readFile(this.filePath!))!)!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);
@@ -139,11 +138,25 @@ export class JsExec extends Process {
     return `export default async function({${Object.keys(this.props).join(",")}}) {\nconst global = arguments;\n${contents}\n}`;
   }
 
+  private convertImportStatementsToRegex(sourceFile: string) {
+    const regex =
+      /import(?:(?:(?:[ \n\t]+(?<default>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?(?<destructured>[ \n\t]*\{(?:[ \n\t]*[^ \n\t"'\{\}]+[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<wildcard>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<filename>[^'"\n]+)(?<quote>['"])/gm;
+    const matches = sourceFile
+      .matchAll(regex)
+      .toArray()
+      .map((m) => ({ ...m.groups, original: m[0] })) as ParsedImportStatement[];
+
+    for (const match of matches) {
+      const { destructured, default: defaultImport, filename, quote, wildcard } = match;
+      let loadStatement = `const ${destructured || defaultImport || wildcard} = await load(${quote}${filename}${quote})`;
+
+      sourceFile = sourceFile.replace(match.original, loadStatement);
+    }
+
+    return sourceFile;
+  }
+
   async testFileContents(unwrapped: string) {
-    const isUnsafe = unwrapped.startsWith(`// #unsafe`);
-
-    if (isUnsafe) return;
-
     try {
       const ast = acorn.parse(unwrapped, {
         sourceType: "module",
@@ -154,11 +167,6 @@ export class JsExec extends Process {
       const hasExport = ast.body.some((node) => node.type.startsWith("Export"));
       const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
       const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
-      const domReferences = await this.testFileContents_detectDomReferences(ast);
-
-      for (const key in domReferences) {
-        if ((domReferences as any)[key]) throw new JsExecError(`References to ${key} are not allowed.`);
-      }
 
       if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
       if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
@@ -166,28 +174,6 @@ export class JsExec extends Process {
     } catch (e) {
       throw new JsExecError(`An error occurred while parsing the source file: ${e}`);
     }
-  }
-
-  async testFileContents_detectDomReferences(ast: acorn.Program) {
-    const results = { documentBody: false, appRenderer: false };
-
-    walk.simple(ast, {
-      MemberExpression(node) {
-        const { object, property } = node;
-        if (object.type === "Identifier" && object.name === "document") {
-          switch ((property as any).name) {
-            case "body":
-              results.documentBody = true;
-              break;
-          }
-        }
-      },
-      Literal(node) {
-        if (typeof node.value === "string" && node.value.includes("#appRenderer")) results.appRenderer = true;
-      },
-    });
-
-    return results;
   }
 
   //#endregion

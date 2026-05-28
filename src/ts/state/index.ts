@@ -1,4 +1,4 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { Constructs } from "$interfaces/common";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
@@ -144,7 +144,7 @@ export class StateHandler extends Process implements IStateHandler {
     const mod = await data.appModule();
     const app = mod.default;
     const proc = await stack.spawn<IAppProcess>(
-      app.assets.runtime as Constructs<IAppProcess>,
+      app.assets.runtime as IAppProcessConstructor,
       undefined,
       "SYSTEM",
       this.pid,

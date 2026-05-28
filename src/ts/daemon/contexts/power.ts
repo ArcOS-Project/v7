@@ -69,7 +69,7 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
 
     const windows = Stack.renderer?.currentState
       .map((pid) => Stack.getProcess<IAppProcess>(pid))
-      .filter((proc) => !proc?.app?.data?.core);
+      .filter((proc) => !proc?.app?.data?.core && proc?.app.id !== (Daemon.preferences().globalSettings.shellExec ?? "arcShell"));
 
     if (!windows) return true;
 

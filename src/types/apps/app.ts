@@ -157,4 +157,5 @@ export interface TpaSpawnEntrypointResult<T = any> {
   runtime?: Constructs<IProcess>;
   returnValue?: T;
 }
+
 // !endtpa

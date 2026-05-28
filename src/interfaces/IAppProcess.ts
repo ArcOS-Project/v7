@@ -1,5 +1,5 @@
 import type { AppKeyCombinations } from "$types/apps/accelerator";
-import type { AppContextMenu, AppProcessData, ContextMenuItem, ToastMessage } from "$types/apps/app";
+import type { AppContextMenu, AppProcessData, AppProcessSpawnOptions, ContextMenuItem, ToastMessage } from "$types/apps/app";
 import type { MaybePromise } from "$types/shared/common";
 import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
@@ -7,6 +7,7 @@ import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
+import type { Constructs } from "./common";
 
 // !tpa
 export interface IAppProcess extends IProcess {
@@ -60,5 +61,9 @@ export interface IAppProcess extends IProcess {
   getIconCached(id: string): string;
   getIconStore(id: string): ReadableStore<string>;
   blink(): void;
+}
+
+export interface IAppProcessConstructor extends Constructs<IAppProcess> {
+  spawnOptions?: AppProcessSpawnOptions;
 }
 // !endtpa
