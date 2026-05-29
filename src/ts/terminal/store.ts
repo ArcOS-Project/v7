@@ -30,6 +30,7 @@ import { QuotaCommand } from "./commands/quota";
 import { ReloadCommand } from "./commands/reload";
 import { RestartCommand } from "./commands/restart";
 import { RmCommand } from "./commands/rm";
+import { RunCommand } from "./commands/run";
 import { ServiceCommand } from "./commands/service";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SoundbusCommand } from "./commands/soundbus";
@@ -83,4 +84,5 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   ServiceCommand,
   MigrationsCommand,
   LoadCommand,
+  RunCommand,
 ];
