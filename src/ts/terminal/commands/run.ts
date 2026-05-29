@@ -22,7 +22,10 @@ export class RunCommand extends TerminalProcess {
         stdout: (m) => term.rl?.print(m),
         stderr: (m) => term.rl?.print(`${BRRED}${m}${RESET}`),
         execCommand: (name, argv) => {
-          term.Info(name);
+          switch (name) {
+            case "echo":
+              term.rl?.println(`${argv.join(" ")}`);
+          }
         },
       });
 
