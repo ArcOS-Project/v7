@@ -11,8 +11,10 @@ import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import type { FilesystemProgressCallback } from "$types/system/fs";
-import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/server/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, Message, MessageAttachment } from "$types/server/messaging";
 import type { Service } from "$types/services/service";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import { CommandResult } from "$ts/result";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
@@ -100,18 +102,17 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<boolean> {
-    if (this._disposed) return false;
-    return (
-      await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Create(
-        subject,
-        recipients,
-        body,
-        attachments,
-        repliesTo,
-        onProgress
-      )
-    ).success;
+  ): Promise<ICommandResult<Message[]>> {
+    if (this._disposed) return CommandResult.Error("MessagingSvc is not running");
+
+    return await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Create(
+      subject,
+      recipients,
+      body,
+      attachments,
+      repliesTo,
+      onProgress
+    );
   }
 
   async deleteMessage(messageId: string): Promise<boolean> {

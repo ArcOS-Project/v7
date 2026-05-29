@@ -1,6 +1,7 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IBaseService } from "$interfaces/IServiceHost";
+import type { ExpandedMessage, ExpandedMessageNode, Message, MessageAttachment } from "$types/server/messaging";
 import type { FilesystemProgressCallback } from "$types/system/fs";
-import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/server/messaging";
 
 // !tpa
 export interface IMessagingInterface extends IBaseService {
@@ -16,7 +17,7 @@ export interface IMessagingInterface extends IBaseService {
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<boolean>;
+  ): Promise<ICommandResult<Message[]>>;
   deleteMessage(messageId: string): Promise<boolean>;
   readMessage(messageId: string): Promise<ExpandedMessage | undefined>;
   readAttachment(

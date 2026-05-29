@@ -1036,18 +1036,16 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     if (!item || item.blocked) return false;
 
-    if (messaging) {
-      await messaging.sendMessage(
-        `[ADMIN] Package has been blocked`,
-        [item.user!.username],
-        `Your package '${item.pkg.name}' (app ID \`${
-          item.pkg.appId
-        }\`) has been blocked by an administrator. This package is found to have copyrighted content, explicit depictions of sexual activity, or other inappropiate or illegal content.\n\nThe reason given by the administrator is:\n\n\`\`\`${
-          reason || "(no reason given)"
-        }\`\`\`\n\nReply to this message to negotiate to have your package unblocked.\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
-        []
-      );
-    }
+    messaging?.sendMessage(
+      `[ADMIN] Package has been blocked`,
+      [item.user!.username],
+      `Your package '${item.pkg.name}' (app ID \`${
+        item.pkg.appId
+      }\`) has been blocked by an administrator. This package is found to have copyrighted content, explicit depictions of sexual activity, or other inappropiate or illegal content.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+        reason || "(no reason given)"
+      }\`\`\`\n\nReply to this message to negotiate to have your package unblocked.\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+      []
+    );
 
     try {
       const response = await Backend.post(
@@ -1069,18 +1067,16 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     if (!item || !item.blocked) return false;
 
-    if (messaging) {
-      await messaging.sendMessage(
-        `[ADMIN] Package has been unblocked!`,
-        [item.user!.username],
-        `Your package '${item.pkg.name}' (app ID \`${
-          item.pkg.appId
-        }\`) has been unblocked by an administrator, and can be installed by users again.\n\nThe reason given by the administrator is:\n\n\`\`\`${
-          reason || "(no reason given)"
-        }\`\`\`\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
-        []
-      );
-    }
+    await messaging?.sendMessage(
+      `[ADMIN] Package has been unblocked!`,
+      [item.user!.username],
+      `Your package '${item.pkg.name}' (app ID \`${
+        item.pkg.appId
+      }\`) has been unblocked by an administrator, and can be installed by users again.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+        reason || "(no reason given)"
+      }\`\`\`\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+      []
+    );
 
     try {
       const response = await Backend.post(

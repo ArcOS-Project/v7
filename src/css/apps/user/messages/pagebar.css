@@ -1,0 +1,29 @@
+#Messages > div.body div.pages {
+  width: 51px;
+  height: 100%;
+  border-right: var(--button-glass-bg) 1px solid;
+  padding: 8px;
+}
+
+#Messages > div.body div.pages button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font-size: 16px;
+  margin-bottom: 5px;
+  background-color: transparent;
+  outline: none;
+}
+
+#Messages > div.body div.pages button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#Messages > div.body div.pages button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#Messages > div.body div.pages button.active {
+  background-color: var(--accent-transparent);
+  color: var(--accent-lighter);
+}

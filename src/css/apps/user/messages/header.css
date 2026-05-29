@@ -1,0 +1,25 @@
+#Messages > div.body div.container div.message-content div.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#Messages > div.body div.container div.message-content div.header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+#Messages > div.body div.container div.message-content p.message-body {
+  white-space: pre-wrap;
+}
+
+#Messages > div.body div.container div.message-content div.header h1 {
+  font-size: 16px;
+}
+
+#Messages > div.body div.container div.message-content div.header p {
+  opacity: 0.5;
+}
