@@ -26,15 +26,15 @@ export class ShareListGuiRuntime extends AppProcess implements IShareListGuiRunt
     this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
     this.thisUserId = Daemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
 
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
     this.selectedShare.subscribe((v) => {
       this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
       this.selectedIsMounted.set(!!Fs.drives[v]); // Check if the selected share is mounted
     });
 
-    this.setSource(__SOURCE__);
-  }
-
-  async start() {
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
 
     this.loading.set(true);
