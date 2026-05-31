@@ -6,6 +6,11 @@ export const messagingPages: Record<string, MessagingPage> = {
     icon: "inbox",
     supplier: async (process) => await process.getInbox(),
   },
+  unread: {
+    name: "Unread messages",
+    icon: "mail-warning",
+    supplier: async (process) => (await process.getInbox()).filter((m) => !m.read),
+  },
   sent: {
     name: "Sent messages",
     icon: "send",

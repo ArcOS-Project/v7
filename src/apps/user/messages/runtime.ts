@@ -44,7 +44,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "unread", messageId?: string) {
     super(pid, parentPid, app);
 
     this.service = Daemon?.serviceHost?.getService<IMessagingInterface>("MessagingService")!;

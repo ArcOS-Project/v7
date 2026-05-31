@@ -13,6 +13,8 @@
   const { process, message, children }: { process: IMessagingAppRuntime; message: ExpandedMessage; children?: Snippet } =
     $props();
   const { message: openedMessage } = process;
+  const isSent = message.authorId === Daemon.userInfo!._id!;
+  const user = isSent ? message.recipientData! : message.author;
   let date = $state<string>();
 
   onMount(async () => {
@@ -71,10 +73,10 @@
       process,
     ]}
   >
-    <ProfilePicture fallback={message.author.profilePicture} showOnline online={message.author.dispatchClients > 0} height={40} />
+    <ProfilePicture fallback={user?.profilePicture} showOnline online={(user?.dispatchClients ?? 0) > 0} height={40} />
     <div>
       <div class="author">
-        <h1>{message.author.displayName || message.author.username}</h1>
+        <h1>{user?.displayName || user?.username}</h1>
         <span class="timestamp" title={dayjs(message.createdAt).format("D MMMM YYYY, HH:mm:ss")}>{date}</span>
         {#if children}
           {@render children()}

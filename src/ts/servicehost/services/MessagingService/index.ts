@@ -64,6 +64,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
       }
 
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
+
       return message;
     });
   }
@@ -75,6 +79,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     return messages.map((message) => {
       if (message.author) {
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
+
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
       }
 
       return message;
@@ -89,6 +97,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     return messages.map((message) => {
       if (message.author) {
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
+
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
       }
 
       return message;
@@ -126,6 +138,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
     if (message && message.author) {
       message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+    }
+
+    if (message?.recipientData) {
+      message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
     }
 
     return message;
