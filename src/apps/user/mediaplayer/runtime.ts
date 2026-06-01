@@ -697,6 +697,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       this.Log("updating mediaSession");
 
       const albumCoverURL = metadata?.coverImagePath ? await Fs.direct(metadata!.coverImagePath!) : undefined;
+      this.CurrentCoverUrl.set(albumCoverURL);
       const albumCoverMime = metadata?.coverImagePath ? mime.getType(metadata!.coverImagePath!) : null;
 
       navigator.mediaSession.metadata = new MediaMetadata({
