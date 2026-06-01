@@ -80,6 +80,14 @@ export const AdminScopes = {
   adminAfsWrite: "admin.afs.write",
   adminAfsQuota: "admin.afs.quota",
   adminIpList: "admin.ip.list",
+  adminMailbrokerTemplatesRead: "admin.mailbroker.templates.read",
+  adminMailbrokerTemplatesWrite: "admin.mailbroker.templates.write",
+  adminMailbrokerSentRead: "admin.mailbroker.sent.read",
+  adminMailbrokerSentWrite: "admin.mailbroker.sent.write",
+  adminMailbrokerLogsRead: "admin.mailbroker.logs.read",
+  adminMailbrokerKeysRead: "admin.mailbroker.keys.read",
+  adminMailbrokerKeysWrite: "admin.mailbroker.keys.write",
+  adminMailbrokerSend: "admin.mailbroker.send",
 } as const;
 
 export type AdminScopesType = (typeof AdminScopes)[keyof typeof AdminScopes];
@@ -166,4 +174,12 @@ export const AdminScopeCaptions: Record<string, string> = {
   adminAfsWrite: "write admin resource drive",
   adminAfsQuota: "get admin resource drive quota",
   adminIpList: "get IP addresses of users",
+  adminMailbrokerTemplatesRead: "Read mailbroker templates",
+  adminMailbrokerTemplatesWrite: "Write/delete/create mailbroker templates",
+  adminMailbrokerSentRead: "Read mailbroker sent records",
+  adminMailbrokerSentWrite: "Delete mailbroker sent records",
+  adminMailbrokerLogsRead: "Read mailbroker logs",
+  adminMailbrokerKeysRead: "Read mailbroker API keys",
+  adminMailbrokerKeysWrite: "Write/delete/create mailbroker keys",
+  adminMailbrokerSend: "Manually send mails using the mailbroker",
 };

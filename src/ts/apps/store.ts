@@ -68,6 +68,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
 export const AdminAppImportPathAbsolutes = import.meta.glob([
   "$apps/admin/adminportal/AdminPortal",
   "$apps/admin/executequery/ExecuteQueryApp",
+  "$apps/admin/mailbroker/MailbrokerApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

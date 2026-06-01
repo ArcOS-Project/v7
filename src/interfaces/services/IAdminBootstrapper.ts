@@ -16,10 +16,11 @@ import type {
   UserTotp,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
-import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
-import type { StoreItem } from "$types/tpa/package";
+import type { Mailbroker } from "$types/server/mailbroker";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
+import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 
 export interface IAdminBootstrapper extends IBaseService {
@@ -118,4 +119,26 @@ export interface IAdminBootstrapper extends IBaseService {
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
   GetIpAddresses(): Promise<IpAddress[]>;
   getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>>;
+  getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>>;
+  getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>>;
+  getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>>;
+  getMailbrokerTemplates(): Promise<ICommandResult<Mailbroker.MailTemplate[]>>;
+  getMailbrokerSentRecord(id: string): Promise<ICommandResult<Mailbroker.SentMail>>;
+  getMailbrokerSentRecords(): Promise<ICommandResult<Mailbroker.SentMail[]>>;
+  deleteMailbrokerKey(id: string): Promise<ICommandResult>;
+  disableMailbrokerKey(id: string): Promise<ICommandResult>;
+  enableMailbrokerKey(id: string): Promise<ICommandResult>;
+  createMailbrokerKey(serverName: string): Promise<ICommandResult<Mailbroker.MailKey>>;
+  sendMailTemplateById(id: string, userId: string, props: Record<string, string>): Promise<ICommandResult<Mailbroker.MailKey>>;
+  sendMailTemplateByName(
+    name: string,
+    userId: string,
+    props: Record<string, string>
+  ): Promise<ICommandResult<Mailbroker.MailKey>>;
+  deleteMailbrokerSentRecord(id: string): Promise<ICommandResult>;
+  deprecateMailbrokerTemplate(id: string): Promise<ICommandResult>;
+  undeprecateMailbrokerTemplate(id: string): Promise<ICommandResult>;
+  deleteMailbrokerTemplate(id: string): Promise<ICommandResult>;
+  updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult>;
+  createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult>;
 }

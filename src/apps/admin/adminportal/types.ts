@@ -16,6 +16,7 @@ import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
 import type { Component } from "svelte";
+import type { Mailbroker } from "$types/server/mailbroker";
 
 export interface AdminPortalPage {
   name: string;
@@ -109,6 +110,10 @@ export type ActivitiesData = {
 
 export type VersioningData = {
   users: ExpandedUserInfo[];
+};
+
+export type MailbrokerTemplatesData = {
+  templates: ICommandResult<Mailbroker.MailTemplate[]>;
 };
 
 export type ScopesData = {

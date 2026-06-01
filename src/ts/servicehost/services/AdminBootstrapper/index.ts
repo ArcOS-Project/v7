@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
@@ -12,6 +13,7 @@ import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { deepCopyWithBlobs } from "$ts/util";
@@ -21,6 +23,7 @@ import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
+import type { App, InstalledApp } from "$types/apps/app";
 import type {
   Activity,
   AuditLog,
@@ -36,26 +39,33 @@ import type {
   UserStatistics,
   UserTotp,
 } from "$types/server/admin";
-import type { App, InstalledApp } from "$types/apps/app";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { Mailbroker } from "$types/server/mailbroker";
+import type { QueryResult } from "$types/server/query";
+import type { SharedDriveType } from "$types/server/shares";
+import type { Service } from "$types/services/service";
 import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
 import type { ArcPackage, StoreItem } from "$types/tpa/package";
-import type { Service } from "$types/services/service";
-import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import axios from "axios";
 import { fromExtension } from "human-filetypes";
+import beautify from "js-beautify";
 import JSZip from "jszip";
+import { parse } from "stacktrace-parser";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
-import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { QueryResult } from "$types/server/query";
-import { CommandResult } from "$ts/result";
-import { parse } from "stacktrace-parser";
-import beautify from "js-beautify";
-import axios from "axios";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
+  private get adminClient() {
+    return Backend.create({
+      headers: {
+        Authorization: `Bearer ${Daemon.token}`,
+      },
+      responseType: "json",
+      baseURL: Server.url + "/admin",
+    });
+  }
 
   //#region LIFECYCLE
 
@@ -175,7 +185,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/users/list", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get("/users/list");
 
       return (response.data as ExpandedUserInfo[]).map((u) => {
         u.profile.profilePicture = `${Server.url}${u.profile.profilePicture}`;
@@ -199,7 +209,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/logs", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get("/logs");
 
       return response.data as ServerLogItem[];
     } catch {
@@ -211,7 +221,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return [];
 
     try {
-      const response = await Backend.get("/admin/auditlog", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get("/auditlog");
 
       return response.data as AuditLog[];
     } catch {
@@ -222,9 +232,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>> {
     try {
       return CommandResult.FromResponse(
-        await Backend.get(`/admin/audit/query`, {
+        await this.adminClient.get(`/audit/query`, {
           params: query,
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
         })
       );
     } catch (e) {
@@ -234,11 +243,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async grantAdmin(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post("/admin/grant", toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post("/grant", toForm({ target: username }));
       return response.status === 200;
     } catch {
       return false;
@@ -247,11 +254,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async revokeAdmin(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post("/admin/revoke", toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post("/revoke", toForm({ target: username }));
       return response.status === 200;
     } catch {
       return false;
@@ -261,9 +266,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getPreferencesOf(username: string) {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/preferences/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/preferences/${username}`);
 
       return response.data as UserPreferences;
     } catch {
@@ -273,11 +276,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async setPreferencesOf(username: string, preferences: UserPreferences) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.put(`/admin/preferences/${username}`, preferences, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.put(`/preferences/${username}`, preferences);
       return response.status === 200;
     } catch {
       return false;
@@ -286,11 +287,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteUser(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/users/delete/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/users/delete/${username}`);
       return response.status === 200;
     } catch {
       return false;
@@ -300,9 +299,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getStatistics() {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/stats`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/stats`);
 
       return response.data as ServerStatistics;
     } catch {
@@ -313,9 +310,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllTokens() {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/tokens`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/tokens`);
 
       return response.data as Token[];
     } catch {
@@ -325,13 +320,11 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async purgeAllTokens() {
     if (this._disposed) return false;
+
     try {
-      const response = await Backend.delete(`/admin/tokens/purge/all`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.delete(`/tokens/purge/all`);
 
       location.reload();
-
       return response.status === 200;
     } catch {
       return false;
@@ -340,11 +333,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async purgeOneToken(id: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/tokens/purge/one/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/tokens/purge/one/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -353,11 +344,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async purgeUserTokens(userId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/tokens/purge/user/${userId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/tokens/purge/user/${userId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -366,11 +355,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteBugReport(reportId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/bughunt/report/${reportId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/bughunt/report/${reportId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -379,15 +366,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async closeBugReport(reportId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.patch(
-        `/admin/bughunt/close/${reportId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-        }
-      );
 
+    try {
+      const response = await this.adminClient.patch(`/bughunt/close/${reportId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -396,15 +377,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async reopenBugReport(reportId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.patch(
-        `/admin/bughunt/open/${reportId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-        }
-      );
 
+    try {
+      const response = await this.adminClient.patch(`/bughunt/open/${reportId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -414,9 +389,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllBugReports() {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/bughunt/list`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/bughunt/list`);
 
       return response.data as BugReport[];
     } catch {
@@ -427,7 +400,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getBugReport(id: string): Promise<BugReport | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/bughunt/report/${id}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get(`/report/${id}`);
 
       return response.data as BugReport;
     } catch {
@@ -438,9 +411,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getBugHuntStatistics() {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/bughunt/stats`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/bughunt/stats`);
 
       return response.data as ReportStatistics;
     } catch {
@@ -450,11 +421,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async approveUser(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/users/approve`, toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/users/approve`, toForm({ target: username }));
       return response.status === 200;
     } catch {
       return false;
@@ -463,11 +432,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async disapproveUser(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/users/disapprove`, toForm({ target: username }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/users/disapprove`, toForm({ target: username }));
       return response.status === 200;
     } catch {
       return false;
@@ -476,11 +443,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async changeEmailOf(username: string, newEmail: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/users/changeemail`, toForm({ target: username, newEmail }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/users/changeemail`, toForm({ target: username, newEmail }));
       return response.status === 200;
     } catch {
       return false;
@@ -489,11 +454,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async changePasswordOf(username: string, newPassword: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/users/changepswd`, toForm({ target: username, newPassword }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/users/changepswd`, toForm({ target: username, newPassword }));
       return response.status === 200;
     } catch {
       return false;
@@ -503,9 +466,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAvailableScopes(): Promise<Record<string, string>> {
     if (this._disposed) return {};
     try {
-      const response = await Backend.get(`/admin/scopes/available`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/scopes/available`);
 
       return response.data as Record<string, string>;
     } catch {
@@ -516,9 +477,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getScopesOf(username: string): Promise<string[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/scopes/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/scopes/${username}`);
 
       return response.data as string[];
     } catch {
@@ -528,11 +487,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async setScopesOf(username: string, scopes: string[]): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }));
       return response.status === 200;
     } catch {
       return false;
@@ -542,9 +499,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getQuotaOf(username: string): Promise<UserQuota | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/fs/quota/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/fs/quota/${username}`);
 
       return response.data as UserQuota;
     } catch {
@@ -554,11 +509,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async setQuotaOf(username: string, newQuota: number) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.put(`/admin/fs/quota/${username}`, toForm({ limit: newQuota }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.put(`/fs/quota/${username}`, toForm({ limit: newQuota }));
       return response.status === 200;
     } catch {
       return false;
@@ -568,9 +521,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllActivity(): Promise<Activity[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/activities/list", {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get("/activities/list");
 
       return response.data as Activity[];
     } catch {
@@ -581,9 +532,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getActivityOf(username: string): Promise<Activity[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/activities/user/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/activities/user/${username}`);
 
       return response.data as Activity[];
     } catch {
@@ -593,11 +542,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteAllActivities(): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/activities`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/activities`);
       return response.status === 200;
     } catch {
       return false;
@@ -606,11 +553,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteActivitiesOf(username: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/activities/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/activities/${username}`);
       return response.status === 200;
     } catch {
       return false;
@@ -620,7 +565,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllTotp(): Promise<PartialUserTotp[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/totp", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get("/totp");
 
       return response.data as PartialUserTotp[];
     } catch {
@@ -631,7 +576,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getTotpOf(username: string): Promise<UserTotp | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/totp/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get(`/totp/${username}`);
 
       return response.status === 200 ? response.data : undefined;
     } catch {
@@ -641,15 +586,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deActivateTotpOf(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/totp/deactivate/${username}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-        }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/totp/deactivate/${username}`, {});
       return response.status === 200;
     } catch {
       return false;
@@ -658,11 +597,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteTotpOf(username: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/totp/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/totp/${username}`);
       return response.status === 200;
     } catch {
       return false;
@@ -672,7 +609,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllFsAccessors(): Promise<FsAccess[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get("/admin/accessors", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get("/accessors");
 
       return response.data as FsAccess[];
     } catch {
@@ -683,9 +620,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/accessors/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/accessors/${username}`);
 
       return response.data;
     } catch {
@@ -695,9 +630,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteAllFsAccessors(): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete("/admin/accessors", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
+    try {
+      const response = await this.adminClient.delete("/accessors");
       return response.status === 200;
     } catch {
       return false;
@@ -706,11 +641,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteFsAccessorsOf(username: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/accessors/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/accessors/${username}`);
       return response.status === 200;
     } catch {
       return false;
@@ -720,7 +653,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllIndexingNodes(): Promise<FSItem[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/index`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get(`/index`);
 
       return response.data as FSItem[];
     } catch {
@@ -731,7 +664,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getIndexingNodesOf(username: string): Promise<FSItem[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/index/${username}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get(`/index/${username}`);
 
       return response.data as FSItem[];
     } catch {
@@ -742,11 +675,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async forceIndexFor(username: string): Promise<string[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.post(
-        `/admin/index/${username}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
+      const response = await this.adminClient.post(`/index/${username}`, {});
 
       return response.data as string[];
     } catch {
@@ -756,11 +685,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteIndexingOf(username: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/index/${username}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/index/${username}`);
       return response.status === 200;
     } catch {
       return false;
@@ -798,9 +725,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async getAllShares(): Promise<SharedDriveType[]> {
     if (this._disposed) return [];
-    try {
-      const response = await Backend.get("/admin/share/list", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
+    try {
+      const response = await this.adminClient.get("/share/list");
       return response.data as SharedDriveType[];
     } catch {
       return [];
@@ -809,10 +736,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async getSharesOf(userId: string): Promise<SharedDriveType[]> {
     if (this._disposed) return [];
+
     try {
-      const response = await Backend.get(`/admin/share/list/${userId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/share/list/${userId}`);
 
       return response.data as SharedDriveType[];
     } catch {
@@ -822,9 +748,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteShare(shareId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/share/${shareId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
+    try {
+      const response = await this.adminClient.delete(`/share/${shareId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -833,11 +759,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async kickUserFromShare(shareId: string, userId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/share/kick/${shareId}`, toForm({ userId }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/share/kick/${shareId}`, toForm({ userId }));
       return response.status === 200;
     } catch {
       return false;
@@ -846,11 +770,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async addUserToShare(shareId: string, userId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/share/adduser/${shareId}`, toForm({ userId }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/share/adduser/${shareId}`, toForm({ userId }));
       return response.status === 200;
     } catch {
       return false;
@@ -860,9 +782,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getShareAccessors(shareId: string): Promise<FSItem[]> {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/share/accessors/${shareId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/share/accessors/${shareId}`);
 
       return response.data as FSItem[];
     } catch {
@@ -872,11 +792,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteShareAccessors(shareId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/share/accessors/${shareId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/share/accessors/${shareId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -885,11 +803,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/share/changepswd/${shareId}`, toForm({ newPassword }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/share/changepswd/${shareId}`, toForm({ newPassword }));
       return response.status === 200;
     } catch {
       return false;
@@ -898,11 +814,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async renameShare(shareId: string, newName: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/share/rename/${shareId}`, toForm({ newName }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/share/rename/${shareId}`, toForm({ newName }));
       return response.status === 200;
     } catch {
       return false;
@@ -911,11 +825,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async changeShareOwner(shareId: string, newUserId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(`/admin/share/chown/${shareId}`, toForm({ newUserId }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.post(`/share/chown/${shareId}`, toForm({ newUserId }));
       return response.status === 200;
     } catch {
       return false;
@@ -925,9 +837,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getStatisticsOf(userId: string): Promise<UserStatistics | undefined> {
     if (this._disposed) return;
     try {
-      const response = await Backend.get(`/admin/users/stats/${userId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/users/stats/${userId}`);
 
       return response.data as UserStatistics;
     } catch {
@@ -937,11 +847,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async setShareQuotaOf(shareId: string, quota: number): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.put(`/admin/share/quota/${shareId}`, toForm({ limit: quota }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.put(`/share/quota/${shareId}`, toForm({ limit: quota }));
       return response.status === 200;
     } catch {
       return false;
@@ -951,9 +859,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getShareQuotaOf(shareId: string): Promise<UserQuota | undefined> {
     if (this._disposed) return undefined;
     try {
-      const response = await Backend.get(`/admin/share/quota/${shareId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/share/quota/${shareId}`);
 
       return response.data as UserQuota;
     } catch {
@@ -963,13 +869,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async unlockShare(shareId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/share/unlock/${shareId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/share/unlock/${shareId}`);
       return response.status === 2000;
     } catch {
       return false;
@@ -978,13 +880,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async lockShare(shareId: string): Promise<boolean> {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/share/lock/${shareId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/share/lock/${shareId}`);
       return response.status === 2000;
     } catch {
       return false;
@@ -994,10 +892,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async deleteStoreItem(_id: string): Promise<boolean> {
     false;
     try {
-      const response = await Backend.delete(`/admin/store/delete/one/${_id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
+      const response = await this.adminClient.delete(`/store/delete/one/${_id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1007,10 +902,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async deleteUserStoreItems(userId: string): Promise<boolean> {
     false;
     try {
-      const response = await Backend.delete(`/admin/store/delete/user/${userId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
+      const response = await this.adminClient.delete(`/store/delete/user/${userId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1020,7 +912,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getAllStoreItems() {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/store/list`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const response = await this.adminClient.get(`/store/list`);
 
       return response.data as StoreItem[];
     } catch {
@@ -1031,9 +923,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async getUserStoreItems(userId: string) {
     if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/storel/list/${userId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+      const response = await this.adminClient.get(`/storel/list/${userId}`);
 
       return response.data as StoreItem[];
     } catch {
@@ -1043,13 +933,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deprecatePackage(itemId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/store/deprecate/${itemId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/store/deprecate/${itemId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1058,13 +944,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async undeprecatePackage(itemId: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/store/undeprecate/${itemId}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/store/undeprecate/${itemId}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1100,12 +982,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
 
     try {
-      const response = await Backend.post(
-        `/admin/store/block/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
+      const response = await this.adminClient.post(`/store/block/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1133,12 +1010,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
 
     try {
-      const response = await Backend.post(
-        `/admin/store/unblock/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
-
+      const response = await this.adminClient.post(`/store/unblock/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1147,13 +1019,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async storeItemMakeOfficial(id: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/store/official/on/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/store/official/on/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1162,13 +1030,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async storeItemMakeNotOfficial(id: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/store/official/off/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
-      );
 
+    try {
+      const response = await this.adminClient.post(`/store/official/off/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1249,11 +1113,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async deleteStoreItemVerification(id: string) {
     if (this._disposed) return false;
-    try {
-      const response = await Backend.delete(`/admin/store/verification/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
 
+    try {
+      const response = await this.adminClient.delete(`/store/verification/${id}`);
       return response.status === 200;
     } catch {
       return false;
@@ -1262,15 +1124,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async verifyStoreItem(id: string, note: string) {
     if (this._disposed) return false;
+
     try {
-      const response = await Backend.post(`/admin/store/verification/${id}`, toForm({ note }), {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      if (response.status !== 200) {
-        return false;
-      }
-
+      await this.adminClient.post(`/store/verification/${id}`, toForm({ note }));
       await Fs.createDirectory(join(UserPaths.Documents, `AdminBootstrapper`));
       await Fs.writeFile(join(UserPaths.Documents, `AdminBootstrapper/Verification_${id}_${Date.now()}.txt`), textToBlob(note));
 
@@ -1281,14 +1137,13 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async getRegisteredVersionFor(username: string): Promise<string> {
+    if (this._disposed) return "";
     this.Log(`getRegisteredVersionFor: ${username}`);
 
     try {
-      const contents = await Backend.get(`/admin/fs/file/${username}/System/RegisteredVersion`, {
+      const contents = await this.adminClient.get(`/fs/file/${username}/System/RegisteredVersion`, {
         responseType: "text",
-        headers: { Authorization: `Bearer ${Daemon.token}` },
       });
-      if (contents.status !== 200) throw "";
 
       return contents.data;
     } catch {
@@ -1297,14 +1152,11 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async getMigrationIndexFor(username: string): Promise<Record<string, number>> {
+    if (this._disposed) return {};
     this.Log(`getMigrationIndexFor: ${username}`);
 
     try {
-      const contents = await Backend.get(`/admin/fs/file/${username}/System/Migrations/Index.json`, {
-        responseType: "json",
-        headers: { Authorization: `Bearer ${Daemon.token}` },
-      });
-      if (contents.status !== 200) throw "";
+      const contents = await this.adminClient.get(`/fs/file/${username}/System/Migrations/Index.json`);
 
       return contents.data;
     } catch {
@@ -1313,12 +1165,9 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async GetIpAddresses(): Promise<IpAddress[]> {
+    if (this._disposed) return [];
     try {
-      const response = await Backend.get(`/admin/ip/list`, {
-        responseType: "json",
-        headers: { Authorization: `Bearer ${Daemon.token}` },
-      });
-      if (response.status !== 200) throw "";
+      const response = await this.adminClient.get(`/ip/list`);
 
       return response.data;
     } catch {
@@ -1327,6 +1176,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
     const trace = parse(report.body)
       .filter(Boolean)
       .filter((f) => (f.file?.startsWith("./assets") || f.file?.startsWith(report.location.origin)) && f.file.endsWith(".js"));
@@ -1343,7 +1194,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (url.toString().includes("team.arcweb.nl")) {
       return CommandResult.Error("Previews are not supported because their JS files aren't retained");
     }
-  
+
     try {
       const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
 
@@ -1372,6 +1223,218 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       });
     } catch (e) {
       return CommandResult.Error(`${e} -- URL: ${url}`);
+    }
+  }
+
+  async getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/keys/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/logs`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getMailbrokerTemplates(): Promise<ICommandResult<Mailbroker.MailTemplate[]>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/templates`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getMailbrokerSentRecords(): Promise<ICommandResult<Mailbroker.SentMail[]>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/sent`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/templates/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getMailbrokerSentRecord(id: string): Promise<ICommandResult<Mailbroker.SentMail>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/sent/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async deleteMailbrokerKey(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.delete(`/mailbroker/keys/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async disableMailbrokerKey(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(`/mailbroker/keys/disable/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async enableMailbrokerKey(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(`/mailbroker/keys/enable/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async createMailbrokerKey(serverName: string): Promise<ICommandResult<Mailbroker.MailKey>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(`/mailbroker/keys`, toForm({ serverName }));
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async sendMailTemplateById(
+    id: string,
+    userId: string,
+    props: Record<string, string>
+  ): Promise<ICommandResult<Mailbroker.MailKey>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(
+        `/mailbroker/send/byid/${id}`,
+        toForm({ userId, props: JSON.stringify(props) })
+      );
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async sendMailTemplateByName(
+    name: string,
+    userId: string,
+    props: Record<string, string>
+  ): Promise<ICommandResult<Mailbroker.MailKey>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(
+        `/mailbroker/send/byname/${name}`,
+        toForm({ userId, props: JSON.stringify(props) })
+      );
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async deleteMailbrokerSentRecord(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.delete(`/mailbroker/sent/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async deprecateMailbrokerTemplate(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(`/mailbroker/templates/deprecate/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async undeprecateMailbrokerTemplate(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.post(`/mailbroker/templates/undeprecate/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async deleteMailbrokerTemplate(id: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.delete(`/mailbroker/templates/${id}`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.patch(`/mailbroker/templates/${id}`, toForm(update));
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.patch(`/mailbroker/templates`, toForm(data));
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 }
