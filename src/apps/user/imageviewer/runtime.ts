@@ -4,13 +4,18 @@ import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
-import { getItemNameFromPath } from "$ts/util/fs";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import { ImageViewer } from "svelte-image-viewer";
+import { ImageViewerAltMenu } from "./altmenu";
+import { ImageViewerAccelerators } from "./accelerators";
 
 export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntime {
   openedFile = Store<string>();
   imageUrl = Store<string>();
+  viewer = Store<ImageViewer>();
+  scale = Store<number>(1);
   indirect = Store<boolean>(false);
   overridePopulatable: boolean = true;
 
@@ -22,6 +27,8 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
     this.renderArgs.path = path;
 
     this.setSource(__SOURCE__);
+    this.altMenu.set(ImageViewerAltMenu(this));
+    this.acceleratorStore.push(...ImageViewerAccelerators(this))
   }
 
   async render({ path }: { path: string }) {
@@ -31,6 +38,20 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
   }
 
   //#endregion
+
+  async readFileDialog() {
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose an image to view",
+      extensions: this.app.data.opens?.extensions ?? [],
+      icon: this.app.data.metadata.icon,
+      startDir: getParentDirectory(this.openedFile()),
+      targetPid: this.pid,
+    });
+
+    if (!path) return;
+
+    return await this.readFile(path);
+  }
 
   async readFile(path: string) {
     this.Log(`readFile: ${path}`);
