@@ -8,8 +8,8 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import { ImageViewer } from "svelte-image-viewer";
-import { ImageViewerAltMenu } from "./altmenu";
 import { ImageViewerAccelerators } from "./accelerators";
+import { ImageViewerAltMenu } from "./altmenu";
 
 export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntime {
   openedFile = Store<string>();
@@ -28,7 +28,16 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
 
     this.setSource(__SOURCE__);
     this.altMenu.set(ImageViewerAltMenu(this));
-    this.acceleratorStore.push(...ImageViewerAccelerators(this))
+    this.acceleratorStore.push(...ImageViewerAccelerators(this));
+  }
+
+  async start() {
+    this.viewer.subscribe(async (v) => {
+      if (!v) return;
+
+      await Sleep(100);
+      v.scaleImageToFit();
+    });
   }
 
   async render({ path }: { path: string }) {

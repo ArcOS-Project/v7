@@ -5,18 +5,15 @@
   import ActionPill from "$lib/Window/ActionBar/ActionPill.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { Stack } from "$ts/env";
-  import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
   import { ImageViewer } from "svelte-image-viewer";
   const { process }: { process: IImageViewerRuntime } = $props();
   const { imageUrl, openedFile, viewer, scale } = process;
 
   let minScale = $state<number>(0.25);
-  let maxScale = $state<number>(3.0);
+  let maxScale = $state<number>(16.0);
 
   onMount(() => {
-    $viewer?.scaleImageToFit();
-
     $viewer?.getContainer()?.addEventListener("click", () => Stack.renderer?.focusPid(process.pid));
   });
 
@@ -37,11 +34,8 @@
   </div>
   <ActionBar>
     {#snippet leftContent()}
-      <ActionPill key="Filename">
-        {getItemNameFromPath($openedFile)}
-      </ActionPill>
       <ActionPill key="Zoom">
-        {($scale*100).toFixed(2)}%
+        {($scale * 100).toFixed(2)}%
       </ActionPill>
     {/snippet}
     {#snippet rightContent()}
