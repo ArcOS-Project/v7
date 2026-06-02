@@ -263,8 +263,6 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
     const installedPkg = await this.getInstalledPackageByAppId(appId);
 
-    console.log(appId, installedPkg);
-
     if (!installedPkg) {
       this.BUSY = "";
       return false;
