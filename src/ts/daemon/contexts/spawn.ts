@@ -66,8 +66,15 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       }
 
       if (!runtime) throw new Error("Did not find a suitable runtime for execution");
-      if ((runtime as any).spawnOptions && options) {
-        options = applyDefaults<AppProcessSpawnOptions>(options, (runtime as any).spawnOptions);
+
+      const spawnOptions: AppProcessSpawnOptions | undefined = (runtime as any).spawnOptions;
+      if (spawnOptions) {
+        if (options) {
+          // Overload the spawn options onto the incoming options to replace PROPERTIES, not the entire object
+          options = applyDefaults<AppProcessSpawnOptions>(options, spawnOptions);
+        } else {
+          options = spawnOptions;
+        }
       }
 
       const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
