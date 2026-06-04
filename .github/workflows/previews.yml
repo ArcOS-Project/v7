@@ -26,6 +26,7 @@ jobs:
       - name: Write env file
         run: |
           echo -e "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
+          echo -e "DW_BETA_URL=\"/api\"" > .env
           echo -e "DW_PREVIEW_DEP_BRANCH=\"${{ github.head_ref || github.ref_name }}\"" >> .env
           if [[ "${{ github.head_ref || github.ref_name }}" = "beta" ]]; then
             echo "betabranch" > public/mode

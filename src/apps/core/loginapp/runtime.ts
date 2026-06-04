@@ -315,9 +315,11 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
 
     this.Log(`Saving token of '${userDaemon.username}' to cookies`);
 
-    const cookieOptions = {
-      expires: 14, // lmao
-      domain: import.meta.env.DEV ? "localhost" : location.hostname,
+    const cookieOptions: Cookies.CookieAttributes = {
+      path: "/",
+      secure: false,
+      expires: 30,
+      domain: location.hostname,
     };
 
     Cookies.set("arcToken", token, cookieOptions);

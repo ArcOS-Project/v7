@@ -9,6 +9,7 @@ import validator from "validator";
 import { Kernel, Server } from "../env";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { getJsonHierarchy } from "./hierarchy";
+import { ArcMode } from "$ts/metadata/mode";
 
 leoProfanity.loadDictionary("en");
 
@@ -321,3 +322,7 @@ export function ToAxiosProgress(
       type,
     });
 }
+
+export const IsBeta = () =>
+  (!import.meta.env.DEV && ArcMode() === "betabranch" && location.hostname !== "beta.arcweb.nl") ||
+  location.hostname === "localhost";

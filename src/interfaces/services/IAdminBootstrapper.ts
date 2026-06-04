@@ -16,10 +16,11 @@ import type {
   UserTotp,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
-import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
-import type { StoreItem } from "$types/tpa/package";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
+import type { BetaFeedback } from "$types/system/beta";
+import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 
 export interface IAdminBootstrapper extends IBaseService {
@@ -118,4 +119,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
   GetIpAddresses(): Promise<IpAddress[]>;
   getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>>;
+  getBetaFeedbackVersions(): Promise<ICommandResult<Record<string, number>>>;
+  getBetaFeedbackFor(version: string): Promise<ICommandResult<BetaFeedback[]>>;
+  markBetaFeedbackAsRead(id: string): Promise<ICommandResult>;
 }

@@ -14,6 +14,7 @@ import { Backend } from "$ts/kernel/mods/server/axios";
 import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
+import { IsBeta } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
@@ -37,6 +38,7 @@ import type { BugReport, ReportStatistics } from "$types/server/bughunt";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
 import type { Service } from "$types/services/service";
+import type { BetaFeedback } from "$types/system/beta";
 import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
 import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
@@ -1318,6 +1320,42 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       });
     } catch (e) {
       return CommandResult.Error(`${e} -- URL: ${url}`);
+    }
+  }
+
+  async getBetaFeedbackVersions(): Promise<ICommandResult<Record<string, number>>> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      const response = await Daemon.betaClient.get("/feedback/versions");
+
+      return CommandResult.Ok(response.data as Record<string, number>);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getBetaFeedbackFor(version: string): Promise<ICommandResult<BetaFeedback[]>> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      const response = await Daemon.betaClient.get(`/feedback/version/${version}`);
+
+      return CommandResult.Ok(response.data as BetaFeedback[]);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async markBetaFeedbackAsRead(id: string): Promise<ICommandResult> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      await Daemon.betaClient.post(`/feedback/read/${id}`);
+
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 }
