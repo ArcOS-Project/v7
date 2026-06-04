@@ -58,7 +58,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
       this.pid
     );
 
-    const sent = await this.service.sendMessage(
+    const sentResult = await this.service.sendMessage(
       title(),
       recipients(),
       body(),
@@ -77,7 +77,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
 
     prog?.stop();
 
-    if (!sent) this.sendFailed();
+    if (!sentResult.success) this.sendFailed(sentResult.errorMessage);
     else this.closeWindow();
   }
 
@@ -107,15 +107,17 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     );
   }
 
-  sendFailed() {
+  sendFailed(errorMessage?: string) {
+    errorMessage ||=
+      "It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.";
+
     this.Log(`sendFailed`);
 
     this.sending.set(false);
     MessageBox(
       {
         title: "Failed to send message",
-        message:
-          "ArcOS failed to send the message! It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.",
+        message: `The message couldn't be sent${errorMessage}`,
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],

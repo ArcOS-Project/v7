@@ -79,5 +79,6 @@
 }
 
 #messageBox div.top div.component li {
-  padding-left: 10px;
+  /* padding-left: 10px; */
+  margin-bottom: 5px;
 }

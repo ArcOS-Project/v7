@@ -19,5 +19,6 @@ export interface ISpawnUserContext extends IUserContext {
   ): Promise<T | undefined>;
   tpaEntrypoint(app: InstalledApp, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>>;
   tpaError_noEnableThirdParty(): void;
+  clearEntrypointCache(): void;
 }
 // !endtpa

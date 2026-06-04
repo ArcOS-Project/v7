@@ -79,6 +79,7 @@
     "sql.js": "^1.13.0",
     "stacktrace-parser": "^0.1.11",
     "string-width": "^7.2.0",
+    "svelte-image-viewer": "^7.1.0",
     "svelte-markdown": "^0.4.1",
     "svelte-splitpanes": "^8.0.9",
     "ua-parser-js": "^2.0.3",

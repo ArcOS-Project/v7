@@ -22,7 +22,7 @@ export interface IDistributionServiceProcess extends IBaseService {
   loadInstalledStoreItemList(noCache?: boolean): Promise<StoreItem[]>;
   writeInstalledStoreItemList(list: StoreItem[]): Promise<boolean>;
   getInstalledStoreItemById(id: string): Promise<StoreItem | undefined>;
-  addPackageToInstalled(item: ArcPackage): Promise<boolean | undefined>;
+  addPackageToInstalled(item: ArcPackage, force?: boolean): Promise<boolean | undefined>;
   removePackageFromInstalled(id: string): Promise<boolean | undefined>;
   loadInstalledPackageList(): Promise<ArcPackage[]>;
   writeInstalledPackageList(list: ArcPackage[]): Promise<boolean>;

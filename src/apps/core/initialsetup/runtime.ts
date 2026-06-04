@@ -162,6 +162,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 
+    Stack.renderer?.target.classList.add("theme-light")
+
     await Sleep(1000);
 
     this.showMainContent.set(true);

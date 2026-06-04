@@ -5,24 +5,9 @@
   import IconActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
-  import { Daemon } from "$ts/env";
-  import { UserPaths } from "$ts/user/store";
 
   const { process }: { process: IMessagingAppRuntime } = $props();
   const { message, messageWindow, messageFromFile } = process;
-
-  async function downloadAttachments() {
-    const [path] = await Daemon!.files!.LoadSaveDialog({
-      title: "Choose where to save the attachment",
-      startDir: UserPaths.Downloads,
-      icon: "MessagingIcon",
-      folder: true,
-    });
-
-    if (!path) return;
-
-    process.service.downloadAttachments(message()!, message()?.attachmentData!, path);
-  }
 </script>
 
 <ActionBar>
@@ -31,7 +16,7 @@
       <ActionButton suggested icon="plus" onclick={() => process.compose()}>Compose</ActionButton>
     {/if}
     {#if $message?.attachmentData?.length}
-      <IconActionButton icon="file-down" onclick={downloadAttachments}></IconActionButton>
+      <IconActionButton icon="file-down" onclick={() => process.downloadAttachments()}></IconActionButton>
     {/if}
   {/snippet}
   {#snippet rightContent()}
@@ -62,7 +47,7 @@
       <IconActionButton
         icon={$message && process.isArchived($message._id) ? "archive-x" : "archive"}
         disabled={!$message || messageFromFile}
-        onclick={() => process.saveMessage()}
+        onclick={() => process.toggleArchived($message!)}
         title="Archive/unarchive message"
       ></IconActionButton>
     </IconActionGroup>

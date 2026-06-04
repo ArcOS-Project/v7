@@ -1,0 +1,56 @@
+#Messages > div.body div.container div.message-content div.loading-thread {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.5;
+}
+
+#Messages > div.body div.container div.message-content div.thread-wrapper div.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+#Messages > div.body div.container div.message-content div.thread-wrapper div.notice p {
+  opacity: 0.5;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread div.sub-thread {
+  margin-left: 9px;
+  padding-left: 9px;
+  border-left: var(--button-hover-bg) 2px solid;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item {
+  width: 100%;
+  background-color: transparent;
+  outline: none;
+  text-align: left;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item > p {
+  opacity: 0.5;
+  margin-top: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 600px;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.thread-item:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button div.header {
+  flex-grow: 1;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button div.header > div:last-child {
+  width: 0;
+  flex-grow: 1;
+}

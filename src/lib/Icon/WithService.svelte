@@ -21,4 +21,4 @@
   let _resolved = $derived.by<string>(() => service.getIconCached(icon) || service.getIconCached(fallback) || fallback);
 </script>
 
-<img src={_resolved == icon ? BlankIcon : _resolved} class={className} {title} alt={title} {style} />
+<img src={_resolved == icon ? fallback || BlankIcon : _resolved} class={className} {title} alt={title} {style} />

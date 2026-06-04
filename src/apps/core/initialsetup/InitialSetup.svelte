@@ -15,11 +15,11 @@
   pageNumber.subscribe(async (v) => {
     hide = true;
 
-    await Sleep(300);
+    await Sleep(200);
 
     PageComponent = pages[v || 0] as Component;
 
-    await Sleep(300);
+    await Sleep(100);
 
     hide = false;
   });

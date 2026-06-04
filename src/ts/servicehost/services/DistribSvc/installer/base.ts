@@ -214,6 +214,7 @@ export class InstallerProcessBase extends Process {
 
     this.logStatus(this.workingDirectory, "mkdir");
     try {
+      await Fs.deleteItem(this.workingDirectory, false);
       await Fs.createDirectory(this.workingDirectory, false);
       this.setCurrentStatus("done");
       return true;

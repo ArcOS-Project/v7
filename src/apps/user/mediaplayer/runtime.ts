@@ -76,6 +76,17 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
 
     this.renderArgs.file = file;
+
+    this.setSource(__SOURCE__);
+  }
+
+  async onClose() {
+    this.Reset();
+    this.player?.remove();
+    return true;
+  }
+
+  protected async start(): Promise<any> {
     this.queueIndex.subscribe((v) => this.handleSongChange(v));
 
     this.State.subscribe((v) => {
@@ -108,16 +119,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       // Merging goes here
     });
 
-    this.setSource(__SOURCE__);
-  }
-
-  async onClose() {
-    this.Reset();
-    this.player?.remove();
-    return true;
-  }
-
-  protected async start(): Promise<any> {
     await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
     await Fs.createDirectory(this.COVERIMAGES_PATH);
     await this.Configuration.initialize();

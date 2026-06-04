@@ -450,6 +450,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
         );
         window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
         window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        window?.style.setProperty("--secondary-border", "var(--terminal-background-inactive) 1px solid");
       }
     } catch {
       await this.writeConfig();

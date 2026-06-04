@@ -11,9 +11,9 @@ export const ImageViewerApp: App = {
     icon: "ImageViewerIcon",
     appGroup: "multimedia",
   },
-  size: { w: 640, h: 480 },
-  minSize: { w: 300, h: 200 },
-  maxSize: { w: 1200, h: 800 },
+  size: { w: 700, h: 550 },
+  minSize: { w: 700, h: 550 },
+  maxSize: { w: NaN, h: NaN },
   state: {
     minimized: false,
     maximized: false,

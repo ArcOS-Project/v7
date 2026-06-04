@@ -25,6 +25,7 @@ export interface MessageCreateData {
 export interface ExpandedMessage extends Message {
   attachmentData?: MessageAttachment[];
   author?: PublicUserInfo;
+  recipientData?: PublicUserInfo;
 }
 
 export interface ExpandedMessageNode extends ExpandedMessage {

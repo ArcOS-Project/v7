@@ -134,6 +134,7 @@
         class="lucide icon-circle-question-mark info-button"
         aria-label="Username Info"
         title="Must be within 3 and 32 characters of length and only contain numbers and letters"
+        tabindex="-1"
       ></button>
       <input
         type="text"
@@ -151,6 +152,7 @@
         class="lucide icon-circle-question-mark info-button"
         aria-label="Email Info"
         title="Must be an unused email and one you can access."
+        tabindex="-1"
       ></button>
       <input
         type="email"
@@ -168,6 +170,7 @@
         class="lucide icon-circle-question-mark info-button"
         aria-label="Password Info"
         title="Must contain a mix of at least 8 regular, special, and numeric characters."
+        tabindex="-1"
       ></button>
       <div class="duo">
         <input

@@ -24,5 +24,4 @@ export interface IProcessDispatch {
   subscribe(event: string, callback: DispatchCallback): void;
   dispatch(event: string, ...args: any[]): Promise<boolean>;
 }
-
 // !endtpa

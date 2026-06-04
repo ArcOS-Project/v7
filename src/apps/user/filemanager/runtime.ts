@@ -61,11 +61,6 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
 
     this.renderArgs.path = path;
     this.loadSave = loadSave;
-    this.setupLoadSave();
-
-    this.dispatch.subscribe("navigate", (path) => {
-      this.navigate(path);
-    });
 
     this.setSource(__SOURCE__);
   }
@@ -95,6 +90,12 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   }
 
   async start() {
+    this.setupLoadSave();
+
+    this.dispatch.subscribe("navigate", (path) => {
+      this.navigate(path);
+    });
+
     // Convert the three viewMode booleans into one
     if (!this.userPreferences().appPreferences.fileManager?.viewMode) {
       this.userPreferences.update((pref) => {

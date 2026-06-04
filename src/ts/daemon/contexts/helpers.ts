@@ -214,4 +214,29 @@ The information provided in this report is subject for review by Izaak or anothe
       }
     );
   }
+
+  openWebpage(href: string) {
+    MessageBox(
+      {
+        title: "Open this page?",
+        message: `You're about to leave ArcOS to navigate to <code>${href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
+        buttons: [
+          {
+            caption: "Stay here",
+            action() {},
+          },
+          {
+            caption: "Proceed",
+            action() {
+              window.open(href, "_blank");
+            },
+            suggested: true,
+          },
+        ],
+        image: "GlobeIcon",
+      },
+      +Env.get("shell_pid"),
+      true
+    );
+  }
 }

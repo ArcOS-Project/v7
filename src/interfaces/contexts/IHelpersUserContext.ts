@@ -25,5 +25,6 @@ export interface IHelpersUserContext extends IUserContext {
   waitForLeaveInvocationAllow(): Promise<void>;
   safeModeNotice(): void;
   iHaveFeedback(process: IAppProcess): void;
+  openWebpage(href: string): void;
 }
 // !endtpa
