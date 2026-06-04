@@ -1,5 +1,5 @@
 import "$css/apps/user/advsystemsettings.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AdvancedSystemSettings from "./AdvancedSystemSettings.svelte";
 import { AdvSysSetRuntime } from "./runtime";
 
@@ -12,9 +12,9 @@ export const AdvSystemSettings: App = {
     appGroup: "systemTools",
   },
   position: { centered: true },
-  size: { w: 450, h: 550 },
-  minSize: { w: 450, h: 550 },
-  maxSize: { w: 450, h: 550 },
+  size: { w: 450, h: 580 },
+  minSize: { w: 450, h: 580 },
+  maxSize: { w: 450, h: 580 },
   state: {
     maximized: false,
     minimized: false,

@@ -1,9 +1,10 @@
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn } from "$types/fs";
-import type { GitFolder } from "$types/git";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import type { GitFolder } from "$types/external/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemProxy } from "./generic";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 
 export class SourceFilesystemProxy extends FilesystemProxy {
   static PROXY_UUID: string = "cbd4bfd4-a232-4b34-ad60-183591fa5e92";
@@ -21,7 +22,7 @@ export class SourceFilesystemProxy extends FilesystemProxy {
   private rawClient = axios.create({ baseURL: this.GIT_RAW });
   private apiClient = axios.create({ baseURL: this.GIT_API });
 
-  private async getSourceFile(path: string): Promise<CommandResult<ArrayBuffer>> {
+  private async getSourceFile(path: string): Promise<ICommandResult<ArrayBuffer>> {
     try {
       const response = await this.rawClient.get(`/${this.GIT_REPO}/refs/heads/${this.GIT_BRANCH}/${path}`, {
         responseType: "arraybuffer",
@@ -30,18 +31,18 @@ export class SourceFilesystemProxy extends FilesystemProxy {
 
       return CommandResult.Ok<ArrayBuffer>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read file: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 
-  private async getSourceDirectory(path: string): Promise<CommandResult<GitFolder>> {
+  private async getSourceDirectory(path: string): Promise<ICommandResult<GitFolder>> {
     try {
       const response = await this.apiClient.get(`/repos/${this.GIT_REPO}/contents/${path}`, { responseType: "json" });
       if (response.status >= 400) throw "Invalid response type " + response.status;
 
       return CommandResult.Ok<GitFolder>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read folder: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 

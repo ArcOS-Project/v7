@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import { AppProcess } from "$ts/apps/process";
-  import { Daemon } from "$ts/daemon";
-  import { Stack } from "$ts/env";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon, Stack } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { Wallpapers } from "$ts/user/wallpaper/store";
   import { Store } from "$ts/writable";
@@ -23,7 +22,7 @@
 
       for (const workspace of workspaces) {
         $windowCounts[workspace.uuid] = [...v].filter(
-          ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
+          ([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid
         ).length;
       }
     });
@@ -66,7 +65,7 @@
               {
                 caption: "Delete workspace",
                 action: () => {
-                  process.deleteWorkspace(desktop);
+                  Daemon.workspaces?.deleteVirtualDesktopAck(desktop);
                 },
               },
             ],

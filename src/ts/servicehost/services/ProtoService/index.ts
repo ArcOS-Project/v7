@@ -1,12 +1,11 @@
-import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
-import { Daemon } from "$ts/daemon";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
+import { Daemon } from "$ts/env";
 import { KernelParams } from "$ts/kernel/getters";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { tryJsonParse } from "$ts/util/json";
-import type { ArcProtocol, ProtocolHandler } from "$types/proto";
-import type { Service } from "$types/service";
-import { navigate } from "svelte-navigator";
+import type { ArcProtocol, ProtocolHandler } from "$types/services/proto";
+import type { Service } from "$types/services/service";
 import { SpawnAppHandler } from "./handlers/spawn";
 
 export class ProtocolServiceProcess extends BaseService implements IProtocolServiceProcess {
@@ -18,7 +17,7 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -39,7 +38,7 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
     if (param) {
       this.executeUrl(decodeURIComponent(param));
-      navigate("./");
+      history.replaceState(null, "", "./");
       KernelParams().delete("proto");
     }
   }

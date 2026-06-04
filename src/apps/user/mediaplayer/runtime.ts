@@ -1,26 +1,28 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs, Stack } from "$ts/env";
+import { ConfigurationBuilder } from "$ts/config";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { getReadableVibrantColor } from "$ts/util/color";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { FileEntry } from "$types/fs";
-import type { RenderArgs } from "$types/process";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { FileEntry } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
 import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import { CommandResult } from "$ts/result";
 
-export class MediaPlayerRuntime extends AppProcess {
+export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
   private readonly COVERIMAGES_PATH = join(UserPaths.Configuration, "MediaPlayer", "CoverImages");
   public queue = Store<string[]>([]);
@@ -33,11 +35,18 @@ export class MediaPlayerRuntime extends AppProcess {
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
+  public pinControls = Store<boolean>(false);
   MetadataConfiguration = Store<MetadataConfiguration>({});
   CurrentMediaMetadata = Store<AudioFileMetadata | undefined>();
   CurrentCoverUrl = Store<string | undefined>();
   LoadingMetadata = Store<boolean>(false);
   mediaSpecificAccentColor = Store<string>("");
+  Configuration = new ConfigurationBuilder()
+    .ForProcess(this)
+    .ReadsFrom(this.MetadataConfiguration)
+    .WritesTo(this.METADATA_PATH)
+    .WithDefaults({})
+    .Build();
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -67,6 +76,17 @@ export class MediaPlayerRuntime extends AppProcess {
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
 
     this.renderArgs.file = file;
+
+    this.setSource(__SOURCE__);
+  }
+
+  async onClose() {
+    this.Reset();
+    this.player?.remove();
+    return true;
+  }
+
+  protected async start(): Promise<any> {
     this.queueIndex.subscribe((v) => this.handleSongChange(v));
 
     this.State.subscribe((v) => {
@@ -99,26 +119,10 @@ export class MediaPlayerRuntime extends AppProcess {
       // Merging goes here
     });
 
-    this.setSource(__SOURCE__);
-  }
-
-  async onClose() {
-    this.Reset();
-    this.player?.remove();
-    return true;
-  }
-
-  protected async start(): Promise<any> {
     await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
     await Fs.createDirectory(this.COVERIMAGES_PATH);
-    await this.readConfiguration();
+    await this.Configuration.initialize();
 
-    let firstSub = false;
-    this.MetadataConfiguration.subscribe((v) => {
-      if (!firstSub) return (firstSub = true);
-
-      this.writeConfiguration(v);
-    });
     this.CurrentMediaMetadata.subscribe((v) => {
       if (!v?.title) return;
 
@@ -132,14 +136,23 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async render({ file }: RenderArgs) {
-    if (await this.closeIfSecondInstance()) return;
+    const firstInstance = await this.closeIfSecondInstance();
+
+    if (firstInstance) {
+      if (file) {
+        if (file.endsWith(".arcpl")) firstInstance.readPlaylist(file);
+        else firstInstance.readFile([file]);
+      }
+
+      return;
+    }
 
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);
     }
 
-    this.shell?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,
@@ -399,18 +412,16 @@ export class MediaPlayerRuntime extends AppProcess {
       this.isVideo.set(fileAssociation?.friendlyName === "Video file");
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-      this.windowIcon.set(fileAssociation?.icon || this.getIconCached("MediaPlayerIcon"));
-
-      this.parseMetadata(path);
-
+      this.windowIcon.set(fileAssociation?.icon || "MediaPlayerIcon");
       this.Reset();
 
       await Sleep(10);
       await this.player?.play();
 
+      this.parseMetadata(path);
       this.Loaded.set(true);
-    } catch {
-      this.failedToPlay();
+    } catch (e) {
+      this.failedToPlay(e);
     }
   }
 
@@ -574,7 +585,7 @@ export class MediaPlayerRuntime extends AppProcess {
       {
         title: "Failed to play",
         message:
-          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file. ${e ?? ""}`.trim(),
+          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
@@ -587,26 +598,6 @@ export class MediaPlayerRuntime extends AppProcess {
 
   //#endregion
   //#region METADATA
-
-  async readConfiguration() {
-    try {
-      const content = await Fs.readFile(this.METADATA_PATH);
-      if (!content) throw new Error("Failed to read file contents");
-
-      const json = tryJsonParse(arrayBufferToText(content));
-      if (!json || typeof json === "string") throw new Error("File contents could not be parsed as JSON");
-
-      this.MetadataConfiguration.set(json);
-    } catch {
-      return await this.writeConfiguration({});
-    }
-  }
-
-  async writeConfiguration(configuration: MetadataConfiguration) {
-    this.Log(`writeConfiguration`);
-
-    await Fs.writeFile(this.METADATA_PATH, textToBlob(JSON.stringify(configuration, null, 2)), undefined, false);
-  }
 
   async normalizeMetadata(meta: IAudioMetadata): Promise<AudioFileMetadata> {
     this.Log(`normalizeMetadata`);
@@ -638,7 +629,7 @@ export class MediaPlayerRuntime extends AppProcess {
     return result;
   }
 
-  async parseMetadata(path: string, apply = true): Promise<CommandResult<AudioFileMetadata>> {
+  async parseMetadata(path: string, apply = true): Promise<ICommandResult<AudioFileMetadata>> {
     this.Log(`parseMetadata: ${path} apply=${apply}`);
 
     try {

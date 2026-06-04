@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import type { BugReport } from "$types/bughunt";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import type { BugReport } from "$types/server/bughunt";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { process, reports, user }: { process: IAdminPortalRuntime; reports: BugReport[]; user: ExpandedUserInfo } = $props();

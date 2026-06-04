@@ -1,46 +1,52 @@
-import type { IAdminBootstrapper } from "$interfaces/services/AdminBootstrapper";
-import type { IProtocolServiceProcess } from "$interfaces/services/ProtoService";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
 import { AdminAppImportPathAbsolutes } from "$ts/apps/store";
-import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Fs, Server } from "$ts/env";
+import { Daemon, Fs, Server } from "$ts/env";
 import { AdminFileSystem } from "$ts/kernel/mods/fs/drives/admin";
 import { AdminServerDrive } from "$ts/kernel/mods/fs/drives/aefs";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
-import type { ServiceHost } from "$ts/servicehost";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
 import { UserPaths } from "$ts/user/store";
-import { deepCopyWithBlobs } from "$ts/util";
+import { IsBeta } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { compareVersion } from "$ts/util/version";
 import type {
   Activity,
   AuditLog,
+  AuditLogQueryOptions,
+  BugReportSourceInformation,
   FsAccess,
   FSItem,
+  IpAddress,
   PartialUserTotp,
   ServerLogItem,
   ServerStatistics,
   Token,
   UserStatistics,
   UserTotp,
-} from "$types/admin";
-import type { App } from "$types/app";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FilesystemProgressCallback, UserQuota } from "$types/fs";
-import type { ArcPackage, StoreItem } from "$types/package";
-import type { Service } from "$types/service";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/server/admin";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { QueryResult } from "$types/server/query";
+import type { SharedDriveType } from "$types/server/shares";
+import type { Service } from "$types/services/service";
+import type { BetaFeedback } from "$types/system/beta";
+import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import axios from "axios";
 import { fromExtension } from "human-filetypes";
+import beautify from "js-beautify";
 import JSZip from "jszip";
-import { MessagingInterface } from "../MessagingService";
+import { parse } from "stacktrace-parser";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
 
@@ -49,7 +55,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -61,6 +67,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     await this.getUserInfo();
     if (!this.userInfo || !this.userInfo.admin) throw new Error("Invalid user or not an admin");
 
+    this.initBroadcast?.("Admin: loading admin apps");
     await this._loadAdminApps();
     const proto = this.host.getService<IProtocolServiceProcess>("ProtoService");
 
@@ -69,6 +76,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
 
     try {
+      this.initBroadcast?.("Admin: Creating temp directory");
       await Fs.createDirectory("T:/AdminBootstrapper");
       await Fs.mountDrive("admin", AdminFileSystem, "A", undefined);
     } catch {}
@@ -76,49 +84,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   private async _loadAdminApps() {
     const appStore = Daemon.appStorage()!;
-    const adminApps = await Promise.all(
-      Object.keys(AdminAppImportPathAbsolutes).map(async (path) => {
-        try {
-          const start = performance.now();
-          const mod = await AdminAppImportPathAbsolutes[path]();
-          const app = (mod as any).default as App;
-
-          if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
-            throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
-
-          if (app._internalSysVer || app._internalOriginalPath)
-            throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
-
-          const end = performance.now() - start;
-          const appCopy = await deepCopyWithBlobs<App>(app);
-
-          appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}-${ArcBuild()}`;
-          appCopy._internalOriginalPath = path;
-          appCopy._internalLoadTime = end;
-
-          this.Log(
-            `Loaded admin app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${appCopy.metadata.version} (${end.toFixed(2)}ms)`
-          );
-
-          return appCopy;
-        } catch (e) {
-          await new Promise<void>((r) => {
-            MessageBox(
-              {
-                title: "Admin app load error",
-                message: `ArcOS failed to load an administrative application because of an error. ${e}.`,
-                buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-                image: "WarningIcon",
-              },
-              +Env.get("loginapp_pid"),
-              true
-            );
-            this.Log(`Failed to load admin app ${path}: ${e}`);
-            return null;
-          });
-        }
-      })
-    ).then((apps) => apps.filter((a): a is App => a !== null));
+    const adminApps = await appStore.loadAppsFromViteModules(AdminAppImportPathAbsolutes);
 
     appStore?.loadOrigin("admin", () => adminApps);
 
@@ -132,23 +98,11 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     this.Log("Getting user information");
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Self();
+    if (!result.success) return undefined;
 
-      const data = response.status === 200 ? (response.data as UserInfo) : undefined;
-
-      if (!data) return undefined;
-
-      this.userInfo = data;
-
-      return response.status === 200 ? (response.data as UserInfo) : undefined;
-    } catch {
-      await this.killSelf();
-
-      return undefined;
-    }
+    this.userInfo = result.result;
+    return this.userInfo!;
   }
 
   async mountUserDrive(username: string, driveLetter?: string, onProgress?: FilesystemProgressCallback) {
@@ -214,6 +168,19 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return response.data as AuditLog[];
     } catch {
       return [];
+    }
+  }
+
+  async queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>> {
+    try {
+      return CommandResult.FromResponse(
+        await Backend.get(`/admin/audit/query`, {
+          params: query,
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 
@@ -1057,50 +1024,30 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   async getStoreItem(id: string): Promise<StoreItem | undefined> {
-    if (this._disposed) return;
-    try {
-      const response = await Backend.get(`/store/package/id/${id}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon.GetConnector<IStoreConnector>("StoreConnector").GetPackageById(id)).result;
   }
 
   async getStoreItemByName(name: string): Promise<StoreItem | undefined> {
-    if (this._disposed) return;
-    try {
-      const response = await Backend.get(`/store/package/name/${name}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      return response.data as StoreItem;
-    } catch {
-      return undefined;
-    }
+    return (await Daemon.GetConnector<IStoreConnector>("StoreConnector").GetPackageByName(name)).result;
   }
 
   async blockStoreItem(id: string, reason?: string): Promise<boolean> {
     if (this._disposed) return false;
     const item = await this.getStoreItem(id);
-    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+    const messaging = this.host.getService<IMessagingInterface>("MessagingService");
 
     if (!item || item.blocked) return false;
 
-    if (messaging) {
-      await messaging.sendMessage(
-        `[ADMIN] Package has been blocked`,
-        [item.user!.username],
-        `Your package '${item.pkg.name}' (app ID \`${
-          item.pkg.appId
-        }\`) has been blocked by an administrator. This package is found to have copyrighted content, explicit depictions of sexual activity, or other inappropiate or illegal content.\n\nThe reason given by the administrator is:\n\n\`\`\`${
-          reason || "(no reason given)"
-        }\`\`\`\n\nReply to this message to negotiate to have your package unblocked.\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
-        []
-      );
-    }
+    messaging?.sendMessage(
+      `[ADMIN] Package has been blocked`,
+      [item.user!.username],
+      `Your package '${item.pkg.name}' (app ID \`${
+        item.pkg.appId
+      }\`) has been blocked by an administrator. This package is found to have copyrighted content, explicit depictions of sexual activity, or other inappropiate or illegal content.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+        reason || "(no reason given)"
+      }\`\`\`\n\nReply to this message to negotiate to have your package unblocked.\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+      []
+    );
 
     try {
       const response = await Backend.post(
@@ -1118,22 +1065,20 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   async unblockStoreItem(id: string, reason?: string) {
     if (this._disposed) return false;
     const item = await this.getStoreItem(id);
-    const messaging = this.host.getService<MessagingInterface>("MessagingService");
+    const messaging = this.host.getService<IMessagingInterface>("MessagingService");
 
     if (!item || !item.blocked) return false;
 
-    if (messaging) {
-      await messaging.sendMessage(
-        `[ADMIN] Package has been unblocked!`,
-        [item.user!.username],
-        `Your package '${item.pkg.name}' (app ID \`${
-          item.pkg.appId
-        }\`) has been unblocked by an administrator, and can be installed by users again.\n\nThe reason given by the administrator is:\n\n\`\`\`${
-          reason || "(no reason given)"
-        }\`\`\`\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
-        []
-      );
-    }
+    await messaging?.sendMessage(
+      `[ADMIN] Package has been unblocked!`,
+      [item.user!.username],
+      `Your package '${item.pkg.name}' (app ID \`${
+        item.pkg.appId
+      }\`) has been unblocked by an administrator, and can be installed by users again.\n\nThe reason given by the administrator is:\n\n\`\`\`${
+        reason || "(no reason given)"
+      }\`\`\`\n\nNOTE: this is an automatically generated message, sent by the ArcOS Admin Bootstrapper. The only input given by the administrator was the reason for this action (if any).`,
+      []
+    );
 
     try {
       const response = await Backend.post(
@@ -1182,7 +1127,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return false;
     const target = `T:/AdminBootstrapper/${id}`;
     const pkg = await this.getStoreItem(id);
-    const distrib = this.host.getService<DistributionServiceProcess>("DistribSvc");
+    const distrib = this.host.getService<IDistributionServiceProcess>("DistribSvc");
 
     const status = (s: string) => {
       this.Log(`readStoreItemFiles: ${id}: ${s}`);
@@ -1312,6 +1257,105 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       return contents.data;
     } catch {
       return {};
+    }
+  }
+
+  async GetIpAddresses(): Promise<IpAddress[]> {
+    try {
+      const response = await Backend.get(`/admin/ip/list`, {
+        responseType: "json",
+        headers: { Authorization: `Bearer ${Daemon.token}` },
+      });
+      if (response.status !== 200) throw "";
+
+      return response.data;
+    } catch {
+      return [];
+    }
+  }
+
+  async getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>> {
+    const trace = parse(report.body)
+      .filter(Boolean)
+      .filter((f) => (f.file?.startsWith("./assets") || f.file?.startsWith(report.location.origin)) && f.file.endsWith(".js"));
+
+    if (!trace.length) return CommandResult.Error("Didn't find a stack frame that matches");
+
+    const firstTrace = trace[0];
+    const fileUrl = firstTrace.file;
+
+    let url = new URL(report.location.origin);
+    if (!fileUrl?.startsWith("https")) url.pathname = fileUrl?.replace("./", "/") ?? "/";
+    else url = new URL(fileUrl);
+
+    if (url.toString().includes("team.arcweb.nl")) {
+      return CommandResult.Error("Previews are not supported because their JS files aren't retained");
+    }
+
+    try {
+      const file = (await axios.get(url.toString(), { responseType: "text" })).data as string;
+
+      const urlParts = url.toString().split("/");
+      const lines = file.split("\n");
+      const prepend = lines
+        .slice(0, (firstTrace.lineNumber ?? 0) - 1) // Get the lines before the main attraction
+        .map((l) => l.length + 1) // Get the lengths of the lines
+        .reduce((a, b) => (a ?? 0) + b, firstTrace.column); // Count up those lengths, adding the prefixed characters of the focus line
+      const prettySource = beautify.js_beautify(file, {});
+      const prettyPrependedSegment = beautify.js_beautify(file.slice(0, prepend ?? 0));
+      const segmentSplit = prettyPrependedSegment.split("\n");
+      const prettyLine = segmentSplit.length;
+      const prettyColumn = segmentSplit[segmentSplit.length - 1].length;
+
+      return CommandResult.Ok({
+        line: trace[0].lineNumber!,
+        column: trace[0].column!,
+        originalSource: file,
+        prettySource,
+        prettyColumn,
+        prettyLine,
+        errorMessage: report.body.split("\n")[0].trim(),
+        filename: urlParts[urlParts.length - 1],
+        fileUrl: url.toString(),
+      });
+    } catch (e) {
+      return CommandResult.Error(`${e} -- URL: ${url}`);
+    }
+  }
+
+  async getBetaFeedbackVersions(): Promise<ICommandResult<Record<string, number>>> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      const response = await Daemon.betaClient.get("/feedback/versions");
+
+      return CommandResult.Ok(response.data as Record<string, number>);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getBetaFeedbackFor(version: string): Promise<ICommandResult<BetaFeedback[]>> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      const response = await Daemon.betaClient.get(`/feedback/version/${version}`);
+
+      return CommandResult.Ok(response.data as BetaFeedback[]);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async markBetaFeedbackAsRead(id: string): Promise<ICommandResult> {
+    if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
+
+    try {
+      await Daemon.betaClient.post(`/feedback/read/${id}`);
+
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 }

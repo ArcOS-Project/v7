@@ -1,25 +1,29 @@
-import type { IFileAssocService } from "$interfaces/services/FileAssocSvc";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import type { ServiceHost } from "$ts/servicehost";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
+import { ConfigurationBuilder } from "$ts/config";
+import { Daemon } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
-import type { Service } from "$types/service";
+import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/system/assoc";
+import type { Service } from "$types/services/service";
 import { DefaultFileDefinitions } from "./store";
 
 export class FileAssocService extends BaseService implements IFileAssocService {
   private CONFIG_PATH = join(UserPaths.System, "FileAssociations.json");
-  private Configuration = Store<FileAssociationConfig>();
+  private Associations = Store<FileAssociationConfig>();
+  private Configuration = new ConfigurationBuilder<FileAssociationConfig>()
+    .ForProcess(this)
+    .ReadsFrom(this.Associations)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults(this.defaultFileAssociations())
+    .Build();
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -27,48 +31,22 @@ export class FileAssocService extends BaseService implements IFileAssocService {
 
   async start() {
     this.initBroadcast?.("Starting file associations");
-    await this.loadConfiguration();
+    await this.Configuration.initialize();
   }
 
   //#endregion
-
-  private async loadConfiguration() {
-    if (this._disposed) return;
-
-    this.Log("Loading configuration");
-    const contents = await Fs.readFile(this.CONFIG_PATH);
-
-    const json = contents ? tryJsonParse<FileAssociationConfig>(arrayBufferToText(contents)) : undefined;
-
-    if (!json || typeof json === "string") return await this.writeConfiguration(this.defaultFileAssociations());
-
-    this.Configuration.set(json);
-  }
-
-  private async writeConfiguration(configuration: FileAssociationConfig) {
-    if (this._disposed) return configuration;
-    this.Log("Writing configuration");
-
-    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(configuration, null, 2)));
-
-    this.Configuration.set(configuration);
-
-    return configuration;
-  }
-
   public async updateConfiguration(
     callback: (config: FileAssociationConfig) => FileAssociationConfig | Promise<FileAssociationConfig>
   ) {
     if (this._disposed) return;
 
-    const result = await callback(this.Configuration());
+    const result = await callback(this.Associations());
 
-    this.Configuration.set(result);
-    await this.writeConfiguration(result);
+    this.Associations.set(result);
   }
 
   public defaultFileAssociations(): FileAssociationConfig {
-    const apps = this.host.getService<ApplicationStorage>("AppStorage")?.buffer() || [];
+    const apps = this.host.getService<IApplicationStorage>("AppStorage")?.buffer() || [];
     const result: FileAssociationConfig = {
       associations: {
         apps: {},
@@ -97,8 +75,8 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   getFileAssociation(path: string): ExpandedFileAssociationInfo | undefined {
     if (this._disposed || !path) return;
 
-    const storage = this.host.getService<ApplicationStorage>("AppStorage");
-    const config = this.Configuration();
+    const storage = this.host.getService<IApplicationStorage>("AppStorage");
+    const config = this.Associations();
     const associations = config?.associations;
     const definitions = config?.definitions;
     const split = path.split(".");
@@ -112,7 +90,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: Daemon!.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: definition?.icon || "DefaultMimeIcon",
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)
@@ -130,7 +108,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   }
 
   getUnresolvedAssociationIcon(path: string): string {
-    const config = this.Configuration();
+    const config = this.Associations();
     const associations = config?.associations;
     const definitions = config?.definitions;
     const split = path.split(".");
@@ -144,7 +122,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
   }
 
   getConfiguration() {
-    return this.Configuration();
+    return this.Associations();
   }
 }
 

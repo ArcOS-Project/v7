@@ -1,10 +1,10 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
-import type { FileHandler } from "$types/fs";
+import type { FileHandler } from "$types/system/fs";
 import { fromExtension } from "human-filetypes";
 import JSZip from "jszip";
 

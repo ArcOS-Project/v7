@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Env, Stack } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { WeatherSearchResponse, WeatherSearchResult } from "$types/weather";
+  import type { WeatherSearchResponse, WeatherSearchResult } from "$types/external/weather";
   import axios from "axios";
   import Section from "../Section.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
 
   let searchInput = $state("");
@@ -72,7 +73,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("GlobeIcon")} alt="" />
+    <Icon icon="GlobeIcon" />
     <h1>Weather location</h1>
     <p>From where do you want to see the weather?</p>
   </div>

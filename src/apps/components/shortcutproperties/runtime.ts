@@ -1,14 +1,14 @@
+import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env } from "$ts/env";
+import { Daemon, Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { ArcShortcut } from "$types/shortcut";
+import type { AppProcessData } from "$types/apps/app";
+import type { ArcShortcut } from "$types/system/shortcut";
 
-export class ShortcutPropertiesRuntime extends AppProcess {
+export class ShortcutPropertiesRuntime extends AppProcess implements IShortcutPropertiesRuntime {
   shortcutData = Store<ArcShortcut>();
   iconStore = getAllImages();
   path?: string;
@@ -62,13 +62,13 @@ export class ShortcutPropertiesRuntime extends AppProcess {
 
     switch (data.type) {
       case "app":
-        await Daemon?.spawn?.spawnOverlay("AppInfo", +Env.get("shell_pid"), data.target);
+        await this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import type { ViewBugReportData } from "../../types";
   import Header from "./ViewBugReport/Header.svelte";
   import LeftPanel from "./ViewBugReport/LeftPanel.svelte";

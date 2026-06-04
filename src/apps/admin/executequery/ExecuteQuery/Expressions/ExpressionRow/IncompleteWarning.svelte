@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "$apps/admin/executequery/runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process, i }: { process: ExecuteQueryRuntime; i: number } = $props();
+  const { process, i }: { process: IExecuteQueryRuntime; i: number } = $props();
   const { expressions, selectedSource } = process;
 </script>
 
 {#if $expressions[$selectedSource][i].columnName == undefined || $expressions[$selectedSource][i].comparisonType == undefined || $expressions[$selectedSource][i].comparisonValue == undefined}
-  <img src={process.getIconCached("WarningIcon")} alt="" title="This expression is incomplete" />
+  <Icon title="This expression is incomplete" icon="WarningIcon" />
 {/if}

@@ -1,7 +1,9 @@
 <script lang="ts">
-  import type { SaveQueryOverlayRuntime } from "../SaveQuery/runtime";
+  import type { ISaveQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: SaveQueryOverlayRuntime } = $props();
+  const { process }: { process: ISaveQueryOverlayRuntime } = $props();
   const { queryName } = process;
 </script>
 
@@ -10,7 +12,9 @@
   <input type="text" bind:value={$queryName} placeholder="Users called 'banana'" />
 </div>
 
-<div class="actions">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button onclick={() => process.Confirm()} class="suggested">Save</button>
-</div>
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$queryName} onclick={() => process.Confirm()}>Save</ActionButton>
+  {/snippet}
+</ActionBar>

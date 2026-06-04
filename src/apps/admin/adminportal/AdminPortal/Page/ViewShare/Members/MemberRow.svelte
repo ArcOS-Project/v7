@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { MessageBox } from "$ts/util/dialog";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 

@@ -1,7 +1,7 @@
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { UserPreferences } from "$types/user";
 import type { Component } from "svelte";
 import type { Unsubscriber } from "svelte/store";
@@ -10,8 +10,9 @@ import Main from "./AdvancedSystemSettings/Main.svelte";
 import Migrations from "./AdvancedSystemSettings/Migrations.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
+import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
-export class AdvSysSetRuntime extends AppProcess {
+export class AdvSysSetRuntime extends AppProcess implements IAdvSysSetRuntime {
   public currentTab = Store<string>("Main");
   public tabs: Record<string, Component> = {
     Main: Main as any,
@@ -91,7 +92,7 @@ export class AdvSysSetRuntime extends AppProcess {
 
   apply(close?: boolean) {
     this.Log(`apply`);
-    
+
     this.syncInitialized = false;
     this.userPreferences.set(this.preferencesBuffer());
     this.bufferChanged.set(false);

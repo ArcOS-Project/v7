@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
-  import type { QlorbRuntime } from "../runtime";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage, userPreferences } = process;
 
   CurrentPage.subscribe((v) => {
@@ -26,12 +27,12 @@
     </div>
     <div class="stage2">
       <h1>
-        <img src={Logo()} alt="ArcOS" />
+        <Icon icon={Logo()} />
         <span>Written for ArcOS</span>
       </h1>
     </div>
     <div class="stage3">
-      <img src={process.getIconCached(process.app.data.metadata.icon)} alt="" class="logo" />
+      <Icon icon={process.app.data.metadata.icon} className="logo" />
     </div>
   </div>
 {/if}
@@ -83,13 +84,5 @@
   h1 {
     display: flex;
     align-items: center;
-  }
-
-  img {
-    height: 50px;
-  }
-
-  img.logo {
-    height: 300px;
   }
 </style>

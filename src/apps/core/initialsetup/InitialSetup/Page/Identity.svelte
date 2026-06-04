@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import { Server } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
   import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
-  import type { InitialSetupRuntime } from "../../runtime";
 
-  const { process }: { process: InitialSetupRuntime } = $props();
+  const { process }: { process: IInitialSetupRuntime } = $props();
   const { newUsername, password, confirm, email, displayName } = process;
 
   let enteredUsername = $state("");
@@ -130,6 +130,12 @@
     </div>
     <div class="field username">
       <p class="name">Username</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Username Info"
+        title="Must be within 3 and 32 characters of length and only contain numbers and letters"
+        tabindex="-1"
+      ></button>
       <input
         type="text"
         placeholder="johndoe"
@@ -142,6 +148,12 @@
     </div>
     <div class="field email">
       <p class="name">Email address *</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Email Info"
+        title="Must be an unused email and one you can access."
+        tabindex="-1"
+      ></button>
       <input
         type="email"
         placeholder="john.doe@gmail.com"
@@ -154,6 +166,12 @@
     </div>
     <div class="field">
       <p class="name">Password</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Password Info"
+        title="Must contain a mix of at least 8 regular, special, and numeric characters."
+        tabindex="-1"
+      ></button>
       <div class="duo">
         <input
           type="password"

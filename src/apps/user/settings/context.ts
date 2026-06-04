@@ -1,14 +1,13 @@
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { UserTheme } from "$types/theme";
-import type { SettingsRuntime } from "./runtime";
+import type { AppContextMenu } from "$types/apps/app";
+import type { UserTheme } from "$types/user/theme";
 
-export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
+export function SettingsContext(runtime: ISettingsRuntime): AppContextMenu {
   return {
     "user-theme-option": [
       {
@@ -21,17 +20,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
       {
         caption: "Export theme...",
         action: async (_, __, theme: UserTheme) => {
-          const [path] = await Daemon!.files!.LoadSaveDialog({
-            title: "Choose where to save the theme",
-            isSave: true,
-            startDir: UserPaths.Documents,
-            icon: "ThemesIcon",
-            saveName: `${theme.name || "Untitled theme"}.arctheme`,
-          });
-
-          if (!path) return;
-
-          await Fs.writeFile(path, textToBlob(JSON.stringify(theme, null, 2)));
+          await Daemon.themes?.exportTheme(theme, runtime.pid);
         },
         icon: "save",
       },
@@ -85,7 +74,7 @@ export function SettingsContext(runtime: SettingsRuntime): AppContextMenu {
         caption: "Open file location",
         icon: "folder-open",
         action: (id: string) => {
-          Daemon?.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
+          runtime.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(atob(id.replace("@local:", ""))));
         },
       },
       { sep: true },

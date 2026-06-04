@@ -1,17 +1,17 @@
+import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ArcPackage } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess {
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime{
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
@@ -43,7 +43,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "Take me there",
               action: () => {
-                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -72,7 +72,7 @@ export class AppPreInstallRuntime extends AppProcess {
     );
 
     try {
-      const distrib = Daemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+      const distrib = Daemon?.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc")!;
 
       if (!(await distrib.validatePackage(this.pkgPath))) {
         return this.fail("Package is corrupt; missing files");

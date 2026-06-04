@@ -1,12 +1,12 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
+import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../colors";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
@@ -22,7 +22,7 @@ export class DirCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";
 
     try {

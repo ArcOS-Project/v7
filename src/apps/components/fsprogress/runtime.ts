@@ -1,12 +1,12 @@
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Stack } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
-import type { ReadableStore } from "$types/writable";
+import type { AppProcessData } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 import type { FsProgressOperation } from "./types";
 
-export class FsProgressRuntime extends AppProcess {
+export class FsProgressRuntime extends AppProcess implements IFsProgressRuntime {
   public Progress = Store<FsProgressOperation>();
 
   //#region LIFECYCLE

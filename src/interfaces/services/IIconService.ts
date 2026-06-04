@@ -1,0 +1,20 @@
+import type { IBaseService } from "$interfaces/IServiceHost";
+import type { App } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
+
+// !tpa
+export interface IIconService extends IBaseService {
+  PATH: string;
+  FILE_CACHE: Record<string, string>;
+  ICON_TYPES: string[];
+  DEFAULT_ICON: string;
+  Icons: ReadableStore<Record<string, string>>;
+  start(): Promise<void>;
+  defaultConfiguration(): Record<string, string>;
+  getIcon(id: string, noCache?: boolean): Promise<string>;
+  getIconCached(id: string): string;
+  parseIcon(id: string): ["fs" | "builtin" | "app", string];
+  cacheEverything(): Promise<void>;
+  getAppIcon(app: App, workingDirectory?: string): string;
+  getGroupedIcons(): Record<string, Record<string, string>>;
+}

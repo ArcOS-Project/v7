@@ -3,7 +3,7 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
   import advancedFormat from "dayjs/plugin/advancedFormat";
   import { onMount } from "svelte";

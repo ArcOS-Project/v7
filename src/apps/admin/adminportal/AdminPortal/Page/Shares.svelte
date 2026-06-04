@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
   import { onMount } from "svelte";
   import type { SharesData, SharesPageFilters } from "../../types";
 
@@ -101,7 +101,6 @@
   <input type="text" placeholder="Share ID" bind:value={$selection} maxlength="24" />
   <button disabled={$selection.length !== 24} onclick={() => process.switchPage("viewShare", { share: $selected })}>Go</button>
   <div class="actions">
-    <button class="mount" disabled={!$selected} onclick={mountShare}>{Fs.drives[$selection] ? "Unmount" : "Mount"}</button
-    >
+    <button class="mount" disabled={!$selected} onclick={mountShare}>{Fs.drives[$selection] ? "Unmount" : "Mount"}</button>
   </div>
 </div>

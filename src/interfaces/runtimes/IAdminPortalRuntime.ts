@@ -1,0 +1,21 @@
+import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
+import type { BugReport } from "$types/server/bughunt";
+import type { ReadableStore } from "$types/shared/writable";
+import type { IAppProcess } from "../IAppProcess";
+import type { IAdminBootstrapper } from "../services/IAdminBootstrapper";
+import type { IShareManager } from "../services/IShareManager";
+
+export interface IAdminPortalRuntime extends IAppProcess {
+  ready: ReadableStore<boolean>;
+  currentPage: ReadableStore<string>;
+  switchPageProps: ReadableStore<Record<string, any>>;
+  redacted: ReadableStore<boolean>;
+  propSize: ReadableStore<number>;
+  shares: IShareManager;
+  admin: IAdminBootstrapper;
+  start(): Promise<void>;
+  switchPage(pageId: string, props?: Record<string, any>, force?: boolean): Promise<void>;
+  saveTpaFilesOfBugReport(report: BugReport): Promise<BugReportTpaFile[]>;
+  viewUserById(userId: string): Promise<void>;
+  compileCrumbs(parent: string): string[];
+}

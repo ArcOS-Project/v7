@@ -1,5 +1,5 @@
 import "$css/apps/components/serviceinfo.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ServiceInfoRuntime } from "./runtime";
 import ServiceInfo from "./ServiceInfo.svelte";
 

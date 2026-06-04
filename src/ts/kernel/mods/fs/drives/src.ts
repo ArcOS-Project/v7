@@ -1,10 +1,11 @@
+import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/fs";
-import type { GitFolder } from "$types/git";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/system/fs";
+import type { GitFolder } from "$types/external/git";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";
-import { Daemon } from "$ts/daemon";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 
 export class SourceFilesystemDrive extends FilesystemDrive {
   override IDENTIFIES_AS: string = "src";
@@ -24,19 +25,19 @@ export class SourceFilesystemDrive extends FilesystemDrive {
   private rawClient = axios.create({ baseURL: this.GIT_RAW });
   private apiClient = axios.create({ baseURL: this.GIT_API });
 
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: false,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: false,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter?: string) {
@@ -49,7 +50,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
     return !!enabled;
   }
 
-  private async getSourceFile(path: string): Promise<CommandResult<ArrayBuffer>> {
+  private async getSourceFile(path: string): Promise<ICommandResult<ArrayBuffer>> {
     try {
       const response = await this.rawClient.get(`/${this.GIT_REPO}/refs/heads/${this.GIT_BRANCH}/${path}`, {
         responseType: "arraybuffer",
@@ -58,18 +59,18 @@ export class SourceFilesystemDrive extends FilesystemDrive {
 
       return CommandResult.Ok<ArrayBuffer>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read file: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 
-  private async getSourceDirectory(path: string): Promise<CommandResult<GitFolder>> {
+  private async getSourceDirectory(path: string): Promise<ICommandResult<GitFolder>> {
     try {
       const response = await this.apiClient.get(`/repos/${this.GIT_REPO}/contents/${path}`, { responseType: "json" });
       if (response.status >= 400) throw "Invalid response type " + response.status;
 
       return CommandResult.Ok<GitFolder>(response.data);
     } catch (e) {
-      return CommandResult.Error(`Failed to read folder: ${e}`);
+      return CommandResult.AxiosError(e);
     }
   }
 

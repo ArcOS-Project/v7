@@ -1,10 +1,11 @@
 <script lang="ts">
   import { StartMenuActions } from "$apps/components/shell/store";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
 
   function toggle(id: string, e: MouseEvent) {
@@ -20,7 +21,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("StartMenuIcon")} alt="" />
+    <Icon icon="StartMenuIcon" />
     <h1>Start menu actions</h1>
     <p>What actions would you like to show?</p>
   </div>

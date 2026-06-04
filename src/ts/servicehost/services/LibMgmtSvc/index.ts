@@ -1,21 +1,20 @@
-import type { ILibraryManagement } from "$interfaces/services/LibMgmtSvc";
-import { Daemon } from "$ts/daemon";
-import { Fs, Stack } from "$ts/env";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
-import type { ServiceHost } from "$ts/servicehost";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { TpaLibrary } from "$types/libraries";
-import { LogLevel } from "$types/logging";
-import type { Service } from "$types/service";
+import type { TpaLibrary } from "$types/tpa/libraries";
+import { LogLevel } from "$types/shared/logging";
+import type { Service } from "$types/services/service";
 
 export class LibraryManagement extends BaseService implements ILibraryManagement {
   Index: Map<string, TpaLibrary> = new Map([]);
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);

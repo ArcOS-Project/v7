@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/app";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import { Sleep } from "$ts/sleep";
-  import type { ContextMenuItem } from "$types/app";
-  import type { ReadableStore } from "$types/writable";
+  import type { ContextMenuItem } from "$types/apps/app";
+  import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
-  import type { ContextMenuRuntime } from "../runtime";
   import SubItems from "./Item/SubItems.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   interface Props {
     data: ContextMenuItem;
-    shell: ContextMenuRuntime;
+    shell: IContextMenuRuntime;
     process?: IAppProcess;
     mW: number;
     x: number;
@@ -80,7 +81,7 @@
       {#if data.icon}
         <span class="icon lucide icon-{data.icon}"></span>
       {:else if data.image}
-        <img class="icon" src={shell.getIconCached(data.image)} alt={data.caption} />
+        <Icon icon={data.image} fallback="BlankIcon" className="icon" />
       {:else}
         <span class="icon"></span>
       {/if}

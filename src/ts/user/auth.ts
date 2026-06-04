@@ -1,10 +1,12 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Log } from "$ts/logging";
+import { CommandResult } from "$ts/result";
 import { toForm } from "$ts/util/form";
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import { AxiosError } from "axios";
 
-export async function LoginUser(identity: string, password: string) {
+export async function LoginUser(identity: string, password: string): Promise<ICommandResult<string>> {
   Log("LoginUser", `Attempting to authenticate ${identity}`);
 
   try {
@@ -17,13 +19,16 @@ export async function LoginUser(identity: string, password: string) {
       })
     );
 
-    return response.status === 200 ? response.data.token : undefined;
+    if (response.status !== 200) return CommandResult.Error(response.data?.e ?? "Username or password is incorrect");
+
+    return CommandResult.Ok(response.data.token);
   } catch (e) {
-    const err = e as AxiosError;
+    Log("LoginUser", "API request errored:\n" + e, LogLevel.error);
 
-    Log("LoginUser", "API request errored:\n" + err, LogLevel.error);
-
-    return undefined;
+    return CommandResult.AxiosError(
+      e,
+      "An unknown error occurred. Please check your credentials, and then try again. If the problem persists, please contact an ArcOS administrator."
+    );
   }
 }
 

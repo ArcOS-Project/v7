@@ -1,212 +1,26 @@
+@import url("./messages/pagebar.css");
+@import url("./messages/sidebar.css");
+@import url("./messages/header.css");
+@import url("./messages/thread.css");
+@import url("./messages/attachmentbar.css");
+
 #Messages > div.body div.titlebar.custom {
   border-bottom: var(--win-border);
 }
+
 #Messages > div.body {
   padding: 0;
   display: flex;
   height: 100%;
 }
 
-#Messages > div.body div.sidebar {
-  display: flex;
-}
-
-#Messages > div.body div.pages {
-  width: 51px;
-  height: 100%;
-  border-right: var(--button-glass-bg) 1px solid;
-  padding: 10px;
-}
-
-#Messages > div.body div.pages button {
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  font-size: 16px;
-  margin-bottom: 5px;
-  background-color: transparent;
-  outline: none;
-}
-
-#Messages > div.body div.pages button:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#Messages > div.body div.pages button:active {
-  background-color: var(--button-glass-active-bg);
-}
-
-#Messages > div.body div.pages button.active {
-  background-color: var(--accent-transparent);
-  color: var(--accent-lighter);
-}
-
-#Messages > div.body div.messages div.search {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-bottom: var(--button-glass-bg) 1px solid;
-}
-
-#Messages > div.body div.messages div.search input {
-  padding: 0;
-  background-color: transparent;
-  border-radius: 0;
-  border: none;
-  min-width: unset;
-  flex-grow: 1;
-}
-
-#Messages > div.body div.messages div.search span {
-  opacity: 0.5;
-}
-
-#Messages > div.body div.messages div.search button.icon-x {
-  width: 16px;
-  height: 16px;
-  background-color: transparent;
-  padding: 0;
-  font-size: 16px;
-  outline: none;
-}
-
-#Messages > div.body div.messages {
-  border-right: var(--win-border);
-  width: 251px;
-}
-
-#Messages > div.body div.messages > div.list {
-  padding: 10px;
-  padding-right: 2px;
-  overflow-y: scroll;
-  height: calc(100% - 40px);
-}
-
-#Messages > div.body div.messages > div.list p.info {
-  opacity: 0.5;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-  margin: 10px 0;
-}
-
-#Messages > div.body div.messages button.message {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 5px;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 5px;
-  background-color: transparent;
-  outline: none;
-  position: relative;
-}
-#Messages > div.body div.messages button.message.unread h1::after {
-  content: "";
-  display: inline-block;
-  width: 2px;
-  height: 16px;
-  border-radius: 1px;
-  background-color: var(--accent-light);
-  position: absolute;
-  top: calc(50% - 8px);
-  left: 0;
-}
-
-#Messages > div.body div.messages button.message:last-child {
-  margin-bottom: 0;
-}
-
-#Messages > div.body div.messages button.message:hover {
-  background-color: var(--button-glass-bg);
-}
-#Messages > div.body div.messages button.message:active {
-  background-color: var(--button-glass-active-bg);
-}
-
-#Messages > div.body div.messages button.message.selected {
-  background-color: var(--accent-transparent);
-}
-
-#Messages > div.body div.messages button.message > div:not(.pfprenderer) {
-  flex-grow: 1;
-  max-width: calc(100% - 12px - 40px);
-}
-
-#Messages > div.body div.messages button.message div.subject {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-#Messages > div.body div.messages button.message,
-#Messages > div.body div.messages button.message > div:not(.pfprenderer),
-#Messages > div.body div.messages button.message > div:not(.pfprenderer) * {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-#Messages > div.body div.messages button.message div.subject h1 {
-  margin-right: auto;
-}
-
-#Messages > div.body div.messages button.message p {
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-#Messages > div.body div.messages button.message button.lucide {
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  background-color: transparent;
-}
-#Messages > div.body div.messages div.correlation {
-  height: 50px;
-  overflow: hidden;
-  border-radius: 8px;
-  margin-bottom: 5px;
-}
-
-#Messages > div.body div.messages div.correlation div.master {
-  background-color: var(--button-glass-bg);
-  border-radius: 8px;
-}
-
-#Messages > div.body div.messages div.correlation.expanded {
-  height: fit-content;
-  background-color: var(--button-glass-active-bg);
-}
-
-#Messages > div.body div.messages button.message div.subject div.statuses {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  opacity: 0.5;
-  font-size: 12px;
-  min-width: fit-content;
-}
-
-#Messages > div.body div.messages button.message div.subject .timestamp {
-  opacity: 0.5;
-  display: block;
-  min-width: fit-content;
-}
-
-#Messages > div.body div.messages button.message > img {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  object-fit: cover;
+#Messages > div.body div.window-action-bar {
+  background-color: var(--win-bg);
 }
 
 #Messages > div.body div.container {
-  width: calc(100% - 50px - 250px);
+  width: 0;
+  flex-grow: 1;
   background-color: var(--win-bg);
   display: flex;
   flex-direction: column;
@@ -218,185 +32,16 @@
 
 #Messages > div.body div.container div.message-content {
   height: 100%;
+  /* height: fit-content; */
   flex-grow: 1;
   overflow-y: scroll;
   padding: 20px;
 }
 
-#Messages > div.body div.container div.message-content div.header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-#Messages > div.body div.container div.message-content div.header img {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  object-fit: cover;
-}
-
-#Messages > div.body div.container div.message-content p.message-body {
-  white-space: pre-wrap;
-}
-#Messages > div.body div.container div.message-content div.header h1 {
-  font-size: 16px;
-}
-#Messages > div.body div.container div.message-content div.header p {
-  opacity: 0.5;
-}
-
-#Messages > div.body div.container div.message-content div.thread-wrapper div.notice {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-  background-color: var(--button-glass-bg);
-  padding-left: 15px;
-}
-
-#Messages > div.body div.container div.message-content div.thread-wrapper.expand {
-  background-color: var(--button-glass-bg);
-  border-radius: 10px;
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-}
-
-#Messages > div.body div.container div.message-content div.thread-wrapper.expand div.notice {
-  background-color: transparent;
-  outline: none;
-}
-
-#Messages > div.body div.container div.message-content div.message-thread div.sub-thread {
-  margin-left: 9.5px;
-  padding-left: 9.5px;
-  border-left: var(--win-border);
-}
-
-#Messages > div.body div.container div.message-content div.message-thread button.thread-item {
-  width: 100%;
-  background-color: transparent;
-  outline: none;
-  text-align: left;
-  padding: 10px;
-}
-
-#Messages > div.body div.container div.message-content div.message-thread button.thread-item > p {
-  opacity: 0.5;
-  margin-top: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 600px;
-}
-
-#Messages > div.body div.container div.message-content div.message-thread button.thread-item:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#Messages > div.body div.container div.message-content div.message-thread button div.header {
-  flex-grow: 1;
-  margin-bottom: 0;
-  width: 100%;
-}
-
-#Messages > div.body div.container div.message-content div.message-thread button div.header > div:last-child {
-  width: 0;
-  flex-grow: 1;
-}
-
-#Messages > div.body div.container div.attachment-bar {
-  height: 48px;
-  padding: 8px 10px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-height: fit-content;
-}
-
-#Messages > div.body div.container div.attachment-bar.visible {
+#Messages > div.body div.container div.message-content hr {
+  margin: 20px 0;
+  border: none;
   border-top: var(--win-border);
-}
-
-#Messages > div.body div.container div.attachment-bar button {
-  display: flex;
-  padding: 5px;
-  align-items: center;
-  gap: 5px;
-  border-radius: 4px;
-}
-
-#Messages > div.body div.container div.attachment-bar button img {
-  height: 16px;
-}
-
-#Messages > div.body div.container div.attachment-bar button span.size {
-  opacity: 0.5;
-}
-
-#Messages > div.body div.container div.attachment-bar button p {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-#Messages > div.body div.container div.action-bar {
-  height: 51px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: var(--win-border);
-}
-
-#Messages > div.body div.container div.action-bar button.compose {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--accent-suggested-fg);
-  font-weight: bold;
-  padding: 0 15px;
-  padding-left: 10px;
-  height: 30px;
-}
-
-#Messages > div.body div.container div.action-bar button.compose * {
-  color: inherit;
-}
-
-#Messages > div.body div.container div.action-bar button.compose span.lucide {
-  font-size: 16px;
-  font-weight: normal;
-}
-
-#Messages > div.body div.container div.action-bar button.lucide {
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  font-size: 16px;
-}
-
-#Messages > div.body div.container div.action-bar div.sep {
-  width: 1px;
-  height: 20px;
-  background-color: var(--button-glass-hover-bg);
-}
-
-#Messages > div.body div.container div.action-bar > div.actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-#Messages > div.body div.container div.action-bar > div.actions > div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 #Messages > div.body div.container div.center-notice {
@@ -415,10 +60,12 @@
 #Messages > div.body div.container div.center-notice p {
   opacity: 0.5;
 }
+
 #Messages > div.body div.container div.center-notice h1 {
   margin-bottom: 5px;
   font-size: 16px;
 }
+
 #arcShell .actioncenter .notification.incoming-message img.icon,
 #arcShell .push-notification.incoming-message img.icon {
   width: 48px;

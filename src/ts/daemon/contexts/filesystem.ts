@@ -1,20 +1,17 @@
-import {
-  DummyFileProgress,
-  type FileProgressMutator,
-  type FsProgressOperation,
-  type FsProgressProc,
-} from "$apps/components/fsprogress/types";
+import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
-import type { IFilesystemUserContext } from "$interfaces/contexts/files";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { ILegacyServerDrive } from "$interfaces/drives/legacy";
-import type { IMemoryFilesystemDrive } from "$interfaces/drives/temp";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IRecentFilesService } from "$interfaces/services/RecentFilesSvc";
-import type { ITrashCanService } from "$interfaces/services/TrashSvc";
-import { Env, Fs, Stack, SysDispatch } from "$ts/env";
+import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
+import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
+import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
+import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
@@ -22,12 +19,11 @@ import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import { ElevationLevel } from "$types/elevation";
-import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { LegacyConnectionInfo } from "$types/legacy";
-import type { ArcShortcut } from "$types/shortcut";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FileHandler, FileOpenerResult } from "$types/system/fs";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {
@@ -67,7 +63,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     const elevated =
       fromSystem ||
-      (await Daemon!?.elevation?.manuallyElevate({
+      (await Daemon!.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
@@ -124,7 +120,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
         errors: [],
       })
     );
-    let process: FsProgressProc | undefined;
+    let process: IFsProgressRuntime | undefined;
     let shown = false;
 
     this.Log(`Creating file progress '${uuid}': ${initialData.caption}`);
@@ -134,11 +130,11 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
       shown = true;
 
       if (!parentPid) {
-        process = await Daemon!.spawn?.spawnApp<FsProgressProc>("FsProgress", 0, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", 0, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       } else {
-        process = await Daemon!.spawn?.spawnOverlay<FsProgressProc>("FsProgress", parentPid, progress);
+        process = await Daemon!.spawn?.spawnApp<IFsProgressRuntime>("FsProgress", parentPid, { asOverlay: true }, progress);
 
         if (typeof process == "string") return DummyFileProgress;
       }
@@ -419,7 +415,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     this.Log(`Spawning LoadSaveDialog with UUID ${uuid}`);
 
-    await Daemon!.spawn?.spawnOverlay("fileManager", +Env.get("shell_pid"), data.startDir || UserPaths.Home, {
+    await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), { asOverlay: true }, data.startDir || UserPaths.Home, {
       ...data,
       returnId: uuid,
     });
@@ -438,7 +434,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     this.Log(`Opening file "${path}" (${shortcut ? "Shortcut" : "File"})`);
 
     if (this._disposed) return;
-    if (shortcut) return await Daemon!?.shortcuts?.handleShortcut(path, shortcut);
+    if (shortcut) return await Daemon!.shortcuts?.handleShortcut(path, shortcut);
 
     const filename = getItemNameFromPath(path);
     const result = Daemon!.assoc?.getFileAssociation(path);
@@ -471,7 +467,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await Daemon!?.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), path);
+    return await Daemon!.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), {}, path);
   }
 
   async openWith(path: string) {
@@ -479,7 +475,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     if (this._disposed) return;
 
-    await Daemon!?.spawn?.spawnOverlay("OpenWith", +Env.get("shell_pid"), path);
+    await Daemon!.spawn?.spawnApp("OpenWith", +Env.get("shell_pid"), { asOverlay: true }, path);
   }
 
   async determineCategorizedDiskUsage(): Promise<CategorizedDiskUsage> {
@@ -577,5 +573,54 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
+  }
+
+  async startFilesystemSupplier() {
+    if (this._disposed) return;
+
+    this.Log(`Starting filesystem supplier`);
+
+    try {
+      await Fs.mountDrive("userfs", UserDrive, "U", undefined);
+    } catch {
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
+    }
+  }
+
+  startDriveNotifierWatcher() {
+    if (this._disposed) return;
+
+    this.Log("Starting drive notifier watcher");
+
+    SysDispatch.subscribe<string>("fs-mount-drive", (id) => {
+      if (this._disposed) return;
+
+      try {
+        const drive = Fs.getDriveById(id);
+        if (!drive) return;
+
+        Daemon!.files?.mountedDrives.push(id);
+        if (!drive.REMOVABLE) return;
+
+        const notificationId = Daemon!.notifications?.sendNotification({
+          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+          message: "This drive just got mounted! Click the button to view it in the file manager",
+          buttons: [
+            {
+              caption: "Open Drive",
+              action: () => {
+                Daemon!.spawn?.spawnApp("fileManager", undefined, {}, `${drive.driveLetter || drive.uuid}:/`);
+
+                if (notificationId) Daemon!.notifications?.deleteNotification(notificationId);
+              },
+            },
+          ],
+          image: "DriveIcon",
+          timeout: 3000,
+        });
+      } catch {
+        return;
+      }
+    });
   }
 }

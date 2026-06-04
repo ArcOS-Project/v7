@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AppStoreRuntime } from "../runtime";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { appStorePages } from "../store";
   import Account from "./Sidebar/Account.svelte";
 
-  const { process }: { process: AppStoreRuntime } = $props();
+  const { process }: { process: IAppStoreRuntime } = $props();
   const { searching, searchQuery, currentPage, loadingPage } = process;
 
   function onkeydown(e: KeyboardEvent) {

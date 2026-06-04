@@ -1,11 +1,10 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
 import { MigrationNode } from "../node";
 
 export class AppShortcutsMigration extends MigrationNode {

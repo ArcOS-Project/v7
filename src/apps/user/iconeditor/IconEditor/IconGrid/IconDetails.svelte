@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { IconEditorRuntime } from "../../runtime";
+  import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { IconIdTypeCaptions } from "../../store";
 
-  const { process }: { process: IconEditorRuntime } = $props();
+  const { process }: { process: IIconEditorRuntime } = $props();
   const { selectedIcon, icons } = process;
 
   let type = $state<string>();
@@ -22,7 +23,7 @@
 {#if type && value}
   <div class="details">
     <div class="icon">
-      <img src={process.getIconCached($icons[$selectedIcon])} alt={$selectedIcon} />
+      <Icon icon={$icons[$selectedIcon]} />
     </div>
     <div class="info">
       <h1>{$selectedIcon}</h1>

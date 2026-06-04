@@ -35,13 +35,3 @@
   font-size: 16px;
   color: var(--accent-light);
 }
-
-#ExecuteQueryApp #LoadQueryOverlay > div.body div.actions {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  gap: 10px;
-  border-top: var(--win-border);
-  background-color: var(--win-bg);
-}

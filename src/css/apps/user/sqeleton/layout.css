@@ -1,5 +1,6 @@
 #Sqeleton > div.body div.main-content {
-  height: calc(100% - 26px);
+  height: 0;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   border-bottom: var(--win-border);

@@ -1,13 +1,14 @@
+import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
+import { Daemon } from "$ts/env";
 import { isPopulatable } from "$ts/util/apps";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { FileOpenerResult } from "$types/fs";
-import type { RenderArgs } from "$types/process";
+import type { AppProcessData } from "$types/apps/app";
+import type { FileOpenerResult } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
 
-export class OpenWithRuntime extends AppProcess {
+export class OpenWithRuntime extends AppProcess implements IOpenWithRuntime {
   available = Store<FileOpenerResult[]>();
   all = Store<FileOpenerResult[]>();
   apps = Store<FileOpenerResult[]>();

@@ -1,12 +1,13 @@
-import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import type { IProcess } from "$interfaces/process";
-import type { IShellRuntime, ITrayIconProcess } from "$interfaces/shell";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Env, Stack } from "$ts/env";
-import { ProcessWithPermissions } from "$ts/permissions/process";
-import type { ContextMenuItem } from "$types/app";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import type { ContextMenuItem } from "$types/apps/app";
+import type { ShellTrayIcon, TrayPopup } from "$types/services/tray";
 import { mount, unmount } from "svelte";
 
-export class TrayIconProcess extends ProcessWithPermissions implements ITrayIconProcess {
+export class TrayIconProcess extends Process implements ITrayIconProcess {
   targetPid: number;
   identifier: string;
   popup?: TrayPopup;
@@ -56,7 +57,7 @@ export class TrayIconProcess extends ProcessWithPermissions implements ITrayIcon
   async stop() {
     if (this.componentMount && Object.entries(this.componentMount).length) unmount(this.componentMount);
 
-    this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
+    if (this.STATE !== "stopping") this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
   }
 
   async renderPopup(popup: HTMLDivElement, target: IProcess) {}

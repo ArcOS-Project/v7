@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Fs, SysDispatch } from "$ts/env";
-  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { contextMenu, contextProps } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
-  import type { FolderEntry } from "$types/fs";
+  import type { FolderEntry } from "$types/system/fs";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import UserButton from "../Folders/UserButton.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const {
     process,
@@ -44,7 +45,24 @@
 
 <div class="right-pane">
   <UserButton {userPreferences} {username} {process} />
-  <div class="content">
+  <div
+    class="content"
+    use:contextMenu={[
+      [
+        {
+          caption: "Refresh",
+          icon: "refresh-cw",
+          action: () => update(),
+        },
+        {
+          caption: "Open home folder",
+          icon: "folder-open",
+          action: () => process.spawnApp("fileManager", process.pid, UserPaths.Home),
+        },
+      ],
+      process,
+    ]}
+  >
     {#each dirs as dir}
       <button
         class="folder"
@@ -52,7 +70,7 @@
         use:contextProps={[dir.name]}
         onclick={() => process.spawnApp("fileManager", process.pid, `${UserPaths.Home}/${dir.name}`)}
       >
-        <img src={process.getIconCached("FolderIcon")} alt="" />
+        <Icon icon="FolderIcon" className="icon" />
         <span class="name">{dir.name}</span>
       </button>
     {/each}

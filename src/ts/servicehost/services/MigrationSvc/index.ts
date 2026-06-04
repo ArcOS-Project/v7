@@ -1,49 +1,46 @@
-import type { IMigrationNodeConstructor } from "$interfaces/migration";
-import type { IMigrationService } from "$interfaces/services/MigrationSvc";
-import { Fs } from "$ts/env";
-import type { ServiceHost } from "$ts/servicehost";
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
+import { ConfigurationBuilder } from "$ts/config";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
-import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import { LogLevel } from "$types/logging";
-import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
-import type { Service } from "$types/service";
+import { LogLevel } from "$types/shared/logging";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
+import type { Service } from "$types/services/service";
 import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
 
 export class MigrationService extends BaseService implements IMigrationService {
-  private Configuration = Store<Record<string, number>>({});
+  private Index = Store<Record<string, number>>({});
   private CONFIG_PATH = join(UserPaths.Migrations, "Index.json");
+  private Configuration = new ConfigurationBuilder()
+    .ForProcess(this)
+    .ReadsFrom(this.Index)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults({})
+    .WithCooldown(100)
+    .Build();
 
   public MIGRATIONS: IMigrationNodeConstructor[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
 
   public get Config() {
-    return this.Configuration();
+    return this.Index();
   }
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, broadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, broadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, broadcast);
 
     this.setSource(__SOURCE__);
   }
 
   protected async start(): Promise<any> {
-    let initialDone = false;
-
-    this.Configuration.set(await this.loadConfiguration());
-    this.Configuration.subscribe((v) => {
-      if (!initialDone) return (initialDone = true);
-
-      this.writeConfiguration(v);
-    });
-
     this.initBroadcast?.("Running migrations");
+    await this.Configuration.initialize();
     await this.runMigrations(this.initBroadcast);
   }
 
@@ -51,7 +48,7 @@ export class MigrationService extends BaseService implements IMigrationService {
 
   async runMigrations(cb?: MigrationStatusCallback): Promise<Record<string, MigrationResult>> {
     this.Log("runMigrations: now running versional migrations");
-    const config = this.Configuration();
+    const config = this.Index();
     const results: Record<string, MigrationResult> = {};
 
     cb?.("Running migrations");
@@ -84,7 +81,7 @@ export class MigrationService extends BaseService implements IMigrationService {
         results[migration.name] = result;
 
         if (result.result === "err_ok" || result.result === "err_sameVersion")
-          this.Configuration.update((v) => {
+          this.Index.update((v) => {
             v[migration.name] = migration.version;
             return v;
           });
@@ -108,32 +105,12 @@ export class MigrationService extends BaseService implements IMigrationService {
     const result = await instance._runMigration(cb);
 
     if (result.result === "err_ok" || result.result === "err_sameVersion")
-      this.Configuration.update((v) => {
+      this.Index.update((v) => {
         v[migration.name] = migration.version;
         return v;
       });
 
     return result;
-  }
-
-  async loadConfiguration() {
-    this.Log(`Loading configuration`);
-
-    const config = tryJsonParse<Record<string, number>>(arrayBufferToText((await Fs.readFile(this.CONFIG_PATH))!));
-
-    if (!config || typeof config === "string") {
-      return await this.writeConfiguration({});
-    }
-
-    return config;
-  }
-
-  async writeConfiguration(config: Record<string, number>) {
-    this.Log(`Writing configuration: ${Object.keys(config).length} migrations`);
-
-    await Fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(config, null, 2)));
-
-    return config;
   }
 }
 

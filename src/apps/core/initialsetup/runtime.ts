@@ -1,5 +1,6 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
 import { Env, getKMod, Server, Stack, State } from "$ts/env";
@@ -10,8 +11,9 @@ import { Sleep } from "$ts/sleep";
 import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -20,7 +22,7 @@ import License from "./InitialSetup/Page/License.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
-export class InitialSetupRuntime extends AppProcess {
+export class InitialSetupRuntime extends AppProcess implements IInitialSetupRuntime {
   //#region VARIABLES
 
   public pageNumber = Store<number>();
@@ -159,6 +161,8 @@ export class InitialSetupRuntime extends AppProcess {
     if (this.server.serverInfo?.disableRegistration) {
       throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
+
+    Stack.renderer?.target.classList.add("theme-light")
 
     await Sleep(1000);
 
@@ -342,20 +346,46 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
+    if (Server?.serverInfo?.noEmailVerify) {
+      Env.set("DISPATCH_SOCK_ID", UUID());
+      const tokenResult = await LoginUser(this.newUsername(), this.password());
+
+      if (tokenResult.success) {
+        this.#userDaemon = await Stack.spawn(
+          UserDaemon,
+          undefined,
+          this.#userDaemon?.userInfo?._id,
+          this.pid,
+          tokenResult.result!,
+          this.newUsername()
+        );
+
+        await this.#userDaemon?.account?.getUserInfo();
+        await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+        await this.#userDaemon?.files?.startFilesystemSupplier();
+
+        this.#userDaemon?.preferences.update((v) => {
+          v.isDefault = false;
+          v.account.displayName = this.displayName();
+
+          return v;
+        });
+      }
+    }
+
     this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
     this.Log(`Checking account activation of '${this.newUsername()}'`);
 
-    const token = await LoginUser(this.newUsername(), this.password());
+    const tokenResult = await LoginUser(this.newUsername(), this.password());
 
-    if (!token) {
+    if (!tokenResult.success) {
       MessageBox(
         {
           title: "Did you click the link?",
-          message:
-            "Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.",
+          message: `Our systems tell me that your account hasn't been activated yet. Are you sure you clicked the link? If you did, and you're still seeing this, please contact support.<br><br>Details: ${tokenResult.errorMessage ?? "Unknown error"}`,
           buttons: [
             {
               caption: "Okay",
@@ -379,14 +409,18 @@ export class InitialSetupRuntime extends AppProcess {
       undefined,
       this.#userDaemon?.userInfo?._id,
       this.pid,
-      token,
+      tokenResult.result!,
       this.newUsername()
     );
 
+    // set the socket ID to something bogus to fool the backend into thinking we're connected to the websocket
+    Env.set("DISPATCH_SOCK_ID", UUID());
+
     await this.#userDaemon?.account?.getUserInfo();
-    await this.#userDaemon?.init?.startPreferencesSync();
-    await this.#userDaemon?.init?.startFilesystemSupplier();
+    await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
+    await this.#userDaemon?.files?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
+      v.isDefault = false;
       v.account.displayName = this.displayName();
 
       return v;

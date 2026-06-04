@@ -1,4 +1,8 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { SysDispatch } from "$ts/env";
+import { logItemToStr } from "$ts/util";
+import type { LogItem } from "$types/shared/logging";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
 
 export class RestartCommand extends TerminalProcess {
@@ -16,7 +20,21 @@ export class RestartCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: IArcTerminal) {
-    term.daemon?.power?.restart();
-    return -256;
+    if (term.IS_ARCTERM_MODE) {
+      term.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
+
+      SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
+        term.rl?.println(logItemToStr(data));
+      });
+
+      await this.daemon?.serviceHost?.stop();
+      await this.daemon?.killSelf();
+      location.reload();
+
+      return -256;
+    } else {
+      this.daemon?.power?.restart();
+      return -256;
+    }
   }
 }

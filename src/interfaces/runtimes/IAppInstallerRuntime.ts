@@ -1,0 +1,16 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { ArcPackage } from "$types/tpa/package";
+import type JSZip from "jszip";
+
+// !tpa
+export interface IAppInstallerRuntime extends IAppProcess {
+  progress?: IInstallerProcessBase;
+  metadata?: ArcPackage;
+  isLibrary: boolean;
+  zip?: JSZip;
+
+  revert(): Promise<void>;
+  runNow(): void;
+  go(): Promise<void>;
+}

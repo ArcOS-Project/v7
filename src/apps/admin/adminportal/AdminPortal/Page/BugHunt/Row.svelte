@@ -1,9 +1,10 @@
 <script lang="ts">
   import { LogoTranslations } from "$apps/admin/adminportal/store";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { StoreItemIconPrimitive } from "$ts/util/distrib";
-  import type { BugReport } from "$types/bughunt";
-  import type { ReadableStore } from "$types/writable";
+  import type { BugReport } from "$types/server/bughunt";
+  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
 
   const {
@@ -51,12 +52,9 @@
 >
   <div class="segment mode-icon">
     {#if report.isAppReport}
-      <img
-        src={report.reportAppPkgId ? StoreItemIconPrimitive(report.reportAppPkgId) : process.getIconCached("WindowSettingsIcon")}
-        alt=""
-      />
+      <Icon icon={report.reportAppPkgId ? StoreItemIconPrimitive(report.reportAppPkgId) : "WindowSettingsIcon"} />
     {:else}
-      <img src={LogoTranslations[report.mode] || process.getIconCached("QuestionIcon")} alt="" />
+      <Icon icon={LogoTranslations[report.mode] || "QuestionIcon"} />
     {/if}
   </div>
   <div class="segment timestamp">{timestamp}</div>

@@ -1,20 +1,25 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
-import type { IAppProcess } from "$interfaces/app";
-import type { IHelpersUserContext } from "$interfaces/contexts/helpers";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IHelpersUserContext } from "$interfaces/contexts/IHelpersUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
-import { ArcOSVersion, Env, Stack, SysDispatch } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Server, Stack, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
+import type { BetaFeedbackRequest } from "$types/system/beta";
 import type { ExpandedTerminal } from "$types/terminal";
-import { Daemon } from "..";
+import axios from "axios";
 import { UserContext } from "../context";
+import { toForm } from "$ts/util/form";
+import { IsBeta } from "$ts/util";
 
 export class HelpersUserContext extends UserContext implements IHelpersUserContext {
   constructor(id: string, daemon: IUserDaemon) {
@@ -40,7 +45,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
     }
 
     const process = await Stack.spawn<any>(
-      GlobalLoadIndicator.assets.runtime,
+      GlobalLoadIndicator.assets.runtime, // Not directly importing the runtime to prevent potential circularity (unlikely, but still)
       undefined,
       this.userInfo!._id,
       pid,
@@ -114,10 +119,15 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
 
     const uuid = UUID();
 
-    await Daemon!.spawn?.spawnOverlay("IconPicker", +Env.get("shell_pid"), {
-      ...data,
-      returnId: uuid,
-    });
+    await Daemon!.spawn?.spawnApp(
+      "IconPicker",
+      +Env.get("shell_pid"),
+      { asOverlay: true },
+      {
+        ...data,
+        returnId: uuid,
+      }
+    );
 
     return new Promise<string>(async (r) => {
       SysDispatch.subscribe<[string, string]>("ip-confirm", ([id, icon]) => {
@@ -132,7 +142,15 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
   async IconEditor(initialValue: string, defaultIcon?: string, name?: string) {
     const returnId = UUID();
 
-    await Daemon!.spawn?.spawnOverlay("IconEditDialog", +Env.get("shell_pid"), returnId, initialValue, name, defaultIcon);
+    await Daemon!.spawn?.spawnApp(
+      "IconEditDialog",
+      +Env.get("shell_pid"),
+      { asOverlay: true },
+      returnId,
+      initialValue,
+      name,
+      defaultIcon
+    );
 
     return new Promise<string>(async (r) => {
       SysDispatch.subscribe<[string, string]>("ied-confirm", ([id, icon]) => {
@@ -178,6 +196,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
     Daemon!.spawn?.spawnApp(
       "BugHuntCreator",
       undefined,
+      {},
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
       `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best we can. Please write your feedback in between the lines:
 
@@ -199,6 +218,52 @@ The information provided in this report is subject for review by Izaak or anothe
         excludeLogs: true,
         makePublic: true,
       }
+    );
+  }
+
+  async submitBetaFeedback(title: string, message: string): Promise<ICommandResult> {
+    if (!IsBeta())
+      return CommandResult.Error("Function unavailable outside beta");
+
+    const request: BetaFeedbackRequest = {
+      version: ArcOSVersion,
+      userId: this.userInfo._id,
+      username: this.username,
+      serverName: Server.hostname!,
+      title,
+      message,
+    };
+
+    try {
+      await Daemon.betaClient.post(`/feedback`, toForm(request));
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  openWebpage(href: string) {
+    MessageBox(
+      {
+        title: "Open this page?",
+        message: `You're about to leave ArcOS to navigate to <code>${href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
+        buttons: [
+          {
+            caption: "Stay here",
+            action() {},
+          },
+          {
+            caption: "Proceed",
+            action() {
+              window.open(href, "_blank");
+            },
+            suggested: true,
+          },
+        ],
+        image: "GlobeIcon",
+      },
+      +Env.get("shell_pid"),
+      true
     );
   }
 }

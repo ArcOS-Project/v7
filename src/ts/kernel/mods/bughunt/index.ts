@@ -1,14 +1,14 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IBugHunt } from "$interfaces/modules/bughunt";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
 import { KernelLogs } from "$ts/kernel/getters";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import type { App } from "$types/app";
-import type { BugReport, OutgoingBugReport } from "$types/bughunt";
+import type { App } from "$types/apps/app";
+import type { BugReport, OutgoingBugReport } from "$types/server/bughunt";
 import { defaultReportOptions } from "./store";
 
 export class BugHunt extends KernelModule implements IBugHunt {
@@ -75,9 +75,9 @@ export class BugHunt extends KernelModule implements IBugHunt {
     }
   }
 
-  async getPublicBugReports(): Promise<BugReport[]> {
+  async getPublicBugReports(token: string): Promise<BugReport[]> {
     try {
-      const response = await Backend.get(`/bughunt/reports/public`);
+      const response = await Backend.get(`/bughunt/reports/public`, { headers: { Authorization: `Bearer ${token}` } });
 
       return response.data as BugReport[];
     } catch {

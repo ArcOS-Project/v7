@@ -2,7 +2,7 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ServerPfp } from "$ts/images/pfp";
   import { DefaultUserPreferences } from "$ts/user/default";
-  import { type AuditLog, AuditSeverity, AuditSeverityIcons } from "$types/admin";
+  import { type AuditLog, AuditSeverity, AuditSeverityIcons } from "$types/server/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 

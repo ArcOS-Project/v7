@@ -1,34 +1,30 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
   import { Glow } from "$ts/images/branding";
-  import type { SettingsRuntime } from "../../runtime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
 </script>
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("AppsIcon")} alt="" />
+    <Icon icon="AppsIcon" />
     <h1>Applications</h1>
     <p>Manage the apps on your system</p>
   </div>
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some apps are disabled" image={process.getIconCached("WarningIcon")}></Option>
+      <Option caption="Safe Mode - some apps are disabled" image="WarningIcon" />
     </Section>
   {/if}
 
   <Section>
-    <Option
-      caption="Manage apps"
-      onclick={() => process.showSlide("apps_manageApps")}
-      image={process.getIconCached("AppsIcon")}
-      chevron
-    ></Option>
+    <Option caption="Manage apps" onclick={() => process.showSlide("apps_manageApps")} image="AppsIcon" chevron></Option>
   </Section>
 
   <Section caption="Options">
@@ -36,11 +32,7 @@
       <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
     </Option>
     {#if $userPreferences.security.enableThirdParty}
-      <Option
-        caption="Disable third-party apps"
-        chevron
-        image={process.getIconCached("ElevationIcon")}
-        onclick={() => Daemon?.apps?.disableThirdParty()}
+      <Option caption="Disable third-party apps" chevron image="ElevationIcon" onclick={() => Daemon?.apps?.disableThirdParty()}
       ></Option>
     {/if}
   </Section>

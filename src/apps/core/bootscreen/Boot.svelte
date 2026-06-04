@@ -1,14 +1,15 @@
 <script lang="ts">
+  import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA, Server } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import { onMount } from "svelte";
-  import type { BootScreenRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<BootScreenRuntime> = $props();
+  const { process }: AppComponentProps<IBootScreenRuntime> = $props();
   const { status, progress } = process;
 
   let url = $state<string>();
@@ -44,7 +45,7 @@
   </div>
 </div>
 
-<img src={Logo()} alt="ArcOS" />
+<Icon icon={Logo()} fallback={Logo()} />
 
 <div class="bottom">
   <Spinner height={30} stopped={!$progress} />

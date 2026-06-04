@@ -1,4 +1,4 @@
-import { LogLevel } from "$types/logging";
+import { LogLevel } from "$types/shared/logging";
 import { Log } from "../logging";
 
 /**

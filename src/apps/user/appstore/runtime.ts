@@ -1,8 +1,8 @@
-import type { IInstallerProcessBase } from "$interfaces/distrib";
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
@@ -11,41 +11,32 @@ import { MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { StoreItem } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 import axios from "axios";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
 
-export class AppStoreRuntime extends AppProcess {
+export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
   searchQuery = Store<string>("");
   loadingPage = Store<boolean>(false);
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
   operations: Record<string, IInstallerProcessBase> = {};
-  distrib: DistributionServiceProcess;
+  distrib: IDistributionServiceProcess;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: number, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.distrib = Daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
-
-    this.searchQuery.subscribe((v) => {
-      if (!v) {
-        this.searching.set(false);
-        if (this.currentPage() === "search") this.switchPage("home");
-      }
-    });
-
+    this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
     this.renderArgs = { page, props };
-
     this.setSource(__SOURCE__);
   }
 
@@ -66,6 +57,13 @@ export class AppStoreRuntime extends AppProcess {
 
       return false;
     }
+
+    this.searchQuery.subscribe((v) => {
+      if (!v) {
+        this.searching.set(false);
+        if (this.currentPage() === "search") this.switchPage("home");
+      }
+    });
 
     SysDispatch.subscribe("mugui-done", () => {
       this.switchPage(this.currentPage(), this.pageProps(), true);
@@ -238,6 +236,8 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deprecateStoreItem(pkg._id);
 
     this.switchPage("manageStoreItem", { id: pkg._id }, true);
+
+    return true;
   }
 
   async deletePackage(pkg: StoreItem) {
@@ -256,6 +256,8 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deleteStoreItem(pkg._id);
 
     this.switchPage("madeByYou");
+
+    return true;
   }
 
   async publishPackage() {
@@ -268,7 +270,7 @@ export class AppStoreRuntime extends AppProcess {
       startDir: UserPaths.Documents,
     });
 
-    if (!path) return;
+    if (!path) return false;
 
     const prog = await Daemon!.files!.FileProgress(
       {
@@ -331,19 +333,20 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
+    const updateResult = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
       if (progress.what) prog.updSub(progress.what);
     });
 
-    if (!result) {
+    prog.stop();
+
+    if (!updateResult.success) {
       MessageBox(
         {
           title: "Failed to update store item",
-          message:
-            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
+          message: `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: ${updateResult.errorMessage ?? "Unknown error"}`,
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -356,8 +359,6 @@ export class AppStoreRuntime extends AppProcess {
     }
 
     await this.switchPage("manageStoreItem", { id: pkg._id }, true);
-
-    prog.stop();
   }
 
   readmeFallback(pkg: StoreItem): string {

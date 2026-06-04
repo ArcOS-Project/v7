@@ -1,7 +1,6 @@
-import type { IAppProcess } from "$interfaces/app";
-import { Daemon } from "$ts/daemon";
-import { Env, Stack } from "$ts/env";
-import type { AppContextMenu } from "$types/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import { Daemon, Env, Stack } from "$ts/env";
+import type { AppContextMenu } from "$types/apps/app";
 
 export function WindowSystemContextMenu(): AppContextMenu {
   let userDaemon = Daemon;

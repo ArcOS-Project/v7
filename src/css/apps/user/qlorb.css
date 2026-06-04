@@ -30,3 +30,15 @@
 #QlorbApp * {
   overflow: hidden;
 }
+
+#QlorbApp .intro img {
+  height: 50px;
+}
+
+#QlorbApp .intro img.logo {
+  height: 300px;
+}
+
+#QlorbApp h1.title img {
+  height: 96px;
+}

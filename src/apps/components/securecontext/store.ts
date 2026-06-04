@@ -1,4 +1,4 @@
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel } from "$types/system/elevation";
 
 // What icon belongs to what level?
 export const ElevationLevelIcons: Record<ElevationLevel, string> = {

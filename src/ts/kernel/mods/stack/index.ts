@@ -1,16 +1,17 @@
 import type { Constructs } from "$interfaces/common";
-import type { IWaveKernel } from "$interfaces/kernel";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import type { IProcess } from "$interfaces/process";
-import type { IAppRenderer } from "$interfaces/renderer";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { AppProcess } from "$ts/apps/process";
 import { AppRenderer } from "$ts/apps/renderer";
 import { __Console__ } from "$ts/console";
 import { Env, Kernel, State, SysDispatch } from "$ts/env";
 import { calculateMemory } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
-import type { ProcessContext, ProcessKillResult } from "$types/process";
+import type { App } from "$types/apps/app";
+import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import { parse } from "stacktrace-parser";
 import { KernelModule } from "../../module";
 
@@ -112,7 +113,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
       this.processContexts.set(pid, {
         pid,
         userId: userId || "NOBODY",
-        appId: proc instanceof AppProcess ? proc.app.id : undefined,
+        appId: (proc as any).app?.id,
       });
 
       const store = this.store();
@@ -121,7 +122,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
       this.store.set(store);
 
-      if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc, renderTarget);
+      if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc as IAppProcess, renderTarget);
 
       this.BUSY = "";
       __Console__.timeEnd(`process spawn: ${pid}`);
@@ -181,8 +182,8 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
     await this._killSubProceses(pid, force);
 
-    if (proc instanceof AppProcess && proc.closeWindow && !force) {
-      await proc.closeWindow(false);
+    if (proc instanceof AppProcess && !force) {
+      await proc.closeWindow?.(false);
     }
 
     SysDispatch.dispatch<[number]>("proc-kill", [pid]);
@@ -219,8 +220,8 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
     for (const [pid, proc] of procs) {
       if (proc._disposed) continue;
 
-      if (proc instanceof AppProcess && proc.closeWindow && !force) {
-        await proc.closeWindow();
+      if (proc instanceof AppProcess && !force) {
+        await proc.closeWindow?.();
 
         continue;
       }

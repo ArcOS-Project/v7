@@ -1,8 +1,8 @@
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { AppProcess } from "$ts/apps/process";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
-import { Env } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { getAllImages } from "$ts/images";
 import type { JsExec } from "$ts/jsexec";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
@@ -29,14 +29,19 @@ import {
 } from "$ts/util/fs";
 import { tryJsonStringify } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { ThirdPartyPropMap } from "$types/thirdparty";
+import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import { ThirdPartyProcess } from "./process";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
-    serviceHost: engine.userDaemon?.serviceHost, // TODO: PERMISSION_SERVICE_HOST
+    env: Env, // TEMP
+    handler: Stack, // TEMP
+    fs: Fs, // TEMP
+    daemon: Daemon, // TEMP
+    serviceHost: Daemon!.serviceHost, // TEMP
     MessageBox,
     icons: getAllImages(),
     util: {
@@ -67,6 +72,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     Process,
     AppProcess,
     ThirdPartyAppProcess,
+    ThirdPartyProcess,
     FilesystemDrive,
     argv: engine.args,
     app: engine.app,
@@ -85,7 +91,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
     ): Promise<IThirdPartyAppProcess | undefined> => undefined,
     loadHtml: async (path: string): Promise<string | undefined> => undefined,
     axios,
-    Server: Backend, // TODO: PERMISSION_SERVER_INTERACT
+    Server: Backend,
     BaseService,
     TrayIconProcess,
     Debug: (m: any) => {

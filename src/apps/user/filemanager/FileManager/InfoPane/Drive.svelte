@@ -1,6 +1,6 @@
 <script lang="ts">
   import CircularProgress from "$lib/CircularProgress.svelte";
-  import { Daemon } from "$ts/daemon";
+  import Icon from "$lib/Icon.svelte";
   import { formatBytes } from "$ts/util/fs";
   import { DriveIconsMulticolor } from "../../store";
   import type { QuotedDrive } from "../../types";
@@ -13,7 +13,7 @@
     {#if canQuota}
       <CircularProgress max={drive.quota.max} size={64} strokeWidth={6} value={drive.quota.used} />
     {:else}
-      <img src={Daemon.icons?.getIconCached(DriveIconsMulticolor[drive.data.IDENTIFIES_AS] ?? "DriveIcon")} alt="" />
+      <Icon icon={DriveIconsMulticolor[drive.data.IDENTIFIES_AS] ?? "DriveIcon"} />
     {/if}
     <h1>{drive.data.label}</h1>
     <p>{drive.data.FILESYSTEM_LONG}</p>

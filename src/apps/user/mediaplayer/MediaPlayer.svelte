@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
   import Controls from "./MediaPlayer/Controls.svelte";
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
-  import type { MediaPlayerRuntime } from "./runtime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: MediaPlayerRuntime } = $props();
+  const { process }: { process: IMediaPlayerRuntime } = $props();
+  const { pinControls } = process;
 
   let audio: HTMLVideoElement;
   let hideControls = $state<boolean>(false);
@@ -48,7 +50,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="container shell-colored colored"
-  class:hide-controls={hideControls}
+  class:hide-controls={hideControls && !$pinControls}
   {onmousemove}
   data-contextmenu={$queue.length && $Loaded ? "player" : ""}
   class:is-video={$isVideo && $Loaded}
@@ -74,7 +76,7 @@
     <Controls {process} />
   {:else}
     <div class="no-file">
-      <img src={process.getIconCached("MediaPlayerIcon")} alt="" />
+      <Icon icon={"MediaPlayerIcon"} />
       <h2>No File Opened!</h2>
       <p>Select a file to play from the File Menu or by pressing Alt+O.</p>
     </div>

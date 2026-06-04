@@ -1,5 +1,5 @@
 import "$css/apps/components/totpsetupgui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { TotpSetupGuiRuntime } from "./runtime";
 import TotpSetupGui from "./TotpSetupGui.svelte";
 

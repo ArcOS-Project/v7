@@ -1,11 +1,17 @@
-import type { IWorkspaceUserContext } from "$interfaces/contexts/workspaces";
-import type { IUserDaemon } from "$interfaces/daemon";
+import FirstRunApp from "$apps/components/firstrun/FirstRun";
+import type { Constructs } from "$interfaces/common";
+import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Stack } from "$ts/env";
+import { Daemon, Fs, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { ServiceHost } from "$ts/servicehost";
 import { Sleep } from "$ts/sleep";
+import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
-import type { UserPreferences } from "$types/user";
-import { Daemon } from "..";
+import type { UserPreferences, Workspace } from "$types/user";
 import { UserContext } from "../context";
 
 export class WorkspaceUserContext extends UserContext implements IWorkspaceUserContext {
@@ -94,6 +100,31 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
     delete this.virtualDesktops[uuid];
   }
 
+  async deleteVirtualDesktopAck(workspace: Workspace) {
+    const windowCount = [...Stack.store()].filter(([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
+
+    if (windowCount > 0) {
+      MessageBox(
+        {
+          title: "Can't delete workspace",
+          message:
+            "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: "WarningIcon",
+        },
+        this.pid,
+        true
+      );
+
+      return;
+    }
+
+    Daemon?.workspaces?.deleteVirtualDesktop(workspace.uuid); //First delete the desktop
+    await Sleep(0); // Then wait for the next frame
+    this.shell!.workspaceManagerOpened.set(true); // (ugly) and re-open the workspace manager
+  }
+
   getCurrentDesktop(): HTMLDivElement | undefined {
     if (this._disposed) return;
 
@@ -163,7 +194,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
     const processes = Stack.store();
 
     for (const [_, proc] of [...processes]) {
-      if (!(proc instanceof AppProcess)) continue;
+      if (!ProcessesHelper.IsAnyGraphicalAppProcess(proc)) continue;
 
       if (proc.app.desktop === uuid) await proc.closeWindow();
 
@@ -216,7 +247,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
     const destinationWorkspace = this.virtualDesktops[destination];
     const window = document.querySelector(`#appRenderer div.window[data-pid*='${pid}']`);
 
-    if (!proc || !(proc instanceof AppProcess) || !destinationWorkspace || !window) return;
+    if (!proc || !ProcessesHelper.IsAnyGraphicalAppProcess(proc) || !destinationWorkspace || !window) return;
 
     const currentWorkspace = proc.app.desktop;
 
@@ -233,5 +264,23 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
 
       return v;
     });
+  }
+
+  async startVirtualDesktops() {
+    if (this._disposed) return;
+
+    this.Log(`Starting virtual desktop system`);
+
+    const outer = document.createElement("div");
+    const inner = document.createElement("div");
+
+    outer.className = "virtual-desktop-container";
+    inner.className = "inner";
+
+    outer.append(inner);
+    Stack.renderer?.target.append(outer);
+    Daemon!.workspaces!.virtualDesktop = inner;
+
+    Daemon!.workspaces!.syncVirtualDesktops(Daemon!.preferences());
   }
 }

@@ -1,5 +1,5 @@
 import "$css/apps/components/oopsstacktracer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import OopsStackTracer from "./OopsStackTracer.svelte";
 import { OopsStackTracerRuntime } from "./runtime";
 

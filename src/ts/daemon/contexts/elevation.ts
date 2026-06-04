@@ -1,9 +1,8 @@
-import type { IElevationUserContext } from "$interfaces/contexts/elevation";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, SysDispatch } from "$ts/env";
+import type { IElevationUserContext } from "$interfaces/contexts/IElevationUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, SysDispatch } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
-import type { ElevationData } from "$types/elevation";
-import { Daemon } from "..";
+import type { ElevationData } from "$types/system/elevation";
 import { UserContext } from "../context";
 
 export class ElevationUserContext extends UserContext implements IElevationUserContext {
@@ -42,11 +41,18 @@ export class ElevationUserContext extends UserContext implements IElevationUserC
     Daemon!.renderer?.setAppRendererClasses(Daemon!.preferences());
 
     if (shellPid) {
-      const proc = await Daemon!.spawn?._spawnOverlay("SecureContext", undefined, +shellPid, id, key, data);
+      const proc = await Daemon!.spawn?.spawnApp(
+        "SecureContext",
+        +shellPid,
+        { noWorkspace: true, asOverlay: true },
+        id,
+        key,
+        data
+      );
 
       if (!proc) return false;
     } else {
-      const proc = await Daemon!.spawn?._spawnApp("SecureContext", undefined, this.pid, id, key, data);
+      const proc = await Daemon!.spawn?.spawnApp("SecureContext", this.pid, { noWorkspace: true }, id, key, data);
 
       if (!proc) return false;
     }

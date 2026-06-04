@@ -1,5 +1,5 @@
-import type { IAdminPortalRuntime } from "$interfaces/admin";
-import type { ContextMenuItem } from "$types/app";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+import type { ContextMenuItem } from "$types/apps/app";
 import { FileMenu } from "./altmenu/file";
 import { PageMenu } from "./altmenu/page";
 import { ToolsMenu } from "./altmenu/tools";

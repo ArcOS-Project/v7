@@ -1,14 +1,16 @@
 import { FirstRunApp } from "$apps/components/firstrun/FirstRun";
 import { FirstRunRuntime } from "$apps/components/firstrun/runtime";
 import { TotpAuthGuiApp } from "$apps/components/totpauthgui/TotpAuthGui";
-import { TotpAuthGuiRuntime } from "$apps/components/totpauthgui/runtime";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { UserDaemon } from "$ts/daemon";
-import { Env, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
+import { Env, GetConnector, getKMod, SoundBus, Stack, State, SysDispatch } from "$ts/env";
 import { ProfilePictures } from "$ts/images/pfp";
-import { Backend } from "$ts/kernel/mods/server/axios";
 import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
 import { Wallpapers } from "$ts/user/wallpaper/store";
@@ -16,14 +18,15 @@ import { authcode } from "$ts/util";
 import { tryJsonParse } from "$ts/util/json";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { ServerInfo } from "$types/server";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import { LoginUserDaemonStartOptions } from "./store";
 import type { LoginAppProps, PersistenceInfo } from "./types";
 
-export class LoginAppRuntime extends AppProcess {
+export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public DEFAULT_WALLPAPER = Store<string>("");
   public loadingStatus = Store<string>("");
   public errorMessage = Store<string>("");
@@ -82,7 +85,7 @@ export class LoginAppRuntime extends AppProcess {
 
     if (this.loginProps?.type) {
       State?.getStateLoaders()?.main?.removeAttribute("style");
-      this.hideProfileImage.set(true);
+      // this.hideProfileImage.set(true);
 
       if (!this.loginProps.userDaemon) throw new Error(`LoginAppRuntimeConstructor: Irregular login type without daemon`);
 
@@ -127,14 +130,13 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
+    const userConnector = GetConnector<IUserConnector>("UserConnector");
+
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
-    this.profileImage.set(`${this.server.url}/user/pfp/${userDaemon.userInfo._id}${authcode()}`);
+    this.profileImage.set(userConnector.PictureUrl(userDaemon.userInfo._id));
 
     if (!this.safeMode && applyBackground) {
-      this.loginBackground.set(
-        (await userDaemon.wallpaper?.getWallpaper(userDaemon.preferences().account.loginBackground))?.url ||
-          this.DEFAULT_WALLPAPER()
-      );
+      this.loginBackground.set(userConnector.LoginBgUrl(userDaemon.userInfo._id));
     }
   }
 
@@ -145,108 +147,29 @@ export class LoginAppRuntime extends AppProcess {
     this.Log(`Starting user daemon for '${username}'`);
     this.loadingStatus.set(this.getWelcomeString());
 
-    const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, info?._id || "SYSTEM", 1, token, username, info);
+    const { success, result: userDaemon, errorMessage } = await UserDaemon.Hello(token, username, info);
 
-    if (!userDaemon) {
+    if (!success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Failed to start user daemon");
+      this.errorMessage.set(errorMessage ?? "Unknown error");
 
       return;
     }
 
-    this.loadingStatus.set("Saving token");
-    this.saveToken(userDaemon);
-    this.loadingStatus.set("Loading your settings");
-
-    const userInfo = await userDaemon.account!.getUserInfo();
-
-    if (!userInfo) {
-      this.loadingStatus.set("");
-      this.errorMessage.set("Failed to request user info");
-
-      return;
-    }
-
-    this.profileImage.set(`${this.server.url}/user/pfp/${userInfo._id}${authcode()}`);
-
-    if (userInfo.hasTotp && userInfo.restricted) {
-      this.loadingStatus.set("Requesting 2FA");
-
-      const unlocked = await this.askForTotp(userDaemon.userInfo?._id);
-
-      if (!unlocked) {
-        await userDaemon.account!.discontinueToken();
-        await userDaemon.killSelf();
-        this.resetCookies();
-        this.loadingStatus.set("");
-        this.errorMessage.set("You didn't enter a valid 2FA code!");
-        return;
-      }
-    }
-
-    this.loadingStatus.set(this.getWelcomeString());
-
-    const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {
-      if (!verbose) return;
+      if (!userDaemon?.preferences()?.enableVerboseLogin || !message) return;
       this.loadingStatus.set(message);
     };
 
-    await this.loadPersistence();
-    this.savePersistence(username, this.profileImage());
+    this.loadingStatus.set("Saving token");
+    this.saveToken(userDaemon!);
 
-    broadcast("Starting filesystem");
-    await userDaemon.init!.startFilesystemSupplier();
-    await userDaemon.version!.mountSourceDrive();
+    const result = await userDaemon!.startUserDaemon(LoginUserDaemonStartOptions(this), broadcast);
 
-    broadcast("Starting synchronization");
-    await userDaemon.init!.startPreferencesSync();
-
-    broadcast("Reading profile customization");
-    await this.setUserDisplayStuff(userDaemon);
-
-    if (!this.safeMode) {
-      this.savePersistence(username, this.profileImage(), this.loginBackground());
+    if (!result.success) {
+      this.loadingStatus.set("");
+      this.errorMessage.set(result.errorMessage ?? "Unknown error");
     }
-
-    broadcast("Notifying login activity");
-    await userDaemon.activity!.logActivity("login");
-
-    broadcast("Starting service host");
-    await userDaemon.init?.startServiceHost(broadcast);
-
-    broadcast("Welcome to ArcOS");
-    if (!userDaemon.preferences().firstRunDone && !userDaemon.preferences().appPreferences.arcShell) {
-      await this.firstRun(userDaemon);
-    }
-
-    broadcast("Starting drive notifier watcher");
-    userDaemon.init!.startDriveNotifierWatcher();
-
-    broadcast("Starting permission manager");
-    await userDaemon.init!.startPermissionHandler();
-
-    broadcast("Indexing your files");
-    await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-    broadcast("Starting status refresh");
-    await userDaemon.init!.startSystemStatusRefresh();
-
-    broadcast("Let's go!");
-    await State?.loadState("desktop", { userDaemon });
-    SoundBus.playSound("arcos.system.logon");
-    userDaemon.renderer!.setAppRendererClasses(userDaemon.preferences());
-    userDaemon.checks!.checkNightly();
-
-    broadcast("Starting Workspaces");
-    await userDaemon.init!.startVirtualDesktops();
-
-    broadcast("Running autorun");
-    await userDaemon.apps!.spawnAutoload();
-    await userDaemon.checks!.checkForUpdates();
-    await userDaemon.checks!.checkForMissedMessages();
-
-    userDaemon._blockLeaveInvocations = false;
   }
 
   //#endregion
@@ -269,8 +192,8 @@ export class LoginAppRuntime extends AppProcess {
     await userDaemon.serviceHost?.spinDown(broadcast);
 
     broadcast("Stopping processes");
-    for (const [_, proc] of [...Stack.store()]) {
-      if (proc && !proc._disposed && proc instanceof AppProcess && proc.pid !== this.pid) {
+    for (const proc of Stack.renderer?.currentState.map((pid) => Stack.getProcess(pid) as IAppProcess) ?? []) {
+      if (!proc._disposed && proc.pid !== this.pid) {
         await proc.killSelf();
       }
     }
@@ -372,18 +295,18 @@ export class LoginAppRuntime extends AppProcess {
 
     this.loadingStatus.set(`Hi, ${username}!`);
 
-    const token = await LoginUser(username, password);
+    const tokenResult = await LoginUser(username, password);
 
-    if (!token) {
+    if (!tokenResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set("Username or password incorrect.");
+      this.errorMessage.set(tokenResult.errorMessage ?? "Username or password incorrect");
 
       this.updateServerStuff();
 
       return;
     }
 
-    await this.startDaemon(token, username);
+    await this.startDaemon(tokenResult.result!, username);
   }
 
   private saveToken(userDaemon: IUserDaemon) {
@@ -392,9 +315,11 @@ export class LoginAppRuntime extends AppProcess {
 
     this.Log(`Saving token of '${userDaemon.username}' to cookies`);
 
-    const cookieOptions = {
-      expires: 14, // lmao
-      domain: import.meta.env.DEV ? "localhost" : location.hostname,
+    const cookieOptions: Cookies.CookieAttributes = {
+      path: "/",
+      secure: false,
+      expires: 30,
+      domain: location.hostname,
     };
 
     Cookies.set("arcToken", token, cookieOptions);
@@ -429,15 +354,10 @@ export class LoginAppRuntime extends AppProcess {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const infoResult = await GetConnector<IUserConnector>("UserConnector", token).Self();
+    if (!infoResult.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return infoResult.result;
   }
 
   resetCookies() {
@@ -447,7 +367,7 @@ export class LoginAppRuntime extends AppProcess {
     Cookies.remove("arcUsername");
   }
 
-  private async askForTotp(userId: string | undefined) {
+  public async askForTotp(userId: string | undefined) {
     const returnId = UUID();
 
     return new Promise(async (r) => {
@@ -460,7 +380,7 @@ export class LoginAppRuntime extends AppProcess {
       });
 
       await Stack.spawn(
-        TotpAuthGuiRuntime,
+        TotpAuthGuiApp.assets.runtime,
         undefined,
         userId,
         this.pid,
@@ -471,7 +391,7 @@ export class LoginAppRuntime extends AppProcess {
   }
 
   async firstRun(daemon: IUserDaemon) {
-    const process = await Stack.spawn<FirstRunRuntime>(
+    const process = await Stack.spawn<IFirstRunRuntime>(
       FirstRunRuntime,
       undefined,
       daemon.userInfo?._id,

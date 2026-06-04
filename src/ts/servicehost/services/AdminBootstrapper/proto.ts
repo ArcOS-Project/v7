@@ -1,5 +1,5 @@
 import { Env } from "$ts/env";
-import type { ProtocolHandler } from "$types/proto";
+import type { ProtocolHandler } from "$types/services/proto";
 
 export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
   admin_bugrep: {
@@ -12,7 +12,7 @@ export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
       };
     },
     action: async (payload, daemon) => {
-      return !!(await daemon.spawn!.spawnApp("AdminPortal", +Env.get("shell_pid"), "viewBugReport", { id: payload.id }));
+      return !!(await daemon.spawn!.spawnApp("AdminPortal", +Env.get("shell_pid"), {}, "viewBugReport", { id: payload.id }));
     },
   },
 };

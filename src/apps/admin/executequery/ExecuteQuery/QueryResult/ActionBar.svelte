@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { ExecuteQueryRuntime } from "../../runtime";
+  import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: ExecuteQueryRuntime } = $props();
+  const { process }: { process: IExecuteQueryRuntime } = $props();
   const { result, truncated, totalCount } = process;
 </script>
 
@@ -9,7 +10,7 @@
   <p class="count">{$result?.length}/{$totalCount} results</p>
   {#if $truncated}
     <div class="truncated">
-      <img src={process.getIconCached("ErrorIcon")} alt="" />
+      <Icon icon="ErrorIcon" />
       <span>Result truncated: too many items ({$totalCount} &gt 1000)</span>
     </div>
   {/if}

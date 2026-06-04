@@ -1,18 +1,19 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import { Daemon } from "$ts/daemon";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
   import { Env } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { AppGroups, UserPaths } from "$ts/user/store";
   import { join } from "$ts/util/fs";
   import { Store } from "$ts/writable";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { ArcShortcut } from "$types/system/shortcut";
 
   const { process, shortcuts, name }: { process: IShellRuntime; shortcuts: Record<string, ArcShortcut>; name: string } = $props();
   const { userPreferences, startMenuOpened } = process;
   const populatable = Store<ArcShortcut[]>([]);
 
-  userPreferences.subscribe((v) => {
+  userPreferences.subscribe(() => {
     $populatable = Object.values(shortcuts).filter(
       ({ target, type }) =>
         type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
@@ -54,7 +55,7 @@
       process,
     ]}
   >
-    <img src={process.getIconCached("FolderIcon")} alt="" />
+    <Icon icon="FolderIcon" />
     <span class="name">{groupName}</span>
     <span class="lucide icon-chevron-right"></span>
   </button>

@@ -1,10 +1,12 @@
 <script lang="ts">
+  import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import Button from "./MessageBox/Button.svelte";
-  import type { MessageBoxRuntime } from "./runtime";
 
-  const { process }: AppComponentProps<MessageBoxRuntime> = $props();
+  const { process }: AppComponentProps<IMessageBoxRuntime> = $props();
   const { data } = process;
   const Component = data?.content;
 
@@ -15,7 +17,7 @@
   <div class="top">
     {#if data.image}
       <div class="left">
-        <img src={process.getIconCached(data.image) || getIconPath(data.image) || data.image} alt="" />
+        <Icon icon={data.image} fallback={getIconPath(data.image) || data.image} />
       </div>
     {/if}
     <div class="right">
@@ -29,9 +31,11 @@
       {/if}
     </div>
   </div>
-  <div class="bottom">
-    {#each data.buttons as button}
-      <Button {button} {process} suggestedDisabled={disabled} />
-    {/each}
-  </div>
+  <ActionBar>
+    {#snippet rightContent()}
+      {#each data.buttons as button}
+        <Button {button} {process} suggestedDisabled={disabled} />
+      {/each}
+    {/snippet}
+  </ActionBar>
 {/if}

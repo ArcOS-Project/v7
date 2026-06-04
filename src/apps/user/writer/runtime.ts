@@ -1,20 +1,20 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { App, AppProcessData } from "$types/app";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { App, AppProcessData } from "$types/apps/app";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
 import { ReplaceOverlay } from "./replace/metadata";
 
-export class WriterRuntime extends AppProcess {
+export class WriterRuntime extends AppProcess implements IWriterRuntime {
   buffer = Store<string>("");
   openedFile = Store<string>("");
   filename = Store<string>("");
@@ -23,7 +23,7 @@ export class WriterRuntime extends AppProcess {
   original = Store<string>("");
   input = Store<HTMLTextAreaElement>();
   drive = Store<IFilesystemDrive | undefined>();
-  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
+  mimeIcon = Store<string>("DefaultMimeIcon");
 
   protected overlayStore: Record<string, App> = {
     replace: ReplaceOverlay,
@@ -134,7 +134,7 @@ export class WriterRuntime extends AppProcess {
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+      this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
     } catch (e) {
@@ -208,7 +208,7 @@ export class WriterRuntime extends AppProcess {
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+    this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);

@@ -1,14 +1,22 @@
 <script lang="ts">
+  import AccentedLogo from "$lib/AccentedLogo.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
+  const { userPreferences } = process;
 </script>
 
-<img src={Logo()} alt="ArcOS" />
+{#if !$userPreferences.shell.taskbar.accentedStartButton}
+  <Icon icon={Logo()} />
+{:else}
+  <AccentedLogo width={150} height={150} />
+{/if}
+
 <h1>ArcOS <span class="colored">v7</span></h1>
 
 {#if BETA}

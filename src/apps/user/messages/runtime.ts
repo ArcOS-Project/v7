@@ -1,8 +1,10 @@
 import type { FileProgressMutator } from "$apps/components/fsprogress/types";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import { MessagingInterface } from "$ts/servicehost/services/MessagingService";
+import { Daemon, Fs } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -10,17 +12,19 @@ import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { ExpandedMessage, MessageAttachment } from "$types/messaging";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
+import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { CommandResult } from "$ts/result";
+import { UserPaths } from "$ts/user/store";
+import { MessagesAltMenu } from "./altmenu";
 
-export class MessagingAppRuntime extends AppProcess {
-  service: MessagingInterface;
+export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
+  service: IMessagingInterface;
   page = Store<MessagingPage | undefined>();
   pageId = Store<string | undefined>();
   buffer = Store<ExpandedMessage[]>([]);
@@ -36,14 +40,18 @@ export class MessagingAppRuntime extends AppProcess {
   messageWindow = false;
   messageFromFile = false;
 
+  override contextMenu: AppContextMenu = MessagesContextMenu(this);
+
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "unread", messageId?: string) {
     super(pid, parentPid, app);
 
-    this.service = Daemon?.serviceHost?.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon?.serviceHost?.getService<IMessagingInterface>("MessagingService")!;
 
     const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
+
+    this.renderArgs.page = pageOrMessagePath;
 
     if (messageId || path) {
       this.messageWindow = true;
@@ -53,10 +61,7 @@ export class MessagingAppRuntime extends AppProcess {
       this.app.data.size.w = this.app.data.minSize.w;
       this.app.data.size.h = this.app.data.minSize.h;
     } else {
-      this.renderArgs.page = pageOrMessagePath;
-      this.app.data.minSize.w = 700;
-      this.app.data.size.w = 850;
-      this.app.data.size.h = 500;
+      this.altMenu.set(MessagesAltMenu(this));
     }
 
     this.setSource(__SOURCE__);
@@ -127,7 +132,7 @@ export class MessagingAppRuntime extends AppProcess {
       this.windowTitle.set(`${message.title} from ${message.author?.displayName || message.author?.username || "unknown user"}`);
   }
 
-  async userInfo(userId: string): Promise<CommandResult<PublicUserInfo>> {
+  async userInfo(userId: string): Promise<ICommandResult<PublicUserInfo>> {
     this.Log(`userInfo: ${userId}`);
 
     if (this.userInfoCache[userId]) return CommandResult.Ok(this.userInfoCache[userId]);
@@ -167,6 +172,7 @@ export class MessagingAppRuntime extends AppProcess {
       {
         title: "Delete message?",
         message: "Are you sure you want to delete this message? This cannot be undone.",
+        image: "WarningIcon",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -494,7 +500,7 @@ export class MessagingAppRuntime extends AppProcess {
           title: `'${attachment.filename}' unavailable`,
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
-          image: info?.icon || this.getIconCached("DefaultMimeIcon"),
+          image: info?.icon || "DefaultMimeIcon",
           buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
           sound: "arcos.dialog.error",
         },
@@ -510,6 +516,19 @@ export class MessagingAppRuntime extends AppProcess {
     } catch {}
 
     await Daemon?.files?.openFile(path);
+  }
+
+  async downloadAttachments() {
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Choose where to save the attachment",
+      startDir: UserPaths.Downloads,
+      icon: "MessagingIcon",
+      folder: true,
+    });
+
+    if (!path) return;
+
+    this.service.downloadAttachments(this.message()!, this.message()?.attachmentData!, path);
   }
 
   //#endregion

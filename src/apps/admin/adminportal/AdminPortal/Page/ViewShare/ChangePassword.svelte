@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Daemon } from "$ts/daemon";
-  import type { SharedDriveType } from "$types/shares";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon } from "$ts/env";
+  import type { SharedDriveType } from "$types/server/shares";
   import { generate } from "generate-password-ts";
 
   const { share, process }: { share: SharedDriveType; process: IAdminPortalRuntime } = $props();

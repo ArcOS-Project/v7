@@ -1,6 +1,6 @@
-import type { IProcess, IProcessDispatch } from "$interfaces/process";
+import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
 import { Log } from "$ts/logging";
-import type { DispatchCallback } from "$types/dispatch";
+import type { DispatchCallback } from "$types/system/dispatch";
 
 export class ProcessDispatch implements IProcessDispatch {
   private store: Record<string, DispatchCallback[]> = {};

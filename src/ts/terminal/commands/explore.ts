@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 
@@ -16,10 +16,10 @@ export class ExploreCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const path = argv.join(" ");
 
-    term.daemon?.spawn?.spawnApp("fileManager", term.pid, path ? term.join(path) : term.path);
+    this.daemon?.spawn?.spawnApp("fileManager", term.pid, {}, path ? term.join(path) : term.path);
     return 0;
   }
 }

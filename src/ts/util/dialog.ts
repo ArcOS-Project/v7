@@ -1,9 +1,8 @@
-import { MessageBoxRuntime } from "$apps/components/messagebox/runtime";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import { Daemon } from "$ts/daemon";
-import type { App } from "$types/app";
-import type { ConfirmationData, MessageBoxData } from "$types/messagebox";
-import type { ErrorButton } from "$types/notification";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import { Daemon } from "$ts/env";
+import type { App } from "$types/apps/app";
+import type { ConfirmationData, MessageBoxData } from "$types/shared/messagebox";
+import type { ErrorButton } from "$types/system/notification";
 import { getKMod } from "../env";
 
 export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {
@@ -13,7 +12,7 @@ export async function MessageBox(data: MessageBoxData, parentPid: number, overla
   const desktop = Daemon?.workspaces?.getCurrentDesktop();
 
   await stack.spawn(
-    MessageBoxRuntime,
+    appData.assets.runtime,
     desktop,
     "SYSTEM",
     parentPid,

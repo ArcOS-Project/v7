@@ -1,4 +1,4 @@
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import installArcPkg from "$ts/kernel/mods/fs/handlers/arcpkg";
 import applyArcTheme from "$ts/kernel/mods/fs/handlers/arctheme";
 import installTpaFile from "$ts/kernel/mods/fs/handlers/installtpa";
@@ -6,9 +6,9 @@ import mountZipFile from "$ts/kernel/mods/fs/handlers/mountzip";
 import runTpaFile from "$ts/kernel/mods/fs/handlers/runtpa";
 import runTpaBundle from "$ts/kernel/mods/fs/handlers/runtpab";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import type { App } from "$types/app";
-import type { FileHandler } from "$types/fs";
-import type { ThemeStore, UserTheme } from "$types/theme";
+import type { App } from "$types/apps/app";
+import type { FileHandler } from "$types/system/fs";
+import type { ThemeStore, UserTheme } from "$types/user/theme";
 
 export const BuiltinThemes: ThemeStore = {
   wilhelminaSunset: {

@@ -1,32 +1,34 @@
-import type { IAppProcess } from "$interfaces/app";
 import type { Constructs } from "$interfaces/common";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IProcess } from "$interfaces/process";
-import type { IApplicationStorage } from "$interfaces/services/AppStorage";
-import type { IShellRuntime } from "$interfaces/shell";
-import { Daemon } from "$ts/daemon";
-import { ArcOSVersion, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
-import { ProcessWithPermissions } from "$ts/permissions/process";
+import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import { MessageBox } from "$ts/util/dialog";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { MaybePromise } from "$types/common";
-import { type ElevationData } from "$types/elevation";
-import { LogLevel } from "$types/logging";
-import type { RenderArgs } from "$types/process";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { MaybePromise } from "$types/shared/common";
+import { type ElevationData } from "$types/system/elevation";
+import { LogLevel } from "$types/shared/logging";
+import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem, type ToastMessage } from "../../types/app";
+import {
+  type App,
+  type AppContextMenu,
+  type AppProcessData,
+  type ContextMenuItem,
+  type ToastMessage,
+} from "../../types/apps/app";
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
-export class AppProcess extends ProcessWithPermissions implements IAppProcess {
+export class AppProcess extends Process implements IAppProcess {
   crashReason = "";
   windowTitle = Store("");
   windowIcon = Store("");
@@ -34,7 +36,6 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  shell: IShellRuntime | undefined;
   overridePopulatable: boolean = false;
   private toastTimeout?: NodeJS.Timeout;
   public toastMessage = Store<ToastMessage | undefined>();
@@ -46,13 +47,18 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
+  public blinking = Store<boolean>(false);
+
+  get shell() {
+    return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
+  }
 
   draggable: Draggable | undefined;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
-    super(pid, parentPid);
+    super(pid, parentPid, app, ...args);
 
     this.app = {
       data: { ...app.data },
@@ -64,7 +70,6 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.shell = Stack.getProcess(+Env.get("shell_pid"));
 
     const desktopProps = State?.stateProps["desktop"];
     const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
@@ -75,7 +80,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${app.id}`);
 
     SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
@@ -119,7 +124,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    Stack.renderer?.focusedPid.set(this.pid);
+    // Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -130,14 +135,14 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     this.STATE = "stopping";
 
-    this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(`div.overlay-wrapper[data-pid="${this.pid}"]`) || []),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-pid="${this.pid}"]`) || []),
       ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
     ];
 
@@ -178,7 +183,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
             {
               caption: "Manage apps",
               action: () => {
-                Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -208,11 +213,9 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
         },
       });
 
-    const result = this.render(this.renderArgs);
+    await this.render(this.renderArgs);
 
-    // Below lines make sure render methods can be either asynchronous or synchronous.
-    if (result instanceof Promise) result.then(() => (this.STATE = "running"));
-    else this.STATE = "running";
+    if (!this._disposed) this.STATE = "running";
   }
 
   //#endregion
@@ -283,7 +286,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
     if (!window) return false;
 
-    return window.querySelectorAll("div.overlay-wrapper").length > 0;
+    return window.querySelectorAll("div.window-overlay-wrapper").length > 0;
   }
 
   public startAcceleratorListener() {
@@ -302,6 +305,8 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     this.Log(`STOPPING PROCESS`);
 
     this.stopAcceleratorListener();
+    this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
+    
     return await this.stop();
   }
 
@@ -367,7 +372,7 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
     }
 
     const proc = await Stack.spawn<IAppProcess>(
-      metadata.assets.runtime as Constructs<IAppProcess>,
+      metadata.assets.runtime as IAppProcessConstructor,
       undefined,
       Daemon?.userInfo?._id,
       this.pid,
@@ -384,34 +389,16 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
   }
 
   async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, {}, ...args);
   }
 
   async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await Daemon?.spawn?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, { asOverlay: true }, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
     return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
-  }
-
-  notImplemented(what?: string) {
-    this.Log(`Not implemented: ${what || "<unknown>"}`);
-    MessageBox(
-      {
-        title: "Not implemented",
-        message: `${
-          what || "This feature"
-        } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-          location.hostname
-        }</code>`,
-        buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-        image: "BugReportIcon",
-        sound: "arcos.dialog.warning",
-      },
-      this.pid
-    );
   }
 
   appStore() {
@@ -428,5 +415,9 @@ export class AppProcess extends ProcessWithPermissions implements IAppProcess {
 
   getIconStore(id: string): ReadableStore<string> {
     return Daemon?.icons?.getIconStore(id)!;
+  }
+
+  blink() {
+    this.blinking.set(!this.blinking());
   }
 }

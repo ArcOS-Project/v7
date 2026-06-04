@@ -1,8 +1,8 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import { Daemon } from "$ts/daemon";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import { Daemon } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { authcode } from "$ts/util";
+import { authcode, ToAxiosProgress } from "$ts/util";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -11,7 +11,7 @@ import type {
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 
 export class AdminServerDrive extends FilesystemDrive implements IFilesystemDrive {
   private targetUsername: string;
@@ -20,19 +20,19 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
   override IDENTIFIES_AS: string = "aefs";
   override FILESYSTEM_SHORT: string = "AEFS";
   override FILESYSTEM_LONG: string = "Admin Enforcement FS";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: true,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: true,
     direct: true,
-    quota: true,
-    bulk: true,
+    bulk: false,
     stat: true,
+    quota: true,
   };
 
   constructor(uuid: string, letter: string, targetUsername: string) {
@@ -92,13 +92,7 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
       const response = await Backend.get(`/admin/fs/file/${this.targetUsername}/${path}`, {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
         responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
+        onDownloadProgress: ToAxiosProgress(onProgress),
       });
 
       return response.data;
@@ -152,22 +146,6 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
       return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
-    }
-  }
-
-  async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
-    try {
-      const response = await Backend.get(`/admin/fs/bulk/${this.targetUsername}/${extension}/${path}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      if (response.status !== 200) return {};
-
-      const data = response.data as Record<string, any>;
-
-      return data;
-    } catch {
-      return {};
     }
   }
 

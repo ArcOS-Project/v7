@@ -1,51 +1,23 @@
-#fileManager > div.body div.bottom {
-  height: 53px;
-  border-top: var(--win-border);
+#fileManager > div.body div.window-action-bar {
   background-color: var(--win-bg);
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  padding-left: 15px;
-  gap: 10px;
 }
 
-#fileManager > div.body div.bottom > div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-#fileManager > div.body div.bottom div.view-toggle button {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  min-width: unset;
-}
-
-#fileManager > div.body div.bottom > div.actions {
-  gap: 10px;
-}
-
-#fileManager > div.body div.bottom > input {
+#fileManager > div.body div.window-action-bar > input {
   flex-grow: 1;
   height: 30px;
   margin-left: -5px;
 }
 
-#fileManager > div.body div.bottom.save {
+#fileManager > div.body div.window-action-bar.save {
   gap: 10px;
   padding-left: 10px;
 }
 
-#fileManager > div.body div.bottom.save div.actions {
+#fileManager > div.body div.window-action-bar.save div.actions {
   margin-left: auto;
 }
 
-#fileManager > div.body div.bottom.save div.save-name {
+#fileManager > div.body div.window-action-bar.save div.save-name {
   display: flex;
   align-items: center;
   border: var(--win-border);
@@ -56,7 +28,7 @@
   padding: 0 8px;
 }
 
-#fileManager > div.body div.bottom.save div.save-name input {
+#fileManager > div.body div.window-action-bar.save div.save-name input {
   flex-grow: 1;
   border: none;
   padding: 0;
@@ -64,11 +36,11 @@
   height: 29px;
 }
 
-#fileManager > div.body div.bottom.save div.save-name span {
+#fileManager > div.body div.window-action-bar.save div.save-name span {
   opacity: 0.5;
 }
 
-#fileManager > div.body div.bottom div.notice {
+#fileManager > div.body div.window-action-bar div.notice {
   height: 30px;
   padding: 0 10px;
   padding-left: 6px;
@@ -81,28 +53,23 @@
   display: block;
 }
 
-#fileManager > div.body div.bottom div.notice * {
+#fileManager > div.body div.window-action-bar div.notice * {
   color: inherit;
   vertical-align: middle;
   line-height: 30px;
 }
-#fileManager > div.body div.bottom div.notice.warning {
+
+#fileManager > div.body div.window-action-bar div.notice.warning {
   background-color: var(--clr-orange-fg);
 }
-/*
-#fileManager > div.body div.bottom div.notice span:not(.lucide) {
-  font-weight: bold;
-} */
 
-#fileManager > div.body div.bottom div.notice span.lucide {
+#fileManager > div.body div.window-action-bar div.notice span.lucide {
   display: inline-block;
   margin-right: 6px;
   font-size: 18px;
-  /* height: 18px; */
 }
 
-#fileManager > div.body div.bottom div.stat {
-  /* min-width: fit-content; */
+#fileManager > div.body div.window-action-bar div.stat {
   margin-right: auto;
   width: 0;
   flex-grow: 1;

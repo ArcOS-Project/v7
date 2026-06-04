@@ -1,7 +1,7 @@
-import type { ContextMenuItem } from "$types/app";
-import type { WriterRuntime } from "../runtime";
+import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
+import type { ContextMenuItem } from "$types/apps/app";
 
-export function ViewMenu(runtime: WriterRuntime): ContextMenuItem {
+export function ViewMenu(runtime: IWriterRuntime): ContextMenuItem {
   return {
     caption: "View",
     subItems: [

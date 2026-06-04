@@ -1,13 +1,13 @@
-import type { IAppProcess } from "$interfaces/app";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, SoundBus } from "$ts/env";
-import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
+import { Daemon, Env, SoundBus } from "$ts/env";
 import { ErrorUtils } from "$ts/util/error";
-import type { App, AppProcessData } from "$types/app";
-import type { ParsedStackFrame } from "$types/error";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
-export class OopsNotifierRuntime extends AppProcess {
+export class OopsNotifierRuntime extends AppProcess implements IOopsNotifierRuntime {
   data: App;
   exception: Error | PromiseRejectionEvent;
   process?: IAppProcess;
@@ -40,7 +40,7 @@ export class OopsNotifierRuntime extends AppProcess {
     try {
       this.stackFrames = ErrorUtils.parseStack(this.exception);
 
-      const storage = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+      const storage = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
 
       if (storage && this.stackFrames[0].parsed?.appId) {
         const app = storage.getAppSynchronous(this.stackFrames[0].parsed.appId);
@@ -60,9 +60,10 @@ export class OopsNotifierRuntime extends AppProcess {
   async details() {
     this.Log(`Invoking the power of OopsStackTracer to bestow upon the user the details of the error that lies within`);
 
-    const proc = await Daemon?.spawn?.spawnOverlay(
+    const proc = await Daemon?.spawn?.spawnApp(
       "OopsStackTracer",
       +Env.get("shell_pid"),
+      { asOverlay: true },
       this.data,
       this.exception,
       this.process,

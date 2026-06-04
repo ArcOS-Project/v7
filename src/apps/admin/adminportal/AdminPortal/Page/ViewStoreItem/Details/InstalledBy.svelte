@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Backend } from "$ts/kernel/mods/server/axios";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
   import Users from "../../Users.svelte";
 
@@ -30,7 +30,7 @@
 
         if (typeof response.data !== "object" || !Array.isArray(response.data)) throw "";
 
-        if (response.data.filter((i) => i?._id === item._id)) installed.push(user);
+        if (response.data.find((i) => i?._id === item._id)) installed.push(user);
       } catch {
         continue;
       } finally {

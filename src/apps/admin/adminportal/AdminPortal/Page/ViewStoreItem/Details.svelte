@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import dayjs from "dayjs";
   import InstalledBy from "./Details/InstalledBy.svelte";
 

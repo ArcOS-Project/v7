@@ -1,5 +1,5 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IServerManager } from "$interfaces/modules/server";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import type {
@@ -9,8 +9,8 @@ import type {
   FilesystemStat,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import { LogLevel } from "$types/logging";
+} from "$types/system/fs";
+import { LogLevel } from "$types/shared/logging";
 
 export class FilesystemDrive implements IFilesystemDrive {
   server: IServerManager;
@@ -27,19 +27,19 @@ export class FilesystemDrive implements IFilesystemDrive {
   public BUSY: boolean = false;
   protected fileLocks: Record<string, number> = {};
 
-  protected CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: false,
     makeDir: false,
     readFile: false,
     writeFile: false,
-    tree: false,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: false,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter?: string, ...args: any[]) {

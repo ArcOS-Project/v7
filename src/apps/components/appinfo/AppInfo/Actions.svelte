@@ -1,10 +1,11 @@
 <script lang="ts">
-  import InfoBlock from "$lib/InfoBlock.svelte";
-  import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
 
-  const { appId, process }: { appId: string; process: AppInfoRuntime } = $props();
+  const { appId, process }: { appId: string; process: IAppInfoRuntime } = $props();
   const { userPreferences } = process;
 
   let disabled = $state(false);
@@ -18,11 +19,12 @@
   });
 </script>
 
-<InfoBlock className="actions">
-  <InfoRow>
-    <p class="id" title={appId}>{appId}</p>
-    <button onclick={() => process.openPermissions()} {disabled}>Permissions</button>
-    <button onclick={() => process.killAll()} {disabled}>Kill all</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
-  </InfoRow>
-</InfoBlock>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionSubtle mono text={appId} />
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.killAll()}>Kill all</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+  {/snippet}
+</ActionBar>

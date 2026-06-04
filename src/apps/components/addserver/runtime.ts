@@ -1,12 +1,17 @@
+import type { IAddServerRuntime } from "$interfaces/runtimes/IAddServerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Server } from "$ts/env";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { GoodStatusIcon } from "$ts/images/status";
 import { MessageBox } from "$ts/util/dialog";
-import type { AppProcessData } from "$types/app";
+import { Store } from "$ts/writable";
+import type { AppProcessData } from "$types/apps/app";
 import axios from "axios";
 
-export class AddServerRuntime extends AppProcess {
+export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
+  loading = Store<boolean>(false);
+  action = Store<string>("");
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
@@ -15,16 +20,12 @@ export class AddServerRuntime extends AppProcess {
     this.setSource(__SOURCE__);
   }
 
-  async start() {}
-
-  async stop() {}
-
-  async render() {}
-
   //#endregion LIFECYCLE
 
   async addServer(hostname: string, port: number, authCode?: string) {
     this.Log(`addServer: ${hostname}:${port}`);
+
+    this.action.set("addServer");
 
     const url = this.createServerUrl(hostname, port);
 
@@ -58,6 +59,8 @@ export class AddServerRuntime extends AppProcess {
         true
       );
 
+      this.action.set("");
+
       return;
     }
 
@@ -65,6 +68,7 @@ export class AddServerRuntime extends AppProcess {
       url,
       authCode,
     });
+    this.action.set("");
     this.closeWindow();
   }
 
@@ -77,6 +81,9 @@ export class AddServerRuntime extends AppProcess {
 
   private async callServer(url: string, authCode?: string) {
     this.Log(`callServer: ${url}`);
+    this.loading.set(true);
+
+    if (this.action() === "") this.action.set("callServer");
 
     try {
       const response = await axios.get(`/ping`, {
@@ -85,11 +92,15 @@ export class AddServerRuntime extends AppProcess {
         baseURL: url,
         params: authCode ? { authcode: authCode } : {},
       });
+
       if (response.status !== 200) return false;
 
       return true;
     } catch {
       return false;
+    } finally {
+      this.loading.set(false);
+      this.action.set("");
     }
   }
 

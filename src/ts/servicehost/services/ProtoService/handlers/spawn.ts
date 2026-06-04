@@ -1,17 +1,17 @@
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { Env } from "$ts/env";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import type { ProtocolHandler } from "$types/proto";
+import type { ProtocolHandler } from "$types/services/proto";
 
-export const SpawnAppHandler: ProtocolHandler = {
+export const  SpawnAppHandler: ProtocolHandler = {
   name: "Spawn app",
   info: (payload, daemon) => {
-    const appStore = daemon.serviceHost?.getService<ApplicationStorage>("AppStorage");
+    const appStore = daemon.serviceHost?.getService<IApplicationStorage>("AppStorage");
     const app = appStore?.buffer().filter((a) => a.id === payload.id)[0];
 
     if (!app) return undefined;
 
     return {
-      icon: daemon.icons!.getAppIcon(app),
+      icon: `@app::${app.id}`,
       caption: app.metadata.name,
       title: `Open ${app.metadata.name} by ${app.metadata.author} (${app.metadata.version})`,
     };
@@ -20,6 +20,7 @@ export const SpawnAppHandler: ProtocolHandler = {
     return !!(await daemon.spawn!.spawnApp(
       payload.id,
       +Env.get("shell_pid"),
+      {},
       ...(Array.isArray(payload.args) ? payload.args : [])
     ));
   },

@@ -2,7 +2,7 @@
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { ItemInfo } from "../types";
 
   const { info }: { info: ReadableStore<ItemInfo> } = $props();

@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import { ArcOSVersion, Env, Stack, State } from "$ts/env";
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
+  import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+  import Icon from "$lib/Icon.svelte";
+  import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
-  import { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-  import type { AdvSysSetRuntime } from "../runtime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { userPreferences } = process;
   const userInfo = Daemon?.userInfo;
-  const appStore = Daemon?.serviceHost?.getService<ApplicationStorage>("AppStorage")?.buffer();
+  const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage")?.buffer();
 </script>
 
 <div class="left">
-  <img src={process.getIconCached("ArcSystemIcon")} alt="" />
+  <Icon icon="ArcSystemIcon" />
   <div class="main-actions">
     <button class="link" onclick={() => process.spawnOverlayApp("BugHuntCreator", +Env.get("shell_pid"))}>Report a bug...</button>
   </div>
@@ -40,6 +40,9 @@
       </li>
       <li>Process count: {Stack.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>
+      <li title={Object.keys(State?.store || {}).join(", ")}>
+        Server connectors: {Server.ConnectorAmount}
+      </li>
     </ul>
   </section>
 

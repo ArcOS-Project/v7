@@ -1,12 +1,14 @@
+import type { ISwitchServerRuntime } from "$interfaces/runtimes/ISwitchServerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Server, Stack, SysDispatch } from "$ts/env";
 import { WarningIcon } from "$ts/images/dialog";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/apps/app";
 import type { ServerOption } from "$types/server";
+import Cookies from "js-cookie";
 
-export class SwitchServerRuntime extends AppProcess {
+export class SwitchServerRuntime extends AppProcess implements ISwitchServerRuntime {
   servers = Store<ServerOption[]>([]);
   selected = Store<string>();
   loading = Store<boolean>(false);
@@ -45,11 +47,22 @@ export class SwitchServerRuntime extends AppProcess {
     this.loading.set(true);
     this.connectionError.set(false);
 
+    const currentServer = Server.url;
+
     const result = await Server.switchServer(server.url);
 
     this.loading.set(false);
-    if (!result) this.connectionError.set(true);
-    else location.reload();
+    if (!result) {
+      this.connectionError.set(true);
+    } else {
+      if (currentServer !== server.url) {
+        Cookies.remove("arcToken");
+        Cookies.remove("arcUsername");
+        localStorage.removeItem("arcLoginPersistence");
+      }
+
+      location.reload();
+    }
   }
 
   async removeServer(server: ServerOption) {

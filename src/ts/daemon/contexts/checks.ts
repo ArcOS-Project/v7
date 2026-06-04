@@ -1,20 +1,15 @@
-import type { IChecksUserContext } from "$interfaces/contexts/checks";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env } from "$ts/env";
+import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import { Daemon, Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import type { MessagingInterface } from "$ts/servicehost/services/MessagingService";
 import { Plural } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class ChecksUserContext extends UserContext implements IChecksUserContext {
   public NIGHTLY = false;
 
@@ -59,7 +54,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
   async checkForUpdates() {
     if (Daemon!.preferences().globalSettings.noUpdateNotif) return;
 
-    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
+    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
     const updates = await distrib?.checkForAllStoreItemUpdates();
 
     if (updates?.length) {
@@ -85,7 +80,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
             action: () => {
               if (notif) Daemon!.notifications?.deleteNotification(notif);
 
-              Daemon!.spawn?.spawnApp("AppStore", +Env.get("shell_pid"), "installed");
+              Daemon!.spawn?.spawnApp("AppStore", +Env.get("shell_pid"), {}, "installed");
             },
             suggested: true,
           },
@@ -98,49 +93,6 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
                 v.globalSettings.noUpdateNotif = true;
                 return v;
               });
-            },
-          },
-        ],
-      });
-    }
-  }
-
-  async checkForMissedMessages() {
-    const service = this.serviceHost!.getService<MessagingInterface>("MessagingService")!;
-    const archived = Daemon!.preferences().appPreferences?.Messages?.archive || [];
-    const messages =
-      (await service?.getReceivedMessages())?.filter(
-        (m) => !m.read && !archived.includes(m._id) && m.authorId !== this.userInfo?._id
-      ) || [];
-
-    if (!messages?.length) return;
-
-    if (messages?.length === 1) {
-      const message = messages[0];
-      Daemon!?.notifications?.sendNotification({
-        className: "incoming-message",
-        image: message.author?.profilePicture,
-        title: message.author?.username || "New message",
-        message: message.title,
-        buttons: [
-          {
-            caption: "View message",
-            action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
-            },
-          },
-        ],
-      });
-    } else {
-      Daemon!?.notifications?.sendNotification({
-        title: "Missed messages",
-        message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
-        image: "MessagingIcon",
-        buttons: [
-          {
-            caption: "Open inbox",
-            action: () => {
-              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox");
             },
           },
         ],

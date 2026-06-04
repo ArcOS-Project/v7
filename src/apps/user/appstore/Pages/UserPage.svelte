@@ -1,18 +1,22 @@
 <script lang="ts">
-  import type { StoreItem } from "$types/package";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import type { StoreItem } from "$types/tpa/package";
   import type { PublicUserInfo } from "$types/user";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
   import UserHeader from "./UserPage/UserHeader.svelte";
 
-  const { results, process, user }: { results: StoreItem[]; process: AppStoreRuntime; user?: PublicUserInfo } = $props();
+  const {
+    results,
+    process,
+    user,
+    userId,
+  }: { results: StoreItem[]; process: IAppStoreRuntime; user?: PublicUserInfo; userId: string } = $props();
 </script>
 
 {#if user && results?.length}
-  <UserHeader {process} {user} {results} />
+  <UserHeader {process} {user} {results} {userId} />
   {#if results?.length}
     <PackageGrid {process} items={results} name="" />
-    <p class="end">Looks like you've reached the end.</p>
   {:else}
     <p class="end">This user has no packages.</p>
   {/if}

@@ -1,5 +1,7 @@
-import type { IProcess } from "$interfaces/process";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import type { IProcess } from "$interfaces/IProcess";
+import type { AxiosProgressEvent } from "$types/libraries/axios";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import { ShortLogLevelCaptions, type LogItem } from "$types/shared/logging";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
@@ -7,6 +9,7 @@ import validator from "validator";
 import { Kernel, Server } from "../env";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { getJsonHierarchy } from "./hierarchy";
+import { ArcMode } from "$ts/metadata/mode";
 
 leoProfanity.loadDictionary("en");
 
@@ -307,3 +310,19 @@ export function logItemToStr(data: LogItem) {
 
   return line;
 }
+
+export function ToAxiosProgress(
+  onProgress?: FilesystemProgressCallback,
+  type: "size" | "percentage" | "items" = "size"
+): (progressEvent: AxiosProgressEvent) => void {
+  return (progress) =>
+    onProgress?.({
+      max: progress.total || 0,
+      value: progress.loaded || 0,
+      type,
+    });
+}
+
+export const IsBeta = () =>
+  (!import.meta.env.DEV && ArcMode() === "betabranch" && location.hostname !== "beta.arcweb.nl") ||
+  location.hostname === "localhost";

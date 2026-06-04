@@ -1,9 +1,9 @@
 <script lang="ts">
   import { sortByKey } from "$ts/util";
-  import type { SqeletonRuntime } from "../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import HistoryItem from "./HistoryList/HistoryItem.svelte";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { queryHistory } = process;
 
   let showSystem = $state(false);

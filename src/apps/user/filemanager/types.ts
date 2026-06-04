@@ -1,5 +1,5 @@
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { UserQuota } from "$types/fs";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { UserQuota } from "$types/system/fs";
 import type { Component } from "svelte";
 
 export interface Tab {
@@ -14,6 +14,7 @@ export interface Location {
   component: any;
 }
 
+// !tpa
 export type QuotedDrive = { data: IFilesystemDrive; quota: UserQuota };
 
 export interface LoadSaveDialogData {
@@ -41,3 +42,5 @@ export interface VirtualFileManagerLocation {
   component: Component;
   hidden?: boolean;
 }
+
+// !endtpa

@@ -1,8 +1,10 @@
-import type { ExpandedMessage } from "$types/messaging";
-import type { MessagingAppRuntime } from "./runtime";
+import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+import type { ExpandedMessage } from "$types/server/messaging";
 
+// !tpa
 export interface MessagingPage {
   name: string;
   icon: string;
-  supplier: (process: MessagingAppRuntime) => Promise<ExpandedMessage[]> | ExpandedMessage[];
+  supplier: (process: IMessagingAppRuntime) => Promise<ExpandedMessage[]> | ExpandedMessage[];
 }
+// !endtpa

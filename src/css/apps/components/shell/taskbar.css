@@ -293,3 +293,12 @@ div.shell div.shell div.taskbar button.clock-button.active span,
 .theme-light div.shell div.taskbar::before {
   opacity: 0.1;
 }
+
+#arcShell div.shell div.taskbar button.beta-feedback-button {
+  background-color: var(--clr-green-fg);
+  width: fit-content;
+  padding: 0 15px;
+  font-size: 14px;
+  color: var(--win-bg);
+  font-weight: bold;
+}

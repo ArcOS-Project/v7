@@ -1,16 +1,15 @@
-import type { ISharedDrive } from "$interfaces/drives/share";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs } from "$ts/env";
-import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
+import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { FileEntry, FolderEntry } from "$types/fs";
-import type { FileManagerRuntime } from "./runtime";
+import type { AppContextMenu } from "$types/apps/app";
+import type { FileEntry, FolderEntry } from "$types/system/fs";
 import type { QuotedDrive } from "./types";
 
-export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextMenu {
+export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContextMenu {
   return {
     "sidebar-drive": [
       {
@@ -68,7 +67,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                 {
                   caption: "Leave",
                   action: async () => {
-                    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
+                    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt");
 
                     await Fs.umountDrive(share.shareId!);
                     await shares?.leaveShare(share.shareId!);
@@ -98,7 +97,8 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       { sep: true },
       {
         caption: "Manage share...",
-        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
+        action: (drive: QuotedDrive) =>
+          runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
         icon: "wrench",
       },
       {
@@ -115,39 +115,34 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         subItems: [
           {
             caption: "Thumbnail view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "thumbnail",
             icon: "file-image",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = true;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "thumbnail";
                 return v;
               }),
           },
           {
             caption: "Grid view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "grid",
             icon: "columns-3",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = true;
+                v.appPreferences.fileManager.viewMode = "grid";
                 return v;
               }),
           },
           {
-            caption: "Thumbnail view",
-            isActive: () =>
-              !runtime.userPreferences().appPreferences.fileManager?.grid &&
-              !runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            caption: "List view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "list",
             icon: "list",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "list";
                 return v;
               }),
           },
@@ -503,7 +498,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              Daemon?.spawn?.spawnApp("AdvSystemSettings", +Env.get("shell_pid"));
+              runtime.spawnApp("AdvSystemSettings", +Env.get("shell_pid"));
             },
           },
         ],
@@ -512,7 +507,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          Daemon?.spawn?.spawnApp("systemSettings", +Env.get("shell_pid"));
+          runtime.spawnApp("systemSettings", +Env.get("shell_pid"));
         },
       },
     ],
@@ -534,7 +529,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          Daemon?.spawn?.spawnApp("AdvSystemSettings", +Env.get("shell_pid"), "Recycling");
+          runtime.spawnApp("AdvSystemSettings", +Env.get("shell_pid"), "Recycling");
         },
       },
     ],

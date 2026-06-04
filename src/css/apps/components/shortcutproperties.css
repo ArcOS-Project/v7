@@ -102,25 +102,3 @@
 #ShortcutProperties > div.body div.info-block div.name {
   flex-grow: 1;
 }
-
-#ShortcutProperties > div.body div.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 15px;
-  background-color: var(--button-glass-bg);
-  width: 100%;
-  height: 51px;
-  margin-top: auto;
-  box-shadow: var(--secondary-box-shadow);
-  outline: var(--button-glass-bg) 1px solid;
-  outline-offset: -1px;
-}
-
-#ShortcutProperties > div.body div.actions > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}

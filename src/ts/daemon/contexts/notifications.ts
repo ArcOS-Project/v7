@@ -1,7 +1,7 @@
-import type { INotificationsUserContext } from "$interfaces/contexts/notifications";
-import type { IUserDaemon } from "$interfaces/daemon";
+import type { INotificationsUserContext } from "$interfaces/contexts/INotificationsUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { SysDispatch } from "$ts/env";
-import type { Notification } from "$types/notification";
+import type { Notification } from "$types/system/notification";
 import { UserContext } from "../context";
 
 export class NotificationsUserContext extends UserContext implements INotificationsUserContext {

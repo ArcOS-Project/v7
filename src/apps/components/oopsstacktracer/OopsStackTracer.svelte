@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import type { OopsStackTracerRuntime } from "./runtime";
+  import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: OopsStackTracerRuntime } = $props();
+  const { process }: { process: IOopsStackTracerRuntime } = $props();
   const { data, proc, trace, stackFrames } = process;
   let original = $state<boolean>(false);
 </script>
 
 <div class="process">
-  <img src={Daemon?.icons?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <Icon icon="@app::{data.id}" />
   <p class="name">{data?.metadata?.name || "Unknown app"}</p>
   {#if proc?.pid}
     <p class="pid">(PID {proc.pid})</p>
@@ -27,7 +27,7 @@
     <code class="block stack-trace">{trace}</code>
   {:else}
     <div class="stack-frame first">
-      <img src={process.getIconCached("WarningIcon")} alt="" />
+      <Icon icon="WarningIcon" />
       <span>
         {process.string ||
           "Unable to determine the stack trace from the given process arguments. This application might have been invoked improperly. If this wasn't intentional, please report."}
@@ -36,17 +36,17 @@
     <hr />
     {#if !process.string && !stackFrames?.length}
       <div class="stack-frame">
-        <img src={process.getIconCached("QuestionIcon")} alt="" />
+        <Icon icon="QuestionIcon" />
         <p class="source">Stack frames</p>
         <p class="method">{stackFrames?.length || 0}</p>
       </div>
       <div class="stack-frame">
-        <img src={process.getIconCached("QuestionIcon")} alt="" />
+        <Icon icon="QuestionIcon" />
         <p class="source">Exception</p>
         <p class="method">{process.exception || "<none>"}</p>
       </div>
       <div class="stack-frame">
-        <img src={process.getIconCached("QuestionIcon")} alt="" />
+        <Icon icon="QuestionIcon" />
         <p class="source">Call stack</p>
         <p class="method">{process.trace || "<none>"}</p>
       </div>
@@ -56,7 +56,7 @@
         <hr />
       {/if}
       <div class="stack-frame" class:internal={!frame.parsed}>
-        <img src={!i ? process.getIconCached("BadStatusIcon") : process.getIconCached("DefaultIcon")} alt="" />
+        <Icon icon={!i ? "BadStatusIcon" : "DefaultIcon"} />
         <p class="source">{frame.parsed?.filename || "ArcOS Internal"}</p>
         <p class="method" title={frame.methodName || ""} class:anonymous={!frame.methodName}>
           {frame.methodName || "(anonymous)"}

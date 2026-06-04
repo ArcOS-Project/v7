@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ChooseProfilePicture from "./ChooseProfilePicture.svelte";
 
 export const ChooseProfilePictureApp: App = {

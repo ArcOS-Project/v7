@@ -1,19 +1,14 @@
-import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import type { IAppProcess } from "$interfaces/app";
-import type { IEnvironment } from "$interfaces/modules/env";
-import type { IProcessHandler } from "$interfaces/modules/stack";
-import { Env, getKMod, Stack } from "$ts/env";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
+import { Env, Stack } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function contextProps(node: HTMLElement, args: any[]) {
-  const env = getKMod<IEnvironment>("env", true);
-  const stack = getKMod<IProcessHandler>("stack", true);
-
-  const contextMenuPid = env?.get("contextmenu_pid");
+  const contextMenuPid = Env?.get("contextmenu_pid");
   if (!contextMenuPid) return;
 
-  const contextmenu = stack?.getProcess<ContextMenuRuntime>(+contextMenuPid);
+  const contextmenu = Stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
   if (!contextmenu) return;
 
   const uuid = UUID();
@@ -32,7 +27,7 @@ export function contextProps(node: HTMLElement, args: any[]) {
 export function contextMenu(node: HTMLElement, [items, process]: [ContextMenuItem[], IAppProcess]) {
   const contextMenuPid = Env.get("contextmenu_pid");
   if (!contextMenuPid) return;
-  const contextmenu = Stack?.getProcess<ContextMenuRuntime>(+contextMenuPid);
+  const contextmenu = Stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
   if (!contextmenu) return;
 
   function callback(e: MouseEvent) {
@@ -42,6 +37,10 @@ export function contextMenu(node: HTMLElement, [items, process]: [ContextMenuIte
       process,
       items,
     });
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return false;
   }
 
   node.addEventListener("contextmenu", callback);

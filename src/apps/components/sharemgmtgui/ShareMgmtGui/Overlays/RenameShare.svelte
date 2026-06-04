@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { OverlayRuntime } from "../../overlay";
+  import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: IShareMgmtOverlayRuntime } = $props();
   let newName = $state<string>();
 
   async function changeIt() {
-    const shares = Daemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
     const result = await shares?.renameShare(process.parentProcess.shareId, newName!);
 
     process.closeWindow();
@@ -45,7 +46,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("ShareIcon")} alt="" />
+    <Icon icon="ShareIcon" />
   </div>
   <div class="right">
     <h1>Rename share</h1>

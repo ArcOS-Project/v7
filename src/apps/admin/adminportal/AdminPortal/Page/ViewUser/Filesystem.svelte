@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
+  import type { UserQuota } from "$types/system/fs";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 

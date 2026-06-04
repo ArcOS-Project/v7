@@ -1,0 +1,84 @@
+#AdminPortal div.viewBugReportSource > div.page-content {
+  display: flex;
+  height: calc(100% - 31px);
+  flex-direction: column;
+}
+
+#AdminPortal div.viewBugReportSource div.header {
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--win-border);
+}
+
+#AdminPortal div.viewBugReportSource div.header h1 {
+  width: 0;
+  flex-grow: 1;
+  padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AdminPortal div.viewBugReportSource div.header div.actions {
+  display: flex;
+  align-items: center;
+}
+
+#AdminPortal div.viewBugReportSource div.header div.actions button {
+  border-radius: 0;
+  outline: none;
+  height: 30px;
+  border-left: var(--win-border);
+}
+
+#AdminPortal div.viewBugReportSource div.header div.actions button.lucide {
+  width: 31px;
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer {
+  height: calc(100% - 31px);
+  overflow: auto;
+  font-family: "Fira Mono";
+  padding: 10px;
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  padding: 2px 0;
+  min-width: max-content;
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.line.highlighted {
+  background-color: var(--accent-transparent);
+  background-color: var(--clr-red-bg);
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.line div.line-number {
+  width: 60px;
+  text-align: right;
+  min-width: 60px;
+  opacity: 0.5;
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.line div.line-content {
+  white-space: pre;
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.error-message {
+  padding: 0 6px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--clr-red-fg);
+}
+
+#AdminPortal div.viewBugReportSource div.code-viewer div.error-message * {
+  color: var(--clr-red-fg);
+}

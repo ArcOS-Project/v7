@@ -1,4 +1,4 @@
-import type { ProcessKillResult } from "$types/process";
+import type { ProcessKillResult } from "$types/system/process";
 
 export const ProcessKillResultCaptions: Record<ProcessKillResult, string> = {
   err_criticalProcess: "The process is required for ArcOS to run properly.",

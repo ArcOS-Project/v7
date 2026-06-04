@@ -1,4 +1,4 @@
-import type { DeviceInfo } from "$types/device";
+import type { DeviceInfo } from "$types/system/device";
 import { getCPU } from "./cpu";
 import { getGPU } from "./gpu";
 import { getMEM } from "./mem";

@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Stack } from "$ts/env";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { tryJsonParse } from "$ts/util/json";
@@ -19,7 +19,7 @@ export class KillCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const pid = tryJsonParse<number>(argv[0]) as number;
     const process = Stack.getProcess(pid);
 
@@ -33,12 +33,12 @@ export class KillCommand extends TerminalProcess {
       return 1;
     }
 
-    if (!this.HAS_SUDO && process._criticalProcess) {
+    if (process._criticalProcess) {
       term.Error("Can't kill a critical process without sudo");
       return 1;
     }
 
-    const result = await Stack.kill(process.pid, !!this.HAS_SUDO);
+    const result = await Stack.kill(process.pid);
 
     if (result !== "success") {
       term.Error(ProcessKillResultCaptions[result]);

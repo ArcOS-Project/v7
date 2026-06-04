@@ -18,13 +18,17 @@
   border-radius: 8px;
 }
 
+#MediaPlayer > div.body div.media-controls div.timestamp {
+  margin-right: 5px;
+}
+
+#MediaPlayer > div.body div.media-controls button.pin-toggle,
 #MediaPlayer > div.body div.media-controls button.fullscreen-toggle {
   width: 30px;
   height: 30px;
   border-radius: 8px;
   /* background-color: transparent; */
   font-size: 16px;
-  margin-left: 5px;
 }
 
 #MediaPlayer div.media-controls button.previous,

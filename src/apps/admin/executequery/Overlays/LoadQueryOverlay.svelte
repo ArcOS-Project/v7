@@ -1,7 +1,9 @@
 <script lang="ts">
-  import type { LoadQueryOverlayRuntime } from "../LoadQuery/runtime";
+  import type { ILoadQueryOverlayRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: LoadQueryOverlayRuntime } = $props();
+  const { process }: { process: ILoadQueryOverlayRuntime } = $props();
   const { queries, selectedQuery } = process;
 </script>
 
@@ -13,7 +15,10 @@
     </button>
   {/each}
 </div>
-<div class="actions">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$selectedQuery} onclick={() => process.Confirm()}>Load</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$selectedQuery} onclick={() => process.Confirm()}>Load</ActionButton>
+  {/snippet}
+</ActionBar>

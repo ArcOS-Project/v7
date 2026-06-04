@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "../runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import List from "./Sidebar/List.svelte";
   import Pages from "./Sidebar/Pages.svelte";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
+  const { process }: { process: IMessagingAppRuntime } = $props();
 </script>
 
 <div class="sidebar">

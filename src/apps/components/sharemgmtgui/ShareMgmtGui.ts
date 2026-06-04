@@ -1,5 +1,5 @@
 import "$css/apps/components/sharemgmtgui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareMgmtGuiRuntime } from "./runtime";
 import ShareMgmtGui from "./ShareMgmtGui.svelte";
 

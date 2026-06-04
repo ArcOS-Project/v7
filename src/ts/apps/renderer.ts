@@ -1,18 +1,20 @@
-import type { ContextMenuRuntime } from "$apps/components/contextmenu/runtime";
-import type { IAppProcess } from "$interfaces/app";
-import type { IAppRenderer } from "$interfaces/renderer";
-import { Daemon } from "$ts/daemon";
-import { BETA, BugHunt, Env, Stack, SysDispatch } from "$ts/env";
-import { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import type { IIconService } from "$interfaces/services/IIconService";
+import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { BlankIcon } from "$ts/images/general";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData, WindowResizer } from "../../types/app";
+import type { App, AppProcessData, WindowResizer } from "../../types/apps/app";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
+import { ProcessesHelper } from "$ts/helpers/processes";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -44,6 +46,7 @@ export class AppRenderer extends Process implements IAppRenderer {
       if (this._disposed || !v) return;
 
       this.lastInteract = Stack.getProcess(v);
+      if (this.lastInteract) this.lastInteract.blinking?.set(false);
     });
   }
 
@@ -105,13 +108,13 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     if (data.overlay && process.parentPid) {
       const wrapper = document.createElement("div");
-      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`);
+      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`) || this.target;
 
       if (!parent) {
         renderTarget.append(window);
       } else {
         wrapper.setAttribute("data-pid", process.pid.toString());
-        wrapper.className = `overlay-wrapper shade-${process.app.id}`;
+        wrapper.className = `window-overlay-wrapper shade-${process.app.id}`;
 
         window.classList.add("overlay");
 
@@ -131,7 +134,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     }, 100);
 
     this.currentState.push(process.pid);
-    if (!data.core) this.focusPid(process.pid);
+    if (!data.core && !data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(process)) this.focusPid(process.pid);
 
     try {
       await process.__render__(body);
@@ -141,7 +144,7 @@ export class AppRenderer extends Process implements IAppRenderer {
         process.STATE = "error";
         this.notifyCrash(data, e as Error, process);
       }
-
+      await this.remove(process.pid);
       await Stack.kill(process.pid);
     }
   }
@@ -294,7 +297,16 @@ export class AppRenderer extends Process implements IAppRenderer {
       titleIcon.src = process.getIconCached(v) || v;
     });
 
-    titleIcon.src = Daemon?.icons?.getAppIconByProcess(process) || process.getIconCached("ComponentIcon");
+    Daemon?.serviceHost?.Gate<IIconService>(
+      "IconService",
+      () => {
+        const icon = process.getIconCached(`@app::${app.id}`) || process.getIconCached("ComponentIcon");
+        titleIcon.src = icon === `@app::${app.id}` ? BlankIcon : icon;
+      },
+      () => {
+        titleIcon.src = BlankIcon;
+      }
+    );
 
     title.className = "window-title";
     title.append(titleIcon, titleCaption, this._renderAltMenu(process));
@@ -322,7 +334,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     menu.className = "alt-menu nodrag";
 
     const contextMenuPid = Env.get("contextmenu_pid");
-    const contextMenu = Stack.getProcess<ContextMenuRuntime>(+contextMenuPid);
+    const contextMenu = Stack.getProcess<IContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
     process.altMenu.subscribe((v) => {
@@ -529,7 +541,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
-    const wrapper = this.target.querySelector(`div.overlay-wrapper[data-pid="${pid}"]`);
+    const wrapper = this.target.querySelector(`div.window-overlay-wrapper[data-pid="${pid}"]`);
     const styling = document.body.querySelector(`link[id="$${pid}"]`);
 
     if (window) window.remove();
@@ -689,11 +701,12 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   async notifyCrash(data: App, reason: any, process?: IAppProcess) {
+    if (!data) return;
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost
-      ?.getService<DistributionServiceProcess>("DistribSvc")
-      ?.getInstalledStoreItemByAppId(data.id);
+      ?.getService<IDistributionServiceProcess>("DistribSvc")
+      ?.getInstalledStoreItemByAppId(data?.id);
 
     const stack = reason instanceof PromiseRejectionEvent ? reason.reason.stack : reason.stack || "No stack";
 

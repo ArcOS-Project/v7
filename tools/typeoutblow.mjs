@@ -1,11 +1,27 @@
 import fs from "fs";
 import { glob } from "glob";
+import { sep } from "path";
 
-const WHITELIST = ["$types/", "$interfaces/", "./", "svelte", "../interfaces", "../types", "xterm", "fuse.js"];
+const WHITELIST = [
+  "$types/",
+  "$interfaces/",
+  "./",
+  "svelte",
+  "../interfaces",
+  "../types",
+  "xterm",
+  "fuse.js",
+  "axios",
+  "music-metadata",
+  "highlight.js",
+  "sql.js",
+];
 const ITEM_WHITELIST = ["PermissionString", "PermissionError", "Readline"];
-const FILE_WHITELIST = ["src/types/thirdparty.ts"];
+const FILE_WHITELIST = ["src/types/thirdparty.ts"].map((f) => f.replaceAll("/", sep));
 
-async function main() {
+export async function checkTypeOutblow() {
+  console.log("Checking type outblow...");
+
   const blown = [];
   const files = await glob("src/{types,interfaces}/**/*.{ts,svelte}");
 
@@ -66,7 +82,7 @@ async function main() {
         }
       }
 
-      if (!isValid && !path.endsWith("/types")) {
+      if (!isValid && !path.endsWith("/types") && !path.startsWith("../") && !path.startsWith("./")) {
         console.error(`\nDetected blown reference: \n  File: ${file}\n  Imports module: ${path}\n  Items imported: ${items}`);
         blown.push(result);
       }
@@ -80,11 +96,6 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("✅ No blown references detected!");
+    console.log("\n✅ No blown references detected!\n");
   }
 }
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});

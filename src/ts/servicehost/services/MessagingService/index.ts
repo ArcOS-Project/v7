@@ -1,17 +1,20 @@
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IServerManager } from "$interfaces/modules/server";
-import type { IMessagingInterface } from "$interfaces/services/MessagingService";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, getKMod, Server, Stack } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
-import type { ServiceHost } from "$ts/servicehost";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IMessagingConnector } from "$interfaces/modules/server/IMessagingConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import { Daemon, Env, Fs, getKMod, Server, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import { authcode } from "$ts/util";
-import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
-import type { Service } from "$types/service";
-import { GlobalDispatch } from "../GlobalDispatch";
+import { Plural } from "$ts/util";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ExpandedMessage, ExpandedMessageNode, Message, MessageAttachment } from "$types/server/messaging";
+import type { Service } from "$types/services/service";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import { CommandResult } from "$ts/result";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
@@ -19,7 +22,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   }
 
   //#region LIFECYCLE
-  constructor(pid: number, parentPid: number, name: string, host: ServiceHost, initBroadcast?: (msg: string) => void) {
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
 
     this.setSource(__SOURCE__);
@@ -27,9 +30,9 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
   async start() {
     this.initBroadcast?.("Starting messaging service");
-    
+
     const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid")!)!;
-    const dispatch = daemon.serviceHost?.getService<GlobalDispatch>("GlobalDispatch")!;
+    const dispatch = daemon.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch")!;
 
     dispatch?.subscribe("incoming-message", (message: ExpandedMessage) => {
       daemon?.notifications?.sendNotification({
@@ -41,7 +44,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
           {
             caption: "View message",
             action: () => {
-              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), "inbox", message._id);
+              daemon?.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
             },
           },
         ],
@@ -54,57 +57,54 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   async getSentMessages(): Promise<ExpandedMessage[]> {
     if (this._disposed) return [];
 
-    try {
-      const response = await Backend.get("/messaging/sent", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const data = (response.data as ExpandedMessage[]).map((message) => {
-        if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
-        }
+    const messages = (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Sent()).result ?? [];
 
-        return message;
-      });
+    return messages.map((message) => {
+      if (message.author) {
+        message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
 
-      return data;
-    } catch {
-      return [];
-    }
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
+
+      return message;
+    });
   }
+
   async getReceivedMessages(): Promise<ExpandedMessage[]> {
     if (this._disposed) return [];
+    const messages = (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Received()).result ?? [];
 
-    try {
-      const response = await Backend.get("/messaging/received", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const data = (response.data as ExpandedMessage[]).map((message) => {
-        if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
-        }
+    return messages.map((message) => {
+      if (message.author) {
+        message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
 
-        return message;
-      });
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
 
-      return data;
-    } catch {
-      return [];
-    }
+      return message;
+    });
   }
 
   async getInboxListing(): Promise<ExpandedMessage[]> {
     if (this._disposed) return [];
 
-    try {
-      const response = await Backend.get("/messaging/inbox", { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-      const data = (response.data as ExpandedMessage[]).map((message) => {
-        if (message.author) {
-          message.author.profilePicture = `${this.serverUrl}/user/pfp/${message.authorId}${authcode()}`;
-        }
+    const messages = (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Inbox()).result ?? [];
 
-        return message;
-      });
+    return messages.map((message) => {
+      if (message.author) {
+        message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
 
-      return data;
-    } catch {
-      return [];
-    }
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
+
+      return message;
+    });
   }
 
   async sendMessage(
@@ -114,66 +114,37 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<boolean> {
-    if (this._disposed) return false;
+  ): Promise<ICommandResult<Message[]>> {
+    if (this._disposed) return CommandResult.Error("MessagingSvc is not running");
 
-    const formData = new FormData();
-    formData.set("title", subject);
-    formData.set("body", body);
-    formData.set("recipients", JSON.stringify(recipients));
-
-    if (repliesTo) formData.set("repliesTo", repliesTo);
-
-    attachments.forEach((a) => formData.append("attachments", a));
-
-    try {
-      const response = await Backend.post("/messaging", formData, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        onUploadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
-      });
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Create(
+      subject,
+      recipients,
+      body,
+      attachments,
+      repliesTo,
+      onProgress
+    );
   }
 
   async deleteMessage(messageId: string): Promise<boolean> {
     if (this._disposed) return false;
-
-    try {
-      const response = await Backend.delete(`/messaging/${messageId}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
-
-      return response.status === 200;
-    } catch {
-      return false;
-    }
+    return (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Delete(messageId)).success ?? [];
   }
 
   async readMessage(messageId: string): Promise<ExpandedMessage | undefined> {
     if (this._disposed) return;
+    const message = (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Read(messageId)).result;
 
-    try {
-      const response = await Backend.get(`/messaging/read/${messageId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-      });
-
-      const data = response.data as ExpandedMessage;
-
-      if (data && data.author) {
-        data.author.profilePicture = `${this.serverUrl}/user/pfp/${data.authorId}${authcode()}`;
-      }
-
-      return response.data as ExpandedMessage;
-    } catch {
-      return undefined;
+    if (message && message.author) {
+      message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
     }
+
+    if (message?.recipientData) {
+      message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+    }
+
+    return message;
   }
 
   async readAttachment(
@@ -183,40 +154,14 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
   ): Promise<ArrayBuffer | undefined> {
     if (this._disposed) return;
 
-    try {
-      const response = await Backend.get(`/messaging/attachment/${messageId}/${attachmentId}`, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        responseType: "arraybuffer",
-        onDownloadProgress: (progress) => {
-          onProgress?.({
-            max: progress.total || 0,
-            value: progress.loaded || 0,
-            type: "size",
-          });
-        },
-      });
-
-      return response.data;
-    } catch {
-      return undefined;
-    }
+    return (
+      await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").AttachmentRead(messageId, attachmentId, onProgress)
+    ).result;
   }
 
   async getMessageThread(messageId?: string): Promise<ExpandedMessageNode[]> {
-    const url = messageId ? `/messaging/thread/${messageId}` : `/messaging/thread`;
-
-    try {
-      const response = await Backend.get(url, {
-        headers: { Authorization: `Bearer ${Daemon!.token}` },
-        params: { reverse: true },
-      });
-
-      // Not changing the author pfp URLs here because it's an effectively never ending tree of messages
-
-      return response.data as ExpandedMessageNode[];
-    } catch {
-      return [];
-    }
+    // Not changing the author pfp URLs here because it's an effectively never ending tree of messages
+    return (await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Thread(messageId)).result ?? [];
   }
 
   async buildAttachment(filePath: string, onProgress?: FilesystemProgressCallback): Promise<File | undefined> {
@@ -232,6 +177,116 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
       return new File([contents], filename, { type: partial.mimeType });
     } catch {
       return undefined;
+    }
+  }
+
+  async downloadAttachments(message: ExpandedMessage, attachments: MessageAttachment[], savePath: string) {
+    let totalSize = attachments.map((a) => a.size).reduce((a, b) => a + b, 0);
+    const dlProg = await Daemon!.files!.FileProgress(
+      {
+        type: "size",
+        max: totalSize,
+        caption: `Reading attachments`,
+        icon: "MessagingIcon",
+        subtitle: `Just a moment...`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+
+    dlProg.setDone(0);
+    dlProg?.show();
+
+    const result: Record<string, ArrayBuffer> = {};
+
+    for (const attachment of attachments) {
+      let lastValue = 0;
+
+      const data = await this.readAttachment(message._id, attachment._id, (prog) => {
+        // Using some math to increase the byte size of the progress appropriately
+        dlProg.mutDone(Math.max(0, prog.value - lastValue));
+        lastValue = prog.value;
+      });
+
+      if (data) result[attachment._id] = data;
+      else totalSize -= attachment.size; // If the attachment could not be obtained, subtract it from the total for the save progress
+    }
+
+    await dlProg.stop();
+
+    const saveProg = await Daemon!.files!.FileProgress(
+      {
+        type: "size",
+        max: totalSize,
+        caption: "Saving attachments",
+        icon: "MessagingIcon",
+        subtitle: `Saving to ${savePath}/`,
+      },
+      Daemon.getShell()?.pid || this.pid
+    );
+
+    saveProg.setDone(0);
+    saveProg.show();
+
+    for (const attachmentId in result) {
+      const attachmentData = result[attachmentId];
+      const attachment = attachments.find((a) => a._id === attachmentId);
+
+      if (!attachment || !attachmentData) {
+        saveProg.mutDone(+1);
+        continue;
+      }
+
+      const destination = join(savePath, attachment.filename);
+      saveProg.updSub(`Saving ${savePath}`);
+      let lastValue = 0;
+      await Fs.writeFile(destination, arrayBufferToBlob(attachmentData), (prog) => {
+        saveProg.mutDone(Math.max(0, prog.value - lastValue));
+        lastValue = prog.value;
+      });
+    }
+
+    saveProg.stop();
+  }
+
+  async checkForMissedMessages() {
+    const archived = Daemon!.preferences().appPreferences?.Messages?.archive || [];
+    const messages =
+      (await this?.getReceivedMessages())?.filter(
+        (m) => !m.read && !archived.includes(m._id) && m.authorId !== Daemon.userInfo?._id
+      ) || [];
+
+    if (!messages?.length) return;
+
+    if (messages?.length === 1) {
+      const message = messages[0];
+      Daemon!.notifications?.sendNotification({
+        className: "incoming-message",
+        image: message.author?.profilePicture,
+        title: message.author?.username || "New message",
+        message: message.title,
+        buttons: [
+          {
+            caption: "View message",
+            action: () => {
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox", message._id);
+            },
+          },
+        ],
+      });
+    } else {
+      Daemon!.notifications?.sendNotification({
+        title: "Missed messages",
+        message: `You have ${messages.length} ${Plural("message", messages.length)} in your inbox that you haven't read yet.`,
+        image: "MessagingIcon",
+        buttons: [
+          {
+            caption: "Open inbox",
+            action: () => {
+              Daemon!.spawn?.spawnApp("Messages", +Env.get("shell_pid"), {}, "inbox");
+            },
+          },
+        ],
+      });
     }
   }
 }

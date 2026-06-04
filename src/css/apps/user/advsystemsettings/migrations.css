@@ -31,6 +31,9 @@
   text-align: center;
   line-height: 30px;
   border-left: var(--win-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #AdvSystemSettings > div.body div.migrations div.list div.name {

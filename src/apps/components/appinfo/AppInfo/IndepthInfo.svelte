@@ -3,10 +3,9 @@
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { AppOrigins } from "$ts/apps/store";
-  import type { App } from "$types/app";
-  import type { AppInfoRuntime } from "../runtime";
+  import type { App } from "$types/apps/app";
 
-  const { target, process }: { target: App; process: AppInfoRuntime } = $props();
+  const { target }: { target: App } = $props();
 </script>
 
 <InfoBlock>

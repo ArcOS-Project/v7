@@ -1,9 +1,24 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import Clock from "./SystemArea/Clock.svelte";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
+  import { IsBeta } from "$ts/util";
+  import StatusArea from "./StatusArea.svelte";
+  import TrayIcon from "./SystemTray/TrayIcon.svelte";
 
-  const { process }: { process: IShellRuntime } = $props();
-  const { userPreferences } = process;
+  const { process, service }: { process: IShellRuntime; service: ITrayHostService } = $props();
+  const { trayIcons } = service;
 </script>
 
-<Clock {process} {userPreferences} />
+{#if IsBeta()}
+  <button class="beta-feedback-button" onclick={() => process.spawnOverlayApp("SendBetaFeedbackApp", process.pid)}>
+    Send beta feedback
+  </button>
+{/if}
+{#if Object.entries($trayIcons).length}
+  <div class="tray-icons">
+    {#each Object.entries($trayIcons) as [discriminator, icon] (discriminator)}
+      <TrayIcon {discriminator} {icon} {process} />
+    {/each}
+  </div>
+{/if}
+<StatusArea {process} />

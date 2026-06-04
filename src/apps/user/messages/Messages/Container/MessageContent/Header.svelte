@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { MessagingAppRuntime } from "$apps/user/messages/runtime";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { ProfilePictures } from "$ts/images/pfp";
   import { CommandResult } from "$ts/result";
-  import type { ExpandedMessage } from "$types/messaging";
+  import type { ExpandedMessage } from "$types/server/messaging";
   import type { PublicUserInfo } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { message, process }: { message: ExpandedMessage; process: MessagingAppRuntime } = $props();
+  const { message, process }: { message: ExpandedMessage; process: IMessagingAppRuntime } = $props();
   const isSent = message?.authorId === Daemon.userInfo._id;
 
   let user = $state<PublicUserInfo>();
@@ -18,21 +18,6 @@
 
   onMount(async () => {
     if (!message) return;
-
-    const userInfoResult = isSent
-      ? await process.userInfo(message?.recipient)
-      : CommandResult.Ok<PublicUserInfo>(message?.author!);
-
-    if (!userInfoResult?.success) {
-      user = {
-        username: "(deleted user)",
-        profilePicture: ProfilePictures.def,
-        admin: false,
-        dispatchClients: 0,
-      };
-    } else {
-      user = userInfoResult.result;
-    }
 
     date = dayjs(message?.createdAt).format("D MMMM YYYY, hh:mm A");
   });
@@ -49,9 +34,9 @@
     <h1>{message?.title}</h1>
     <p>
       {#if isSent}
-        To <UserLink user={user!} /> on {date}
+        To <UserLink user={message.recipientData!} userId={message?.recipient!} /> on {date}
       {:else}
-        From <UserLink user={user!} /> on {date}
+        From <UserLink user={message.author!} userId={message.authorId!} /> on {date}
       {/if}
     </p>
   </div>

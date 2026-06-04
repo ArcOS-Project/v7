@@ -1,5 +1,5 @@
 import "$css/apps/user/mediaplayer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MediaPlayer from "./MediaPlayer.svelte";
 import { MediaPlayerRuntime } from "./runtime";
 
@@ -17,7 +17,7 @@ export const MediaPlayerApp: App = {
   },
   minSize: {
     w: 642,
-    h: 560, 
+    h: 560,
   },
   maxSize: {
     w: NaN,
@@ -40,7 +40,24 @@ export const MediaPlayerApp: App = {
     component: MediaPlayer as any,
   },
   opens: {
-    extensions: [".mp3", ".opus", ".wav", ".flac", ".mp4", ".mkv", ".mov", ".avi", ".arcpl", ".ogg"],
+    extensions: [
+      ".arcpl",
+      ".avi",
+      ".flac",
+      ".m4a",
+      ".m4v",
+      ".m4p",
+      ".mkv",
+      ".mov",
+      ".mp3",
+      ".mp4",
+      ".oga",
+      ".ogg",
+      ".ogv",
+      ".opus",
+      ".wav",
+      ".webm",
+    ],
   },
   position: { centered: true },
   id: "MediaPlayer",

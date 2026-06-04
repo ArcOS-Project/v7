@@ -1,4 +1,4 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
 
@@ -18,8 +18,7 @@ export class TestCommand extends TerminalProcess {
   //#endregion
 
   protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
-    term.rl?.println(JSON.stringify(flags, null, 2));
-
+    this.rl!.println(await this.rl!.read("test: ", true));
     return 0;
   }
 }

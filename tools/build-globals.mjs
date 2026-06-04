@@ -7,23 +7,21 @@
  *
  * © IzKuipers 2025. Licensed under GPLv3.
  */
-import ts from "typescript";
 import path from "path";
-import fs from "fs";
+import ts from "typescript";
 
-const TYPES_PATH = path.resolve("dist/types.d.ts");
-const THIRDPARTY_TYPES_PATH = path.resolve("src/types/thirdparty.ts");
-const OUTPUT_PATH = path.resolve("dist/globals.d.ts");
+const THIRDPARTY_TYPES_PATH = path.resolve("src/types/tpa/thirdparty.ts");
 
-function extractTypesFromThirdPartyPropMap() {
+export function extractTypesFromThirdPartyPropMap() {
   const program = ts.createProgram([THIRDPARTY_TYPES_PATH], {
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.ESNext,
   });
 
   const sourceFile = program.getSourceFile(THIRDPARTY_TYPES_PATH);
-  if (!sourceFile) throw new Error("❌ Could not read types file");
+  if (!sourceFile) throw new Error("\n❌ Could not read types file\n");
 
+  /** @type {ts.InterfaceDeclaration} */
   let propMapInterface;
 
   ts.forEachChild(sourceFile, (node) => {
@@ -32,7 +30,7 @@ function extractTypesFromThirdPartyPropMap() {
     }
   });
 
-  if (!propMapInterface) throw new Error("❌ Could not locate ThirdPartyPropMap interface");
+  if (!propMapInterface) throw new Error("\n❌ Could not locate ThirdPartyPropMap interface\n");
 
   return propMapInterface.members
     .map((member) => {
@@ -46,17 +44,9 @@ function extractTypesFromThirdPartyPropMap() {
           typeText = "any";
         }
 
-        return `declare const ${name}: ${typeText};`;
+        return `  export const ${name}: ${typeText};`;
       }
       return "";
     })
     .filter(Boolean);
 }
-
-const originalTypes = fs.readFileSync(TYPES_PATH, "utf8");
-const globalDecls = extractTypesFromThirdPartyPropMap();
-const globalBlock = globalDecls.join("\n");
-const footer = `\n\nexport {};`;
-
-fs.writeFileSync(OUTPUT_PATH, originalTypes + "\n\n" + globalBlock + footer);
-console.log("✅ dist/globals.d.ts written.");

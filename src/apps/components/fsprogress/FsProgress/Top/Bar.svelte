@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { FsProgressRuntime } from "../../runtime";
+  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 
-  const { process }: { process: FsProgressRuntime } = $props();
+  const { process }: { process: IFsProgressRuntime } = $props();
   const { Progress } = process;
 </script>
 

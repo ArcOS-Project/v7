@@ -1,5 +1,5 @@
 import "$css/apps/components/acceleratoroverview.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AcceleratorOverview from "./AcceleratorOverview.svelte";
 import { AcceleratorOverviewRuntime } from "./runtime";
 

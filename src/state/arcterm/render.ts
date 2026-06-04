@@ -1,7 +1,7 @@
 import { Stack } from "$ts/env";
 import { KernelInitPid } from "$ts/kernel/getters";
 import { TerminalMode } from "$ts/terminal/mode";
-import type { StateProps } from "$types/state";
+import type { StateProps } from "$types/system/state";
 
 export default async function render(_: StateProps) {
   const target = document.querySelector("#arcTermMode");

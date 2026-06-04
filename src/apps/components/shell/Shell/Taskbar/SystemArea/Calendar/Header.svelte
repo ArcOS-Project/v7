@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { shortWeekDays } from "$apps/components/shell/types";
+  import { CalendarHelper } from "$ts/helpers/calendar";
 </script>
 
 <div class="header">
-  {#each shortWeekDays as day}
+  {#each CalendarHelper.shortWeekDays as day}
     <div class="day">{day}</div>
   {/each}
 </div>

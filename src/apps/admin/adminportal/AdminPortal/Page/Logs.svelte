@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ServerLogItem } from "$types/admin";
+  import type { ServerLogItem } from "$types/server/admin";
   import dayjs from "dayjs";
 
   const { data }: { data: { logs: ServerLogItem[] } } = $props();

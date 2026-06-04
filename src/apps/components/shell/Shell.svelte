@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
-  import { Daemon } from "$ts/daemon";
-  import type { AppComponentProps } from "$types/app";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon } from "$ts/env";
+  import type { AppComponentProps } from "$types/apps/app";
   import { onMount } from "svelte";
   import ActionCenter from "./Shell/ActionCenter.svelte";
   import PushNotification from "./Shell/PushNotification.svelte";
@@ -11,7 +11,7 @@
   import VirtualDesktops from "./Shell/VirtualDesktops.svelte";
 
   const { process }: AppComponentProps<IShellRuntime> = $props();
-  const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount, ready } = process;
+  const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount } = process;
 
   let currentDesktop = $state<string>();
 
@@ -26,22 +26,20 @@
   });
 </script>
 
-{#if $ready}
-  <div
-    class="shell taskbar-bounds fullscreen"
-    class:docked={$userPreferences.shell.taskbar.docked}
-    class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop]?.size > 0}
-  >
-    <div class="primary">
-      <VirtualDesktops {process} />
-      <VirtualDesktopIndicator {process} />
-      <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
-      <div></div>
-      <ActionCenter {actionCenterOpened} {userPreferences} {process} />
-      <PushNotification {process} />
-    </div>
-    <div class="secondary">
-      <Taskbar {process} />
-    </div>
+<div
+  class="shell taskbar-bounds fullscreen"
+  class:docked={$userPreferences.shell.taskbar.docked}
+  class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop]?.size > 0}
+>
+  <div class="primary">
+    <VirtualDesktops {process} />
+    <VirtualDesktopIndicator {process} />
+    <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
+    <div></div>
+    <ActionCenter {actionCenterOpened} {userPreferences} {process} />
+    <PushNotification {process} />
   </div>
-{/if}
+  <div class="secondary">
+    <Taskbar {process} />
+  </div>
+</div>

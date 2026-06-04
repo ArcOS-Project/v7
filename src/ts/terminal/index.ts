@@ -1,11 +1,10 @@
 import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
 import TerminalWindow from "$apps/components/terminalwindow/TerminalWindow.svelte";
 import type { Constructs } from "$interfaces/common";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IFilesystemDrive } from "$interfaces/fs";
-import type { IArcTerminal, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/terminal";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Stack, State } from "$ts/env";
+import type { IArcTerminal, ITerminalMode, ITerminalProcess, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Fs, Stack, State } from "$ts/env";
 import { ASCII_ART } from "$ts/kernel/intro";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Sleep } from "$ts/sleep";
@@ -17,24 +16,16 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { ElevationLevel, type ElevationData } from "$types/elevation";
-import type { DirectoryReadReturn } from "$types/fs";
+import { ElevationLevel, type ElevationData } from "$types/system/elevation";
+import type { DirectoryReadReturn } from "$types/system/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
+import { BOLD, BRBLACK, BRBLUE, BRGREEN, BRRED, BRYELLOW, DefaultColors, RESET } from "./colors";
+import { HelpCommand } from "./commands/help";
+import { DefaultArcTermConfiguration } from "./config";
 import { Readline } from "./readline/readline";
-import {
-  BOLD,
-  BRBLACK,
-  BRBLUE,
-  BRGREEN,
-  BRRED,
-  BRYELLOW,
-  DefaultArcTermConfiguration,
-  DefaultColors,
-  RESET,
-  TerminalCommandStore,
-} from "./store";
+import { TerminalCommandStore } from "./store";
 import { ArcTermVariables } from "./var";
 
 export class ArcTerminal extends Process implements IArcTerminal {
@@ -53,10 +44,18 @@ export class ArcTerminal extends Process implements IArcTerminal {
   configProvidedExternal = false;
   window: ITerminalWindowRuntime | undefined;
   IS_ARCTERM_MODE = false;
+  terminalMode?: ITerminalMode;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, term: Terminal, path?: string, config?: ArcTermConfiguration) {
+  constructor(
+    pid: number,
+    parentPid: number,
+    term: Terminal,
+    path?: string,
+    config?: ArcTermConfiguration,
+    mode?: ITerminalMode
+  ) {
     super(pid, parentPid);
 
     this.path = path || UserPaths.Home;
@@ -65,6 +64,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     this.term = term;
     this.tryGetTermWindow();
     this.name = "ArcTerminal";
+    this.terminalMode = mode;
 
     if (config) {
       this.config = config;
@@ -152,7 +152,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     if (cmd.endsWith(":")) {
       await this.changeDirectory(`${cmd}/`);
     } else {
-      const command = TerminalCommandStore.filter((a) => a.keyword === cmd)[0];
+      const command = cmd === "help" ? HelpCommand : TerminalCommandStore.filter((a) => a.keyword === cmd)[0];
 
       if (!command) {
         this.Error("Command not found.");
@@ -284,7 +284,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     try {
       const contents = await Fs.readDir(path);
-      if (!contents) throw "";
+      if (!contents) throw `Directory not found: ${path}`;
 
       this.contents = contents;
     } catch (e) {
@@ -381,16 +381,16 @@ export class ArcTerminal extends Process implements IArcTerminal {
 
     if (lockdown || !password) return false;
 
-    const token = await LoginUser(this.daemon?.username!, password!);
+    const tokenResult = await LoginUser(this.daemon?.username!, password!);
 
-    if (!token) {
-      this.Error("Incorrect password");
+    if (!tokenResult.result) {
+      this.Error(tokenResult.errorMessage ?? "Incorrect password");
       this.rl?.println("");
 
       return false;
     }
 
-    await this.daemon?.account?.discontinueToken(token);
+    await this.daemon?.account?.discontinueToken(tokenResult.result!);
 
     return true;
   }
@@ -450,6 +450,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
         );
         window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
         window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        window?.style.setProperty("--secondary-border", "var(--terminal-background-inactive) 1px solid");
       }
     } catch {
       await this.writeConfig();
@@ -495,7 +496,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
             {
               caption: "New window",
               action: () => {
-                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, this.path);
+                Daemon.spawn?.spawnApp("ArcTerm", this.window?.parentPid, {}, this.path);
               },
               icon: "square-plus",
             },

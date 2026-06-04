@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
   const { userPreferences } = process;
 
   let pfp = $state("");
@@ -50,7 +53,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={valid ? pfp : process.getIconCached("AccountIcon")} alt="" />
+    <Icon icon={valid ? pfp : "AccountIcon"} />
   </div>
   <div class="right">
     <h1>Change Profile Picture</h1>
@@ -58,7 +61,10 @@
     <input type="url" bind:value={pfp} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={cancel}>Cancel</button>
-  <button class="suggested" disabled={!valid} onclick={apply}>Apply</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={cancel}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!valid} onclick={apply}>Apply</ActionButton>
+  {/snippet}
+</ActionBar>

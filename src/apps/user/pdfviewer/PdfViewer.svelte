@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { PdfViewerRuntime } from "./runtime";
+  import type { IPdfViewerRuntime } from "$interfaces/runtimes/IPdfViewerRuntime";
 
-  const { process }: { process: PdfViewerRuntime } = $props();
+  const { process }: { process: IPdfViewerRuntime } = $props();
   const { documentUrl, openedFile } = process;
 </script>
 

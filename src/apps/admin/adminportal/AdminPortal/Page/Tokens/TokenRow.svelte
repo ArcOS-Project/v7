@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { MessageBox } from "$ts/util/dialog";
-  import type { ExpandedToken } from "$types/admin";
+  import type { ExpandedToken } from "$types/server/admin";
   import dayjs from "dayjs";
   import Cookies from "js-cookie";
   import { UAParser } from "ua-parser-js";

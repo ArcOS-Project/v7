@@ -1,10 +1,9 @@
-import type { IAppProcess } from "$interfaces/app";
-import type { IPowerUserContext } from "$interfaces/contexts/power";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, Stack, State } from "$ts/env";
+import type { IPowerUserContext } from "$interfaces/contexts/IPowerUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { BatteryType } from "$types/navigator";
-import { Daemon } from "..";
+import type { BatteryType } from "$types/system/navigator";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext implements IPowerUserContext {
@@ -14,36 +13,36 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     super(id, daemon);
   }
 
-  async logoff() {
+  async logoff(force = false) {
     if (this._disposed) return;
 
     this.Log(`Logging off NOW`);
 
-    await this.toLogin("logoff");
+    await this.toLogin("logoff", {}, force);
   }
 
-  async shutdown() {
+  async shutdown(force = false) {
     if (this._disposed) return;
 
     this.Log(`Shutting down NOW`);
 
-    await this.toLogin("shutdown");
+    await this.toLogin("shutdown", {}, force);
   }
 
-  async restart() {
+  async restart(force = false) {
     if (this._disposed) return;
 
     this.Log(`Restarting NOW`);
 
-    await this.toLogin("restart");
+    await this.toLogin("restart", {}, force);
   }
 
-  async logoffSafeMode() {
+  async logoffSafeMode(force = false) {
     this.Log(`Logging off NOW (safe mode)`);
 
     Env.set("safemode", true);
 
-    await this.toLogin("logoff", { safeMode: true });
+    await this.toLogin("logoff", { safeMode: true }, force);
   }
 
   async toLogin(type: string, props: Record<string, any> = {}, force = false) {
@@ -52,6 +51,8 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     const canLeave = await this.closeOpenedApps(type, props, force);
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
+
+    await this.shell?.trayHost?.disposeAllTrayIcons();
 
     await this.serviceHost?.spinDown();
     await Stack._killSubProceses(this.pid, true);
@@ -68,7 +69,7 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
 
     const windows = Stack.renderer?.currentState
       .map((pid) => Stack.getProcess<IAppProcess>(pid))
-      .filter((proc) => !proc?.app?.data?.core);
+      .filter((proc) => !proc?.app?.data?.core && proc?.app.id !== (Daemon.preferences().globalSettings.shellExec ?? "arcShell"));
 
     if (!windows) return true;
 

@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { SettingsRuntime } from "../../runtime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");
@@ -60,7 +63,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("PasswordIcon")} alt="" />
+    <Icon icon="PasswordIcon" />
   </div>
   <div class="right">
     <h1>Change your password</h1>
@@ -69,7 +72,10 @@
     <input type="password" placeholder="Confirm new password" bind:value={confirmNewPassword} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

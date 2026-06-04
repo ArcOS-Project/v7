@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import type { MigrationService } from "$ts/servicehost/services/MigrationSvc";
+  import type { IMigrationService } from "$interfaces/services/IMigrationService";
+  import { Daemon } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
   import Row from "./Migrations/Row.svelte";
 
-  const migrationService = Daemon.serviceHost?.getService<MigrationService>("MigrationSvc");
+  const migrationService = Daemon.serviceHost?.getService<IMigrationService>("MigrationSvc");
 
   let config: Record<string, number> = $state({});
 

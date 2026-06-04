@@ -1,0 +1,172 @@
+#AdminPortal div.container.betaFeedback > div.page-content {
+  display: flex;
+  align-items: start;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-container {
+  width: 0;
+  flex-grow: 1;
+  height: 100%;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions {
+  height: 100%;
+  border-right: var(--win-border);
+  width: 150px;
+  overflow-y: scroll;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions div.header {
+  width: 100%;
+  height: 30px;
+  border-bottom: var(--win-border);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: var(--win-bg);
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions div.header p {
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions button {
+  width: 100%;
+  border-radius: 0;
+  text-align: left;
+  padding: 0 10px;
+  height: 30px;
+  background-color: transparent;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions button:hover {
+  background-color: var(--button-glass-bg);
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions button:active {
+  background-color: var(--button-glass-active-bg);
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.versions button.selected {
+  background-color: var(--accent-transparent);
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 10px;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row.header {
+  font-weight: bold;
+  border-bottom: var(--win-border);
+  background-color: var(--button-bg);
+  position: sticky;
+  top: 0;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.title {
+  flex-grow: 1;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.username {
+  width: 120px;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.server {
+  width: 100px;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.date {
+  width: 150px;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.read {
+  width: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.read span.lucide {
+  font-size: 16px;
+  color: var(--clr-green-fg);
+}
+
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row:hover {
+  background-color: var(--button-bg);
+}
+#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row:active {
+  background-color: var(--button-active-bg);
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 30px;
+  border-bottom: var(--win-border);
+  width: 100%;
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.header h2 {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 10px;
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.header button.lucide {
+  width: 31px;
+  height: 29px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
+  border-left: var(--win-border);
+  font-size: 16px;
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.header button.lucide:first-child {
+  border-left: 0;
+  border-right: var(--win-border);
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.properties {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: var(--win-border);
+  min-height: fit-content;
+  gap: 30px;
+}
+
+#AdminPortal div.container.betaFeedback div.item-details div.properties p.key {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+#AdminPortal div.container.betaFeedback div.item-details p.message {
+  padding: 10px;
+}

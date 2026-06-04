@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import type { ExpandedFileAssociationInfo } from "$types/assoc";
-  import type { SummarizedFsModifiers } from "$types/fs";
+  import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
+  import type { SummarizedFsModifiers } from "$types/system/fs";
   import dayjs from "dayjs";
-  import type { FileManagerRuntime } from "../../runtime";
 
   const {
     modifiers,
@@ -20,13 +21,13 @@
     dateModified: number;
     filename: string;
     thumbnail?: string;
-    process: FileManagerRuntime;
+    process: IFileManagerRuntime;
   } = $props();
 </script>
 
 <div class="single-file">
   <div class="header">
-    <img src={thumbnail || process.getIconCached(association?.icon) || association?.icon} alt="" />
+    <Icon icon={thumbnail || association?.icon} />
     <h1>{filename}</h1>
     <p>{association?.friendlyName}</p>
   </div>

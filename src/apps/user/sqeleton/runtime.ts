@@ -1,6 +1,8 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs, SoundBus, Stack } from "$ts/env";
+import { Daemon, Fs, SoundBus } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
@@ -9,13 +11,13 @@ import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
-export class SqeletonRuntime extends AppProcess {
+export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   openedFile = Store<string>("");
   openedFileName = Store<string>("");
-  _intf = Store<SqlInterfaceProcess | undefined>();
+  _intf = Store<ISqlInterfaceProcess | undefined>();
   queries = Store<string[]>([""]);
   queryIndex = Store<number>(0);
   errors = Store<SqeletonError[]>([]);
@@ -28,7 +30,7 @@ export class SqeletonRuntime extends AppProcess {
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
   tempDbPath = `T:/${UUID()}.db.tmp`;
-  tempDb?: SqlInterfaceProcess;
+  tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs = {
     result: {
       name: "Result",
@@ -43,11 +45,11 @@ export class SqeletonRuntime extends AppProcess {
     },
   };
 
-  get Interface(): SqlInterfaceProcess | undefined {
+  get Interface(): ISqlInterfaceProcess | undefined {
     return this._intf();
   }
 
-  set Interface(value: SqlInterfaceProcess | undefined) {
+  set Interface(value: ISqlInterfaceProcess | undefined) {
     if (this.Interface && value) {
       this.ExistingConnectionError();
       return;
@@ -67,7 +69,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async start() {
-    this.tempDb = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, this.tempDbPath);
+    this.tempDb = await SqlInterfaceProcess.Create(this.pid, this.tempDbPath);
   }
 
   async stop() {
@@ -91,7 +93,7 @@ export class SqeletonRuntime extends AppProcess {
     }
 
     try {
-      this.Interface = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
+      this.Interface = await SqlInterfaceProcess.Create(this.pid, path);
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
@@ -128,7 +130,7 @@ export class SqeletonRuntime extends AppProcess {
 
     if (!path) return;
 
-    const db = await Stack.spawn<SqlInterfaceProcess>(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
+    const db = await SqlInterfaceProcess.Create(this.pid, path);
     await db?.writeFile();
     await db?.killSelf();
 
@@ -238,7 +240,7 @@ export class SqeletonRuntime extends AppProcess {
     });
   }
 
-  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<CommandResult<string>> {
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<ICommandResult<string>> {
     const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
 
     if (!items) return CommandResult.Error("Didn't find any items");

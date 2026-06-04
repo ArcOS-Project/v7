@@ -1,30 +1,36 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
-  import type { NewFileRuntime } from "./runtime";
 
-  const { process }: { process: NewFileRuntime } = $props();
+  const { process }: { process: INewFileRuntime } = $props();
   const { newFile } = process;
 
-  let icon = $state<string>(process.getIconCached("DefaultMimeIcon"));
+  let icon = $state<string>("DefaultMimeIcon");
 
   onMount(() => {
     newFile.subscribe((v) => {
       const info = Daemon?.assoc?.getFileAssociation(v);
-      icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+      icon = info?.icon || "DefaultMimeIcon";
     });
   });
 </script>
 
 <div class="top">
-  <img src={icon} alt="" />
+  <Icon {icon} />
   <div class="right">
     <h1>New file</h1>
     <p>Think of a wonderful name for this new file:</p>
     <input type="text" bind:value={$newFile} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$newFile} onclick={() => process.createFile()}> Create </button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$newFile} onclick={() => process.createFile()}>Create</ActionButton>
+  {/snippet}
+</ActionBar>

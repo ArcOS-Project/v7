@@ -1,5 +1,5 @@
 import "$css/apps/user/iconeditor.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import IconEditor from "./IconEditor.svelte";
 import { IconEditorRuntime } from "./runtime";
 

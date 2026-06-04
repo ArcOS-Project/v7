@@ -1,13 +1,14 @@
 <script lang="ts">
-  import type { AppInstallerRuntime } from "../runtime";
+  import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: AppInstallerRuntime } = $props();
+  const { process }: { process: IAppInstallerRuntime } = $props();
   const { completed, failReason, installing } = process.progress!;
   const { metadata, isLibrary } = process;
 </script>
 
 <div class="header">
-  <img src={process.getIconCached($completed ? "GoodStatusIcon" : $failReason ? "ErrorIcon" : "ArcAppMimeIcon")} alt="" />
+  <Icon icon={$completed ? "GoodStatusIcon" : $failReason ? "ErrorIcon" : "ArcAppMimeIcon"} />
   <div>
     <h1>
       {#if $completed}

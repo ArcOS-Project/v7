@@ -1,17 +1,15 @@
-import type { IAppRegistrationUserContext } from "$interfaces/contexts/appreg";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, Fs, SysDispatch } from "$ts/env";
-import { Permissions } from "$ts/permissions";
-import type { ApplicationStorage } from "$ts/servicehost/services/AppStorage";
-import type { DistributionServiceProcess } from "$ts/servicehost/services/DistribSvc";
-import { AppGroups, UserPaths } from "$ts/user/store";
+import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
+import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
-import { tryJsonParse } from "$ts/util/json";
-import type { App, AppStorage, InstalledApp } from "$types/app";
-import { LogLevel } from "$types/logging";
-import { Daemon } from "..";
+import { tryJsonParse, validateObject } from "$ts/util/json";
+import type { App, AppStorage, InstalledApp } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
 import { UserContext } from "../context";
 
 export class AppRegistrationUserContext extends UserContext implements IAppRegistrationUserContext {
@@ -19,17 +17,25 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     super(id, daemon);
   }
 
+  // Essential entrypoint: ApplicationStorage calls this method to obtain the list of installed user applications.
   async getUserApps(): Promise<AppStorage> {
     try {
       if (!Daemon!.preferences()) return [];
 
       await this.modeUserAppsToFs();
-
       const bulk = Object.fromEntries(
         Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
 
-      return Object.values(bulk) as AppStorage;
+      const brokenApps = Object.entries(bulk)
+        .filter(([_, v]) => !v || typeof v !== "object" || !validateObject(v, DefaultAppData))
+        .map(([k]) => k);
+
+      if (brokenApps.length) {
+        this.Log(`AppRepository contains malformed data: ${brokenApps.join(", ")}`, LogLevel.warning);
+      }
+
+      return Object.values(bulk).filter((a) => typeof a === "object") as AppStorage;
     } catch {
       return [];
     }
@@ -46,15 +52,12 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
   async uninstallPackageWithStatus(id: string, deleteFiles = false) {
     this.Log(`Attempting to uninstall app '${id}'`);
-    const distrib = this.serviceHost?.getService<DistributionServiceProcess>("DistribSvc");
 
-    Permissions.removeApplication(id);
-
+    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
     if (!distrib) return false;
 
     const prog = await Daemon!.helpers!.GlobalLoadIndicator();
     const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
-
     await prog.stop();
 
     return result;
@@ -69,7 +72,6 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
       const json = tryJsonParse<InstalledApp>(text);
 
       if (typeof json !== "object") return "failed to convert to JSON";
-
       if (!json.metadata || !json.entrypoint) return "missing properties";
 
       (json as any).thirdParty = true;
@@ -86,10 +88,8 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     return new Promise<boolean>((r) => {
       MessageBox(
         {
-          title: "Uninstall app?",
-          message: `You're about to uninstall "${app?.metadata?.name || "Unknown"}" by ${
-            app?.metadata?.author || "nobody"
-          }. Do you want to just uninstall it, or do you want to delete its files also?`,
+          title: `${app.metadata.name}`,
+          message: `Are you sure you want to uninstall this application? The application's files will also be deleted.`,
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
           buttons: [
@@ -100,16 +100,9 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
               },
             },
             {
-              caption: "Delete",
+              caption: "Uninstall",
               action: () => {
                 this.uninstallPackageWithStatus(app?.id, true);
-                r(true);
-              },
-            },
-            {
-              caption: "Just uninstall",
-              action: () => {
-                this.uninstallPackageWithStatus(app?.id, false);
                 r(true);
               },
               suggested: true,
@@ -125,7 +118,7 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
   async pinApp(appId: string) {
     this.Log(`Pinning ${appId}`);
 
-    const appStore = this.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    const appStore = this.serviceHost?.getService("AppStorage") as IApplicationStorage;
     const app = appStore?.getAppSynchronous(appId);
 
     if (!app) return;

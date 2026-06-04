@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
-  import type { App } from "$types/app";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
+  import type { App } from "$types/apps/app";
   import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
 
   interface Props {
     target: App;
     id: string;
-    process: AppInfoRuntime;
+    process: IAppInfoRuntime;
   }
 
   const { target, id, process }: Props = $props();
@@ -43,7 +44,7 @@
 
 <div class="header">
   <div class="left">
-    <img src={Daemon?.icons?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
+    <Icon icon="@app::{target.id}" />
     <div class="base-info">
       <p class="name">{target?.metadata?.name || "Unknown"}</p>
       <p class="author">{target?.metadata?.author || "No author"}</p>

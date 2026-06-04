@@ -1,9 +1,12 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
 
   let newUsername = $state("");
 
@@ -43,7 +46,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("AccountIcon")} alt="" />
+    <Icon icon="AccountIcon" />
   </div>
   <div class="right">
     <h1>Change your username</h1>
@@ -51,7 +54,10 @@
     <input type="username" placeholder="New username" bind:value={newUsername} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newUsername} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newUsername} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

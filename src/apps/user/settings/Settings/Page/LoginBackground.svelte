@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import { Daemon } from "$ts/env";
   import { Wallpapers } from "$ts/user/wallpaper/store";
-  import type { Wallpaper } from "$types/wallpaper";
+  import type { Wallpaper } from "$types/user/wallpaper";
   import { onMount } from "svelte";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import WallpaperOption from "./Wallpaper/WallpaperOption.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let wallpaper = $state<Wallpaper>();
@@ -92,7 +92,7 @@
       <div class="centered-layout">
         {#if process.safeMode}
           <Section>
-            <Option caption="Safe Mode - login background is disabled" image={process.getIconCached("WarningIcon")}></Option>
+            <Option caption="Safe Mode - login background is disabled" image="WarningIcon"></Option>
           </Section>
         {/if}
       </div>

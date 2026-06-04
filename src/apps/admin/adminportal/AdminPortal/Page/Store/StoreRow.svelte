@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
 
   const {
@@ -32,7 +33,7 @@
     <button class="link" onclick={() => process.switchPage("viewUser", { user })}>{user.username}</button>
   </div>
   <div class="segment name">
-    <img src={StoreItemIcon(item)} alt="" />
+    <Icon icon={StoreItemIcon(item)} />
     <span>{item.name}</span>
   </div>
   <div class="segment version">{item.pkg.version}</div>

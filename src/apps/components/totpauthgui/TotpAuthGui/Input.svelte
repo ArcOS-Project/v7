@@ -35,10 +35,14 @@
         e.preventDefault();
         els[max(0, targetIndex - 1)]?.focus();
         break;
+      case "ArrowUp":
+      case "ArrowDown": // prevent up and down arrow keys from modifying the input's value and causing unexpected values
+        e.preventDefault();
+        break;
       case "Backspace": //Backspace
         e.preventDefault();
 
-        // if curent cell is empty we want to backspace the previous cell
+        // if current cell is empty we want to backspace the previous cell
         if (!values[targetIndex] && values[targetIndex] != 0) {
           els[max(0, targetIndex - 1)]?.focus();
           values[targetIndex - 1] = null;

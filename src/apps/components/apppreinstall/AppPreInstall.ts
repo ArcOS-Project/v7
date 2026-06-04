@@ -1,5 +1,5 @@
 import "$css/apps/components/apppreinstall.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import AppPreinstall from "./AppPreinstall.svelte";
 import { AppPreInstallRuntime } from "./runtime";
 

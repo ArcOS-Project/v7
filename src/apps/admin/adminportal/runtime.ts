@@ -1,16 +1,15 @@
-import type { IAdminPortalRuntime } from "$interfaces/admin";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Fs } from "$ts/env";
-import { AdminBootstrapper } from "$ts/servicehost/services/AdminBootstrapper";
-import { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { BugReport } from "$types/bughunt";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { BugReport } from "$types/server/bughunt";
 import axios from "axios";
 import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
@@ -23,8 +22,8 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
   switchPageProps = Store<Record<string, any>>({});
   redacted = Store<boolean>(true);
   propSize = Store<number>(0);
-  shares: ShareManager;
-  admin: AdminBootstrapper;
+  shares: IShareManager;
+  admin: IAdminBootstrapper;
 
   protected overlayStore: Record<string, App> = {
     userdata: BugHuntUserDataApp,
@@ -35,8 +34,8 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.admin = Daemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
-    this.shares = Daemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
+    this.admin = Daemon!.serviceHost!.getService<IAdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = Daemon!.serviceHost!.getService<IShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
 
@@ -93,7 +92,7 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
 
   async saveTpaFilesOfBugReport(report: BugReport) {
     this.Log(`saveTpaFilesOfBugReport: ${report._id ?? "<unknown report>"}`);
-    
+
     // Regular expression assumes URL format:
     // https://domain.tld/tpa/v3/userId/timestamp/appId@filename.js
     const regex =
@@ -142,6 +141,16 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
     const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
 
     this.switchPage("viewUser", { user });
+  }
+
+  compileCrumbs(parent: string): string[] {
+    const result: string[] = [];
+    const parentData = AdminPortalPageStore.get(parent);
+
+    if (parentData?.parent) result.push(...this.compileCrumbs(parentData?.parent));
+    result.push(parentData?.name!);
+
+    return result;
   }
 
   //#endregion

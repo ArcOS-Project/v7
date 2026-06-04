@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { IShellRuntime } from "$interfaces/shell";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/daemon";
-  import { SysDispatch } from "$ts/env";
+  import { Daemon, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { Notification } from "$types/notification";
+  import type { Notification } from "$types/system/notification";
   import { onMount } from "svelte";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
 

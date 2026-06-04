@@ -1,5 +1,5 @@
 import "$css/apps/user/cod.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Cod from "./Cod.svelte";
 import { CodRuntime } from "./runtime";
 

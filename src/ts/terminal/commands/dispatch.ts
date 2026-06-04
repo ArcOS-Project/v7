@@ -1,11 +1,11 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Stack, SysDispatch } from "$ts/env";
 import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
 import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
+import { BRBLUE, RESET } from "../colors";
 
 export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";
@@ -28,12 +28,12 @@ export class DispatchCommand extends TerminalProcess {
     const list = flags.list;
 
     if (list) {
-      term.rl?.println("Global dispatches known to ArcOS:");
+      this.rl?.println("Global dispatches known to ArcOS:");
 
       for (const key of KnownSystemDispatchers) {
         const keyStr = key.padEnd(25, " ");
 
-        term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
+        this.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
       }
 
       return 0;

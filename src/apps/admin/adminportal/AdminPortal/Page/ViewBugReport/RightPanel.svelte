@@ -1,6 +1,6 @@
 <script lang="ts">
   import { stringifyLogs } from "$ts/util/admin";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
 
   const { report }: { report: BugReport } = $props();
   const tabs = ["meta", "location", "log"];

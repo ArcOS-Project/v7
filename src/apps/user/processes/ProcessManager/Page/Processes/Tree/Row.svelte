@@ -1,0 +1,134 @@
+<script lang="ts">
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcess } from "$interfaces/IProcess";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Stack, SysDispatch } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
+  import { BaseService } from "$ts/servicehost/base";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { formatBytes } from "$ts/util/fs";
+  import { ProcessStateIcons } from "$types/system/process";
+  import { onDestroy, onMount } from "svelte";
+  import Row from "./Row.svelte";
+
+  const {
+    pid,
+    proc,
+    process,
+    orphan = false,
+  }: { pid: number; proc: IProcess; process: IProcessManagerRuntime; orphan?: boolean } = $props();
+
+  const { selected } = process;
+  const { focusedPid } = Stack.renderer!;
+
+  let name = $state<string>();
+  let icon = $state<string>();
+  let appId = $state<string>();
+  let children = $state<Map<number, IProcess>>(new Map());
+  let closing = $state<boolean>(false);
+  let memory = $state<number>();
+  let memoryInterval = $state<NodeJS.Timeout>();
+
+  onMount(() => {
+    Stack.store.subscribe(() => {
+      children = Stack.getSubProcesses(proc.pid);
+    });
+
+    memory = proc.MEMORY; // only once because laggy
+
+    if (ProcessesHelper.IsAnyAppProcess(proc)) {
+      const { app } = proc;
+
+      name = app.data.metadata.name;
+      icon = `@app::${app.id}`;
+      appId = app.id;
+
+      const dispatcher = SysDispatch.subscribe("window-closing", ([pid]) => {
+        if (pid === proc.pid) {
+          closing = true;
+          SysDispatch.unsubscribeId("window-closing", dispatcher);
+        }
+      });
+
+      return;
+    }
+
+    name = proc.name;
+    icon = "DefaultIcon";
+  });
+
+  onDestroy(() => {
+    clearInterval(memoryInterval);
+  });
+</script>
+
+{#if !proc._disposed}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="row"
+    class:closing
+    onclick={() => ($selected = `proc#${pid}`)}
+    use:contextMenu={[
+      [
+        {
+          caption: "Process info",
+          action: () => process.processInfoFor(proc),
+          icon: "info",
+        },
+        {
+          caption: "App info",
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
+          action: () => process.appInfoFor(proc as IAppProcess),
+          icon: "app-window-mac",
+        },
+        {
+          caption: "Service info",
+          disabled: () => !(proc instanceof BaseService),
+          action: () => process.serviceInfoFor(proc.name.replace("svc#", "")),
+          icon: "cog",
+        },
+        { sep: true },
+        {
+          caption: "Focus",
+          disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
+          action: () => Stack.renderer?.focusPid(proc.pid),
+          icon: "flag",
+        },
+        { sep: true },
+        {
+          caption: "Kill process",
+          disabled: () => proc._criticalProcess,
+          action: () => process.kill(proc),
+          icon: "x",
+        },
+      ],
+      process,
+    ]}
+    class:selected={$selected === `proc#${pid}`}
+    class:orphan
+    class:critical={proc._criticalProcess}
+  >
+    <div class="segment name">
+      <Icon icon={icon ?? "DefaultIcon"} />
+      <span>{name}{orphan ? " (orphaned)" : ""}</span>
+      <span class="lucide icon-{ProcessStateIcons[proc.STATE]}"></span>
+    </div>
+    <div class="segment pid" class:flagged={$focusedPid === proc.pid}>
+      <Icon icon="FlagIcon" className="flag" />
+      <span>{proc.pid}</span>
+    </div>
+    <div class="segment memory">
+      <span>{formatBytes(memory ?? 0)}</span>
+    </div>
+    <div class="segment app-id" title={appId}>{appId || "-"}</div>
+  </div>
+  {#if children.size}
+    <div class="indent" data-pid={proc.pid}>
+      {#each [...children] as [pid, proc], i (`${i}-${pid} ${proc.name}`)}
+        <Row {pid} {proc} {process} />
+      {/each}
+    </div>
+  {/if}
+{/if}

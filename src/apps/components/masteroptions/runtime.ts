@@ -1,0 +1,85 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
+import { AppProcess } from "$ts/apps/process";
+import { Daemon, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { Plural } from "$ts/util";
+import { Store } from "$ts/writable";
+import type { AppProcessData } from "$types/apps/app";
+
+export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRuntime {
+  loading = Store<boolean>(false);
+
+  //#region LIFECYCLE
+
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
+
+    this.setSource(__SOURCE__);
+  }
+
+  async render() {
+    if (await this.closeIfSecondInstance()) return;
+  }
+
+  //#endregion LIFECYCLE
+
+  async killGhosts() {
+    const state = Stack.renderer?.currentState || [];
+    const ghosts = [];
+
+    for (const pid of state) {
+      const proc = Stack.getProcess(pid);
+      if (!proc) {
+        await Stack.renderer?.remove(pid);
+        ghosts.push(pid);
+      }
+    }
+
+    this.shell?.updateFullscreenCount();
+
+    await this.shell?.ShowToast(
+      {
+        content: `Removed ${ghosts.length} ${Plural("ghost", ghosts.length)} from the renderer.`,
+        icon: "ghost",
+      },
+      4000
+    );
+  }
+
+  async killUserApps() {
+    const userApps: IAppProcess[] = [...Stack.store()]
+      .map(([_, v]) => v as IAppProcess)
+      .filter(
+        (proc) =>
+          ProcessesHelper.IsAnyAppProcess(proc) &&
+          !proc.app.data.core &&
+          proc.app.id !== "arcShell" &&
+          proc.app.id !== "wallpaper"
+      );
+
+    for (const proc of userApps) {
+      await Stack.kill(proc.pid, true);
+    }
+
+    await this.shell?.ShowToast(
+      {
+        content: `Forcefully terminated ${userApps.length} ${Plural("application", userApps.length)}.`,
+        icon: "power",
+      },
+      4000
+    );
+  }
+
+  async clearProcessCache() {
+    Daemon.spawn?.clearEntrypointCache();
+
+    await this.shell?.ShowToast(
+      {
+        content: `Cleared process cache. Apps might now take longer to open.`,
+        icon: "trash",
+      },
+      4000
+    );
+  }
+}

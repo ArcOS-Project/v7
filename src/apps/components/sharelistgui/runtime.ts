@@ -1,21 +1,21 @@
-import type { ISharedDrive } from "$interfaces/drives/share";
+import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IShareListGuiRuntime } from "$interfaces/runtimes/IShareListGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/daemon";
-import { Env, Fs, Stack } from "$ts/env";
-import type { ShareManager } from "$ts/servicehost/services/ShareMgmt";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { SharedDriveType } from "$types/shares";
+import type { AppProcessData } from "$types/apps/app";
+import type { SharedDriveType } from "$types/server/shares";
 
-export class ShareListGuiRuntime extends AppProcess {
+export class ShareListGuiRuntime extends AppProcess implements IShareListGuiRuntime {
   ownedShares = Store<SharedDriveType[]>([]);
   joinedShares = Store<SharedDriveType[]>([]);
   selectedShare = Store<string>();
   selectedIsOwn = Store<boolean>(false);
   selectedIsMounted = Store<boolean>(false);
   loading = Store<boolean>(false);
-  shares: ShareManager;
+  shares: IShareManager;
   thisUserId: string;
 
   //#region LIFECYCLE
@@ -26,15 +26,15 @@ export class ShareListGuiRuntime extends AppProcess {
     this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
     this.thisUserId = Daemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
 
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
     this.selectedShare.subscribe((v) => {
       this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
       this.selectedIsMounted.set(!!Fs.drives[v]); // Check if the selected share is mounted
     });
 
-    this.setSource(__SOURCE__);
-  }
-
-  async start() {
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
 
     this.loading.set(true);

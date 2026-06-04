@@ -14,8 +14,8 @@
  */
 import stringWidth from "string-width";
 import type { Highlighter } from "./highlight";
+import type { Layout, Position } from "./layout";
 import { LineBuffer } from "./line";
-import { Layout, Position } from "./state";
 
 export interface Output {
   write(text: string): void;
@@ -114,6 +114,7 @@ export class Tty {
 
     this.write(highlighter.highlightPrompt(prompt));
     if (!conceiled) this.write(highlighter.highlight(line.buf, line.pos));
+    else this.write("*".repeat(highlighter.highlight(line.buf, line.pos).length));
 
     if (endPos.col === 0 && endPos.row > 0 && line.buf[line.buf.length - 1] !== "\n") {
       this.write("\n");

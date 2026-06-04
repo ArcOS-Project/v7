@@ -1,8 +1,8 @@
-import type { IZipDrive } from "$interfaces/drives/zip";
-import type { IFilesystem } from "$interfaces/modules/fs";
+import type { IZipDrive } from "$interfaces/drives/IZipDrive";
+import type { IFilesystem } from "$interfaces/modules/IFilesystem";
 import { getKMod } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback, RecursiveDirectoryReadReturn } from "$types/system/fs";
 import JSZip from "jszip";
 
 export class ZIPDrive extends FilesystemDrive implements IZipDrive {
@@ -14,19 +14,19 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   public IDENTIFIES_AS: string = "zip";
   public FILESYSTEM_SHORT: string = "ZipFS";
   public FILESYSTEM_LONG: string = "ZIP Filesystem";
-  protected override CAPABILITIES: Record<DriveCapabilities, boolean> = {
+  public override CAPABILITIES: Record<DriveCapabilities, boolean> = {
     readDir: true,
     makeDir: false,
     readFile: true,
     writeFile: false,
-    tree: true,
     copyItem: false,
     moveItem: false,
     deleteItem: false,
+    tree: true,
     direct: false,
-    quota: false,
     bulk: false,
     stat: false,
+    quota: false,
   };
 
   constructor(uuid: string, letter: string, path: string) {

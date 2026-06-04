@@ -1,21 +1,16 @@
-import type { IVersionUserContext } from "$interfaces/contexts/version";
-import type { IUserDaemon } from "$interfaces/daemon";
-import type { IFilesystemDrive } from "$interfaces/fs";
+import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserContext";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SourceDriveEnable from "$lib/Daemon/SourceDriveEnable.svelte";
-import { ArcOSVersion, Env, Fs, Kernel } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Fs, Kernel } from "$ts/env";
 import { SecurityMediumIcon } from "$ts/images/general";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
-import { Daemon } from "..";
 import { UserContext } from "../context";
 
-/**
- * RESTRICTED: this class does not have an entry in ProcessWithPermissions,
- * and as such cannot be accessed by third-party applications.
- */
 export class VersionUserContext extends UserContext implements IVersionUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
@@ -45,7 +40,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
 
     if (!isOutdated) return;
 
-    Daemon!.spawn?.spawnOverlay("UpdateNotifierApp", +Env.get("shell_pid"));
+    Daemon!.spawn?.spawnApp("UpdateNotifierApp", +Env.get("shell_pid"), { asOverlay: true });
   }
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
@@ -67,7 +62,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
               caption: "View license",
               action: async () => {
                 await Fs.writeFile(`T:/Meta/LICENSE`, textToBlob(Kernel.ARCOS_LICENSE));
-                await Daemon.spawn?.spawnApp("writer", shellPid, `T:/Meta/LICENSE`);
+                await Daemon.spawn?.spawnApp("writer", shellPid, {}, `T:/Meta/LICENSE`);
                 return false; // Don't close the dialog
               },
             },
@@ -99,7 +94,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
       await this.mountSourceDrive();
 
       if (openAlso) {
-        await Daemon.spawn?.spawnApp("fileManager", shellPid, `S:/`);
+        await Daemon.spawn?.spawnApp("fileManager", shellPid, {}, `S:/`);
       }
     }
 

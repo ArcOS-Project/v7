@@ -1,11 +1,12 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
-  import type { PartialStoreItem, StoreItem } from "$types/package";
+  import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
   interface Props {
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
     all: PartialStoreItem[];
     recentlyAdded: PartialStoreItem[];
     popular: PartialStoreItem[];
@@ -23,7 +24,7 @@
       class:fallback={!StoreItemBanner(popular[0])}
     />
     <div class="info">
-      <img src={StoreItemIcon(popular[0])} alt="" class="icon" />
+      <Icon icon={StoreItemIcon(popular[0])} className="icon" />
       <h1>{mostPopular.pkg.name}</h1>
       <p class="description">{mostPopular.pkg.description}</p>
       <p class="stats">{mostPopular.user?.displayName || mostPopular.user?.username} · {mostPopular.installCount} downloads</p>
@@ -34,9 +35,12 @@
   <div class="popular">
     {#each [popular[1], popular[2]].filter(Boolean) as item}
       <button class="item" onclick={() => process.switchPage("viewStoreItem", { id: item._id })}>
-        <img src={StoreItemBanner(item) || StoreItemIcon(item)} alt="" class="backdrop" class:fallback={!StoreItemBanner(item)} />
+        <Icon
+          icon={StoreItemBanner(item) || StoreItemIcon(item)}
+          className="backdrop {!StoreItemBanner(item) ? 'fallback' : ''}"
+        />
         <div class="content">
-          <img src={StoreItemIcon(item)} alt="" class="icon" />
+          <Icon icon={StoreItemIcon(item)} className="icon" />
           <h1>{item.pkg.name}</h1>
           <p class="description">{item.pkg.description}</p>
           <p class="stats">{item.user?.displayName || item.user?.username} · {item.installCount} downloads</p>

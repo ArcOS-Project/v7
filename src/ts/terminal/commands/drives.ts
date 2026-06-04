@@ -1,7 +1,9 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Fs } from "$ts/env";
+import { DriveCapabilityShorts } from "$ts/kernel/mods/fs/store";
+import type { DriveCapabilities } from "$types/system/fs";
 import type { Arguments } from "$types/terminal";
-import { arrayToAsciiTable } from "../../util/terminal";
+import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRWHITE, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
 
 export class DrivesCommand extends TerminalProcess {
@@ -21,6 +23,9 @@ export class DrivesCommand extends TerminalProcess {
   protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const drives = Fs.drives;
     const showHidden = flags.h || flags.hidden;
+    const showCapabilities = flags.c || flags.capabilities;
+    const identifies = flags.identifies;
+    const fs = flags.fs;
     const goTo = argv[0];
 
     if (goTo) {
@@ -28,23 +33,34 @@ export class DrivesCommand extends TerminalProcess {
       return 0;
     }
 
-    const table = [["Mount", "Flags", "FS", "Type", "Label"]];
-
     for (const driveId in drives) {
       const drive = drives[driveId];
+      if (!showHidden && drive.HIDDEN) continue;
+      if (identifies && drive.IDENTIFIES_AS.toLowerCase() !== `${identifies}`.toLowerCase()) continue;
+      if (fs && drive.FILESYSTEM_SHORT.toLowerCase() !== `${fs}`.toLowerCase()) continue;
 
-      const hidden = drive.HIDDEN ? "H" : "";
-      const removable = drive.REMOVABLE ? "R" : "";
-      const fixed = drive.FIXED ? "F" : "";
-      const filesystem = drive.FILESYSTEM_SHORT || drive.FILESYSTEM_LONG;
-      const identifier = `${drive.driveLetter || drive.uuid}:`;
+      const fullCap = Object.keys(drive.CAPABILITIES) as DriveCapabilities[];
+      const filteredCap = Object.entries(drive.CAPABILITIES)
+        .filter(([_, v]) => !!v)
+        .map(([k]) => k) as DriveCapabilities[];
+      const shortCaps = fullCap.map((k) => (drive.CAPABILITIES[k] ? DriveCapabilityShorts[k] : "-")).join("");
+      const hiddenFlag = drive.HIDDEN ? `${BRYELLOW}Hidden${RESET} ` : "";
+      const removableFlag = drive.REMOVABLE ? `${BRPURPLE}Removable${RESET} ` : "";
+      const fixedFlag = drive.FIXED ? `${BRGREEN}Fixed${RESET} ` : "";
+      const identifier = `${BRBLUE}${drive.driveLetter || drive.uuid}:/${RESET}`;
+      const label = `${BRBLUE}${drive.label ?? "NO_LABEL"}${RESET}`;
+      const identifiesAs = `${BRCYAN}${drive.IDENTIFIES_AS}${RESET}`;
+      const id = `${BRCYAN}${driveId}${RESET}`;
+      const fullCapabilities = `${BRCYAN}${filteredCap.join(`${BRBLACK}, ${BRCYAN}`)}${RESET}`;
+      const abbreviatedCapabilities = `${BRCYAN}${shortCaps} ${BRBLACK}(use --c to expand)${RESET}`;
 
-      if (drive.HIDDEN && !showHidden) continue;
-
-      table.push([identifier, `${hidden}${removable}${fixed}`, filesystem, drive.IDENTIFIES_AS, drive.label]);
+      this.rl?.println("");
+      this.rl?.println(`Drive ${label} on ${identifier}`);
+      this.rl?.println(`  ${BRWHITE}Filesystem${RESET}: ${drive.FILESYSTEM_LONG} (${drive.FILESYSTEM_SHORT})`);
+      this.rl?.println(`  ${BRWHITE}Identifies as${RESET}: ${identifiesAs} (ID ${id})`);
+      this.rl?.println(`  ${BRWHITE}Flags${RESET}: ${hiddenFlag}${removableFlag}${fixedFlag}`);
+      this.rl?.println(`  ${BRWHITE}Capabilities${RESET}: ${showCapabilities ? fullCapabilities : abbreviatedCapabilities}`);
     }
-
-    term.rl?.println(arrayToAsciiTable(table));
 
     return 0;
   }

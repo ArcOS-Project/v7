@@ -1,17 +1,20 @@
 <script lang="ts">
+  import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import type { ShortcutPropertiesRuntime } from "./runtime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: ShortcutPropertiesRuntime } = $props();
-  const { shortcutData, iconStore } = process;
+  const { process }: { process: IShortcutPropertiesRuntime } = $props();
+  const { shortcutData } = process;
 </script>
 
 {#if $shortcutData}
   <div class="header">
     <div class="icon">
-      <img src={process.getIconCached($shortcutData.icon) || process.getIconCached("UnknownFileIcon")} alt="" />
+      <Icon icon={$shortcutData.icon} fallback="UnknownFileIcon" />
       <button class="change lucide icon-pencil" title="Change icon" aria-label="Change icon" onclick={() => process.changeIcon()}
       ></button>
     </div>
@@ -62,26 +65,29 @@
     </InfoRow>
   </InfoBlock>
 
-  <div class="actions">
-    {#if $shortcutData.type !== "new"}
-      <button class="target" onclick={() => process.goTarget()}>
-        {#if $shortcutData.type === "app"}
-          App Info
-        {:else if $shortcutData.type === "folder"}
-          Open Target
-        {:else if $shortcutData.type === "file"}
-          Find Target
-        {/if}
-      </button>
-    {/if}
-    <div class="right">
-      <button onclick={() => process.closeWindow()}>Cancel</button>
-      <button
-        class="suggested"
+  <ActionBar floating>
+    {#snippet leftContent()}
+      {#if $shortcutData.type !== "new"}
+        <ActionButton onclick={() => process.goTarget()}>
+          {#if $shortcutData.type === "app"}
+            App Info
+          {:else if $shortcutData.type === "folder"}
+            Open Target
+          {:else if $shortcutData.type === "file"}
+            Find Target
+          {/if}
+        </ActionButton>
+      {/if}
+    {/snippet}
+    {#snippet rightContent()}
+      <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+      <ActionButton
+        suggested
         onclick={() => process.save()}
         disabled={!$shortcutData.icon || !$shortcutData.name || !$shortcutData.target || $shortcutData.type === "new"}
-        >Save</button
       >
-    </div>
-  </div>
+        Save
+      </ActionButton>
+    {/snippet}
+  </ActionBar>
 {/if}

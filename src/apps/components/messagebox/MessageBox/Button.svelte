@@ -1,6 +1,8 @@
 <script lang="ts">
-  import type { MessageBoxButton } from "$types/messagebox";
-  import type { MessageBoxRuntime } from "../runtime";
+  import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import type { MessageBoxButton } from "$types/shared/messagebox";
+  import { onMount } from "svelte";
 
   let disabled = $state(false);
 
@@ -8,7 +10,13 @@
     button,
     process,
     suggestedDisabled,
-  }: { button: MessageBoxButton; process: MessageBoxRuntime; suggestedDisabled: boolean } = $props();
+  }: { button: MessageBoxButton; process: IMessageBoxRuntime; suggestedDisabled: boolean } = $props();
+
+  onMount(async () => {
+    if (button.disabled) {
+      disabled = await button.disabled();
+    }
+  });
 
   async function go() {
     disabled = true;
@@ -25,6 +33,6 @@
   }
 </script>
 
-<button onclick={go} class:suggested={button.suggested} disabled={disabled || (suggestedDisabled && button.suggested)}>
+<ActionButton suggested={button.suggested} onclick={go} disabled={disabled || (suggestedDisabled && button.suggested)}>
   {button.caption}
-</button>
+</ActionButton>

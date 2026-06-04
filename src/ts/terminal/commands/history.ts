@@ -1,6 +1,6 @@
-import type { IArcTerminal } from "$interfaces/terminal";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { BRBLACK, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, RESET } from "../store";
 
 export class HistoryCommand extends TerminalProcess {
   public static keyword = "history";
@@ -24,7 +24,7 @@ export class HistoryCommand extends TerminalProcess {
     const history: string[] = (pref.appPreferences.ArcTerm?.history || []).reverse();
 
     for (let i = 0; i < history.length; i++) {
-      term.rl?.println(`${BRBLACK}${(i + 1).toString().padStart(4, " ")}${RESET} ${history[i]}`);
+      this.rl?.println(`${BRBLACK}${(i + 1).toString().padStart(4, " ")}${RESET} ${history[i]}`);
     }
 
     return 0;

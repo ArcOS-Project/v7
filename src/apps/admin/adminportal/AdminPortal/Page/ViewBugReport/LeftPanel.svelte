@@ -1,15 +1,16 @@
 <script lang="ts">
   import type { BugReportTpaFile } from "$apps/admin/adminportal/types";
-  import type { IAdminPortalRuntime } from "$interfaces/admin";
-  import { Daemon } from "$ts/daemon";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
   import Client from "./LeftPanel/Client.svelte";
   import CreatedBy from "./LeftPanel/CreatedBy.svelte";
   import Provided from "./LeftPanel/Provided.svelte";
   import Server from "./LeftPanel/Server.svelte";
   import UserAgent from "./LeftPanel/UserAgent.svelte";
+  import Icon from "$lib/Icon.svelte";
 
   const { report, process }: { report: BugReport; process: IAdminPortalRuntime } = $props();
 
@@ -40,10 +41,7 @@
       {:else}
         {#each tpaFiles as file}
           <button class="file" ondblclick={() => openTpaFile(file)} disabled={file.unavailable}>
-            <img
-              src={Daemon?.assoc?.getFileAssociation(file.filePath)?.icon || process.getIconCached("DefaultMimeIcon")}
-              alt=""
-            />
+            <Icon icon={Daemon?.assoc?.getFileAssociation(file.filePath)?.icon || "DefaultMimeIcon"} />
             <span class="filename">{file.filename}</span>
             {#if !file.unavailable}
               <span class="size">{formatBytes(file.size)}</span>

@@ -1,12 +1,11 @@
-import type { IShortcutsUserContext } from "$interfaces/contexts/shortcuts";
-import type { IUserDaemon } from "$interfaces/daemon";
-import { Env, Fs } from "$ts/env";
+import type { IShortcutsUserContext } from "$interfaces/contexts/IShortcutsUserContext";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Daemon, Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
-import type { ArcShortcut } from "$types/shortcut";
-import { Daemon } from "..";
+import type { ArcShortcut } from "$types/system/shortcut";
 import { UserContext } from "../context";
 
 export class ShortcutsUserContext extends UserContext implements IShortcutsUserContext {
@@ -25,7 +24,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
         case "file":
           return await Daemon!.files?.openFile(shortcut.target);
         case "folder":
-          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), shortcut.target);
+          return await Daemon!.spawn?.spawnApp("fileManager", +Env.get("shell_pid"), {}, shortcut.target);
         default:
           MessageBox(
             {
@@ -67,7 +66,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
   }
 
   async newShortcut(location: string) {
-    Daemon.spawn?.spawnOverlay("ShortcutProperties", +Env.get("shell_pid"), join(location, `${UUID()}.arclnk`), {
+    Daemon.spawn?.spawnApp("ShortcutProperties", +Env.get("shell_pid"), { asOverlay: true }, join(location, `${UUID()}.arclnk`), {
       icon: "ShortcutMimeIcon",
       name: "New shortcut",
       type: "new",

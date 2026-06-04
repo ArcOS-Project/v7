@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Daemon } from "$ts/daemon";
+  import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
   import { getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { MediaPlayerRuntime } from "../runtime";
 
-  const { process, i, path }: { process: MediaPlayerRuntime; i: number; path: string } = $props();
+  const { process, i, path }: { process: IMediaPlayerRuntime; i: number; path: string } = $props();
   const { queueIndex, queue, State, Loaded, MetadataConfiguration } = process;
 
   let icon = $state<string>();
@@ -13,7 +14,7 @@
   onMount(() => {
     filename = getItemNameFromPath(path);
     const info = Daemon?.assoc?.getFileAssociation(filename);
-    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+    icon = info?.icon || "DefaultMimeIcon";
   });
 
   function playThis() {
@@ -37,7 +38,7 @@
     {#if $queueIndex === i && !$State.paused}
       <span class="lucide icon-play"></span>
     {:else}
-      <img src={icon} alt="" />
+      <Icon {icon} />
     {/if}
     <span class="name">{$MetadataConfiguration[path]?.title || filename}</span>
     <button

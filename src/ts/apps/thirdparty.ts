@@ -1,9 +1,12 @@
-import type { IThirdPartyAppProcess } from "$interfaces/thirdparty";
-import { Daemon } from "$ts/daemon";
-import { Fs, Stack, SysDispatch } from "$ts/env";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
+import { DefaultThirdPartyAppData } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { AppProcessData } from "$types/app";
+import { validateObject } from "$ts/util/json";
+import type { AppProcessData } from "$types/apps/app";
+import { isUUID } from "validator";
+import { AppRuntimeError } from "./error";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
@@ -13,6 +16,7 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
   mutationLock = false;
   urlCache: Record<string, string> = {};
   elements: Record<string, Element> = {};
+  handler = Stack; // TEMP
 
   //#region LIFECYCLE
 
@@ -24,17 +28,21 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     workingDirectory: string,
     ...args: any[]
   ) {
-    super(pid, parentPid, app);
+    super(pid, parentPid, app, operationId, workingDirectory, ...args);
 
     this.workingDirectory = workingDirectory;
     this.operationId = operationId;
-    this.windowIcon.set(Daemon?.icons?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
+    this.windowIcon.set(`@app::${this.app.id}`);
 
     this.setSource(__SOURCE__);
+
+    this.validateConstructorProperties(pid, parentPid, app, operationId, workingDirectory);
   }
 
   async __render__(body: HTMLDivElement): Promise<void> {
     this.Log("Rendering window contents");
+
+    this.STATE = "rendering";
 
     const elementsToProcess = {
       a: "href",
@@ -107,6 +115,38 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     await Sleep(1000); // 1s to give invocator's GLI the time it needs
 
     Stack.renderer?.focusPid(this.pid);
+  }
+
+  private validateConstructorProperties(
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    operationId: string,
+    workingDirectory: string
+  ) {
+    if (this.STATE !== "constructing")
+      throw new Error(`validateConstructorProperties called during incompatible process state '${this.STATE}'`);
+    try {
+      if (!Number.isInteger(pid) || !Number.isInteger(parentPid)) {
+        throw "PID and parent PID must be integers.";
+      }
+
+      if (typeof app !== "object") {
+        throw "AppProcessData is not an object";
+      }
+
+      if (!isUUID(operationId)) {
+        throw "operationId is not a UUID";
+      }
+
+      try {
+        Fs.validatePath(workingDirectory);
+      } catch (e) {
+        throw "workingDirectory is not a valid path";
+      }
+    } catch (e: any) {
+      throw new Error(`Failed to validate the constructor arguments. ${e?.message ?? e}. Refer to the docs.`);
+    }
   }
 
   //#endregion
