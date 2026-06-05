@@ -25,16 +25,22 @@ jobs:
           node-version: 20
       - name: Write env file
         run: |
-          echo -e "DW_SERVER_URL=\"https://test.arcapi.nl\"" > .env
           echo -e "DW_BETA_URL=\"/api\"" > .env
           echo -e "DW_PREVIEW_DEP_BRANCH=\"${{ github.head_ref || github.ref_name }}\"" >> .env
+          
           if [[ "${{ github.head_ref || github.ref_name }}" = "beta" ]]; then
             echo "betabranch" > public/mode
           else
             echo "development" > public/mode
           fi
       - run: yarn
-      - run: DW_SERVER_URL="https://test.arcapi.nl" yarn build
+      - run: |
+          if [[ "${{ github.head_ref || github.ref_name }}" = "beta" ]]; then
+            DW_SERVER_URL="https://arcapi.nl" yarn build
+          else
+            DW_SERVER_URL="https://test.arcapi.nl" yarn build
+          fi
+          
       - name: Upload build to server
         uses: burnett01/rsync-deployments@6.0.0
         with:
