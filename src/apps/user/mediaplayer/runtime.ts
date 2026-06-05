@@ -87,6 +87,27 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   }
 
   protected async start(): Promise<any> {
+
+    await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
+    await Fs.createDirectory(this.COVERIMAGES_PATH);
+    await this.Configuration.initialize();
+
+    this.CurrentMediaMetadata.subscribe((v) => {
+      if (!v?.title) return;
+
+      this.windowTitle.set(v.title);
+    });
+  }
+
+  protected async stop(): Promise<any> {
+    this.Reset();
+    this.player?.remove();
+  }
+
+  async render({ file }: RenderArgs) {
+    const firstInstance = await this.closeIfSecondInstance();
+
+    
     this.queueIndex.subscribe((v) => this.handleSongChange(v));
 
     this.State.subscribe((v) => {
@@ -118,25 +139,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
 
       // Merging goes here
     });
-
-    await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
-    await Fs.createDirectory(this.COVERIMAGES_PATH);
-    await this.Configuration.initialize();
-
-    this.CurrentMediaMetadata.subscribe((v) => {
-      if (!v?.title) return;
-
-      this.windowTitle.set(v.title);
-    });
-  }
-
-  protected async stop(): Promise<any> {
-    this.Reset();
-    this.player?.remove();
-  }
-
-  async render({ file }: RenderArgs) {
-    const firstInstance = await this.closeIfSecondInstance();
 
     if (firstInstance) {
       if (file) {
