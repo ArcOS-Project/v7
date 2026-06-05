@@ -128,3 +128,7 @@ span.beta-pill {
   align-items: center;
   height: 100%;
 }
+
+[class*="theme-"] {
+  color: var(--fg);
+}
