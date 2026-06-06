@@ -37,6 +37,10 @@ export function contextMenu(node: HTMLElement, [items, process]: [ContextMenuIte
       process,
       items,
     });
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return false;
   }
 
   node.addEventListener("contextmenu", callback);

@@ -29,6 +29,7 @@ body {
   width: 100%;
   height: 100%;
   background-color: #000;
+  color: var(--fg, #fff);
   margin: 0;
   overflow: hidden;
   font-family: "Nunito Sans";
@@ -37,7 +38,7 @@ body {
 
 * {
   box-sizing: border-box;
-  color: var(--fg, #fff);
+  color: inherit;
   margin: 0;
   font-size: inherit;
   font-family: inherit;
@@ -126,4 +127,8 @@ span.beta-pill {
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+
+[class*="theme-"] {
+  color: var(--fg);
 }

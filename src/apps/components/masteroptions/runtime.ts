@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Stack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
@@ -66,6 +66,18 @@ export class MasterOptionsRuntime extends AppProcess implements IMasterOptionsRu
       {
         content: `Forcefully terminated ${userApps.length} ${Plural("application", userApps.length)}.`,
         icon: "power",
+      },
+      4000
+    );
+  }
+
+  async clearProcessCache() {
+    Daemon.spawn?.clearEntrypointCache();
+
+    await this.shell?.ShowToast(
+      {
+        content: `Cleared process cache. Apps might now take longer to open.`,
+        icon: "trash",
       },
       4000
     );

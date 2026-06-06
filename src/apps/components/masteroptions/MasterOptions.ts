@@ -11,9 +11,9 @@ const MasterOptionsApp: App = {
     icon: "ElevationIcon",
   },
   position: { centered: true },
-  size: { w: 400, h: 490 },
-  minSize: { w: 400, h: 490 },
-  maxSize: { w: 400, h: 490 },
+  size: { w: 400, h: 5100 },
+  minSize: { w: 400, h: 510 },
+  maxSize: { w: 400, h: 510 },
   state: {
     maximized: false,
     minimized: false,

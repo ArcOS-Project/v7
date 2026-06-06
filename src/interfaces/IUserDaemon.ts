@@ -30,6 +30,7 @@ import type { IApplicationStorage } from "./services/IApplicationStorage";
 import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
+import type { AxiosInstance } from "axios";
 
 // !tpa
 export interface IUserDaemon extends IProcess {
@@ -44,6 +45,7 @@ export interface IUserDaemon extends IProcess {
   _criticalProcess: boolean;
   copyList: ReadableStore<string[]>;
   cutList: ReadableStore<string[]>;
+  get betaClient(): AxiosInstance;
   get globalDispatch(): IGlobalDispatch | undefined;
   get assoc(): IFileAssocService | undefined;
   serviceHost?: IServiceHost;

@@ -1,8 +1,10 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+import { IsBeta } from "$ts/util";
 import type { PartialUserTotp, Token } from "$types/server/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
 import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
+import BetaFeedback from "./AdminPortal/Page/BetaFeedback.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
@@ -44,7 +46,6 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Bug Hunt",
       icon: "bug",
       content: BugHunt,
-      separator: true,
       scopes: [AdminScopes.adminBugHuntList, AdminScopes.adminBugHuntStats],
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
@@ -93,6 +94,22 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         const source = await process.admin.getReportSourceFile(report);
 
         return { report, source };
+      },
+    },
+  ],
+  [
+    "betaFeedback",
+    {
+      name: "Beta feedback",
+      content: BetaFeedback,
+      hidden: !IsBeta(),
+      scopes: [],
+      icon: "flask-conical",
+      separator: true,
+      props: async (process) => {
+        const versions = (await process.admin.getBetaFeedbackVersions()).result ?? {};
+
+        return { versions };
       },
     },
   ],

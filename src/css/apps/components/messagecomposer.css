@@ -68,6 +68,15 @@
   border-radius: 3px;
 }
 
+#MessageComposer > div.body div.fields > div.field.to div.recipient.loading {
+  opacity: 0.5;
+}
+
+#MessageComposer > div.body div.fields > div.field.to div.recipient.bad {
+  background-color: var(--clr-red-bg);
+  color:var(--clr-red-fg)
+}
+
 #MessageComposer > div.body div.fields > div.field.to div.recipient button {
   margin: 0;
   padding: 0;
@@ -95,29 +104,29 @@
 }
 
 #MessageComposer > div.body div.attachment-bar {
-  height: fit-content;
-  max-height: 85%;
-  overflow-y: auto;
   padding: 8px 10px;
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items: end;
   border-bottom: var(--win-border);
-  gap: 5px;
-}
-
-#MessageComposer > div.body div.attachment-bar.visible {
-  border-top: var(--win-border);
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 80px;
+  max-height: 150px;
+  height: fit-content;
+  overflow-y: auto;
 }
 
 #MessageComposer > div.body div.attachment-bar div {
   display: flex;
-  padding: 0 5px;
-  align-items: center;
-  gap: 5px;
-  border-radius: 4px;
   background-color: var(--button-glass-bg);
-  height: 30px;
+  padding: 5px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  max-width: 250px;
+  width: max-content;
+  text-align: left;
+  outline: none;
 }
 
 #MessageComposer > div.body div.attachment-bar div img {
@@ -126,12 +135,13 @@
 
 #MessageComposer > div.body div.attachment-bar div span.size {
   opacity: 0.5;
+  min-width: fit-content;
 }
 
-#MessagseComposer > div.body div.attachment-bar div p {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+#MessageComposer > div.body div.attachment-bar div span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #MessageComposer > div.body div.attachment-bar button {

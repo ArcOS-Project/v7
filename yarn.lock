@@ -3429,6 +3429,11 @@ svelte-check@^4.4.6:
     picocolors "^1.0.0"
     sade "^1.7.4"
 
+svelte-image-viewer@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/svelte-image-viewer/-/svelte-image-viewer-7.1.0.tgz#56e8727573ca1718f4dbd40726dcdc8fbf86b13e"
+  integrity sha512-Mr8N9+kmLlih4ByBXmbPwrdtA4sBOF0Onk5lY54IC/TBbikiyZd/HtFGUA011SR4XTocJz5NBg869QWTwfuwkQ==
+
 svelte-markdown@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/svelte-markdown/-/svelte-markdown-0.4.1.tgz#ddf13cfd6e0f29a02a82854b48766b527ec90f8d"

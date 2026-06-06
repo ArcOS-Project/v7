@@ -14,3 +14,9 @@ div.window div.body code.block {
   border-radius: 6px;
   background-color: var(--button-glass-active-bg) !important;
 }
+
+.theme-light div.window div.body code.block {
+  background-color: var(--button-glass-bg) !important;
+  outline:var(--button-glass-active-bg) 1px solid;
+  outline-offset: -1px;
+}

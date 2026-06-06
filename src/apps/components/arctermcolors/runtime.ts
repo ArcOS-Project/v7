@@ -25,13 +25,13 @@ export class ArcTermColorsRuntime extends AppProcess implements IArcTermColorsRu
 
     this.setSource(__SOURCE__);
     this.savePath = path;
-
-    this.arcTermConfiguration.subscribe((v) => {
-      this.changed.set(true);
-    });
   }
 
   async start() {
+    this.arcTermConfiguration.subscribe((v) => {
+      this.changed.set(true);
+    });
+
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Loading configuration...")!;
 
     await this.readConfiguration();

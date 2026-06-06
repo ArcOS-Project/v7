@@ -50,4 +50,5 @@ export interface IMessagingAppRuntime extends IAppProcess {
   popoutMessage(messageId: string): void;
   readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator): Promise<ArrayBuffer | undefined>;
   openAttachment(attachment: MessageAttachment, messageId: string): Promise<void>;
+  downloadAttachments(): Promise<void>;
 }

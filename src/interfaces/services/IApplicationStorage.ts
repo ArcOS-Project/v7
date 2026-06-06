@@ -16,4 +16,7 @@ export interface IApplicationStorage extends IBaseService {
   get(): Promise<AppStorage>;
   getAppSynchronous(id: string): InstalledApp | undefined;
   getAppById(id: string, fromBuffer?: boolean): Promise<ICommandResult<App>>;
+  error_appLoadError(result: ICommandResult<App>): Promise<void>;
+  loadAppsFromViteModules(modules: Record<string, () => Promise<unknown>>): Promise<AppStorage>;
+  loadAppFromViteModule(fn: () => Promise<unknown>, path?: string): Promise<ICommandResult<App>>;
 }

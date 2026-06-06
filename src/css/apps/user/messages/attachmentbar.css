@@ -1,0 +1,45 @@
+#Messages > div.body div.container div.attachment-bar {
+  padding: 8px 10px;
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 80px;
+  max-height: 150px;
+  height: fit-content;
+  overflow-y: auto;
+}
+
+
+#Messages > div.body div.container div.attachment-bar button {
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  max-width: 250px;
+  width: max-content;
+  text-align: left;
+  outline: none;
+}
+
+#Messages > div.body div.container div.attachment-bar button img {
+  height: 16px;
+}
+
+#Messages > div.body div.container div.attachment-bar button span.size {
+  opacity: 0.5;
+  min-width: fit-content;
+}
+
+#Messages > div.body div.container div.attachment-bar button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#Messages > div.body div.container div.attachment-bar button p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

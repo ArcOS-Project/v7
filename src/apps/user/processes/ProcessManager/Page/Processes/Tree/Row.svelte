@@ -3,15 +3,14 @@
   import type { IProcess } from "$interfaces/IProcess";
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Icon from "$lib/Icon.svelte";
-  import { AppProcess } from "$ts/apps/process";
-  import { Daemon, Stack, SysDispatch } from "$ts/env";
+  import { Stack, SysDispatch } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
   import { BaseService } from "$ts/servicehost/base";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
   import { ProcessStateIcons } from "$types/system/process";
   import { onDestroy, onMount } from "svelte";
   import Row from "./Row.svelte";
-  import { ProcessesHelper } from "$ts/helpers/processes";
 
   const {
     pid,
@@ -123,7 +122,7 @@
     <div class="segment memory">
       <span>{formatBytes(memory ?? 0)}</span>
     </div>
-    <div class="segment app-id">{appId || "-"}</div>
+    <div class="segment app-id" title={appId}>{appId || "-"}</div>
   </div>
   {#if children.size}
     <div class="indent" data-pid={proc.pid}>

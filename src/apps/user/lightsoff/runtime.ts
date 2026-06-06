@@ -30,6 +30,12 @@ export class LightsOffRuntime extends AppProcess implements ILightsOffRuntime {
 
     this.Levels = new LightsOffLevels(this);
 
+    this.setSource(__SOURCE__);
+  }
+
+  //#endregion
+
+  async start() {
     this.Grid.subscribe((v) => {
       if (!v) return;
 
@@ -40,11 +46,7 @@ export class LightsOffRuntime extends AppProcess implements ILightsOffRuntime {
     this.Clicks.subscribe(() => this.saveData());
 
     this.loadData();
-
-    this.setSource(__SOURCE__);
   }
-
-  //#endregion
 
   containsLights() {
     this.Log("Checking lights");

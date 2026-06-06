@@ -19,11 +19,9 @@
     use:contextProps={[message, attachment]}
   >
     <Icon icon={Daemon?.assoc?.getFileAssociation(attachment.filename)?.icon || "DefaultMimeIcon"} />
-    <p>
-      <span class="filename">
-        {attachment.filename}
-      </span>
-      <span class="size">{formatBytes(attachment.size)}</span>
-    </p>
+    <span class="filename">
+      {attachment.filename}
+    </span>
+    <span class="size">{formatBytes(attachment.size)}</span>
   </button>
 {/if}

@@ -1,14 +1,33 @@
 #ImageViewer > div.body {
-  padding: 0;
-  overflow: hidden;
   display: flex;
+  padding: 0;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   background-color: var(--win-bg);
   border-top: var(--win-border);
 }
 
-#ImageViewer > div.body img {
+#ImageViewer > div.body div.viewer-container {
+  width: 100%;
+  height: 0;
+  flex-grow: 1;
+  position: relative;
+}
+
+#ImageViewer > div.body div.window-action-bar {
+  width: 100%;
+}
+
+#ImageViewer > div.body div.window-action-bar input[type="range"] {
+  width: 150px;
+}
+
+#ImageViewer > div.body div.window-action-bar button.zoom-button {
+  outline: none;
+}
+
+#ImageViewer > div.body div.viewer-container > div {
   width: 100%;
   height: 100%;
   object-fit: contain;

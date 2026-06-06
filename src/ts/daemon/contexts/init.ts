@@ -53,28 +53,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
           if (currentState !== "desktop") return;
 
-          MessageBox(
-            {
-              title: "Open this page?",
-              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
-              buttons: [
-                {
-                  caption: "Stay here",
-                  action() {},
-                },
-                {
-                  caption: "Proceed",
-                  action() {
-                    window.open(anchor.href, "_blank");
-                  },
-                  suggested: true,
-                },
-              ],
-              image: "GlobeIcon",
-            },
-            +Env.get("shell_pid"),
-            true
-          );
+          Daemon.helpers?.openWebpage(anchor.href);
         });
       }
     };

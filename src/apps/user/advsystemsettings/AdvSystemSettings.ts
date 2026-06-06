@@ -12,9 +12,9 @@ export const AdvSystemSettings: App = {
     appGroup: "systemTools",
   },
   position: { centered: true },
-  size: { w: 450, h: 550 },
-  minSize: { w: 450, h: 550 },
-  maxSize: { w: 450, h: 550 },
+  size: { w: 450, h: 580 },
+  minSize: { w: 450, h: 580 },
+  maxSize: { w: 450, h: 580 },
   state: {
     maximized: false,
     minimized: false,

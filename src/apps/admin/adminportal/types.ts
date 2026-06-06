@@ -62,6 +62,10 @@ export type ViewBugReportSourceData = {
   source: ICommandResult<BugReportSourceInformation>;
 };
 
+export type BetaFeedbackData = {
+  versions: Record<string, number>;
+};
+
 export type UsersData = {
   users: ExpandedUserInfo[];
 };

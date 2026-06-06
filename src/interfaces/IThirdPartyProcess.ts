@@ -21,5 +21,6 @@ export interface IThirdPartyProcess extends IProcess {
 
   closeIfSecondInstance(): Promise<this | undefined>;
   getSingleton(): this[];
+  loadCSS(path: string): Promise<void>;
 }
 // !endtpa

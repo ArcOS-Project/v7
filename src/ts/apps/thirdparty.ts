@@ -1,8 +1,12 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import { Fs, Stack, SysDispatch } from "$ts/env";
+import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
+import { DefaultThirdPartyAppData } from "$ts/user/store";
 import { join } from "$ts/util/fs";
+import { validateObject } from "$ts/util/json";
 import type { AppProcessData } from "$types/apps/app";
+import { isUUID } from "validator";
+import { AppRuntimeError } from "./error";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
@@ -31,6 +35,8 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     this.windowIcon.set(`@app::${this.app.id}`);
 
     this.setSource(__SOURCE__);
+
+    this.validateConstructorProperties(pid, parentPid, app, operationId, workingDirectory);
   }
 
   async __render__(body: HTMLDivElement): Promise<void> {
@@ -109,6 +115,38 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
     await Sleep(1000); // 1s to give invocator's GLI the time it needs
 
     Stack.renderer?.focusPid(this.pid);
+  }
+
+  private validateConstructorProperties(
+    pid: number,
+    parentPid: number,
+    app: AppProcessData,
+    operationId: string,
+    workingDirectory: string
+  ) {
+    if (this.STATE !== "constructing")
+      throw new Error(`validateConstructorProperties called during incompatible process state '${this.STATE}'`);
+    try {
+      if (!Number.isInteger(pid) || !Number.isInteger(parentPid)) {
+        throw "PID and parent PID must be integers.";
+      }
+
+      if (typeof app !== "object") {
+        throw "AppProcessData is not an object";
+      }
+
+      if (!isUUID(operationId)) {
+        throw "operationId is not a UUID";
+      }
+
+      try {
+        Fs.validatePath(workingDirectory);
+      } catch (e) {
+        throw "workingDirectory is not a valid path";
+      }
+    } catch (e: any) {
+      throw new Error(`Failed to validate the constructor arguments. ${e?.message ?? e}. Refer to the docs.`);
+    }
   }
 
   //#endregion

@@ -1,7 +1,8 @@
 import type { IProcess } from "$interfaces/IProcess";
+import { ArcMode } from "$ts/metadata/mode";
 import type { AxiosProgressEvent } from "$types/libraries/axios";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import { ShortLogLevelCaptions, type LogItem } from "$types/shared/logging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
@@ -321,3 +322,8 @@ export function ToAxiosProgress(
       type,
     });
 }
+
+export const IsBeta = () =>
+  !import.meta.env.DEV &&
+  ArcMode() === "betabranch" &&
+  (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");

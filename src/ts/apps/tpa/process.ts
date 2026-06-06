@@ -108,4 +108,6 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
 
     return await this.stop();
   }
+
+  closeWindow = this.killSelf.bind(this);
 }

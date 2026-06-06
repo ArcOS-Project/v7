@@ -42,6 +42,7 @@ import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { UserDaemonInitStage, UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo } from "$types/user";
+import axios from "axios";
 import { UserContexts } from "./store";
 
 //#endregion
@@ -59,6 +60,16 @@ export class UserDaemon extends Process implements IUserDaemon {
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
   public serviceHost?: ServiceHost;
+
+  public get betaClient() {
+    return axios.create({
+      baseURL: import.meta.env.DW_BETA_URL,
+      responseType: "json",
+      params: {
+        token: this.token,
+      },
+    });
+  }
 
   public get globalDispatch() {
     return this.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch");

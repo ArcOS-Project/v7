@@ -19,21 +19,6 @@
   onMount(async () => {
     if (!message) return;
 
-    const userInfoResult = isSent
-      ? await process.userInfo(message?.recipient)
-      : CommandResult.Ok<PublicUserInfo>(message?.author!);
-
-    if (!userInfoResult?.success) {
-      user = {
-        username: "(deleted user)",
-        profilePicture: ProfilePictures.def,
-        admin: false,
-        dispatchClients: 0,
-      };
-    } else {
-      user = userInfoResult.result;
-    }
-
     date = dayjs(message?.createdAt).format("D MMMM YYYY, hh:mm A");
   });
 </script>
@@ -49,9 +34,9 @@
     <h1>{message?.title}</h1>
     <p>
       {#if isSent}
-        To <UserLink user={user!} /> on {date}
+        To <UserLink user={message.recipientData!} userId={message?.recipient!} /> on {date}
       {:else}
-        From <UserLink user={user!} /> on {date}
+        From <UserLink user={message.author!} userId={message.authorId!} /> on {date}
       {/if}
     </p>
   </div>

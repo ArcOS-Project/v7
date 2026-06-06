@@ -77,37 +77,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
 
     this.renderArgs.file = file;
-    this.queueIndex.subscribe((v) => this.handleSongChange(v));
-
-    this.State.subscribe((v) => {
-      if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
-    });
-
-    this.queue.subscribe((v) => {
-      if (!v.length) {
-        this.Stop();
-        if (this.player) this.player.src = "";
-        this.Loaded.set(false);
-        this.isVideo.set(false);
-        this.windowTitle.set(this.app.data.metadata.name);
-        this.windowIcon.set(this.app.data.metadata.icon);
-        this.getWindow()?.classList.remove("fullscreen");
-      }
-    });
-
-    this.CurrentCoverUrl.subscribe(async (v) => {
-      if (!v) return this.mediaSpecificAccentColor.set("");
-
-      this.mediaSpecificAccentColor.set(await getReadableVibrantColor(v));
-    });
-
-    this.mediaSpecificAccentColor.subscribe((v) => {
-      const window = this.getWindow();
-
-      if (!v || !window) return;
-
-      // Merging goes here
-    });
 
     this.setSource(__SOURCE__);
   }
@@ -142,6 +111,38 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
 
   async render({ file }: RenderArgs) {
     const firstInstance = await this.closeIfSecondInstance();
+
+    this.queueIndex.subscribe((v) => this.handleSongChange(v));
+
+    this.State.subscribe((v) => {
+      if (this.Loaded()) if (v.current >= v.duration) this.nextSong();
+    });
+
+    this.queue.subscribe((v) => {
+      if (!v.length) {
+        this.Stop();
+        if (this.player) this.player.src = "";
+        this.Loaded.set(false);
+        this.isVideo.set(false);
+        this.windowTitle.set(this.app.data.metadata.name);
+        this.windowIcon.set(this.app.data.metadata.icon);
+        this.getWindow()?.classList.remove("fullscreen");
+      }
+    });
+
+    this.CurrentCoverUrl.subscribe(async (v) => {
+      if (!v) return this.mediaSpecificAccentColor.set("");
+
+      this.mediaSpecificAccentColor.set(await getReadableVibrantColor(v));
+    });
+
+    this.mediaSpecificAccentColor.subscribe((v) => {
+      const window = this.getWindow();
+
+      if (!v || !window) return;
+
+      // Merging goes here
+    });
 
     if (firstInstance) {
       if (file) {

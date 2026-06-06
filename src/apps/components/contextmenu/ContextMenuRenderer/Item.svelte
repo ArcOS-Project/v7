@@ -81,7 +81,7 @@
       {#if data.icon}
         <span class="icon lucide icon-{data.icon}"></span>
       {:else if data.image}
-        <Icon icon={data.image} className="icon" />
+        <Icon icon={data.image} fallback="BlankIcon" className="icon" />
       {:else}
         <span class="icon"></span>
       {/if}

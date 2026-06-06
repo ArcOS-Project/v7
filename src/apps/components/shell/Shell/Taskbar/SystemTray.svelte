@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
+  import { IsBeta } from "$ts/util";
   import StatusArea from "./StatusArea.svelte";
   import TrayIcon from "./SystemTray/TrayIcon.svelte";
 
@@ -8,6 +9,11 @@
   const { trayIcons } = service;
 </script>
 
+{#if IsBeta()}
+  <button class="beta-feedback-button" onclick={() => process.spawnOverlayApp("SendBetaFeedbackApp", process.pid)}>
+    Send beta feedback
+  </button>
+{/if}
 {#if Object.entries($trayIcons).length}
   <div class="tray-icons">
     {#each Object.entries($trayIcons) as [discriminator, icon] (discriminator)}
