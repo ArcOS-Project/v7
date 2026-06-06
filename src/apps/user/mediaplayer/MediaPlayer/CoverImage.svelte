@@ -5,14 +5,6 @@
 
   const { process }: { process: IMediaPlayerRuntime } = $props();
   const { CurrentMediaMetadata, LoadingMetadata, CurrentCoverUrl } = process;
-
-  onMount(() => {
-    CurrentMediaMetadata.subscribe(async (v) => {
-      if (!v?.coverImagePath) return;
-
-      $CurrentCoverUrl = await Fs.direct(v.coverImagePath);
-    });
-  });
 </script>
 
 <div class="cover-art">
