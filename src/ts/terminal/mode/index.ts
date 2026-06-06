@@ -128,7 +128,7 @@ export class TerminalMode extends Process implements ITerminalMode {
       this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
       this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
 
-      return false;
+      return true;
     }
   }
 
@@ -245,7 +245,7 @@ export class TerminalMode extends Process implements ITerminalMode {
       return await this.askForTotp(token);
     }
 
-    const result = await GetConnector<ITotpConnector>("totp", token).Unlock(code);
+    const result = await GetConnector<ITotpConnector>("TotpConnector", token).Unlock(code);
 
     return !!result.success;
   }

@@ -2,6 +2,7 @@ import type { IApplicationsUserContext } from "$interfaces/contexts/IApplication
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
+import { ThirdPartyProcess } from "$ts/apps/tpa/process";
 import { Daemon, Stack, SysDispatch } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { isPopulatable } from "$ts/util/apps";
@@ -148,7 +149,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     const store = Stack.store();
 
     for (const [pid, proc] of [...store]) {
-      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) Stack.kill(pid, true);
+      if (!proc._disposed && (proc instanceof ThirdPartyAppProcess || proc instanceof ThirdPartyProcess)) Stack.kill(pid, true);
     }
   }
 }

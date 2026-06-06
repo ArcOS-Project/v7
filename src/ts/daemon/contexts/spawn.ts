@@ -135,17 +135,16 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    this.Log(`Invoking TPA Entrypoint for ${app.id}`);
-    if (this.tpaEntrypointCache[app.id]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[app.id] });
-
-    const appData = this.appStorage()?.getAppSynchronous(app.id) ?? cloneAppMeta(app);
-    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
-      if (app) this.tpaError_malformedMetadata(app);
+    if (!Daemon.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    if (!Daemon.preferences().security.enableThirdParty) {
-      this.tpaError_noEnableThirdParty();
+    this.Log(`Invoking TPA Entrypoint for ${app.id}`);
+    if (this.tpaEntrypointCache[app.id]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[app.id] });
+
+    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
+      if (app) this.tpaError_malformedMetadata(app);
       return CommandResult.Ok({ returnValue: undefined });
     }
 
