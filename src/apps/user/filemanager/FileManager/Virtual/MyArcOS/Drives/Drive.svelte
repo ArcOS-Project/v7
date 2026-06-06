@@ -9,9 +9,9 @@
   const { drive, id, process }: { drive: QuotedDrive; id: string; process: IFileManagerRuntime } = $props();
   const { userPreferences } = process;
 
-  const isShare = drive.data.IDENTIFIES_AS === "share";
-  const isLocked = isShare && (drive.data as ISharedDrive)?.shareInfo?.locked;
-  const usagePercentage = (100 / drive.quota.max) * drive.quota.used;
+  let isShare = $derived(drive.data.IDENTIFIES_AS === "share");
+  let isLocked = $derived(isShare && (drive.data as ISharedDrive)?.shareInfo?.locked);
+  let usagePercentage = $derived((100 / drive.quota.max) * drive.quota.used);
 </script>
 
 {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
