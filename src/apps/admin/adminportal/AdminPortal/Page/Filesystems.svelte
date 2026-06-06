@@ -17,16 +17,20 @@
   let loading = $state<boolean>(true);
 
   onMount(async () => {
-    for (const user of users) {
-      const quota = await process.admin.getQuotaOf(user.username);
-      quotas.update((v) => {
-        v.push({
-          user,
-          ...quota!,
-        });
-        return v;
-      });
-    }
+    await Promise.all(
+      users.map((u) =>
+        process.admin.getQuotaOf(u.username).then((quota) =>
+          quotas.update((v) => {
+            v.push({
+              user: u,
+              ...quota!,
+            });
+            return v;
+          })
+        )
+      )
+    );
+
     loading = false;
   });
 </script>
