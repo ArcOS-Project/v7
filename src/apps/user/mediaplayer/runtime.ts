@@ -21,6 +21,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
+import mime from "mime";
 
 export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -87,12 +88,13 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   }
 
   protected async start(): Promise<any> {
-
     await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
     await Fs.createDirectory(this.COVERIMAGES_PATH);
     await this.Configuration.initialize();
 
-    this.CurrentMediaMetadata.subscribe((v) => {
+    this.CurrentMediaMetadata.subscribe(async (v) => {
+      this.setMediaSessionMetadata(v);
+
       if (!v?.title) return;
 
       this.windowTitle.set(v.title);
@@ -100,6 +102,9 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   }
 
   protected async stop(): Promise<any> {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+    }
     this.Reset();
     this.player?.remove();
   }
@@ -107,7 +112,6 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
   async render({ file }: RenderArgs) {
     const firstInstance = await this.closeIfSecondInstance();
 
-    
     this.queueIndex.subscribe((v) => this.handleSongChange(v));
 
     this.State.subscribe((v) => {
@@ -148,6 +152,14 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
 
       return;
     }
+
+    navigator.mediaSession?.setActionHandler("play", this.Play.bind(this));
+    navigator.mediaSession?.setActionHandler("pause", this.Pause.bind(this));
+    navigator.mediaSession?.setActionHandler("previoustrack", this.previousSong.bind(this));
+    navigator.mediaSession?.setActionHandler("nexttrack", this.nextSong.bind(this));
+    navigator.mediaSession?.setActionHandler("seekto", (details) => {
+      this.SeekTo(details.seekTime!);
+    });
 
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
@@ -281,6 +293,10 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       current: this.player.currentTime,
       duration: this.player.duration,
     };
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = state.paused ? "paused" : "playing";
+    }
 
     this.State.set(state);
   }
@@ -421,6 +437,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       await this.player?.play();
 
       this.parseMetadata(path);
+
       this.Loaded.set(true);
     } catch (e) {
       this.failedToPlay(e);
@@ -673,6 +690,28 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       return CommandResult.Ok(normalized);
     } catch (e) {
       return CommandResult.Error(`${e}`);
+    }
+  }
+
+  async setMediaSessionMetadata(metadata?: AudioFileMetadata): Promise<void> {
+    if ("mediaSession" in navigator) {
+      this.Log("updating mediaSession");
+
+      const albumCoverURL = metadata?.coverImagePath ? await Fs.direct(metadata!.coverImagePath!) : undefined;
+      this.CurrentCoverUrl.set(albumCoverURL);
+      const albumCoverMime = metadata?.coverImagePath ? mime.getType(metadata!.coverImagePath!) : null;
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata?.title ?? "ArcOS Media Player",
+        artist: metadata?.artist ?? "Unknown Artist",
+        album: metadata?.album ?? "Unknown Album",
+        artwork: [
+          {
+            src: albumCoverURL ?? this.getIconCached("MediaPlayerIcon"),
+            type: albumCoverMime ?? "image/svg+xml",
+          },
+        ],
+      });
     }
   }
 
