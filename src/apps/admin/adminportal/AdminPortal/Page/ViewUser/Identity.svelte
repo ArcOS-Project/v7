@@ -18,6 +18,9 @@
       {#if user.approved}
         <div class="badge approved">Approved</div>
       {/if}
+      {#if user.isSystem}
+        <div class="badge system">System</div>
+      {/if}
     </div>
   </div>
 </div>

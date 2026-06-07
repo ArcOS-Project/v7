@@ -87,6 +87,11 @@
   color: var(--clr-purple-bg);
 }
 
+#AdminPortal div.viewUser div.identity div.badges div.system {
+  background-color: var(--clr-blue-fg);
+  color: var(--clr-blue-bg);
+}
+
 #AdminPortal div.viewUser div.identity h1 {
   font-size: 16px;
 }

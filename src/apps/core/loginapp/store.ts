@@ -22,10 +22,23 @@ export function LoginUserDaemonStartOptions(runtime: LoginAppRuntime): UserDaemo
         }
       }
 
-      runtime.loadingStatus.set(runtime.getWelcomeString());
-
       await runtime.loadPersistence();
       runtime.savePersistence(info.username, runtime.profileImage());
+
+      if (info.isSystem) {
+        runtime.errorMessage.set(
+          "This is a system account. Changes you make here can cause external ArcOS services to stop working. To continue, click Okay."
+        );
+        runtime.loadingStatus.set("");
+
+        await new Promise<void>((r) => {
+          const unsub = runtime.errorMessage.subscribe((m) => {
+            if (!m) r();
+          });
+        });
+      }
+
+      runtime.loadingStatus.set(runtime.getWelcomeString());
 
       return CommandResult.Ok();
     },
