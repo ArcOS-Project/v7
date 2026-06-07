@@ -58,7 +58,9 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        <Icon icon={show ? data.image : ""} className="icon" />
+        {#if show}
+          <Icon icon={show ? data.image : ""} className="icon" />
+        {/if}
       </div>
     {:else if data.icon}
       <div class="left">
