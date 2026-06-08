@@ -20,6 +20,8 @@
       if (show) {
         show = false;
         await Sleep(300);
+        data = incoming;
+        await Sleep(100);
       }
 
       data = incoming;
@@ -58,9 +60,7 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        {#if show}
-          <Icon icon={show ? data.image : ""} className="icon" />
-        {/if}
+        <Icon icon={data.image} className="icon" />
       </div>
     {:else if data.icon}
       <div class="left">

@@ -6,7 +6,7 @@
 
   let {
     icon,
-    fallback = icon,
+    fallback,
     className = "",
     title = "",
     style = "",
@@ -15,7 +15,7 @@
 
 <ServiceGate id="IconService">
   {#snippet ifActive(service: IIconService)}
-    <WithService {service} {icon} {className} {title} {style} {fallback} />
+    <WithService {service} {icon} {className} {title} {style} fallback={fallback || icon} />
   {/snippet}
   {#snippet ifInactive()}
     {#if fallback?.includes("http") || fallback?.includes("/")}
