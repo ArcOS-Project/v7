@@ -18,8 +18,8 @@
 
 #Messages > div.body div.container div.message-content div.message-thread div.sub-thread {
   margin-left: 9px;
-  padding-left: 9px;
-  border-left: var(--button-hover-bg) 2px solid;
+  padding-left: 4px;
+  border-left: var(--button-glass-bg) 2px solid;
 }
 
 #Messages > div.body div.container div.message-content div.message-thread button.thread-item {
@@ -31,9 +31,12 @@
   margin-top: 5px;
 }
 
+#Messages > div.body div.container div.message-content div.message-thread.is-original > button.thread-item {
+  background-color: var(--clr-yellow-bg);
+}
+
 #Messages > div.body div.container div.message-content div.message-thread button.thread-item > p {
-  opacity: 0.5;
-  margin-top: 10px;
+  margin-top: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -53,4 +56,8 @@
 #Messages > div.body div.container div.message-content div.message-thread button div.header > div:last-child {
   width: 0;
   flex-grow: 1;
+}
+
+#Messages > div.body div.container div.message-content div.message-thread button.show-more {
+  margin-top: 10px;
 }

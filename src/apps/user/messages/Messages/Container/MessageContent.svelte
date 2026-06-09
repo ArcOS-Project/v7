@@ -1,32 +1,59 @@
 <script lang="ts">
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
-  import Spinner from "$lib/Spinner.svelte";
-  import type { ExpandedMessageNode } from "$types/server/messaging";
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import { Daemon } from "$ts/env";
+  import type { ExpandedMessage, ExpandedMessageNode } from "$types/server/messaging";
+  import dayjs from "dayjs";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import Header from "./MessageContent/Header.svelte";
   import MessageThread from "./MessageThread.svelte";
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
 
   const { process }: { process: IMessagingAppRuntime } = $props();
-  const { message } = process;
+  const { message, buffer } = process;
 
   let expandThread = $state<boolean>(false);
   let loadingThread = $state<boolean>(false);
   let thread = $state<ExpandedMessageNode[]>();
+  let reply = $state<ExpandedMessage | undefined>();
 
-  onMount(async () => {
+  async function update() {
     if (!$message) return;
-
     loadingThread = true;
     thread = await process.service.getMessageThread($message?._id!);
+    reply = checkReplied(thread);
     loadingThread = false;
-  });
+
+    console.log(reply);
+  }
+
+  function checkReplied(thread: ExpandedMessageNode[]) {
+    let reply: ExpandedMessage | undefined;
+
+    for (const msg of thread) {
+      const r = checkReplied(msg.replies);
+
+      if (r) reply = r;
+      else if (msg.repliesTo === $message?._id && msg.authorId === Daemon.userInfo._id) reply = msg;
+    }
+
+    return reply;
+  }
+
+  message.subscribe(update);
+  onMount(update);
 </script>
 
 <div class="message-content">
   {#if $message}
     <Header {process} message={$message} />
+    {#if reply}
+      <div class="has-reply">
+        <span class="lucide icon-info"></span>
+        <span>You replied to this message on {dayjs(reply.createdAt).format("D MMMM YYYY, hh:mm A")}</span>
+        <button class="link" onclick={() => process.readMessage(reply!._id, true)}>View</button>
+      </div>
+    {/if}
     <div class="message-body markdown-body">
       <SvelteMarkdown source={$message.body} />
     </div>
