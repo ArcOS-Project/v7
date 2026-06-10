@@ -42,8 +42,15 @@ export class TerminalProcess extends Process {
     this.serviceHost = this.daemon?.serviceHost;
     this.rl = term.rl;
 
-    const result = await new Promise((r) => {
-      this.main(term, flags, argv).then((result) => r(result));
+    const result = await new Promise(async (r) => {
+      try {
+        const result = await this.main(term, flags, argv);
+        r(result);
+      } catch (e) {
+        term.handleCommandError(e as Error, this.constructor as any);
+        term.lastCommandErrored = true;
+        r(0);
+      }
 
       const eventId = SysDispatch.subscribe<[number]>("proc-kill", ([pid]) => {
         if (pid === this.pid) {

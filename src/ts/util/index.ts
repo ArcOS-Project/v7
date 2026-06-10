@@ -327,3 +327,17 @@ export const IsBeta = () =>
   !import.meta.env.DEV &&
   ArcMode() === "betabranch" &&
   (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");
+
+export function unescapeEscapeChars(str: string) {
+  const escapeMap: Record<string, string> = {
+    "\\n": "\n",
+    "\\r": "\r",
+    "\\t": "\t",
+    "\\b": "\b",
+    "\\f": "\f",
+    "\\0": "\0",
+    "\\\\": "\\",
+  };
+
+  return str.replace(/\\[nrtbf0\\]/g, (match) => escapeMap[match]);
+}

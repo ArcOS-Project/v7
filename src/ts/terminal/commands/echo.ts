@@ -48,6 +48,8 @@ export class EchoCommand extends TerminalProcess {
         break;
     }
 
+    console.log(JSON.stringify(result));
+
     this.rl?.println(`${color}${result}${RESET}`);
 
     return 0;
