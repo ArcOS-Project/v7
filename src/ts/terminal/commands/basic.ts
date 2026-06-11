@@ -8,12 +8,16 @@ export class BasicCommand extends TerminalProcess {
   static keyword = "basic";
   static description = "Run ArcBasic code in the terminal";
 
+  //#region LIFECYCLE
+
   protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");
     const engine = await ArcBasicEngine.FromSource(filename, ArcTermBasicConfig(term));
 
     await engine.execute();
-    
+
     return 0;
   }
+
+  //#endregion
 }
