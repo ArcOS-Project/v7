@@ -66,8 +66,9 @@ export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
         return arrayBufferToText(content) ?? "";
       },
       uuid: () => UUID(),
+      len: (s) => s?.length ?? 0,
     },
-    slowdown: 100,
+    slowdown: 10,
     commands: [
       PrintCommand,
       IfCommand,

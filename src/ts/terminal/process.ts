@@ -1,6 +1,7 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { __Console__ } from "$ts/console";
 import { SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";
@@ -49,6 +50,7 @@ export class TerminalProcess extends Process {
       } catch (e) {
         term.handleCommandError(e as Error, this.constructor as any);
         term.lastCommandErrored = true;
+        __Console__.warn(e);
         r(0);
       }
 

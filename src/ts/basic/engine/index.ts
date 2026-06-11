@@ -1,7 +1,7 @@
 import { Sleep } from "$ts/sleep";
 import { tryParseInt } from "$ts/util";
+import { tryJsonParse } from "$ts/util/json";
 import type { BasicLang } from "$types/system/basic";
-import { tryJsonParse } from "../util";
 import { BasicCommand } from "./command";
 import { REGEXES } from "./regex";
 
@@ -90,6 +90,7 @@ export class ArcBasicEngine {
   }
 
   async replaceVariables(input: string, runFunctions = true): Promise<string> {
+    if (!input) return input;
     if (runFunctions) input = await this.runFunctions(input);
     const getters = [...input.matchAll(REGEXES.VARGET)];
 
@@ -104,6 +105,8 @@ export class ArcBasicEngine {
   }
 
   async runFunctions(input: string) {
+    if (!input) return input;
+
     const matches = [...input.matchAll(REGEXES.FUNCTION)];
 
     if (!matches.length) return input;
