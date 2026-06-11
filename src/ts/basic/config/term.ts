@@ -2,8 +2,10 @@ import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
+import { BRRED, RESET } from "$ts/terminal/colors";
 import { unescapeEscapeChars } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
+import { UUID } from "$ts/util/uuid";
 import type { BasicLang } from "$types/system/basic";
 import { evaluate } from "mathjs";
 import { GostartCommand } from "../commands/gostart";
@@ -14,6 +16,8 @@ import { PrintCommand } from "../commands/print";
 import { StopCommand } from "../commands/stop";
 import { SubCommand } from "../commands/sub";
 import { VarCommand } from "../commands/var";
+import { WhileCommand } from "../commands/while";
+import { SoundbusCommand } from "../commands/soundbus";
 
 export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
   return {
@@ -23,7 +27,6 @@ export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
         let val = "";
         const disposer = term.term.onKey((e) => {
           term.term.write(e.key);
-          val += e.key;
 
           if (e.key == "\r") {
             resolve(val);
@@ -31,19 +34,24 @@ export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
             term.term.write("\n");
             return;
           }
+
+          val += e.key;
         });
       });
     },
     stdout: (msg: string) => {
       term.rl?.write(unescapeEscapeChars(msg));
     },
+    stderr: (msg: string) => {
+      term.rl?.write(`${BRRED}${msg}${RESET}`);
+    },
     functions: {
       env: (val) => {
         return Env.get(val) ?? "";
       },
       input: async (val, interpreter) => {
-        interpreter.output(`\n${val}`);
-        return (await interpreter.input()) || `""`;
+        interpreter.sendToStdout(`\n${val}`);
+        return await interpreter.getFromStdin();
       },
       math: (val) => {
         return `${evaluate(val)}`;
@@ -57,8 +65,21 @@ export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
 
         return arrayBufferToText(content) ?? "";
       },
+      uuid: () => UUID(),
     },
-    commands: [PrintCommand, IfCommand, VarCommand, GosubCommand, SubCommand, StopCommand, KillCommand, GostartCommand],
+    slowdown: 100,
+    commands: [
+      PrintCommand,
+      IfCommand,
+      VarCommand,
+      GosubCommand,
+      SubCommand,
+      StopCommand,
+      KillCommand,
+      GostartCommand,
+      WhileCommand,
+      SoundbusCommand,
+    ],
     builtinVariables: {
       mode: () => ArcMode(),
       build: () => ArcBuild(),

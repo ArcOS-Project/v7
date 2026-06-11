@@ -5,7 +5,7 @@ export class VarCommand extends BasicCommand {
   static keyword = "var";
 
   async execute(line: string): Promise<string | undefined> {
-    const match = line.match(REGEXES.VARSET);
+        const match = line.match(REGEXES.VARSET);
 
     if (!match?.groups) return line;
 

@@ -9,8 +9,6 @@ export class BasicCommand {
   }
 
   async execute(line: string): Promise<string | undefined> {
-    this.interpreter;
-    line;
     return undefined; // undefined = ok status
   }
 }

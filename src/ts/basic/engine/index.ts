@@ -1,41 +1,51 @@
+import { Sleep } from "$ts/sleep";
+import { tryParseInt } from "$ts/util";
 import type { BasicLang } from "$types/system/basic";
 import { tryJsonParse } from "../util";
 import { BasicCommand } from "./command";
 import { REGEXES } from "./regex";
 
 export class ArcBasicEngine {
-  private source: string[];
-  private programCounter = 0;
-  private jumped = false;
+  public source: string[];
+  public programCounter = 0;
+  public jumped = false;
   private variables: Record<string, () => Promise<any>> = {};
   private stdin: BasicLang.StdinCallback = () => "";
   private stdout: BasicLang.StdoutCallback = (m) => {};
+  private stderr: BasicLang.StdoutCallback = (m) => {};
   private subroutines: Record<string, BasicLang.SubRoutine> = {};
   private functions: Record<string, BasicLang.Fn> = {};
   private commands: (typeof BasicCommand)[] = [];
   public version: string;
   public suborigins: number[] = [];
+  public slowdown = 0;
 
   private get EOF() {
     return this.programCounter >= this.source.length;
   }
 
-  async input(): Promise<string> {
+  async getFromStdin(): Promise<string> {
     return await this.stdin();
   }
 
-  async output(message: string) {
+  async sendToStdout(message: string) {
     this.stdout(message);
+  }
+
+  async sendToStderr(message: string) {
+    this.stderr(message);
   }
 
   constructor(source: string, config: BasicLang.Config) {
     this.source = source.split("\n").map((s) => s.replaceAll(/[\t\r]/g, ""));
     this.stdin = config.stdin;
     this.stdout = config.stdout;
+    this.stderr = config.stderr;
     this.version = config.version;
     if (config.builtinVariables) this.variables = config.builtinVariables;
     if (config.functions) this.functions = config.functions;
     if (config.commands) this.commands = config.commands;
+    if (config.slowdown) this.slowdown = config.slowdown;
   }
 
   async execute() {
@@ -50,6 +60,8 @@ export class ArcBasicEngine {
     line = line.trim();
     if (!line) return;
 
+    await Sleep(this.slowdown);
+
     const lower = line.toLowerCase();
     const command = this.commands.find(
       (c) => lower.startsWith(`${c.keyword.toLowerCase()} `) || lower === c.keyword.toLowerCase()
@@ -57,11 +69,12 @@ export class ArcBasicEngine {
 
     if (!command) {
       if (lower.startsWith("end")) return;
-      return this.error(`${line} NF`, true);
+      return this.error(`unknown command ${line.split(" ")[0].toUpperCase()}`, true);
     }
 
     const instance = new command(this);
-    const result = await instance.execute(await this.replaceVariables(line.slice(command.keyword.length).trim()));
+    const value = line.slice(command.keyword.length).trim();
+    const result = await instance.execute(value);
 
     if (result !== undefined) this.error(result, true);
   }
@@ -91,8 +104,10 @@ export class ArcBasicEngine {
   }
 
   async runFunctions(input: string) {
-    if (input.match(/^"(.+)"$/)) input = input.replace(/^"(.+)"$/, "$1");
     const matches = [...input.matchAll(REGEXES.FUNCTION)];
+
+    if (!matches.length) return input;
+    if (input.match(/^"(.+)"$/)) input = input.replace(/^"(.+)"$/, "$1");
 
     for (const match of matches) {
       const { name, val } = match?.groups ?? {};
@@ -113,14 +128,16 @@ export class ArcBasicEngine {
   }
 
   async setVariable(key: string, rawValue: string) {
-    this.variables[key.toLowerCase()] = async () => await this.replaceVariables(rawValue);
+    const value = await this.replaceVariables(rawValue);
+    console.log(value);
+    this.variables[key.toLowerCase()] = async () => value;
   }
 
   async error(message: string, exit = false) {
     await this.setVariable("ERR", message);
 
     if (exit) {
-      this.output(`?SYNTAX ERROR ON LN ${this.programCounter + 1} - ${message}\n`);
+      this.sendToStderr(`\nError on line ${this.programCounter + 1} - ${message}\n`);
       this.jump(this.source.length);
     }
   }
@@ -152,15 +169,17 @@ export class ArcBasicEngine {
   }
 
   async expression(input: string) {
-    input = await this.replaceVariables(input);
+    console.log(input);
+
     const dualMatch = input.match(REGEXES.DUALEXPR);
 
     if (!dualMatch) return !!tryJsonParse(input);
 
     const { left: rawLeft, mode, right: rawRight } = dualMatch?.groups ?? {};
+    const left = tryParseInt(tryJsonParse(await this.replaceVariables(rawLeft)));
+    const right = tryParseInt(tryJsonParse(await this.replaceVariables(rawRight)));
 
-    const left = tryJsonParse(rawLeft);
-    const right = tryJsonParse(rawRight);
+    console.log(left, right, typeof left, typeof right);
 
     switch (mode.toUpperCase()) {
       case "EQ":

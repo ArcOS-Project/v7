@@ -328,16 +328,24 @@ export const IsBeta = () =>
   ArcMode() === "betabranch" &&
   (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");
 
-export function unescapeEscapeChars(str: string) {
-  const escapeMap: Record<string, string> = {
-    "\\n": "\n",
-    "\\r": "\r",
-    "\\t": "\t",
-    "\\b": "\b",
-    "\\f": "\f",
-    "\\0": "\0",
-    "\\\\": "\\",
-  };
+const escapeMap: Record<string, string> = {
+  "\\n": "\n",
+  "\\r": "\r",
+  "\\t": "\t",
+  "\\b": "\b",
+  "\\f": "\f",
+  "\\0": "\0",
+  "\\\\": "\\",
+  '\\"': '"',
+};
 
-  return str.replace(/\\[nrtbf0\\]/g, (match) => escapeMap[match]);
+export function unescapeEscapeChars(str: string) {
+  return str.replaceAll(/\\[nrtbf0\\]/g, (match) => escapeMap[match]);
+}
+
+export function escapeEscapeChars(str: string) {
+  for (const key in escapeMap) {
+    str = str.replaceAll(escapeMap[key], key);
+  }
+  return str;
 }

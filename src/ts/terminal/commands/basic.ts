@@ -14,7 +14,9 @@ export class BasicCommand extends TerminalProcess {
     const filename = argv.join(" ");
     const engine = await ArcBasicEngine.FromSource(filename, ArcTermBasicConfig(term));
 
+    this.rl?.println("");
     await engine.execute();
+    this.rl?.println("");
 
     return 0;
   }
