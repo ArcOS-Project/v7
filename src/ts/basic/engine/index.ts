@@ -1,15 +1,15 @@
+import type { BasicLang } from "$types/system/basic";
+import { tryJsonParse } from "../util";
 import { BasicCommand } from "./command";
 import { REGEXES } from "./regex";
-import { tryJsonParse } from "../util";
-import type { BasicLang } from "$types/system/basic";
 
 export class ArcBasicEngine {
   private source: string[];
   private programCounter = 0;
   private jumped = false;
   private variables: Record<string, () => Promise<any>> = {};
-  private stdin: BasicLang.StdinCallback = () => "test";
-  private stdout: BasicLang.StdoutCallback = (m) => console.log(m);
+  private stdin: BasicLang.StdinCallback = () => "";
+  private stdout: BasicLang.StdoutCallback = (m) => {};
   private subroutines: Record<string, BasicLang.SubRoutine> = {};
   private functions: Record<string, BasicLang.Fn> = {};
   private commands: (typeof BasicCommand)[] = [];

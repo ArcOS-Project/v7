@@ -27,7 +27,6 @@ export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
 
           if (e.key == "\r") {
             resolve(val);
-            console.log(val);
             disposer.dispose();
             term.term.write("\n");
             return;
