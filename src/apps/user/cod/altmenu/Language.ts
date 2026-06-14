@@ -56,6 +56,11 @@ export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
         action: () => runtime.language.set("sql"),
         isActive: () => runtime.language() === "sql",
       },
+      {
+        caption: "ArcBasic",
+        action: () => runtime.language.set("basic"),
+        isActive: () => runtime.language() === "basic",
+      },
     ],
   };
 }

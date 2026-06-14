@@ -36,7 +36,7 @@ export class ArcBasicEngine {
   constructor(source: string, config: BasicLang.Config, filename?: string) {
     this.Log(`Constructing v${config.version}`);
 
-    this.source = source.split("\n").map((s) => s.replaceAll(/[\t\r]/g, ""));
+    this.source = source.split("\n").map((s) => s.replaceAll(/[\t\r]/g, "").trim());
     this.stdin = config.stdin;
     this.stdout = config.stdout;
     this.stderr = config.stderr;
@@ -161,12 +161,16 @@ export class ArcBasicEngine {
     if (!input || typeof input !== "string") return input;
     const getters = [...input.matchAll(REGEXES.VARGET)];
 
+    console.log(getters)
+
     for (const getter of getters) {
       const { name, idx, hierarchy } = getter.groups ?? {};
       if (!name) continue;
 
       let original = `$${name}`;
       let value: string;
+
+      console.log(name, idx, input);
 
       if (idx !== undefined) original += `[${idx}]`;
       else if (hierarchy) original += `{${hierarchy}}`;
@@ -393,7 +397,7 @@ export class ArcBasicEngine {
 
     const lookahead = this.source.slice(startIdx, this.source.length - 1);
     const endKeyword = `end${endling.toLowerCase()}`;
-    const idx = lookahead.findIndex((l) => l.toLowerCase().startsWith(endKeyword));
+    const idx = lookahead.findIndex((l) => l.toLowerCase().trim().startsWith(endKeyword));
 
     if (idx <= 0) {
       await this.error(`Expected ${endKeyword.toUpperCase()}`, true);
@@ -453,6 +457,8 @@ export class ArcBasicEngine {
   }
 
   captureStackFrame(name: string, type: BasicLang.BasicStackFrameType) {
+    if (this.stackFrames.length > 20) this.stackFrames.shift();
+
     this.stackFrames.push({
       line: this.programCounter,
       name,
