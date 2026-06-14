@@ -5,17 +5,20 @@ export class VarCommand extends BasicCommand {
   static keyword = "var";
 
   async execute(line: string): Promise<string | undefined> {
-        const match = line.match(REGEXES.VARSET);
+    const match = line.match(REGEXES.VARSET);
 
     if (!match?.groups) return line;
 
-    const { key, value } = match.groups ?? {};
+    const { key, value, idx, hierarchy } = match.groups ?? {};
 
     if (!key) {
-      return "KEY?";
+      return "Key?";
     }
 
-    await this.interpreter.setVariable(key, value);
+    if (idx) await this.interpreter.assignToArray(key, idx, value);
+    else if (hierarchy) await this.interpreter.assignToObject(key, hierarchy, value);
+    else await this.interpreter.setVariable(key, value);
+
     return;
   }
 }

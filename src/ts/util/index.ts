@@ -139,11 +139,15 @@ export const Gap = (n: number, s = " ") => s.repeat(n);
 
 export function tryParseInt(input: any, returnsUndefined = false) {
   try {
-    return parseInt(input);
+    const parsed = parseInt(input);
+    if (Number.isNaN(parsed)) throw "";
+
+    return parsed;
   } catch {
     return returnsUndefined ? undefined : input;
   }
 }
+
 export function sortByKey<T extends any[]>(array: T, key: string, reverse = false) {
   return array.sort(function (a, b) {
     const x = a[key];

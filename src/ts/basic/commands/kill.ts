@@ -6,7 +6,6 @@ export class KillCommand extends BasicCommand {
   static keyword = "kill";
 
   async execute(line: string): Promise<string | undefined> {
-    
     const PID = +(await this.interpreter.replaceVariables(line.split(" ")[0].trim()));
     if (!PID) return "PID is required for KILL";
 

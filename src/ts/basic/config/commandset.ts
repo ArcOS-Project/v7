@@ -1,3 +1,5 @@
+import { EndsubCommand } from "../commands/endsub";
+import { ErrorCommand } from "../commands/error";
 import { GostartCommand } from "../commands/gostart";
 import { GosubCommand } from "../commands/gosub";
 import { IfCommand } from "../commands/if";
@@ -21,4 +23,6 @@ export const BasicCommandSet: (typeof BasicCommand)[] = [
   GostartCommand,
   WhileCommand,
   SoundbusCommand,
+  EndsubCommand,
+  ErrorCommand,
 ];

@@ -4,7 +4,7 @@ export class GosubCommand extends BasicCommand {
   static keyword = "gosub";
 
   async execute(line: string): Promise<string | undefined> {
-        await this.interpreter.goSubroutine(line.trim());
+    await this.interpreter.goSubroutine(line.trim());
     return;
   }
 }

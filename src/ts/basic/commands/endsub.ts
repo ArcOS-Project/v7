@@ -4,10 +4,11 @@ export class EndsubCommand extends BasicCommand {
   static keyword = "endsub";
 
   async execute(line: string): Promise<string | undefined> {
-        
-    if (this.interpreter.suborigins.length)
+    if (this.interpreter.suborigins.length) {
       await this.interpreter.returnFromSubroutine();
+      return;
+    }
 
-    return;
+    return "ENDSUB without subroutine";
   }
 }

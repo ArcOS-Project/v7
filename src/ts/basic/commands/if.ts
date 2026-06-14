@@ -5,8 +5,10 @@ export class IfCommand extends BasicCommand {
   static keyword = "if";
 
   async execute(line: string): Promise<string | undefined> {
-        const match = line.match(REGEXES.IF);
+    const match = line.match(REGEXES.IF);
     if (!match) return `Syntax error in IF`;
+
+    this.interpreter.captureStackFrame("block", "if");
 
     const { not, expr, inline } = match.groups ?? {};
     const rawResult = await this.interpreter.expression(expr ?? "");

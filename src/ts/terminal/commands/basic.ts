@@ -7,18 +7,34 @@ import { TerminalProcess } from "../process";
 export class BasicCommand extends TerminalProcess {
   static keyword = "basic";
   static description = "Run ArcBasic code in the terminal";
+  static allowInterrupt = true;
+  private engine?: ArcBasicEngine;
 
   //#region LIFECYCLE
 
-  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");
-    const engine = await ArcBasicEngine.FromSource(filename, ArcTermBasicConfig(term));
+
+    this.engine = await ArcBasicEngine.FromSource(filename, {
+      ...ArcTermBasicConfig(term),
+      debug: !!flags.debug,
+      slowdown: +flags.slowdown || 10,
+    });
 
     this.rl?.println("");
-    await engine.execute();
+    await this.engine.execute();
     this.rl?.println("");
 
-    return 0;
+    if (!this._disposed) return 0;
+
+    // Keep going until interrupted by Ctrl+C
+    return await new Promise<number>((r) => {
+      if (this._disposed) r(0);
+    });
+  }
+
+  async stop() {
+    this.engine?.jumpEnd();
   }
 
   //#endregion

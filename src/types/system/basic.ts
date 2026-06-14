@@ -11,6 +11,14 @@ export namespace BasicLang {
   export type VariableCallback = () => Promise<any> | any;
   export type TerminalBuiltinFn = (term: IArcTerminal) => Fn;
 
+  export interface BasicStackFrame {
+    line: number;
+    name: string;
+    type: BasicStackFrameType;
+  }
+
+  export type BasicStackFrameType = "sub" | "while" | "if" | "engine";
+
   export interface Config {
     version: string;
     functions?: Record<string, Fn>;
@@ -21,6 +29,7 @@ export namespace BasicLang {
     stdout: StdoutCallback;
     stderr: StdoutCallback;
     readScriptFile?: (path: string) => Promise<string | undefined>;
+    debug?: boolean;
   }
 
   export interface SubRoutine {
