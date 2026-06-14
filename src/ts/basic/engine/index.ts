@@ -44,9 +44,9 @@ export class ArcBasicEngine {
     this.DEBUG = config.debug ?? false;
 
     if (filename) this.filename = filename;
-    if (config.builtinVariables) this.variables = config.builtinVariables;
-    if (config.functions) this.functions = config.functions;
-    if (config.commands) this.commands = config.commands;
+    if (config.builtinVariables) this.variables = { ...config.builtinVariables };
+    if (config.functions) this.functions = { ...config.functions };
+    if (config.commands) this.commands = [...config.commands];
     if (config.slowdown) this.slowdown = config.slowdown;
   }
 
