@@ -161,16 +161,12 @@ export class ArcBasicEngine {
     if (!input || typeof input !== "string") return input;
     const getters = [...input.matchAll(REGEXES.VARGET)];
 
-    console.log(getters)
-
     for (const getter of getters) {
       const { name, idx, hierarchy } = getter.groups ?? {};
       if (!name) continue;
 
       let original = `$${name}`;
       let value: string;
-
-      console.log(name, idx, input);
 
       if (idx !== undefined) original += `[${idx}]`;
       else if (hierarchy) original += `{${hierarchy}}`;
