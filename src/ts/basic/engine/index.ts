@@ -100,7 +100,7 @@ export class ArcBasicEngine {
     if (this.HALT) return;
 
     line = line.trim();
-    if (!line) return;
+    if (!line || line.startsWith("#")) return; // empty line or comment
 
     const lower = line.toLowerCase();
     const command = this.commands.find(

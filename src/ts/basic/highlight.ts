@@ -87,6 +87,11 @@ export default function ArcBasicHighlighter(hljs: HLJSApi): Language {
         begin: /@[A-Za-z]+/,
         relevance: 0,
       },
+            {
+        className: "comment",
+        begin: /^#(?:.+|)/,
+        relevance: 0,
+      },
       {
         className: "variable",
         begin: /(?<=VAR )[A-Za-z]{1,6}(?=\[|\{|)/,
