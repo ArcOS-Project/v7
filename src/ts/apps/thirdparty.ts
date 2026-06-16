@@ -1,12 +1,9 @@
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import { Daemon, Fs, Stack, SysDispatch } from "$ts/env";
+import { Fs, Stack, SysDispatch } from "$ts/env";
 import { Sleep } from "$ts/sleep";
-import { DefaultThirdPartyAppData } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import { validateObject } from "$ts/util/json";
 import type { AppProcessData } from "$types/apps/app";
 import { isUUID } from "validator";
-import { AppRuntimeError } from "./error";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
