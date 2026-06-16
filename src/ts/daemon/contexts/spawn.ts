@@ -102,6 +102,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         ...argv
       );
 
+      if (proc instanceof ThirdPartyProcess) {
+        await proc.onStarted();
+      }
+
       return proc;
     } catch (e) {
       this.handleSpawnError(app.id, e);
