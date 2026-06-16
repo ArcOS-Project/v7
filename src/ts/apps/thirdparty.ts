@@ -10,7 +10,7 @@ import { AppRuntimeError } from "./error";
 import { AppProcess } from "./process";
 
 export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppProcess {
-  public static readonly TPA_REV = 1;
+  public static readonly TPA_REV = 2;
   workingDirectory: string;
   operationId: string;
   mutationLock = false;
