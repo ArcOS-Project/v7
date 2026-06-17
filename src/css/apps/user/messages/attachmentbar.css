@@ -10,7 +10,6 @@
   overflow-y: auto;
 }
 
-
 #Messages > div.body div.container div.attachment-bar button {
   display: flex;
   padding: 5px;

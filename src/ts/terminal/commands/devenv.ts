@@ -1,8 +1,9 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
+import { ArcMode } from "$ts/metadata/mode";
 import { DevEnvActivationResultCaptions } from "$types/services/devenv";
 import type { Arguments } from "$types/terminal";
-import { BRGREEN, RESET } from "../colors";
+import { BRGREEN, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
 
 export class DevenvCommand extends TerminalProcess {
@@ -56,7 +57,15 @@ export class DevenvCommand extends TerminalProcess {
     const result = await service.connect(port);
 
     if (result === "success") {
+      if (ArcMode() === "betabranch") {
+        term.Warning(
+          `You're running the development environment on a ${BRYELLOW}Beta${RESET} build of ArcOS, and as such, a mismatching build hash between your project and ArcOS is ignored. If anything goes wrong, please contact an ArcOS developer as soon as you can.\n\n`,
+          "WARNING"
+        );
+      }
+
       term.Info(`Now running for ${BRGREEN}${service.meta?.metadata.name}${RESET} (${service.meta?.metadata.appId})`, "Success");
+
       return 0;
     }
 

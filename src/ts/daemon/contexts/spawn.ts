@@ -5,7 +5,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
-import { Daemon, Env, Stack } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -102,6 +102,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         ...argv
       );
 
+      if (proc instanceof ThirdPartyProcess) {
+        await proc.onStarted();
+      }
+
       return proc;
     } catch (e) {
       this.handleSpawnError(app.id, e);
@@ -169,8 +173,28 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         this.tpaEntrypointCache[app.id] = result;
 
       return CommandResult.Ok({ runtime: result });
-    } catch (e) {
-      Stack.renderer?.notifyCrash(app, e);
+    } catch (e: any) {
+      if (`${e?.message || e}`.includes("expects a newer version")) {
+        MessageBox(
+          {
+            title: `${app.metadata.name} - TPA revision error`,
+            message: `This application expects a newer version of the ArcOS TPA framework. Please contact the developer for a version compatible with ArcOS version ${ArcOSVersion}.`,
+            buttons: [
+              {
+                caption: "Okay",
+                action: () => {},
+                suggested: true,
+              },
+            ],
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+          },
+          Daemon.getShell()?.pid ?? Daemon.pid,
+          true
+        );
+      } else {
+        Stack.renderer?.notifyCrash(app, e);
+      }
       gli?.stop?.();
 
       return CommandResult.Ok({ returnValue: undefined });

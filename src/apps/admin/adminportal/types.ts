@@ -133,7 +133,6 @@ export type AuditLogData = {
 // End props for individual pages
 //
 
-export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
 export type SharesPageFilters = "all" | "resized" | "locked";
 export type StorePageFilters = "all" | "official" | "deprecated";
 export interface SpecificAdminAction {

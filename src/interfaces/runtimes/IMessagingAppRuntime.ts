@@ -24,6 +24,7 @@ export interface IMessagingAppRuntime extends IAppProcess {
   searchResults: ReadableStore<string[]>;
   messageWindow: boolean;
   messageFromFile: boolean;
+  readonly THREAD_DEPTH_MAX: number;
 
   getInbox(): Promise<ExpandedMessage[]>;
   getSent(): Promise<ExpandedMessage[]>;

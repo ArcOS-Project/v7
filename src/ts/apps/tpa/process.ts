@@ -5,6 +5,7 @@ import { Sleep } from "$ts/sleep";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import type { MaybePromise } from "$types/shared/common";
 import { AppRuntimeError } from "../error";
 import { ThirdPartyAppProcess } from "../thirdparty";
 
@@ -59,6 +60,8 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
 
     const instances = this.getSingleton();
 
+    Stack.BUSY = "";
+
     if (instances.length) {
       await this.killSelf();
     }
@@ -66,12 +69,16 @@ export class ThirdPartyProcess extends Process implements IThirdPartyProcess {
     return instances.length ? instances[0] : undefined;
   }
 
+  onStarted(): MaybePromise<any> {
+    // stub
+  }
+
   getSingleton(): this[] {
     const instances = [...Stack.store()].filter(([pid, proc]) => {
       const process = proc as IThirdPartyProcess;
 
-      if (process.app.id !== this.app.id) return false;
-      if (process.workingDirectory !== this.workingDirectory) return false;
+      if (process?.app?.id !== this.app.id) return false;
+      if (process?.workingDirectory !== this.workingDirectory) return false;
 
       return true;
     });

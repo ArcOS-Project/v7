@@ -50,6 +50,30 @@
   position: relative;
 }
 
+#arcShell div.shell div.primary div.desktop-watermark {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: var(--fg);
+  text-shadow:
+    1px 1px var(--win-bg),
+    -1px 1px var(--win-bg),
+    1px -1px var(--win-bg),
+    -1px -1px var(--win-bg);
+  font-family: "Fira Mono", monospace;
+  font-size: 12px;
+  pointer-events: none !important;
+  text-align: right;
+  font-weight: 500;
+  line-height: 18px;
+  vertical-align: bottom;
+}
+
+#arcShell div.shell div.primary div.desktop-watermark hr {
+  border: var(--fg) 1px solid;
+  opacity: 0.3;
+}
+
 #arcShell div.shell div.secondary {
   z-index: 10000;
   position: relative;

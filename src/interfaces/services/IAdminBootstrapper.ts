@@ -39,6 +39,7 @@ export interface IAdminBootstrapper extends IBaseService {
   queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>>;
   grantAdmin(username: string): Promise<boolean>;
   revokeAdmin(username: string): Promise<boolean>;
+  approveUser(username: string): Promise<boolean>;
   getPreferencesOf(username: string): Promise<UserPreferences | undefined>;
   setPreferencesOf(username: string, preferences: UserPreferences): Promise<boolean>;
   deleteUser(username: string): Promise<boolean>;
@@ -53,7 +54,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getAllBugReports(): Promise<BugReport[]>;
   getBugReport(id: string): Promise<BugReport | undefined>;
   getBugHuntStatistics(): Promise<ReportStatistics | undefined>;
-  approveUser(username: string): Promise<boolean>;
+  setSystemFor(username: string, value: boolean): Promise<boolean>;
   disapproveUser(username: string): Promise<boolean>;
   changeEmailOf(username: string, newEmail: string): Promise<boolean>;
   changePasswordOf(username: string, newPassword: string): Promise<boolean>;

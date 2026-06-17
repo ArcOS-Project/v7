@@ -1,6 +1,6 @@
 import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import { Fs, getKMod } from "$ts/env";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import { Env, Fs, Stack } from "$ts/env";
 import { Log } from "$ts/logging";
 import { calculateMemory } from "$ts/util";
 import { LogLevel } from "$types/shared/logging";
@@ -77,9 +77,9 @@ export class Process implements IProcess {
     if (this._disposed) return;
     this.Log(`Killing self (PID ${this.pid})`);
 
-    const stack = getKMod<IProcessHandler>("stack");
-    await stack.waitForAvailable();
-    await stack.kill(this.pid, true);
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
+    await Stack.waitForAvailable();
+    await Stack.kill(this.pid, true);
   }
 
   protected Log(message: string, level = LogLevel.info) {

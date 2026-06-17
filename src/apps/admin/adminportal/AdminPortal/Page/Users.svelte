@@ -5,17 +5,19 @@
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
-  import type { UsersData, UsersPageFilters } from "../../types";
+  import type { UsersData } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
 
   const { process, data, compact = false }: { process: IAdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;
 
-  const states: UsersPageFilters[] = ["all", "online", "regular", "admins", "disapproved"];
+  const states = ["all", "online", "regular", "admins", "disapproved", "sys"] as const;
   const sortState = Store<UsersPageFilters>("all");
   const store = Store<ExpandedUserInfo[]>([]);
   const selection = Store<string>("");
   const selected = Store<ExpandedUserInfo | undefined>(undefined);
+
+  type UsersPageFilters = (typeof states)[number];
 
   onMount(() => {
     sortState.subscribe((v) => {
@@ -25,9 +27,11 @@
             case "all":
               return true;
             case "regular":
-              return !user.admin;
+              return !user.admin && !user.isSystem;
             case "admins":
-              return user.admin;
+              return user.admin && !user.isSystem;
+            case "sys":
+              return user.isSystem;
             case "online":
               return user.profile.dispatchClients > 0;
             case "disapproved":
@@ -61,6 +65,7 @@
     <div class="segment created">Created</div>
     <div class="segment approved">APP</div>
     <div class="segment admin">ADM</div>
+    <div class="segment system">SYS</div>
   </div>
 
   {#each $store as user (user._id)}

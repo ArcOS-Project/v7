@@ -210,6 +210,23 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
+  async setSystemFor(userId: string, value: boolean) {
+    if (this._disposed) return false;
+    try {
+      const response = await Backend.post(
+        `/admin/users/system/set/${userId}/${value}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        }
+      );
+
+      return response.status === 200;
+    } catch {
+      return false;
+    }
+  }
+
   async getPreferencesOf(username: string) {
     if (this._disposed) return;
     try {

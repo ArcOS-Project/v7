@@ -58,6 +58,7 @@ import { AdminUserPreferencesGet } from "./commands/user/preferences/get";
 import { AdminUserPreferencesSet } from "./commands/user/preferences/set";
 import { AdminUserQuotaGet } from "./commands/user/quota/get";
 import { AdminUserQuotaSet } from "./commands/user/quota/set";
+import { AdminUserSystemSet } from "./commands/user/system/set";
 
 export const AdminCommandStore = {
   server: {
@@ -116,6 +117,9 @@ export const AdminCommandStore = {
     quota: {
       get: AdminUserQuotaGet,
       set: AdminUserQuotaSet,
+    },
+    system: {
+      set: AdminUserSystemSet,
     },
   },
   mount: AdminMount,
