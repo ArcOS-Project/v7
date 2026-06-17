@@ -1,4 +1,5 @@
 import type { AppProcessData } from "$types/apps/app";
+import type { MaybePromise } from "$types/shared/common";
 import type { ReadableStore, StringStore } from "$types/shared/writable";
 import type { UserPreferencesStore } from "$types/user";
 import type { IProcess } from "./IProcess";
@@ -19,6 +20,7 @@ export interface IThirdPartyProcess extends IProcess {
   componentMount: Record<string, any>;
   username: string;
 
+  onStarted(): MaybePromise<any>;
   closeIfSecondInstance(): Promise<this | undefined>;
   getSingleton(): this[];
   loadCSS(path: string): Promise<void>;

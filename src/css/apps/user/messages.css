@@ -31,8 +31,7 @@
 }
 
 #Messages > div.body div.container div.message-content {
-  height: 100%;
-  /* height: fit-content; */
+  height: 0;
   flex-grow: 1;
   overflow-y: scroll;
   padding: 20px;
@@ -72,4 +71,25 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+}
+#Messages > div.body div.container div.has-reply {
+  background-color: var(--clr-blue-bg);
+  color: var(--clr-blue-fg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+}
+
+#Messages > div.body div.container div.has-reply span.lucide {
+  font-size: 20px;
+}
+
+#Messages > div.body div.container div.has-reply button.link {
+  color: inherit;
 }

@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-  import { Daemon } from "$ts/env";
+  import { ArcOSVersion, Daemon, Server } from "$ts/env";
+  import { ArcBuild } from "$ts/metadata/build";
+  import { ArcMode } from "$ts/metadata/mode";
   import type { AppComponentProps } from "$types/apps/app";
   import { onMount } from "svelte";
   import ActionCenter from "./Shell/ActionCenter.svelte";
@@ -38,6 +40,13 @@
     <div></div>
     <ActionCenter {actionCenterOpened} {userPreferences} {process} />
     <PushNotification {process} />
+    {#if Daemon.userInfo.isSystem}
+      <div class="desktop-watermark">
+        ArcOS v{ArcOSVersion}-{ArcMode()}_{ArcBuild()}<br />
+        {Daemon.username}@{Server.hostname}<br />
+        THIS IS A SYSTEM ACCOUNT. WATCH OUT.
+      </div>
+    {/if}
   </div>
   <div class="secondary">
     <Taskbar {process} />

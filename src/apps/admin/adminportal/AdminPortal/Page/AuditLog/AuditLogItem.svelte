@@ -27,6 +27,7 @@
       admin: true,
       dispatchClients: 0,
     },
+    isSystem: false,
   };
 
   const author: ExpandedUserInfo | undefined =

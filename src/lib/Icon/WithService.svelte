@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { IIconService } from "$interfaces/services/IIconService";
-  import { BlankIcon } from "$ts/images/general";
 
   let {
     icon,
@@ -21,4 +20,4 @@
   let _resolved = $derived.by<string>(() => service.getIconCached(icon) || service.getIconCached(fallback) || fallback);
 </script>
 
-<img src={_resolved == icon ? fallback || BlankIcon : _resolved} class={className} {title} alt={title} {style} />
+<img src={_resolved === icon ? fallback : _resolved} class={className} {title} alt={title} {style} />

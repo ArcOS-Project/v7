@@ -1,4 +1,3 @@
-import type { Constructs } from "$interfaces/common";
 import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
@@ -9,11 +8,11 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
 import type { MaybePromise } from "$types/shared/common";
-import { type ElevationData } from "$types/system/elevation";
 import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
+import { type ElevationData } from "$types/system/elevation";
 import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import {
@@ -134,8 +133,6 @@ export class AppProcess extends Process implements IAppProcess {
     }
 
     this.STATE = "stopping";
-
-    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
@@ -306,7 +303,7 @@ export class AppProcess extends Process implements IAppProcess {
 
     this.stopAcceleratorListener();
     this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
-    
+
     return await this.stop();
   }
 

@@ -22,4 +22,18 @@
 
 #Messages > div.body div.container div.message-content div.header p {
   opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#Messages > div.body div.container div.message-content div.header span.small-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+#Messages > div.body div.container div.message-content div.header.small h1 {
+  font-size: 14px;
 }

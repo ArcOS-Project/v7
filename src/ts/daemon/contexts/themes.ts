@@ -6,8 +6,8 @@ import { BuiltinThemes, UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { LogLevel } from "$types/shared/logging";
-import { ExportLocalWallpaperResolution, UserThemeKeys, type UserTheme } from "$types/user/theme";
 import type { UserPreferences } from "$types/user";
+import { ExportLocalWallpaperResolution, UserThemeKeys, type UserTheme } from "$types/user/theme";
 import { UserContext } from "../context";
 
 export class ThemesUserContext extends UserContext implements IThemesUserContext {
@@ -204,6 +204,8 @@ export class ThemesUserContext extends UserContext implements IThemesUserContext
         runtimePid,
         true
       );
+    } else {
+      writeTheme();
     }
   }
 }

@@ -54,6 +54,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     }
 
     this.checkDesktopIcon();
+    this.installing.set(false);
 
     return true;
   }

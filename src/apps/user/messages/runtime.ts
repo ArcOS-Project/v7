@@ -39,6 +39,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
   searchResults = Store<string[]>([]);
   messageWindow = false;
   messageFromFile = false;
+  public readonly THREAD_DEPTH_MAX = 5;
 
   override contextMenu: AppContextMenu = MessagesContextMenu(this);
 

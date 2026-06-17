@@ -15,6 +15,7 @@ export interface UserInfo {
   updatedAt: string;
   createdAt: string;
   hasTotp: boolean;
+  isSystem: boolean;
   restricted: boolean;
   storageSize: number;
 }
