@@ -2,10 +2,11 @@ import type { FileProgressMutator, FsProgressOperation } from "$apps/components/
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { FileHandler, FileOpenerResult } from "$types/system/fs";
 import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { FileHandler, FileOpenerResult, UploadReturn } from "$types/system/fs";
 import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 
@@ -30,9 +31,7 @@ export interface IFilesystemUserContext extends IUserContext {
   getThumbnailFor(path: string): Promise<string | undefined>;
   mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
-  normalizePath(path: string): string;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
-  startFilesystemSupplier(): Promise<void>;
-  startDriveNotifierWatcher(): void;
+  uploadItems(path: string): Promise<ICommandResult<UploadReturn>>;
 }
 // !endtpa

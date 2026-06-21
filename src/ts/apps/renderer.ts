@@ -15,6 +15,8 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
 import { ProcessesHelper } from "$ts/helpers/processes";
+import { __Console__ } from "$ts/console";
+import { LogLevel } from "$types/shared/logging";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -702,6 +704,13 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   async notifyCrash(data: App, reason: any, process?: IAppProcess) {
     if (!data) return;
+
+    this.Log(
+      `An unhandled exception occurred in process with PID ${process?.pid ?? "<unknown>"} -- ${data.id}`,
+      LogLevel.warning
+    );
+    __Console__.warn(reason);
+
     const mod = await BuiltinAppImportPathAbsolutes["/src/apps/components/oopsnotifier/OopsNotifier.ts"]();
     const app = (mod as any).default as App;
     const storeItem = await Daemon.serviceHost

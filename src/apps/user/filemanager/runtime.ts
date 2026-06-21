@@ -378,30 +378,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        type: "size",
-        icon: "UploadIcon",
-        caption: "Uploading your files...",
-        subtitle: `To ${getItemNameFromPath(this.path())}`,
-      },
-      this.pid
-    );
-
-    try {
-      await Fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
-        prog.show();
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        if (progress.what) prog.updSub(progress.what);
-      });
-    } catch (e) {
-      const err = `${e}`.split(": ")[1];
-      prog.mutErr(err);
-    }
-
-    prog.mutDone(+1);
+    await Daemon.files?.uploadItems(this.path());
   }
 
   async openFile(path: string) {

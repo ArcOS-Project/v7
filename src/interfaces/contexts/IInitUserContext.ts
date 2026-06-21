@@ -10,5 +10,7 @@ export interface IInitUserContext extends IUserContext {
   startServiceHost(broadcast?: (msg: string) => void): Promise<void>;
   firstRun(): Promise<void>;
   handleShellAndAutorun(): Promise<void>;
+  startFilesystemSupplier(): Promise<void>;
+  startDriveNotifierWatcher(): void;
 }
 // !endtpa

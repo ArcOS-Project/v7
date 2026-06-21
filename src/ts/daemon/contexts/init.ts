@@ -7,8 +7,9 @@ import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
-import { Daemon, Env, Stack, State } from "$ts/env";
+import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
 import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
@@ -187,5 +188,54 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     Daemon!.autoLoadComplete = true;
     await proc.refreshStartMenu();
     await proc.arcFind?.refresh();
+  }
+
+  async startFilesystemSupplier() {
+    if (this._disposed) return;
+
+    this.Log(`Starting filesystem supplier`);
+
+    try {
+      await Fs.mountDrive("userfs", UserDrive, "U", undefined);
+    } catch {
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
+    }
+  }
+
+  startDriveNotifierWatcher() {
+    if (this._disposed) return;
+
+    this.Log("Starting drive notifier watcher");
+
+    SysDispatch.subscribe<string>("fs-mount-drive", (id) => {
+      if (this._disposed) return;
+
+      try {
+        const drive = Fs.getDriveById(id);
+        if (!drive) return;
+
+        Daemon!.files?.mountedDrives.push(id);
+        if (!drive.REMOVABLE) return;
+
+        const notificationId = Daemon!.notifications?.sendNotification({
+          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+          message: "This drive just got mounted! Click the button to view it in the file manager",
+          buttons: [
+            {
+              caption: "Open Drive",
+              action: () => {
+                Daemon!.spawn?.spawnApp("fileManager", undefined, {}, `${drive.driveLetter || drive.uuid}:/`);
+
+                if (notificationId) Daemon!.notifications?.deleteNotification(notificationId);
+              },
+            },
+          ],
+          image: "DriveIcon",
+          timeout: 3000,
+        });
+      } catch {
+        return;
+      }
+    });
   }
 }

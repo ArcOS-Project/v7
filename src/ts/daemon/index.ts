@@ -259,7 +259,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     }
 
     await performStartStage("filesystem", "Starting filesystem", async () => {
-      await this.files!.startFilesystemSupplier();
+      await this.init!.startFilesystemSupplier();
       await this.version!.mountSourceDrive();
     });
 
@@ -284,6 +284,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("statusRefresh", "Starting status refresh", async () => {
+      await this.init!.startDriveNotifierWatcher();
       await this.init!.startSystemStatusRefresh();
     });
 

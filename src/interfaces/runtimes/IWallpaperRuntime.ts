@@ -21,6 +21,6 @@ export interface IWallpaperRuntime extends IAppProcess {
   updateContents(): Promise<void>;
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined): void;
   findFreeDesktopIconPosition(identifier: string, wrapper?: HTMLDivElement): void;
-  deleteItem(path: string): Promise<void>;
+  deleteItem(path: string): Promise<boolean>;
   uploadItems(): Promise<void>;
 }
