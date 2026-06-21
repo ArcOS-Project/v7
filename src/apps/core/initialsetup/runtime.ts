@@ -362,7 +362,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
 
         await this.#userDaemon?.account?.getUserInfo();
         await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
-        await this.#userDaemon?.files?.startFilesystemSupplier();
+        await this.#userDaemon?.init?.startFilesystemSupplier();
 
         this.#userDaemon?.preferences.update((v) => {
           v.isDefault = false;
@@ -418,7 +418,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
 
     await this.#userDaemon?.account?.getUserInfo();
     await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
-    await this.#userDaemon?.files?.startFilesystemSupplier();
+    await this.#userDaemon?.init?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
       v.isDefault = false;
       v.account.displayName = this.displayName();

@@ -14,7 +14,8 @@ import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { CommandResult } from "$ts/result";
-import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
+import { DefaultFileHandlers, SystemFolders, UserPathCaptions, UserPaths } from "$ts/user/store";
+import { Plural } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
@@ -22,7 +23,7 @@ import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { LegacyConnectionInfo } from "$types/external/legacy";
 import { ElevationLevel } from "$types/system/elevation";
-import type { FileHandler, FileOpenerResult, UploadReturn } from "$types/system/fs";
+import type { FileHandler, FileOpenerResult, RecyclingStrategy, UploadReturn } from "$types/system/fs";
 import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { UserContext } from "../context";
@@ -547,7 +548,95 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     return await Fs.deleteItem(path, dispatch);
   }
 
-  async moveToTrashOrDeleteItemAck(paths: string[], dispatch = false) {}
+  async moveToTrashOrDeleteItemAck(directory: string, paths: string[], dispatch = false) {
+    if (!paths.length) return;
+
+    const targetPid = Daemon.getShell()?.pid || Daemon.pid;
+    const entries = Object.entries(UserPaths);
+    const preferences = Daemon.preferences();
+
+    for (const path of paths) {
+      for (const [key, userPath] of entries) {
+        if (
+          preferences.security.restrictSystemFolders &&
+          (SystemFolders.includes(path) ? userPath === path || getParentDirectory(path) === userPath : path === userPath)
+        ) {
+          this.SystemFolderDeletionRestricted(key);
+        }
+      }
+    }
+
+    const isUserFs =
+      directory.startsWith(UserPaths.Root) &&
+      Daemon.serviceHost?.getService("TrashSvc") &&
+      !preferences.globalSettings.disableTrashCan;
+
+    const itemsPlural = Plural("item", paths.length);
+    const title = `Delete ${paths.length} ${itemsPlural}?`;
+    const message = isUserFs
+      ? `Are you sure you want to move ${itemsPlural} to the Recycle Bin?`
+      : `Are you sure you want to <b>permanently</b> delete the selected ${itemsPlural}? This cannot be undone.`;
+
+    const response = await new Promise<RecyclingStrategy>((r) =>
+      MessageBox(
+        {
+          title,
+          message,
+          image: "TrashIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => r("cancel"),
+            },
+            {
+              caption: "Delete permanently",
+              action: () => r("incinerate"),
+              hide: () => !isUserFs,
+            },
+            {
+              caption: "Recycle",
+              action: () => r("recycle"),
+              suggested: true,
+            },
+          ],
+        },
+        targetPid,
+        true
+      )
+    );
+
+    if (response === "cancel") return;
+
+    const plural = `${paths.length} ${Plural("item", paths.length)}`;
+    const prog = await this.FileProgress(
+      {
+        max: paths.length,
+        type: "quantity",
+        icon: "TrashIcon",
+        caption: isUserFs ? `Moving ${plural} to the Recycle Bin...` : `Deleting ${plural}...`,
+        subtitle: "Working...",
+      },
+      targetPid
+    );
+
+    prog.show();
+
+    for (const path of paths) {
+      prog.updSub(path);
+
+      try {
+        if (isUserFs && response !== "incinerate") await this.moveToTrashOrDeleteItem(path, dispatch);
+        else await Fs.deleteItem(path, dispatch);
+      } catch (e: any) {
+        prog.mutErr(`Failed to delete ${getItemNameFromPath(path)}: ${e?.message ?? e}`);
+      }
+
+      prog.mutDone(+1);
+    }
+
+    SysDispatch.dispatch("fs-flush-folder", directory);
+  }
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
@@ -590,7 +679,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     Daemon.copyList.set([]);
     Daemon.cutList.set(paths || []);
   }
-  
+
   public setCopyList(paths: string[]) {
     Daemon.copyList.set(paths || []);
     Daemon.cutList.set([]);
@@ -607,5 +696,22 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     Daemon?.copyList.set([]);
     Daemon?.cutList.set([]);
+  }
+
+  SystemFolderDeletionRestricted(userPathKey: string) {
+    const name = (UserPathCaptions as any)[userPathKey];
+    const path = (UserPaths as any)[userPathKey];
+
+    MessageBox(
+      {
+        title: `${name}`,
+        message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        sound: "arcos.dialog.warning",
+        image: "InfoIcon",
+      },
+      this.pid,
+      true
+    );
   }
 }

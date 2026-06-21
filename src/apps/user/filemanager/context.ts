@@ -294,8 +294,7 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
       {
         caption: "Delete",
         icon: "trash-2",
-        action: (_, runtimePath) => {
-          runtime.selection.set([runtimePath]);
+        action: () => {
           runtime.deleteSelected();
         },
         disabled: () => !!runtime.drive()?.READONLY,

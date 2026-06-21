@@ -165,6 +165,8 @@ export interface FsProxyInfo {
   path: string;
   displayName?: string;
 }
+
+export type RecyclingStrategy = "cancel" | "recycle" | "incinerate";
 // !endtpa
 
 export const DefaultUserQuota: UserQuota = {
@@ -174,3 +176,4 @@ export const DefaultUserQuota: UserQuota = {
   percentage: 0,
   unknown: true,
 };
+

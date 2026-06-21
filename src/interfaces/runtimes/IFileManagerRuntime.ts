@@ -48,7 +48,6 @@ export interface IFileManagerRuntime extends IAppProcess {
   openFile(path: string): void;
   createShortcut(name: string, path: string, folder?: boolean): Promise<void>;
   deleteSelected(): Promise<void>;
-  confirmDeleteSelected(isUserFs?: boolean): Promise<void>;
   downloadSelected(): Promise<void>;
   singlefySelected(): void;
   updateSelection(e: MouseEvent, path: string): void;

@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
 
   let disabled = $state(false);
+  let hidden = $state(false);
 
   const {
     button,
@@ -16,9 +17,15 @@
     if (button.disabled) {
       disabled = await button.disabled();
     }
+
+    if (button.hide) {
+      hidden = await button.hide();
+    }
   });
 
   async function go() {
+    if (hidden) return;
+    
     disabled = true;
 
     process.acted.set(true);
@@ -33,6 +40,8 @@
   }
 </script>
 
-<ActionButton suggested={button.suggested} onclick={go} disabled={disabled || (suggestedDisabled && button.suggested)}>
-  {button.caption}
-</ActionButton>
+{#if !hidden}
+  <ActionButton suggested={button.suggested} onclick={go} disabled={disabled || (suggestedDisabled && button.suggested)}>
+    {button.caption}
+  </ActionButton>
+{/if}

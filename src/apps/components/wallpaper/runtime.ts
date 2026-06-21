@@ -187,7 +187,8 @@ export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
     if (this._disposed) return false;
     this.Log(`deleteItem`);
 
-    return await Daemon.files!.moveToTrashOrDeleteItem(path);
+    await Daemon.files!.moveToTrashOrDeleteItemAck(UserPaths.Desktop, [path]);
+    return true;
   }
 
   async uploadItems() {

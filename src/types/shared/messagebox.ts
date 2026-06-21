@@ -15,6 +15,7 @@ export interface MessageBoxButton {
   caption: string;
   action: () => MaybePromise<void | false>;
   disabled?: () => MaybePromise<boolean>;
+  hide?: () => MaybePromise<boolean>;
   suggested?: boolean;
 }
 
