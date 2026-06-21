@@ -71,6 +71,7 @@ export interface IUserDaemon extends IProcess {
   workspaces?: IWorkspaceUserContext;
   shortcuts?: IShortcutsUserContext;
   get preferences(): ReadableStore<UserPreferences>;
+  get canPaste(): boolean;
   start(): Promise<false | undefined>;
   stop(): Promise<false | undefined>;
   startUserContexts(): Promise<void>;

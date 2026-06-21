@@ -83,6 +83,10 @@ export class UserDaemon extends Process implements IUserDaemon {
     return this.serviceHost?.getService<ILibraryManagement>("LibMgmtSvc");
   }
 
+  public get canPaste() {
+    return this.cutList().length > 0 || this.copyList().length > 0;
+  }
+
   // CONTEXTS
 
   account?: IAccountUserContext;

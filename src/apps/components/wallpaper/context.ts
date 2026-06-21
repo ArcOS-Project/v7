@@ -24,6 +24,29 @@ export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu
       },
       { sep: true },
       {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, path) => {
+          Daemon.files?.setCutList([path]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, path) => {
+          Daemon.files?.setCopyList([path]);
+        },
+      },
+      {
+        caption: "Paste",
+        icon: "clipboard",
+        action: () => {
+          Daemon.files?.pasteItems(UserPaths.Desktop);
+        },
+        disabled: () => !Daemon.canPaste
+      },
+      { sep: true },
+      {
         caption: "Rename...",
         icon: "file-pen",
         action: (_, path) => {

@@ -547,10 +547,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     return await Fs.deleteItem(path, dispatch);
   }
 
-  async moveToTrashOrDeleteItemAck(paths: string[], dispatch = false) {
-
-    
-  }
+  async moveToTrashOrDeleteItemAck(paths: string[], dispatch = false) {}
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
@@ -587,5 +584,28 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     prog.stop();
 
     return CommandResult.Ok([]);
+  }
+
+  public setCutList(paths: string[]) {
+    Daemon.copyList.set([]);
+    Daemon.cutList.set(paths || []);
+  }
+  
+  public setCopyList(paths: string[]) {
+    Daemon.copyList.set(paths || []);
+    Daemon.cutList.set([]);
+  }
+
+  public async pasteItems(destination: string) {
+    const copyList = Daemon!.copyList();
+    const cutList = Daemon!.cutList();
+
+    if (!copyList.length && !cutList.length) return;
+
+    if (copyList.length) await this.copyMultiple(copyList, destination, this.pid);
+    else if (cutList.length) await this.moveMultiple(cutList, destination, this.pid);
+
+    Daemon?.copyList.set([]);
+    Daemon?.cutList.set([]);
   }
 }

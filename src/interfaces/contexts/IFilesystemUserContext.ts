@@ -33,5 +33,8 @@ export interface IFilesystemUserContext extends IUserContext {
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
   uploadItems(path: string): Promise<ICommandResult<UploadReturn>>;
+  setCopyList(paths: string[]): void;
+  setCutList(paths: string[]): void;
+  pasteItems(destination: string): Promise<void>;
 }
 // !endtpa
