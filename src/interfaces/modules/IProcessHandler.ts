@@ -1,8 +1,8 @@
 import type { Constructs } from "$interfaces/common";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
-import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import type { ReadableStore } from "$types/shared/writable";
+import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa

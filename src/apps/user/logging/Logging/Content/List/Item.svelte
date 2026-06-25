@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import { LogItemIcons } from "$apps/user/logging/store";
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { LogLevel, type LogItem } from "$types/shared/logging";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { item, process }: { item: LogItem; process: ILoggingRuntime } = $props();
   let timestamp = $state("");

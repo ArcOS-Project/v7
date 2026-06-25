@@ -1,6 +1,6 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { BatteryType } from "$types/system/navigator";
 import type { ReadableStore } from "$types/shared/writable";
+import type { BatteryType } from "$types/system/navigator";
 
 // !tpa
 export interface IPowerUserContext extends IUserContext {

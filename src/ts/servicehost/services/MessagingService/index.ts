@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
@@ -6,15 +7,14 @@ import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon, Env, Fs, getKMod, Server, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { ExpandedMessage, ExpandedMessageNode, Message, MessageAttachment } from "$types/server/messaging";
 import type { Service } from "$types/services/service";
-import type { ICommandResult } from "$interfaces/ICommandResult";
-import { CommandResult } from "$ts/result";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {

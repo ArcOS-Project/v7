@@ -25,7 +25,7 @@
 
   async function go() {
     if (hidden) return;
-    
+
     disabled = true;
 
     process.acted.set(true);

@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
   import { Store } from "$ts/writable";
   import Field from "./LoginForm/Field.svelte";
-  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
 
   let username = Store("");
   let password = Store("");

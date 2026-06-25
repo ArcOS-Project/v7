@@ -1,5 +1,4 @@
 import type { HLJSApi, Language } from "highlight.js";
-import { REGEXES } from "./engine/regex";
 
 export default function ArcBasicHighlighter(hljs: HLJSApi): Language {
   const keywords = [

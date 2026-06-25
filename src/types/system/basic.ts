@@ -1,7 +1,7 @@
-import { BasicCommand } from "../../ts/basic/engine/command";
-import { ArcBasicEngine } from "../../ts/basic/engine";
-import type { MaybePromise } from "$types/shared/common";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { MaybePromise } from "$types/shared/common";
+import { ArcBasicEngine } from "../../ts/basic/engine";
+import { BasicCommand } from "../../ts/basic/engine/command";
 
 export namespace BasicLang {
   export type Fn = (val: string, interpreter: ArcBasicEngine) => MaybePromise<any>;

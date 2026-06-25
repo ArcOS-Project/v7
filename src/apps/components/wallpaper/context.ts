@@ -43,7 +43,7 @@ export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu
         action: () => {
           Daemon.files?.pasteItems(UserPaths.Desktop);
         },
-        disabled: () => !Daemon.canPaste
+        disabled: () => !Daemon.canPaste,
       },
       { sep: true },
       {

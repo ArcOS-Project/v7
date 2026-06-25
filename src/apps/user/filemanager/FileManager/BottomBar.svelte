@@ -1,14 +1,14 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;

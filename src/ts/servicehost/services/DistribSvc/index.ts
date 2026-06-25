@@ -11,10 +11,10 @@ import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/conve
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { UpdateWriteOpResult } from "$types/external/mongo";
-import type { ArcPackage, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { Service } from "$types/services/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ArcPackage, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";

@@ -16,12 +16,12 @@ import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
 import type { FileEntry } from "$types/system/fs";
 import type { RenderArgs } from "$types/system/process";
+import mime from "mime";
 import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import mime from "mime";
 
 export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");

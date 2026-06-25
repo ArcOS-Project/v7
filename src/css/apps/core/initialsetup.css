@@ -301,7 +301,7 @@
   background-color: var(--button-glass-active-bg);
 }
 #initialSetupWizard > div.body div.window-action-bar {
-  background-color: var(--win-bg) ;
+  background-color: var(--win-bg);
 }
 
 @keyframes draw {

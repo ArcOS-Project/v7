@@ -2,8 +2,8 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMessagingConnector } from "$interfaces/modules/server/IMessagingConnector";
 import { CommandResult } from "$ts/result";
 import { ToAxiosProgress } from "$ts/util";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { ExpandedMessage, ExpandedMessageNode, Message } from "$types/server/messaging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import { ServerConnector } from ".";
 
 export class MessagingConnector extends ServerConnector implements IMessagingConnector {

@@ -1,6 +1,6 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { UserTheme } from "$types/user/theme";
 import type { UserPreferences } from "$types/user";
+import type { UserTheme } from "$types/user/theme";
 
 // !tpa
 export interface IThemesUserContext extends IUserContext {

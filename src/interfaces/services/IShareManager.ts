@@ -1,7 +1,7 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { SharedDriveType } from "$types/server/shares";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 
 // !tpa
 export interface IShareManager extends IBaseService {

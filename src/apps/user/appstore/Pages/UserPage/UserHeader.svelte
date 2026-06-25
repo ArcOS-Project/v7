@@ -16,7 +16,6 @@
 
   const hasOfficials = results.filter((r) => r.official).length > 0;
   const hasPackages = results.length > 0;
-
 </script>
 
 {#if user}
@@ -24,7 +23,7 @@
     <!-- TODO: add loginBackground to PublicUserInfo so that it can be used here -->
     <img src={Daemon.GetConnector<IUserConnector>("UserConnector").LoginBgUrl(userId)} alt="" class="banner" />
     <div class="user-info">
-      <ProfilePicture height={64} userId={userId} showOnline online={user.dispatchClients > 0} />
+      <ProfilePicture height={64} {userId} showOnline online={user.dispatchClients > 0} />
       <div class="info">
         <h1>{user.displayName || user.username}</h1>
         <p>{results.length} {Plural("package", results.length)}</p>

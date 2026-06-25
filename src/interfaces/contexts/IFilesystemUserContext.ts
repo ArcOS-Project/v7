@@ -31,7 +31,7 @@ export interface IFilesystemUserContext extends IUserContext {
   getThumbnailFor(path: string): Promise<string | undefined>;
   mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
-  moveToTrashOrDeleteItemAck(directory: string, paths: string[], dispatch?: boolean): Promise<void>
+  moveToTrashOrDeleteItemAck(directory: string, paths: string[], dispatch?: boolean): Promise<void>;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
   uploadItems(path: string): Promise<ICommandResult<UploadReturn>>;
   setCopyList(paths: string[]): void;

@@ -1,4 +1,5 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { SharedDriveType } from "$types/server/shares";
 import type {
   DirectoryReadReturn,
   ExtendedStat,
@@ -6,7 +7,6 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
-import type { SharedDriveType } from "$types/server/shares";
 import type { IServerConnector } from "../IServerManager";
 
 // !tpa

@@ -11,7 +11,7 @@ import { ElevationLevel } from "$types/system/elevation";
 import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime{
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime {
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();

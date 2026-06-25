@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ArcShortcut } from "$types/system/shortcut";
 import type { ReadableStore } from "$types/shared/writable";
+import type { ArcShortcut } from "$types/system/shortcut";
 
 // !tpa
 export interface IShortcutPropertiesRuntime extends IAppProcess {

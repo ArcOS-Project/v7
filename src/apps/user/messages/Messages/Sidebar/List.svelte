@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Spinner from "$lib/Spinner.svelte";
   import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+  import Spinner from "$lib/Spinner.svelte";
   import Message from "./List/Message.svelte";
   import Search from "./List/Search.svelte";
 

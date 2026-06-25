@@ -1,6 +1,7 @@
 import type { UserDaemonStartOptions } from "$types/daemon";
-import type { UserInfo, UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { UserInfo, UserPreferences } from "$types/user";
+import type { AxiosInstance } from "axios";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
 import type { IApplicationsUserContext } from "./contexts/IApplicationsUserContext";
 import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";
@@ -30,7 +31,6 @@ import type { IApplicationStorage } from "./services/IApplicationStorage";
 import type { IFileAssocService } from "./services/IFileAssocService";
 import type { IGlobalDispatch } from "./services/IGlobalDispatch";
 import type { ILibraryManagement } from "./services/ILibraryManagement";
-import type { AxiosInstance } from "axios";
 
 // !tpa
 export interface IUserDaemon extends IProcess {

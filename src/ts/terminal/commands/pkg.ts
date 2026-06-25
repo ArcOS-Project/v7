@@ -7,8 +7,8 @@ import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/system/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import { TerminalProcess } from "../process";
 import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",

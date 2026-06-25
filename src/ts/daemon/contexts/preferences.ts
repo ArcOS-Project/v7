@@ -8,8 +8,8 @@ import { UserPaths } from "$ts/user/store";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/shared/logging";
-import type { UserPreferences } from "$types/user";
 import type { Unsubscriber } from "$types/shared/writable";
+import type { UserPreferences } from "$types/user";
 import { UserContext } from "../context";
 
 export class PreferencesUserContext extends UserContext implements IPreferencesUserContext {
