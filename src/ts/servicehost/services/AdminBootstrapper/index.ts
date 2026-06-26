@@ -21,6 +21,7 @@ import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import type {
   Activity,
+  AdminTemporaryPassword,
   AuditLog,
   AuditLogQueryOptions,
   BugReportSourceInformation,
@@ -1371,6 +1372,24 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
       await Daemon.betaClient.post(`/feedback/read/${id}`);
 
       return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async createTemporaryLogin(userId: string): Promise<ICommandResult<AdminTemporaryPassword>> {
+    try {
+      const contents = await Backend.post(
+        `/admin/temppasswords/${userId}`,
+        {},
+        {
+          responseType: "json",
+          headers: { Authorization: `Bearer ${Daemon.token}` },
+        }
+      );
+      if (contents.status !== 200) throw "";
+
+      return CommandResult.Ok(contents.data);
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
