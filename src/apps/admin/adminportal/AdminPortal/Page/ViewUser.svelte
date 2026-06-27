@@ -151,6 +151,43 @@
       true
     );
   }
+
+  async function createTemporaryLogin() {
+    const result = await process.admin.createTemporaryLogin(user._id);
+
+    if (!result.success) {
+      MessageBox(
+        {
+          title: "Temporary login - Error",
+          message: `An error occurred while trying to create a temporary login for this user account. ${result.errorMessage ?? "Unknown error"}`,
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        process.pid,
+        true
+      );
+    }
+    MessageBox(
+      {
+        title: "Temporary login",
+        message: `Use the following password to log in to <b>${user.username}</b>:<br><code class="block"><span class="redacted">${result.result?.passwordValue}</span></code><br>Click <b>Copy</b> to copy the password. This password will expire in <i>15 minutes</i>. Certain ArcOS features will behave differently under administrative access.`,
+        buttons: [
+          {
+            caption: "Copy",
+            action: () => {
+              navigator.clipboard.writeText(result.result!.passwordValue);
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+        image: "WarningIcon",
+      },
+      process.pid,
+      true
+    );
+  }
 </script>
 
 {#if !user}
@@ -222,6 +259,13 @@
           title={user.admin ? "Revoke admin" : "Grant admin"}
           onclick={toggleAdmin}
           disabled={!user.approved || !process.admin.canAccess(user.admin ? AdminScopes.adminRevoke : AdminScopes.adminGrant)}
+        ></button>
+        <button
+          class="clr-orange lucide icon-eye"
+          aria-label="Create temporary password"
+          title="Create temporary password"
+          onclick={createTemporaryLogin}
+          disabled={!process.admin.canAccess(AdminScopes.adminTemporaryLogin)}
         ></button>
         <button
           class="clr-red lucide icon-trash-2"
