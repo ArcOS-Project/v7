@@ -167,7 +167,9 @@
         process.pid,
         true
       );
+      return;
     }
+
     MessageBox(
       {
         title: "Temporary login",
