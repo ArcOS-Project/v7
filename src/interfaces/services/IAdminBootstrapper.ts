@@ -3,6 +3,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type {
   Activity,
+  AdminTemporaryPassword,
   AuditLog,
   AuditLogQueryOptions,
   BugReportSourceInformation,
@@ -123,4 +124,5 @@ export interface IAdminBootstrapper extends IBaseService {
   getBetaFeedbackVersions(): Promise<ICommandResult<Record<string, number>>>;
   getBetaFeedbackFor(version: string): Promise<ICommandResult<BetaFeedback[]>>;
   markBetaFeedbackAsRead(id: string): Promise<ICommandResult>;
+  createTemporaryLogin(userId: string): Promise<ICommandResult<AdminTemporaryPassword>>;
 }

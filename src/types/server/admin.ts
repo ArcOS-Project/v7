@@ -180,13 +180,22 @@ export interface AuditLogQueryOptions extends QueryableOptions {
 }
 
 export interface BugReportSourceInformation {
-	line: number;
-	column: number;
-	originalSource: string;
-	prettySource: string;
-	prettyLine?: number;
-	prettyColumn?: number;
-	errorMessage?: string;
-	fileUrl?: string;
-	filename?: string;
+  line: number;
+  column: number;
+  originalSource: string;
+  prettySource: string;
+  prettyLine?: number;
+  prettyColumn?: number;
+  errorMessage?: string;
+  fileUrl?: string;
+  filename?: string;
+}
+
+export interface AdminTemporaryPassword {
+  _id: string;
+  adminId: string;
+  userId: string;
+  passwordValue: string;
+  createdAt: string;
+  updatedAt: string;
 }
