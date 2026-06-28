@@ -139,6 +139,7 @@ export class JsExec extends Process {
   }
 
   private convertImportStatementsToRegex(sourceFile: string) {
+    if (!sourceFile) return sourceFile;
     const regex =
       /import(?:(?:(?:[ \n\t]+(?<default>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?(?<destructured>[ \n\t]*\{(?:[ \n\t]*[^ \n\t"'\{\}]+[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<wildcard>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<filename>[^'"\n]+)(?<quote>['"])/gm;
     const matches = sourceFile
