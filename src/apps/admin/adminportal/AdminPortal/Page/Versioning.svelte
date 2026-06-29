@@ -17,7 +17,6 @@
   let loading = $state<boolean>(false);
 
   async function populate() {
-    console.time("b");
     const { caption, stop } = await Daemon.helpers!.GlobalLoadIndicator("Just a moment...", process.pid);
     loading = true;
     versions = {};
@@ -39,7 +38,6 @@
 
     stop?.();
     loading = false;
-    console.timeEnd("b");
   }
 </script>
 

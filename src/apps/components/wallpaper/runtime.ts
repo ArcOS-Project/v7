@@ -1,14 +1,14 @@
 import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
-import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
+import { Daemon, Fs, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
-import { getItemNameFromPath, join } from "$ts/util/fs";
+import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
-import type { DirectoryReadReturn } from "$types/system/fs";
 import { LogLevel } from "$types/shared/logging";
+import type { DirectoryReadReturn } from "$types/system/fs";
 import type { ShortcutStore } from "$types/system/shortcut";
 import { WallpaperContextMenu } from "./context";
 import type { DesktopIcons } from "./types";
@@ -184,62 +184,18 @@ export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
   //#region FILESYSTEM
 
   async deleteItem(path: string) {
+    if (this._disposed) return false;
     this.Log(`deleteItem`);
 
-    const filename = getItemNameFromPath(path);
-
-    MessageBox(
-      {
-        title: `Delete file?`,
-        message: `Are you sure you want to <b>permanently</b> delete ${filename}? This cannot be undone.`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: () => {
-              try {
-                Daemon.files?.moveToTrashOrDeleteItem(path, true);
-              } catch {}
-            },
-            suggested: true,
-          },
-        ],
-        image: "WarningIcon",
-        sound: "arcos.dialog.warning",
-      },
-      +Env.get("shell_pid"),
-      true
-    );
+    await Daemon.files!.moveToTrashOrDeleteItemAck(UserPaths.Desktop, [path]);
+    return true;
   }
 
   async uploadItems() {
+    if (this._disposed) return;
     this.Log(`uploadItems`);
 
-    if (this._disposed) return;
-
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        type: "size",
-        icon: "UploadIcon",
-        caption: "Uploading your files...",
-        subtitle: `To ${getItemNameFromPath(this.directory)}`,
-      },
-      +Env.get("shell_pid")
-    );
-
-    try {
-      await Fs.uploadFiles(this.directory, "*/*", true, async (progress) => {
-        prog.show();
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        if (progress.what) prog.updSub(progress.what);
-      });
-    } catch {
-      prog.mutErr(`Failed to upload files! One of the files you tried to upload might be too big.`);
-    }
-
-    prog.mutDone(+1);
+    await Daemon.files?.uploadItems(UserPaths.Desktop);
   }
 
   //#endregion

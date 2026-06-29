@@ -1,7 +1,7 @@
 import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type { App } from "../apps/app";
-import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "../user";
+import type { ArcShortcut, ShortcutStore } from "./shortcut";
 
 // !tpa
 export interface FileEntry {
@@ -165,6 +165,8 @@ export interface FsProxyInfo {
   path: string;
   displayName?: string;
 }
+
+export type RecyclingStrategy = "cancel" | "recycle" | "incinerate";
 // !endtpa
 
 export const DefaultUserQuota: UserQuota = {
@@ -174,3 +176,4 @@ export const DefaultUserQuota: UserQuota = {
   percentage: 0,
   unknown: true,
 };
+

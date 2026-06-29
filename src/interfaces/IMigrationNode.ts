@@ -1,5 +1,5 @@
-import type { LogLevel } from "$types/shared/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
+import type { LogLevel } from "$types/shared/logging";
 import type { Constructs } from "./common";
 import type { IMigrationService } from "./services/IMigrationService";
 

@@ -1,9 +1,9 @@
 import type { DesktopIcons } from "$apps/components/wallpaper/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IConfigurator } from "$interfaces/IConfigurator";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 import type { DirectoryReadReturn } from "$types/system/fs";
 import type { ShortcutStore } from "$types/system/shortcut";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 
 // !tpa
 export interface IWallpaperRuntime extends IAppProcess {
@@ -21,6 +21,6 @@ export interface IWallpaperRuntime extends IAppProcess {
   updateContents(): Promise<void>;
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined): void;
   findFreeDesktopIconPosition(identifier: string, wrapper?: HTMLDivElement): void;
-  deleteItem(path: string): Promise<void>;
+  deleteItem(path: string): Promise<boolean>;
   uploadItems(): Promise<void>;
 }

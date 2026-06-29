@@ -378,30 +378,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        type: "size",
-        icon: "UploadIcon",
-        caption: "Uploading your files...",
-        subtitle: `To ${getItemNameFromPath(this.path())}`,
-      },
-      this.pid
-    );
-
-    try {
-      await Fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
-        prog.show();
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        if (progress.what) prog.updSub(progress.what);
-      });
-    } catch (e) {
-      const err = `${e}`.split(": ")[1];
-      prog.mutErr(err);
-    }
-
-    prog.mutDone(+1);
+    await Daemon.files?.uploadItems(this.path());
   }
 
   async openFile(path: string) {
@@ -443,95 +420,8 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   async deleteSelected() {
     if (this._disposed) return;
     const items = this.selection();
-    if (!items.length) return;
 
-    for (const item of items) {
-      const entries = Object.entries(UserPaths);
-
-      for (let i = 0; i < entries.length; i++) {
-        const [key, path] = entries[i];
-
-        if (
-          this.userPreferences().security.restrictSystemFolders &&
-          (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path)
-        ) {
-          return this.SystemFolderDeletionRestricted(key);
-        }
-      }
-    }
-
-    const isUserFs =
-      this.path().startsWith(UserPaths.Root) &&
-      Daemon?.serviceHost?.getService("TrashSvc") &&
-      !this.userPreferences().globalSettings.disableTrashCan;
-
-    MessageBox(
-      {
-        title: `Delete ${items.length} ${Plural("item", items.length)}?`,
-        message: isUserFs
-          ? `Are you sure you want to move the selected ${items.length} ${Plural("item", items.length)} to the Recycle Bin?`
-          : `Are you sure you want to <b>permanently</b> delete the selected ${Plural(
-              "item",
-              items.length
-            )}? This cannot be undone.`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          ...ConditionalButton(
-            {
-              caption: "Delete permanently",
-              action: () => {
-                this.confirmDeleteSelected(false);
-              },
-            },
-            isUserFs
-          ),
-          {
-            caption: "Delete",
-            action: () => this.confirmDeleteSelected(isUserFs),
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.warning",
-        image: "WarningIcon",
-      },
-      this.pid,
-      true
-    );
-  }
-
-  async confirmDeleteSelected(isUserFs = false) {
-    if (this._disposed) return;
-
-    const items = this.selection();
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        max: items.length,
-        type: "quantity",
-        icon: "TrashIcon",
-        caption: isUserFs
-          ? `Moving ${items.length} ${Plural("item", items.length)} to the Recycle Bin...`
-          : `Deleting ${items.length} ${Plural("item", items.length)}...`,
-        subtitle: "Working...",
-      },
-      this.pid
-    );
-
-    prog.show();
-
-    for (const item of items) {
-      prog.updSub(item);
-
-      try {
-        if (isUserFs) await Daemon.files?.moveToTrashOrDeleteItem(item, false);
-        else await Fs.deleteItem(item, false);
-      } catch (e) {
-        prog.mutErr(`Failed to delete ${item}: ${e}`);
-      }
-
-      prog.mutDone(+1);
-    }
-
-    SysDispatch.dispatch("fs-flush-folder", this.path());
+    await Daemon.files?.moveToTrashOrDeleteItemAck(this.path(), items);
   }
 
   async downloadSelected() {

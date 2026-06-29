@@ -1,15 +1,15 @@
 import { settingsPageStore } from "$apps/user/settings/store";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IArcFindService } from "$interfaces/services/IArcFindService";
-import { Stack, Env, Daemon, Fs } from "$ts/env";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { isPopulatable } from "$ts/util/apps";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { SearchItem } from "$types/services/search";
 import type { Service } from "$types/services/service";
+import type { PathedFileEntry, RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { UserPreferences } from "$types/user";
 import type { FuseResult } from "fuse.js";
 import Fuse from "fuse.js";

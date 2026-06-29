@@ -1,7 +1,6 @@
 import type { IChecksUserContext } from "$interfaces/contexts/IChecksUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
-import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon, Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";

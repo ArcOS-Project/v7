@@ -83,6 +83,10 @@ export class UserDaemon extends Process implements IUserDaemon {
     return this.serviceHost?.getService<ILibraryManagement>("LibMgmtSvc");
   }
 
+  public get canPaste() {
+    return this.cutList().length > 0 || this.copyList().length > 0;
+  }
+
   // CONTEXTS
 
   account?: IAccountUserContext;
@@ -259,7 +263,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     }
 
     await performStartStage("filesystem", "Starting filesystem", async () => {
-      await this.files!.startFilesystemSupplier();
+      await this.init!.startFilesystemSupplier();
       await this.version!.mountSourceDrive();
     });
 
@@ -284,6 +288,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("statusRefresh", "Starting status refresh", async () => {
+      await this.init!.startDriveNotifierWatcher();
       await this.init!.startSystemStatusRefresh();
     });
 

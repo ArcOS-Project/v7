@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { DriveIcons } from "../../store";
   import type { QuotedDrive } from "../../types";
 

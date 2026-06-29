@@ -6,6 +6,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
@@ -17,11 +18,10 @@ import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
+import { MessagesAltMenu } from "./altmenu";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { UserPaths } from "$ts/user/store";
-import { MessagesAltMenu } from "./altmenu";
 
 export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
   service: IMessagingInterface;

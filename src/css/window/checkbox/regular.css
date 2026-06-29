@@ -60,7 +60,7 @@ div.window > div.body input[type="checkbox"]:not(.switch):disabled:checked::afte
   border-color: var(--accent) !important;
 }
 
-div.window > div.body div.checkbox-wrapper:has(input[type=checkbox]:not(.switch)) {
+div.window > div.body div.checkbox-wrapper:has(input[type="checkbox"]:not(.switch)) {
   display: flex;
   align-items: center;
   gap: 10px;

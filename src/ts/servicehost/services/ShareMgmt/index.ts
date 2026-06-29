@@ -4,9 +4,9 @@ import type { IShareManager } from "$interfaces/services/IShareManager";
 import { Fs } from "$ts/env";
 import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { BaseService } from "$ts/servicehost/base";
-import type { FilesystemProgressCallback } from "$types/system/fs";
-import type { Service } from "$types/services/service";
 import type { SharedDriveType } from "$types/server/shares";
+import type { Service } from "$types/services/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 
 export class ShareManager extends BaseService implements IShareManager {
   //#region LIFECYCLE

@@ -1,6 +1,6 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { ExpandedMessage, ExpandedMessageNode, Message } from "$types/server/messaging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { IServerConnector } from "../IServerManager";
 
 // !tpa

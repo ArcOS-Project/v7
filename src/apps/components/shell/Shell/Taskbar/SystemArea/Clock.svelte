@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon } from "$ts/env";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import Calendar from "./Calendar.svelte";
-  import { Daemon } from "$ts/env";
 
   const { process, userPreferences }: { process: IShellRuntime; userPreferences: UserPreferencesStore } = $props();
   const { calendarOpened } = process;

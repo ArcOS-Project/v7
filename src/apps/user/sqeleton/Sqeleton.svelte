@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import CodeEditor from "$lib/CodeEditor.svelte";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
   import { Pane, Splitpanes } from "svelte-splitpanes";
-  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import ErrorList from "./Sqeleton/ErrorList.svelte";
   import HistoryList from "./Sqeleton/HistoryList.svelte";
   import Intro from "./Sqeleton/Intro.svelte";

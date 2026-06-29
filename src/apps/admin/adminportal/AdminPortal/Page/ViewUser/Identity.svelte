@@ -1,7 +1,7 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { ExpandedUserInfo } from "$types/user";
   import type { ReadableStore } from "$types/shared/writable";
+  import type { ExpandedUserInfo } from "$types/user";
 
   const { user, redacted }: { user: ExpandedUserInfo; redacted: ReadableStore<boolean> } = $props();
 </script>

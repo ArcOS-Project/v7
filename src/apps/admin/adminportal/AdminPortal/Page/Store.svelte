@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
@@ -7,7 +8,6 @@
   import { onMount } from "svelte";
   import type { StoreData, StorePageFilters } from "../../types";
   import StoreRow from "./Store/StoreRow.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: StoreData } = $props();
   const { items, users } = data;

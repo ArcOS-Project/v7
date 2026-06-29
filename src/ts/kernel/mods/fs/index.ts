@@ -533,23 +533,35 @@ export class Filesystem extends KernelModule implements IFilesystem {
             throw new Error(`Didn't get any files`);
           }
 
+          const totalSize = [...files].reduce((a, b) => a + b.size, 0);
+          let done = 0;
+
           for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const content = arrayBufferToBlob(await file?.arrayBuffer()!);
-
-            onProgress({
-              max: files.length,
-              value: i,
-              type: "items",
-              what: `(${i + 1} / ${files.length}) ${file.name}`,
-            });
 
             if (!file?.name) {
               throw new Error(`File ${i} doesn't have a name`);
             }
 
+            let fileDone = 0;
             const path = join(target, file.name);
-            const written = await this.writeFile(path, content, onProgress, false);
+            const written = await this.writeFile(
+              path,
+              content,
+              (progress) => {
+                done += progress.value - fileDone;
+                fileDone = progress.value;
+
+                onProgress({
+                  max: totalSize,
+                  value: done,
+                  type: "size",
+                  what: `(${i + 1} / ${files.length}) ${file.name}`,
+                });
+              },
+              false
+            );
 
             if (!written) {
               throw new Error(`Failed to upload ${getItemNameFromPath(path)}`);

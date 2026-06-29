@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { sortByKey } from "$ts/util";
   import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
+  import { sortByKey } from "$ts/util";
   import HistoryItem from "./HistoryList/HistoryItem.svelte";
 
   const { process }: { process: ISqeletonRuntime } = $props();

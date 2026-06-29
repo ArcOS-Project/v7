@@ -10,16 +10,15 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
+import { IsBeta } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
+import { toForm } from "$ts/util/form";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { App } from "$types/apps/app";
 import type { BetaFeedbackRequest } from "$types/system/beta";
 import type { ExpandedTerminal } from "$types/terminal";
-import axios from "axios";
 import { UserContext } from "../context";
-import { toForm } from "$ts/util/form";
-import { IsBeta } from "$ts/util";
 
 export class HelpersUserContext extends UserContext implements IHelpersUserContext {
   constructor(id: string, daemon: IUserDaemon) {

@@ -101,7 +101,9 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
   }
 
   async deleteVirtualDesktopAck(workspace: Workspace) {
-    const windowCount = [...Stack.store()].filter(([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid).length; // Get the window count using some arguably unreadable code
+    const windowCount = [...Stack.store()].filter(
+      ([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid
+    ).length; // Get the window count using some arguably unreadable code
 
     if (windowCount > 0) {
       MessageBox(

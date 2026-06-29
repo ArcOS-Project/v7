@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
   import { Daemon } from "$ts/env";
   import { sortByKey } from "$ts/util";
@@ -10,7 +11,6 @@
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;

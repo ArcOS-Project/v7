@@ -7,8 +7,8 @@ import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/system/assoc";
 import type { Service } from "$types/services/service";
+import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/system/assoc";
 import { DefaultFileDefinitions } from "./store";
 
 export class FileAssocService extends BaseService implements IFileAssocService {

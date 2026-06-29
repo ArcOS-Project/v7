@@ -139,11 +139,15 @@ export const Gap = (n: number, s = " ") => s.repeat(n);
 
 export function tryParseInt(input: any, returnsUndefined = false) {
   try {
-    return parseInt(input);
+    const parsed = parseInt(input);
+    if (Number.isNaN(parsed)) throw "";
+
+    return parsed;
   } catch {
     return returnsUndefined ? undefined : input;
   }
 }
+
 export function sortByKey<T extends any[]>(array: T, key: string, reverse = false) {
   return array.sort(function (a, b) {
     const x = a[key];
@@ -327,3 +331,25 @@ export const IsBeta = () =>
   !import.meta.env.DEV &&
   ArcMode() === "betabranch" &&
   (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");
+
+const escapeMap: Record<string, string> = {
+  "\\n": "\n",
+  "\\r": "\r",
+  "\\t": "\t",
+  "\\b": "\b",
+  "\\f": "\f",
+  "\\0": "\0",
+  "\\\\": "\\",
+  '\\"': '"',
+};
+
+export function unescapeEscapeChars(str: string) {
+  return str.replaceAll(/\\[nrtbf0\\]/g, (match) => escapeMap[match]);
+}
+
+export function escapeEscapeChars(str: string) {
+  for (const key in escapeMap) {
+    str = str.replaceAll(escapeMap[key], key);
+  }
+  return str;
+}

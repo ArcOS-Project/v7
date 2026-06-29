@@ -32,8 +32,8 @@ import { Store } from "$ts/writable";
 import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
-import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { ThirdPartyProcess } from "./process";
+import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
