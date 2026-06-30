@@ -22,6 +22,7 @@ import { tryJsonParse } from "$ts/util/json";
 import type {
   Activity,
   AdminTemporaryPassword,
+  AdminUsersQueryOptions,
   AuditLog,
   AuditLogQueryOptions,
   BugReportSourceInformation,
@@ -176,6 +177,19 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     try {
       return CommandResult.FromResponse(
         await Backend.get(`/admin/audit/query`, {
+          params: query,
+          headers: { Authorization: `Bearer ${Daemon!.token}` },
+        })
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async queryUsers(query: AdminUsersQueryOptions): Promise<ICommandResult<QueryResult<ExpandedUserInfo>>> {
+    try {
+      return CommandResult.FromResponse(
+        await Backend.get(`/admin/users/query`, {
           params: query,
           headers: { Authorization: `Bearer ${Daemon!.token}` },
         })

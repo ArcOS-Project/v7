@@ -109,16 +109,16 @@ export class ServiceHost extends Process implements IServiceHost {
   //#endregion
 
   readonly STORE = new Map<ServiceIdentifier, Service>([
+    ["AppStorage", { ...appStoreService }],
+    ["FileAssocSvc", { ...fileAssocService }],
     ["TrashSvc", { ...trashService }],
     ["BugHuntUsp", { ...bhuspService }],
     ["ShareMgmt", { ...shareService }],
     ["ArcFindSvc", { ...arcFindService }],
     ["SystemShortcutsSvc", { ...systemShortcutsService }],
-    ["AppStorage", { ...appStoreService }],
     ["ProtoService", { ...protoService }],
     ["TrayHostSvc", { ...trayHostService }],
     ["AdminBootstrapper", { ...adminService }],
-    ["FileAssocSvc", { ...fileAssocService }],
     ["GlobalDispatch", { ...globalDispatchService }],
     ["MessagingService", { ...messagingService }],
     ["DevEnvironment", { ...devEnvironmentService }],

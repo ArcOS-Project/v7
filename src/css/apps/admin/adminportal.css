@@ -19,6 +19,7 @@
 @import url("./adminportal/page/logs.css");
 @import url("./adminportal/sidebar.css");
 @import url("./adminportal/userdata.css");
+@import url("./adminportal/tabbar.css");
 
 #AdminPortal {
   --font-size: 12px;

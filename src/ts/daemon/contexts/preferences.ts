@@ -74,9 +74,11 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
 
     // Hotfix to reset the user preferences if the shell object is somehow missing
     if (!result.shell) result = { ...DefaultUserPreferences, isDefault: undefined };
-
-    if (!result.globalSettings.shellExec) result.globalSettings.shellExec = "arcShell";
     if (!result.shell.start.actions?.length) result.shell.start.actions = DefaultStartMenuActions;
+
+    result.sortModes ||= {};
+    result.globalSettings.shellExec ||= "arcShell";
+    
 
     Daemon!.preferences.set(result);
     this.commitPreferences(result);

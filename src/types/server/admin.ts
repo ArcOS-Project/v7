@@ -199,3 +199,11 @@ export interface AdminTemporaryPassword {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AdminUsersQueryOptions extends QueryableOptions {
+  isSystem?: string;
+  admin?: string;
+  approved?: string;
+  username?: string;
+  email?: string;
+}

@@ -4,6 +4,7 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type {
   Activity,
   AdminTemporaryPassword,
+  AdminUsersQueryOptions,
   AuditLog,
   AuditLogQueryOptions,
   BugReportSourceInformation,
@@ -38,6 +39,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getServerLogs(): Promise<ServerLogItem[]>;
   getAuditLog(): Promise<AuditLog[]>;
   queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>>;
+  queryUsers(query: AdminUsersQueryOptions): Promise<ICommandResult<QueryResult<ExpandedUserInfo>>>;
   grantAdmin(username: string): Promise<boolean>;
   revokeAdmin(username: string): Promise<boolean>;
   approveUser(username: string): Promise<boolean>;

@@ -17,6 +17,7 @@
 @import url("./codeeditor.css");
 @import url("./hljs.css");
 @import url("./kernellog.css");
+@import url("./datatable.css");
 @import url("./state/crash.css");
 @import url("./state/desktop.css");
 @import url("./state/licensedeclined.css");

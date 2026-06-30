@@ -1,0 +1,190 @@
+@import url("./datatable/emptycontent.css");
+
+div.data-table-wrapper {
+  padding: 15px;
+  height: 0;
+  flex-grow: 1;
+  overflow: auto;
+  scrollbar-color: var(--win-bg);
+}
+
+div.data-table-wrapper table {
+  width: 100%;
+  min-width: fit-content;
+  border-collapse: collapse;
+}
+
+div.data-table-wrapper table tr {
+  height: 40px;
+}
+
+div.data-table-wrapper table tr.data-table-row:not(.data-table-header-row):hover > td {
+  background-color: var(--button-bg);
+}
+
+div.data-table-wrapper table tr.data-table-row:not(.data-table-header-row).selected > td {
+  background-color: var(--accent-transparent);
+}
+
+div.data-table-wrapper table tr.data-table-row:not(.data-table-header-row) td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+div.data-table-wrapper table tr.data-table-row:not(.data-table-header-row) td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+div.data-table-wrapper table * {
+  white-space: nowrap;
+}
+
+div.data-table-wrapper table td,
+div.data-table-wrapper table th {
+  padding: 0;
+}
+
+div.data-table-wrapper table td.picture-column {
+  width: 40px;
+  margin-right: 15px;
+  padding: 0 8px;
+  padding-right: 0;
+}
+
+div.data-table-wrapper table div.data-table-column-content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+}
+
+div.data-table-wrapper table td.website-column div.data-table-column-content {
+  gap: 5px;
+}
+
+div.data-table-wrapper table td.website-column span.icon-link {
+  font-size: 12px;
+  height: 10px;
+}
+
+div.data-table-wrapper table tr:not(:hover) td.website-column span.icon-link {
+  opacity: 0;
+}
+
+div.data-table-wrapper table td.linky-column div.data-table-column-content {
+  gap: 5px;
+}
+
+div.data-table-wrapper table td.linky-column span.lucide {
+  font-size: 12px;
+  height: 10px;
+}
+
+div.data-table-wrapper table tr:not(:hover) td.linky-column span.lucide {
+  opacity: 0;
+}
+
+div.data-table-wrapper table td.actions button:not(.favourite) {
+  opacity: 0;
+}
+
+div.data-table-wrapper table tr:hover td.actions button {
+  opacity: 1;
+}
+
+div.data-table-wrapper table td.actions div.actions-content {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  padding-right: 5px;
+}
+
+div.data-table-wrapper table td.actions div.actions-content button {
+  border: none;
+}
+
+div.data-table-wrapper table td.data-table-column.unimportant div.data-table-column-content {
+  opacity: 0.5;
+}
+
+div.data-table-wrapper table td + td,
+div.data-table-wrapper table th + th,
+div.data-table-wrapper table th:first-child:not(.picture-column),
+div.data-table-wrapper table td:first-child:not(.picture-column) {
+  padding-left: 15px;
+}
+
+div.data-table-wrapper.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.data-table-wrapper table tr.data-table-header-row {
+  font-weight: bold;
+  background-color: transparent;
+  text-align: left;
+  height: 32px;
+}
+
+div.data-table-wrapper table tr.data-table-header-row button:not(.reset) {
+  background-color: transparent !important;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none;
+  margin-left: -5px !important;
+  font-weight: bold;
+}
+
+div.data-table-wrapper table tr.data-table-header-row button span.caption {
+  display: flex;
+  padding: 2px 5px;
+  border-radius: 8px;
+}
+
+div.data-table-wrapper table tr.data-table-header-row button:hover span.caption {
+  background-color: var(--button-hover-bg);
+}
+
+div.data-table-wrapper table tr.data-table-header-row button:active span.caption {
+  background-color: var(--button-active-bg);
+}
+
+div.data-table-wrapper table tr.data-table-header-row button.selected span.caption {
+  color: var(--accent-light);
+}
+
+div.data-table-wrapper table tr.data-table-header-row button span.lucide {
+  opacity: 0.5;
+  display: block;
+  width: 16px;
+  height: 16px;
+  font-weight: normal;
+  font-size: 16px;
+}
+
+div.data-table-wrapper table td.data-table-boolean-column {
+  width: 40px;
+}
+
+div.data-table-wrapper table td.data-table-boolean-column span.pill {
+  padding: 4px 8px;
+  border-radius: 5px;
+  background-color: var(--button-glass-bg);
+}
+
+div.data-table-wrapper table td.data-table-boolean-column.is-true span.pill {
+  background-color: var(--clr-green-bg);
+}
+
+div.data-table-wrapper table td.data-table-boolean-column.is-false span.pill {
+  background-color: var(--clr-red-bg);
+}

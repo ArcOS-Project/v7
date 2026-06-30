@@ -42,6 +42,12 @@ export interface UserPreferences {
   startup?: Record<string, "app" | "file" | "folder" | "share" | "disabled">;
   _internalImportBlocklist: string[];
   enableVerboseLogin?: boolean;
+  sortModes?: Record<string, SortMode>;
+}
+
+export interface SortMode {
+  reversed: boolean;
+  column: string;
 }
 
 export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };

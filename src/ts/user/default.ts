@@ -92,6 +92,7 @@ export const DefaultUserPreferences: UserPreferences = {
   globalSettings: {},
   _internalImportBlocklist: [],
   enableVerboseLogin: false,
+  sortModes: {}
 };
 
 export const DefaultUserInfo: UserInfo = {
