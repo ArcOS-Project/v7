@@ -116,6 +116,14 @@
   outline-offset: 2px;
 }
 
+#FirstRun > div.body input.display-name {
+  width: 300px;
+  margin-top:40px;
+  height: 40px;
+  padding: 0 15px;
+  background-color: var(--button-glass-active-bg);
+}
+
 #FirstRun > div.body div.loading {
   display: flex;
   justify-content: center;
