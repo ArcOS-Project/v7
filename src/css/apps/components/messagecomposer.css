@@ -74,7 +74,7 @@
 
 #MessageComposer > div.body div.fields > div.field.to div.recipient.bad {
   background-color: var(--clr-red-bg);
-  color:var(--clr-red-fg)
+  color: var(--clr-red-fg);
 }
 
 #MessageComposer > div.body div.fields > div.field.to div.recipient button {

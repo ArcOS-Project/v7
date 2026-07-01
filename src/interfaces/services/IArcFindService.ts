@@ -1,8 +1,8 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { PathedFileEntry } from "$types/system/fs";
 import type { SearchItem } from "$types/services/search";
-import type { UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { PathedFileEntry } from "$types/system/fs";
+import type { UserPreferences } from "$types/user";
 import type { FuseResult, FuseResultMatch } from "fuse.js";
 
 // !tpa

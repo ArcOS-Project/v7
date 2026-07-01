@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
   import type { ItemInfo } from "../types";
-  import Icon from "$lib/Icon.svelte";
 
   const { info, process }: { info: ReadableStore<ItemInfo>; process: IItemInfoRuntime } = $props();
 

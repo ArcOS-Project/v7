@@ -27,7 +27,7 @@
       <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
       <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
 
-      {#if !drive.quota.unknown}
+      {#if !drive.quota.unknown && drive.quota.max > 0}
         <div class="usage">
           <div class="bar">
             <div class="inner" style="--w: {usagePercentage}%"></div>

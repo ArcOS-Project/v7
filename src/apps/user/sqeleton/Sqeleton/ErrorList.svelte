@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { sortByKey } from "$ts/util";
   import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
+  import { sortByKey } from "$ts/util";
   import Error from "./ErrorList/Error.svelte";
 
   const { process }: { process: ISqeletonRuntime } = $props();

@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import StatusBar from "$lib/Window/StatusBar.svelte";
   import StatusSegment from "$lib/Window/StatusBar/StatusSegment.svelte";
   import { Plural } from "$ts/util";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
-  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 
   const { process }: { process: ISqeletonRuntime } = $props();
   const { openedFileName, queryIndex, queries, result, queryHistory, tables, errors, working } = process;

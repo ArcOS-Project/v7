@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
+  import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import List from "./Content/List.svelte";
   import Options from "./Content/Options.svelte";
 

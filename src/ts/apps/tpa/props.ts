@@ -16,7 +16,7 @@ import { TrayIconProcess } from "$ts/ui/tray/process";
 import { HiddenUserPaths, SystemFolders, UserPathCaptions, UserPathIcons, UserPaths } from "$ts/user/store";
 import { CountInstances, decimalToHex, htmlspecialchars, Plural, sha256, sliceIntoChunks } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, blobToDataURL, blobToText, textToArrayBuffer, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import {
   DownloadFile,
   formatBytes,
@@ -32,8 +32,8 @@ import { Store } from "$ts/writable";
 import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
-import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 import { ThirdPartyProcess } from "./process";
+import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
 
 export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
   const props = {
@@ -101,7 +101,7 @@ export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
           message: tryJsonStringify(m, 2),
           image: "WindowSettingsIcon",
           sound: "arcos.dialog.info",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
         },
         +Env.get("shell_pid")
       );

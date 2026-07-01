@@ -7,12 +7,12 @@ import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/user/store";
 import { Plural, sortByKey } from "$ts/util";
-import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, ConditionalButton, GetConfirmation, MessageBox } from "$ts/util/dialog";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
-import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/system/fs";
 import { LogLevel } from "$types/shared/logging";
+import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/system/fs";
 import type { RenderArgs } from "$types/system/process";
 import type { ShortcutStore } from "$types/system/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
@@ -230,8 +230,21 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
 
     const result: Record<string, QuotedDrive> = {};
 
+    let errorCount = 0;
+
     for (const [id, drive] of Object.entries(Fs.drives)) {
       result[id] = { data: drive, quota: await drive.quota() };
+
+      if (result[id].quota.max === 0) {
+        errorCount++;
+      }
+    }
+
+    if (errorCount) {
+      this.ShowToast({
+        content: "Failed to get usage information about one or more drives",
+        icon: "triangle-alert",
+      });
     }
 
     this.drives.set(result);
@@ -765,7 +778,9 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
         buttons: [
           {
             caption: "Okay",
-            action: () => {},
+            action: () => {
+              this.navigate(UserPaths.Home);
+            },
             suggested: true,
           },
         ],
@@ -775,8 +790,6 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       this.pid,
       true
     );
-
-    this.navigate(UserPaths.Home);
   }
 
   SystemFolderDeletionRestricted(userPathKey: string) {
@@ -787,7 +800,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       {
         title: `${name}`,
         message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         sound: "arcos.dialog.warning",
         image: "InfoIcon",
       },

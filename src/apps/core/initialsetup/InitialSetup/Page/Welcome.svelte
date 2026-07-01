@@ -1,6 +1,5 @@
 <script lang="ts">
   import AccentedLogo from "$lib/AccentedLogo.svelte";
-  import Rocket from "../Icons/Rocket.svelte";
 </script>
 
 <div class="hero-page">

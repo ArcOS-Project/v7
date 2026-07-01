@@ -1,5 +1,3 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { IProcess } from "$interfaces/IProcess";
 import { DefaultAppData } from "$ts/user/store";
 import type { App, RegisteredProcess } from "$types/apps/app";
 

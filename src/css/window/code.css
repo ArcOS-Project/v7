@@ -17,6 +17,6 @@ div.window div.body code.block {
 
 .theme-light div.window div.body code.block {
   background-color: var(--button-glass-bg) !important;
-  outline:var(--button-glass-active-bg) 1px solid;
+  outline: var(--button-glass-active-bg) 1px solid;
   outline-offset: -1px;
 }

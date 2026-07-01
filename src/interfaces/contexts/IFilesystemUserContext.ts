@@ -4,8 +4,8 @@ import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { FileHandler, FileOpenerResult } from "$types/system/fs";
 import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { FileHandler, FileOpenerResult } from "$types/system/fs";
 import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 

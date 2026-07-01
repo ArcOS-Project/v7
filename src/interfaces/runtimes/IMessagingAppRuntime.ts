@@ -4,8 +4,8 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
-import type { PublicUserInfo } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { PublicUserInfo } from "$types/user";
 
 // !tpa
 export interface IMessagingAppRuntime extends IAppProcess {

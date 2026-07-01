@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { Daemon } from "$ts/env";
+  import type { ReadableStore } from "$types/shared/writable";
   import { ElevationLevel } from "$types/system/elevation";
   import type { StoreItem, UpdateInfo } from "$types/tpa/package";
-  import type { ReadableStore } from "$types/shared/writable";
 
   const {
     process,

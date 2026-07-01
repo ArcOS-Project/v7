@@ -2,7 +2,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
@@ -69,7 +69,7 @@ export class FirstRunRuntime extends AppProcess implements IFirstRunRuntime {
         {
           title: "What's that?",
           message: "You didn't enter a display name! If you don't want to set one, no problem! Just click Skip instead.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "AccountIcon",
           sound: "arcos.dialog.warning",
         },

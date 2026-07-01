@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
+  import { onMount } from "svelte";
   import type { Box } from "../../types";
   import BoxComponent from "./Game/Box.svelte";
 

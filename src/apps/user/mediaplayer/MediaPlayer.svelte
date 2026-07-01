@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
@@ -7,7 +8,6 @@
   import CoverImage from "./MediaPlayer/CoverImage.svelte";
   import File from "./MediaPlayer/File.svelte";
   import QueueItem from "./MediaPlayer/QueueItem.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IMediaPlayerRuntime } = $props();
   const { pinControls } = process;

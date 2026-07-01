@@ -4,9 +4,9 @@
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
-  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
 
   const {

@@ -1,6 +1,5 @@
 import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IStateHandler } from "$interfaces/IStateHandler";
-import type { Constructs } from "$interfaces/common";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/shared/logging";

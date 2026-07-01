@@ -2,7 +2,7 @@ import type { IShortcutsUserContext } from "$interfaces/contexts/IShortcutsUserC
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon, Env, Fs } from "$ts/env";
 import { textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { ArcShortcut } from "$types/system/shortcut";
@@ -30,7 +30,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
             {
               title: "Broken Shortcut",
               message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
-              buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+              buttons: [BTN_OKAY_SUG],
               sound: "arcos.dialog.warning",
               image: "WarningIcon",
             },
@@ -45,7 +45,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
           message: `ArcOS failed to open the shortcut you requested.<br><br> ${e}`,
           image: "ShortcutMimeIcon",
           sound: "arcos.dialog.error",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
         },
         +Env.get("shell_pid"),
         true

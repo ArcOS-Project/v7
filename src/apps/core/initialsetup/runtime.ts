@@ -129,9 +129,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     super(pid, parentPid, app);
 
     const update = () => {
-      this.identityInfoValid.set(
-        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email()
-      );
+      this.identityInfoValid.set(!!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email());
     };
 
     this.newUsername.subscribe(update);
@@ -155,7 +153,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 
-    Stack.renderer?.target.classList.add("theme-light")
+    Stack.renderer?.target.classList.add("theme-light");
 
     await Sleep(1000);
 

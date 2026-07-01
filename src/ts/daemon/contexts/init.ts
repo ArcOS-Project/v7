@@ -10,8 +10,7 @@ import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
 import { ServiceHost } from "$ts/servicehost";
-import { Sleep } from "$ts/sleep";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {
@@ -169,7 +168,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
           title: "Firefox support",
           message:
             "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "FirefoxIcon",
         },
         +Env.get("shell_pid"),

@@ -20,7 +20,7 @@
     {#if $loading}
       <div class="icon">
         <Spinner height={16} />
-      </div>  
+      </div>
     {/if}
     {#each Object.entries($trayIcons) as [discriminator, icon] (discriminator)}
       <TrayIcon {discriminator} {icon} {process} />

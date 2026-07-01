@@ -1,8 +1,8 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { Fs } from "$ts/env";
 import { formatBytes } from "$ts/util/fs";
-import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class QuotaCommand extends TerminalProcess {
   public static keyword = "quota";

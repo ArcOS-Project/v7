@@ -3,7 +3,7 @@ import type { IDistributionServiceProcess } from "$interfaces/services/IDistribu
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -11,7 +11,7 @@ import { ElevationLevel } from "$types/system/elevation";
 import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime{
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime {
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
@@ -110,7 +110,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
       {
         title: "Failed to open package",
         message: `ArcOS failed to open the specified package. ${reason}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },

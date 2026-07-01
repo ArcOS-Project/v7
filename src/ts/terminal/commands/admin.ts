@@ -5,7 +5,7 @@ import { getKMod } from "$ts/env";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
 import { ElevationLevel } from "$types/system/elevation";
-import type { AdminCommandType, Arguments } from "$types/terminal";
+import type { AdminCommandType } from "$types/terminal";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../colors";
 import { TerminalProcess } from "../process";
 import { AdminHelp } from "./admin/commands/help";

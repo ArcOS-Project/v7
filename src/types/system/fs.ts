@@ -1,7 +1,7 @@
 import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type { App } from "../apps/app";
-import type { ArcShortcut, ShortcutStore } from "./shortcut";
 import type { PublicUserInfo } from "../user";
+import type { ArcShortcut, ShortcutStore } from "./shortcut";
 
 // !tpa
 export interface FileEntry {

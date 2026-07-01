@@ -1,7 +1,7 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
-  import type { FsAccess } from "$types/system/fs";
   import type { SharedDriveType } from "$types/server/shares";
+  import type { FsAccess } from "$types/system/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";

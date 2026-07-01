@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import Pill from "$lib/Window/ActionBar/ActionPill.svelte";
   import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
 
   const { process }: { process: IMessageComposerRuntime } = $props();
   const { title, body, recipients, sending, attachments } = process;

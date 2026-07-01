@@ -1,6 +1,6 @@
 import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import { AppProcess, bannedKeys } from "$ts/apps/process";
-import { State, Stack, Daemon, Env } from "$ts/env";
+import { Daemon, Env, Stack, State } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
 import type { Service } from "$types/services/service";

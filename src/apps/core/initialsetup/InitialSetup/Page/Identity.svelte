@@ -200,8 +200,8 @@
     {/if}
   </div>
   <p class="disclaimer">
-    * You will receive an email with a link to activate your account. Your username and password can be changed
-    later on. To change your email later on, contact an administrator.
+    * You will receive an email with a link to activate your account. Your username and password can be changed later on. To
+    change your email later on, contact an administrator.
     {#if !Server.serverInfo?.noEmailVerify}
       You need a valid email address to create an account.
     {/if}

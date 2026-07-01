@@ -3,7 +3,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Server } from "$ts/env";
 import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { GoodStatusIcon } from "$ts/images/status";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import axios from "axios";
@@ -34,7 +34,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
         {
           title: "Server already added",
           message: "The server you specified is already added to the list of servers.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: WarningIcon,
         },
         this.parentPid,
@@ -52,7 +52,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
           title: "Failed to connect",
           message:
             "ArcOS called the server you specified, but nobody picked up. Please check the information, and then try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: ErrorIcon,
         },
         this.parentPid,
@@ -116,7 +116,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
           title: "Failed to connect",
           message:
             "ArcOS called the server you specified, but nobody picked up. Please check the information, and then try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: ErrorIcon,
         },
         this.parentPid,
@@ -128,7 +128,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
           title: "Connection established!",
           message:
             "ArcOS called the server, they picked up, and we're now having a lovely conversation. Click <b>Add</b> to add this server to the list.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: GoodStatusIcon,
         },
         this.parentPid,

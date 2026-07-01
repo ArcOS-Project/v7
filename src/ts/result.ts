@@ -1,8 +1,8 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
+import { LogLevel } from "$types/shared/logging";
 import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/shared/result";
 import { AxiosError, type AxiosResponse } from "axios";
 import { Log } from "./logging";
-import { LogLevel } from "$types/shared/logging";
 
 export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;

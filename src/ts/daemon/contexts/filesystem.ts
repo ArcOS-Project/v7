@@ -14,14 +14,14 @@ import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
 import { ElevationLevel } from "$types/system/elevation";
 import type { FileHandler, FileOpenerResult } from "$types/system/fs";
-import type { LegacyConnectionInfo } from "$types/external/legacy";
 import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { UserContext } from "../context";
@@ -451,7 +451,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
                 await this.openWith(path);
               },
             },
-            { caption: "Okay", action: () => {}, suggested: true },
+            BTN_OKAY_SUG,
           ],
           sound: "arcos.dialog.warning",
           image: "ErrorIcon",

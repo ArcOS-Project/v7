@@ -6,6 +6,7 @@ import { ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
+import type { SharedDriveType } from "$types/server/shares";
 import {
   type DirectoryReadReturn,
   type ExtendedStat,
@@ -14,7 +15,6 @@ import {
   type RecursiveDirectoryReadReturn,
   type UserQuota,
 } from "$types/system/fs";
-import type { SharedDriveType } from "$types/server/shares";
 import { ServerConnector } from ".";
 
 export class ShareConnector extends ServerConnector implements IShareConnector {

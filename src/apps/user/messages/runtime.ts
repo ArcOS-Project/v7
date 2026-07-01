@@ -6,9 +6,10 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
@@ -17,11 +18,10 @@ import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
+import { MessagesAltMenu } from "./altmenu";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
-import { UserPaths } from "$ts/user/store";
-import { MessagesAltMenu } from "./altmenu";
 
 export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
   service: IMessagingInterface;
@@ -407,7 +407,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
       {
         title: "Failed to get messages",
         message: `ArcOS failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
@@ -502,7 +502,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
           image: info?.icon || "DefaultMimeIcon",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
         },
         this.pid,

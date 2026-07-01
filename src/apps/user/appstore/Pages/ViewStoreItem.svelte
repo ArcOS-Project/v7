@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
@@ -8,7 +9,6 @@
   import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
   import Screenshots from "./ViewStoreItem/Screenshots.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const { process, pkg }: { process: IAppStoreRuntime; pkg: StoreItem } = $props();
 

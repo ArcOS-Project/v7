@@ -9,19 +9,19 @@ import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { getReadableVibrantColor } from "$ts/util/color";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
 import type { FileEntry } from "$types/system/fs";
 import type { RenderArgs } from "$types/system/process";
+import mime from "mime";
 import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
-import mime from "mime";
 
 export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
@@ -415,7 +415,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
             title: "Failed to load file",
             message:
               "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            buttons: [BTN_OKAY_SUG],
             image: "MediaPlayerIcon",
             sound: "arcos.dialog.error",
           },
@@ -528,7 +528,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
         {
           title: "Failed to open playlist",
           message: `Media Player couldn't open the file you requested. ${e}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "MediaPlayerIcon",
         },
@@ -605,7 +605,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
         title: "Failed to play",
         message:
           `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
       },

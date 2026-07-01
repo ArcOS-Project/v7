@@ -9,7 +9,7 @@ import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
@@ -240,7 +240,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       {
         title: "Third-party application error",
         message: `ArcOS tried to launch ${app.metadata.name} by ${app.metadata.author} as a third-party application, but the app does not contain sufficient information to run as a TPA. Please try to reinstall the application to fix this problem.`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
@@ -256,7 +256,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
           title: "Safe Mode",
           message:
             "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running ArcOS normally.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
         },
         +Env.get("shell_pid"),
@@ -295,7 +295,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       {
         title: "Application error",
         message: `An error occurred whilst spawning an application with ID <b>${appId}</b>.<br><br>Details: ${message}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         sound: "arcos.dialog.error",
         image: "ErrorIcon",
       },

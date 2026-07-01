@@ -1,7 +1,7 @@
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import { Daemon } from "$ts/env";
 import type { App } from "$types/apps/app";
-import type { ConfirmationData, MessageBoxData } from "$types/shared/messagebox";
+import type { ConfirmationData, MessageBoxButton, MessageBoxData } from "$types/shared/messagebox";
 import type { ErrorButton } from "$types/system/notification";
 import { getKMod } from "../env";
 
@@ -40,3 +40,10 @@ export async function GetConfirmation(data: ConfirmationData, parentPid: number,
 }
 
 export const ConditionalButton = (button: ErrorButton, condition: any) => (!!condition ? [button] : []);
+
+export const BTN_OKAY_SUG: MessageBoxButton = { caption: "Okay", action: () => {}, suggested: true };
+export const BTN_OKAY: MessageBoxButton = { caption: "Okay", action: () => {} };
+export const BTN_CANCEL_SUG: MessageBoxButton = { caption: "Cancel", action: () => {}, suggested: true };
+export const BTN_CANCEL: MessageBoxButton = { caption: "Cancel", action: () => {} };
+export const BTN_CLOSE_SUG: MessageBoxButton = { caption: "Close", action: () => {}, suggested: true };
+export const BTN_CLOSE: MessageBoxButton = { caption: "Close", action: () => {} };
