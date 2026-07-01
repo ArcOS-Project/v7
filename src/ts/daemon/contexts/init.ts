@@ -125,10 +125,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     const trayHost = this.serviceHost?.getService<ITrayHostService>("TrayHostSvc");
     const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
 
-    // Create the shellHost loading icon
-    await trayHost?.createTrayIcon(this.pid, this.TRAY_AUTOLOAD, {
-      icon: "SpinnerIcon",
-    });
+    trayHost?.loading.set(true);
 
     this.Log(`Spawning autoload applications`);
 
@@ -164,10 +161,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 
-    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, "GoodStatusIcon");
-
-    await Sleep(1000); // Wait a second...
-    await trayHost?.disposeTrayIcon(this.pid, this.TRAY_AUTOLOAD); // ...then dispose the tray iconF
+    trayHost?.loading.set(false);
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
       await MessageBox(

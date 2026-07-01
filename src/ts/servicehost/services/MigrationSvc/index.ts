@@ -76,6 +76,8 @@ export class MigrationService extends BaseService implements IMigrationService {
       const installedVersion = config[migration.name] ?? 0;
 
       if (currentVersion > installedVersion) {
+        cb?.(`Running migration ${migration.name} ${installedVersion}`);
+
         const result = await this.runMigration(migration, cb);
 
         results[migration.name] = result;
