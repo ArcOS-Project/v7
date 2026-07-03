@@ -1,5 +1,5 @@
 import "$css/apps/user/minesweeper.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Minesweeper from "./Minesweeper.svelte";
 import { MinesweeperRuntime } from "./runtime";
 
