@@ -1,5 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
+import { IAppProcess } from "$interfaces/IAppProcess";
 import { Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
@@ -9,7 +10,7 @@ import { MinesweeperBestTimesApp } from "./Overlays/besttimes/MinesweeperBestTim
 import { DefaultMinesweeperConfiguration, MinesweeperDifficulties } from "./store";
 import { type MinesweeperCell, type MinesweeperGrid, type MinesweeperMode, type MinesweeperSettings } from "./types";
 
-export class MinesweeperRuntime extends AppProcess {
+export class MinesweeperRuntime extends AppProcess implements IAppProcess {
   private durationInterval?: NodeJS.Timeout;
   public failed = Store<boolean>(false);
   public won = Store<boolean>(false);
