@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import BestTimes from "./BestTimes.svelte";
 import { MinesweeperBestTimesRuntime } from "./runtime";
 
