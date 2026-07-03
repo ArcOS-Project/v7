@@ -3,7 +3,7 @@ import { ConfigurationBuilder } from "$ts/config";
 import { Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import { MinesweeperAltMenu } from "./altmenu";
 import { MinesweeperBestTimesApp } from "./Overlays/besttimes/MinesweeperBestTimesApp";
 import { DefaultMinesweeperConfiguration, MinesweeperDifficulties } from "./store";
