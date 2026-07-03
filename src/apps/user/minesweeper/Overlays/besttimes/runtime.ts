@@ -1,5 +1,5 @@
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { MinesweeperRuntime } from "../../runtime";
 import { DefaultMinesweeperConfiguration } from "../../store";
 
