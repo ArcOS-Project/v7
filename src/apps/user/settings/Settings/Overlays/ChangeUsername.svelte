@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
@@ -45,7 +46,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("AccountIcon")} alt="" />
+    <Icon icon="AccountIcon" />
   </div>
   <div class="right">
     <h1>Change your username</h1>

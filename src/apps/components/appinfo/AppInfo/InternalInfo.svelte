@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import type { App } from "$types/app";
-  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
+  import type { App } from "$types/apps/app";
 
   const { process, target }: { process: IAppInfoRuntime; target: App } = $props();
 </script>

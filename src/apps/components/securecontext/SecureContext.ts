@@ -1,5 +1,5 @@
 import "$css/apps/components/securecontext.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SecureContextRuntime } from "./runtime";
 import SecureContext from "./SecureContext.svelte";
 

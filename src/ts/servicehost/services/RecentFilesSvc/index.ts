@@ -6,7 +6,7 @@ import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { Service } from "$types/service";
+import type { Service } from "$types/services/service";
 
 export class RecentFilesService extends BaseService implements IRecentFilesService {
   Recents = Store<string[]>([]);

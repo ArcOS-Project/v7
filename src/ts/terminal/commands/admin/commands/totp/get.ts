@@ -1,7 +1,7 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { AdminCommandType } from "$types/terminal";
 import { BRBLACK, BRGREEN, BRPURPLE, BRYELLOW, RESET } from "$ts/terminal/colors";
 import { maxLength } from "$ts/util";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminTotpGet: AdminCommandType = async (term, admin, [username]) => {
   if (!admin.canAccess(AdminScopes.adminTotpGetUser)) return 2;

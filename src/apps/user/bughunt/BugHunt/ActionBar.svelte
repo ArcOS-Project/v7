@@ -4,7 +4,7 @@
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import type { BugHuntRuntime } from "../runtime";
 
   const { process, report }: { process: BugHuntRuntime; report: BugReport | undefined } = $props();

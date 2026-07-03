@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import type { SqlTable } from "$apps/user/sqeleton/types";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import TableColumn from "./TableColumn.svelte";
 

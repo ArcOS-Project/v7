@@ -21,4 +21,4 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Generate type definitions
-        run: yarn build:types:all
+        run: mkdir -p ./dist && yarn build:types:all

@@ -1,10 +1,10 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn } from "$types/fs";
-import type { GitFolder } from "$types/git";
+import type { GitFolder } from "$types/external/git";
+import type { DirectoryReadReturn } from "$types/system/fs";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemProxy } from "./generic";
-import type { ICommandResult } from "$interfaces/ICommandResult";
 
 export class SourceFilesystemProxy extends FilesystemProxy {
   static PROXY_UUID: string = "cbd4bfd4-a232-4b34-ad60-183591fa5e92";

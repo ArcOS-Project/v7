@@ -80,6 +80,8 @@ export const AdminScopes = {
   adminAfsWrite: "admin.afs.write",
   adminAfsQuota: "admin.afs.quota",
   adminIpList: "admin.ip.list",
+  adminMessagesGet: "admin.messages.get",
+  adminTemporaryLogin: "admin.templogin",
 } as const;
 
 export type AdminScopesType = (typeof AdminScopes)[keyof typeof AdminScopes];
@@ -166,4 +168,6 @@ export const AdminScopeCaptions: Record<string, string> = {
   adminAfsWrite: "write admin resource drive",
   adminAfsQuota: "get admin resource drive quota",
   adminIpList: "get IP addresses of users",
+  adminMessagesGet: "get the contents of a message",
+  adminTemporaryLogin: "generate a temporary password",
 };

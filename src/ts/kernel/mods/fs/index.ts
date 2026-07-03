@@ -1,10 +1,12 @@
 import type { Constructs } from "$interfaces/common";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { getKMod } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
+import { CommandResult } from "$ts/result";
 import { sha256, sliceIntoChunks } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
@@ -16,14 +18,14 @@ import {
   type FsProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
-} from "$types/fs";
-import type { FilesystemDrive } from "./drives/generic";
+} from "$types/system/fs";
 import { MountsFilesystemProxy } from "./proxies/mounts";
 import { SourceFilesystemProxy } from "./proxies/src";
 
 export class Filesystem extends KernelModule implements IFilesystem {
   private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
   private dispatch: ISystemDispatch;
+  private freezeMountingDispatch = false;
   public drives: Record<string, IFilesystemDrive> = {};
   public loadedProxies: IFilesystemProxy[] = [];
 
@@ -99,9 +101,27 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
     delete this.drives[id];
 
-    this.dispatch.dispatch("fs-umount-drive", id);
+    if (!this.freezeMountingDispatch) this.dispatch.dispatch("fs-umount-drive", id);
 
     return true;
+  }
+
+  async umountAllOfType(identifiesAs: string, fromSystem = false): Promise<ICommandResult> {
+    const drives = Object.fromEntries(Object.entries(this.drives).filter(([_, drive]) => drive.IDENTIFIES_AS === identifiesAs));
+
+    this.freezeMountingDispatch = true;
+
+    for (const id in drives) {
+      if (drives[id].FIXED && !fromSystem)
+        return CommandResult.Error(`Drive ${id} cannot be unmounted because it is a fixed drive.`);
+
+      await this.umountDrive(id, fromSystem);
+    }
+
+    this.freezeMountingDispatch = false;
+    this.dispatch.dispatch("fs-umount-drive", identifiesAs);
+
+    return CommandResult.Ok();
   }
 
   getDriveByLetter(letter: string, error = true) {
@@ -513,23 +533,35 @@ export class Filesystem extends KernelModule implements IFilesystem {
             throw new Error(`Didn't get any files`);
           }
 
+          const totalSize = [...files].reduce((a, b) => a + b.size, 0);
+          let done = 0;
+
           for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const content = arrayBufferToBlob(await file?.arrayBuffer()!);
-
-            onProgress({
-              max: files.length,
-              value: i,
-              type: "items",
-              what: `(${i + 1} / ${files.length}) ${file.name}`,
-            });
 
             if (!file?.name) {
               throw new Error(`File ${i} doesn't have a name`);
             }
 
+            let fileDone = 0;
             const path = join(target, file.name);
-            const written = await this.writeFile(path, content, onProgress, false);
+            const written = await this.writeFile(
+              path,
+              content,
+              (progress) => {
+                done += progress.value - fileDone;
+                fileDone = progress.value;
+
+                onProgress({
+                  max: totalSize,
+                  value: done,
+                  type: "size",
+                  what: `(${i + 1} / ${files.length}) ${file.name}`,
+                });
+              },
+              false
+            );
 
             if (!written) {
               throw new Error(`Failed to upload ${getItemNameFromPath(path)}`);

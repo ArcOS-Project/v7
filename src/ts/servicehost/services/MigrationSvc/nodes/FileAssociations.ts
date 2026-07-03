@@ -2,7 +2,7 @@ import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IMigrationService } from "$interfaces/services/IMigrationService";
-import type { MigrationResult, MigrationStatusCallback } from "$types/migrations";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
 import { DefaultFileDefinitions } from "../../FileAssocSvc/store";
 import { MigrationNode } from "../node";
 

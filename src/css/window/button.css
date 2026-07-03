@@ -3,7 +3,6 @@ div.window div.body button:not(.reset) {
   border-radius: var(--button-border-rad);
   padding: 6px 15px;
   background-color: var(--button-bg, #4a4a4a);
-  color: var(--fg, #ccc);
   transition:
     opacity 0.1s,
     background-color 0.1s,
@@ -71,6 +70,10 @@ div.window div.body button:not(.reset).suggested {
 
 div.window div.body button:not(.reset).suggested * {
   color: var(--accent-suggested-fg);
+}
+
+div.window div.body button:not(.reset).suggested.lucide {
+  font-weight: normal !important;
 }
 
 div.window div.body button:not(.reset).suggested:disabled {

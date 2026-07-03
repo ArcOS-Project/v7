@@ -1,7 +1,7 @@
 import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
-import type { ArcShortcut } from "$types/shortcut";
+import type { ArcShortcut } from "$types/system/shortcut";
 import Finish from "./FirstRun/Page/Finish.svelte";
 import ProfilePicture from "./FirstRun/Page/ProfilePicture.svelte";
 import Style from "./FirstRun/Page/Style.svelte";
@@ -146,31 +146,31 @@ export const FirstRunThemes: Record<string, FirstRunTheme> = {
 };
 
 export const FirstRunShortcuts: Record<string, ArcShortcut> = {
-  [join(UserPaths.Desktop, "____recycle_bin.arclnk")]: {
+  [join(UserPaths.Desktop, "0_recycle_bin.arclnk")]: {
     icon: "TrashIcon",
     name: "Recycle Bin",
     type: "folder",
     target: "::recycle_bin",
   },
-  [join(UserPaths.Desktop, "___my_arcos.arclnk")]: {
+  [join(UserPaths.Desktop, "1_my_arcos.arclnk")]: {
     icon: "DesktopIcon",
     name: "My ArcOS",
     type: "folder",
     target: "::my_arcos",
   },
-  [join(UserPaths.Desktop, "__myDocuments.arclnk")]: {
+  [join(UserPaths.Desktop, "2_myDocuments.arclnk")]: {
     icon: "DocumentsFolderIcon",
     name: "Documents",
     type: "folder",
     target: UserPaths.Documents,
   },
-  [join(UserPaths.Desktop, "_appStore.arclnk")]: {
+  [join(UserPaths.Desktop, "3_appStore.arclnk")]: {
     icon: "AppStoreIcon",
     name: "App Store",
     type: "app",
     target: "AppStore",
   },
-  [join(UserPaths.Desktop, "iHaveFeedback.arclnk")]: {
+  [join(UserPaths.Desktop, "4_iHaveFeedback.arclnk")]: {
     icon: "BugReportIcon",
     name: "Give feedback",
     type: "app",

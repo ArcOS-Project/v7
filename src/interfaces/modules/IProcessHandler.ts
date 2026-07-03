@@ -1,10 +1,11 @@
 import type { Constructs } from "$interfaces/common";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
-import type { ProcessContext, ProcessKillResult } from "$types/process";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
+import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import type { IKernelModule } from "./IKernelModule";
 
+// !tpa
 export interface IProcessHandler extends IKernelModule {
   BUSY: string;
   IS_BUSY: boolean;
@@ -31,3 +32,4 @@ export interface IProcessHandler extends IKernelModule {
   waitForAvailable(or?: string): Promise<void>;
   getProcessContext(pid: number): ProcessContext | undefined;
 }
+// !endtpa

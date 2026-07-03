@@ -11,10 +11,10 @@ import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/conve
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { ArcPackage, StoreItem, UpdateInfo } from "$types/package";
-import type { Service } from "$types/service";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { Service } from "$types/services/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ArcPackage, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";
@@ -167,10 +167,10 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   //#endregion
   //#region PACKAGE CONFIG
 
-  async addPackageToInstalled(item: ArcPackage) {
+  async addPackageToInstalled(item: ArcPackage, force = false) {
     this.Log(`addPackageToInstalled: '${item.appId}'`);
 
-    if (this.checkBusy("addPackageToInstalled")) return undefined;
+    if (this.checkBusy("addPackageToInstalled") && !force) return undefined;
 
     const list = await this.loadInstalledPackageList();
 

@@ -1,8 +1,9 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IShareManager } from "$interfaces/services/IShareManager";
-import type { SharedDriveType } from "$types/shares";
-import type { ReadableStore } from "$types/writable";
+import type { SharedDriveType } from "$types/server/shares";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IShareListGuiRuntime extends IAppProcess {
   ownedShares: ReadableStore<SharedDriveType[]>;
   joinedShares: ReadableStore<SharedDriveType[]>;

@@ -4,8 +4,8 @@ import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper
 import { getKMod } from "$ts/env";
 import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse } from "$ts/util/json";
-import { ElevationLevel } from "$types/elevation";
-import type { AdminCommandType, Arguments } from "$types/terminal";
+import { ElevationLevel } from "$types/system/elevation";
+import type { AdminCommandType } from "$types/terminal";
 import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../colors";
 import { TerminalProcess } from "../process";
 import { AdminHelp } from "./admin/commands/help";
@@ -31,7 +31,7 @@ export class AdminCommand extends TerminalProcess {
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
       description: "Izaak Kuipers",
-      image: term.daemon?.icons?.getIconCached("ElevationIcon")!,
+      image: "ElevationIcon",
       level: ElevationLevel.medium,
     });
 

@@ -1,7 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
-import { Stack, State, Daemon } from "$ts/env";
+import { Daemon, Stack, State } from "$ts/env";
 import { TerminalProcess } from "../process";
 
 export class ExitCommand extends TerminalProcess {

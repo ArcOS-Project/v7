@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import { getIconPath } from "$ts/images";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import Button from "./MessageBox/Button.svelte";
 
   const { process }: AppComponentProps<IMessageBoxRuntime> = $props();
@@ -16,7 +17,7 @@
   <div class="top">
     {#if data.image}
       <div class="left">
-        <img src={process.getIconCached(data.image) || getIconPath(data.image) || data.image} alt="" />
+        <Icon icon={data.image} fallback={getIconPath(data.image) || data.image} />
       </div>
     {/if}
     <div class="right">

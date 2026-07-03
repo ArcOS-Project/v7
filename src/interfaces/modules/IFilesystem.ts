@@ -1,4 +1,5 @@
 import type { Constructs } from "$interfaces/common";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy } from "$interfaces/IFilesystemDrive";
 import type {
   DirectoryReadReturn,
@@ -8,9 +9,10 @@ import type {
   FsProxyInfo,
   RecursiveDirectoryReadReturn,
   UploadReturn,
-} from "$types/fs";
+} from "$types/system/fs";
 import type { IKernelModule } from "./IKernelModule";
 
+// !tpa
 export interface IFilesystem extends IKernelModule {
   drives: Record<string, IFilesystemDrive>;
   loadedProxies: IFilesystemProxy[];
@@ -25,6 +27,7 @@ export interface IFilesystem extends IKernelModule {
   ): Promise<T | false>;
   getDriveIdByIdentifier(identifier: string): string;
   umountDrive(id: string, fromSystem?: boolean, onProgress?: FilesystemProgressCallback): Promise<boolean>;
+  umountAllOfType(identifiesAs: string, fromSystem?: boolean): Promise<ICommandResult>;
   getDriveByLetter(letter: string, error?: boolean): IFilesystemDrive;
   getDriveIdentifier(path: string): string;
   getDriveByPath(path: string): IFilesystemDrive;
@@ -59,3 +62,4 @@ export interface IFilesystem extends IKernelModule {
   stat(path: string): Promise<ExtendedStat | undefined>;
   imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined>;
 }
+// !endtpa

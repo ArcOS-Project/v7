@@ -3,7 +3,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon } from "$ts/env";
   import { Backend } from "$ts/kernel/mods/server/axios";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
   import Users from "../../Users.svelte";
 

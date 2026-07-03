@@ -13,7 +13,7 @@ import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -161,6 +161,8 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     if (this.server.serverInfo?.disableRegistration) {
       throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
+
+    Stack.renderer?.target.classList.add("theme-light");
 
     await Sleep(1000);
 
@@ -359,7 +361,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
         );
 
         await this.#userDaemon?.account?.getUserInfo();
-        await this.#userDaemon?.init?.startPreferencesSync();
+        await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
         await this.#userDaemon?.init?.startFilesystemSupplier();
 
         this.#userDaemon?.preferences.update((v) => {
@@ -415,7 +417,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     Env.set("DISPATCH_SOCK_ID", UUID());
 
     await this.#userDaemon?.account?.getUserInfo();
-    await this.#userDaemon?.init?.startPreferencesSync();
+    await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
     await this.#userDaemon?.init?.startFilesystemSupplier();
     this.#userDaemon?.preferences.update((v) => {
       v.isDefault = false;

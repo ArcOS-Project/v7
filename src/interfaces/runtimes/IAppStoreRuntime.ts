@@ -1,10 +1,11 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { StoreItem } from "$types/package";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 
+// !tpa
 export interface IAppStoreRuntime extends IAppProcess {
   searchQuery: StringStore;
   loadingPage: BooleanStore;

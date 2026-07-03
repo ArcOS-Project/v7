@@ -7,17 +7,13 @@
   const { process }: { process: IFileManagerRuntime } = $props();
   const { drives, userPreferences } = process;
 
-  let sorted = $state<[string, QuotedDrive][]>([]);
-
-  onMount(() => {
-    $userPreferences.appPreferences.fileManager.myExpandDrives ??= true;
-  });
-
-  drives.subscribe((v) => {
-    sorted = Object.entries(v).sort((a, b) =>
+  let sorted = $derived<[string, QuotedDrive][]>(
+    Object.entries($drives).sort((a, b) =>
       a[1].data.driveLetter?.toLowerCase() || "~" > (b[1].data.driveLetter?.toLowerCase() || "~") ? -1 : 0
-    );
-  });
+    )
+  );
+
+  onMount(() => ($userPreferences.appPreferences.fileManager.myExpandDrives ??= true));
 </script>
 
 <section class="drives">

@@ -16,8 +16,8 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { ErrorUtils } from "$ts/util/error";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { ElevationLevel, type ElevationData } from "$types/elevation";
-import type { DirectoryReadReturn } from "$types/fs";
+import { ElevationLevel, type ElevationData } from "$types/system/elevation";
+import type { DirectoryReadReturn } from "$types/system/fs";
 import type { ArcTermConfiguration, Arguments } from "$types/terminal";
 import ansiEscapes from "ansi-escapes";
 import { Terminal } from "xterm";
@@ -450,6 +450,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
         );
         window?.style.setProperty("--terminal-background-inactive", this.config.background || DefaultColors.background);
         window?.style.setProperty("--fg", this.config.foreground || DefaultColors.foreground);
+        window?.style.setProperty("--secondary-border", "var(--terminal-background-inactive) 1px solid");
       }
     } catch {
       await this.writeConfig();

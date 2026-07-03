@@ -1,17 +1,28 @@
 import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import { Fs, getKMod } from "$ts/env";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import { Env, Fs, Stack } from "$ts/env";
 import { Log } from "$ts/logging";
 import { calculateMemory } from "$ts/util";
-import { LogLevel } from "$types/logging";
-import type { ProcessState } from "$types/process";
+import { LogLevel } from "$types/shared/logging";
+import type { ProcessState } from "$types/system/process";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
-  public dispatch: IProcessDispatch;
+  public dispatch!: IProcessDispatch;
   public pid: number;
   public parentPid: number;
   public name = "";
+  private _state: ProcessState = "unknown";
+
+  get STATE() {
+    return this._state;
+  }
+
+  set STATE(value: ProcessState) {
+    this.Log(`STATE UPDATE: ${value}`);
+    this._state = value;
+  }
+
   public get _disposed() {
     return this.STATE === "disposed" || this.STATE === "error";
   }
@@ -19,14 +30,12 @@ export class Process implements IProcess {
   public _criticalProcess = false;
   public sourceUrl: string = "undetermined";
   private fileLocks: string[] = [];
-  public STATE: ProcessState = "unknown";
 
   constructor(pid: number, parentPid?: number, ...args: any[]) {
     this.STATE = "constructing";
     this.pid = pid;
     this.parentPid = parentPid || 0;
     this.name ||= this.constructor.name;
-    this.dispatch = new ProcessDispatch(this);
   }
 
   get MEMORY(): number {
@@ -45,6 +54,7 @@ export class Process implements IProcess {
     this.STATE = "starting";
     this.Log(`STARTING PROCESS`);
 
+    this.dispatch = new ProcessDispatch(this);
     if (this.sourceUrl === "undetermined") {
       this.Log(`Source URL of process class not set!`, LogLevel.warning);
     }
@@ -67,9 +77,9 @@ export class Process implements IProcess {
     if (this._disposed) return;
     this.Log(`Killing self (PID ${this.pid})`);
 
-    const stack = getKMod<IProcessHandler>("stack");
-    await stack.waitForAvailable();
-    await stack.kill(this.pid, true);
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
+    await Stack.waitForAvailable();
+    await Stack.kill(this.pid, true);
   }
 
   protected Log(message: string, level = LogLevel.info) {

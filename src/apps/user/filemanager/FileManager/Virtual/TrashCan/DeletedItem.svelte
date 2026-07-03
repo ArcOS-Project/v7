@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
-  import type { TrashIndexNode } from "$types/trash";
+  import type { TrashIndexNode } from "$types/services/trash";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
@@ -26,7 +27,7 @@
 </script>
 
 <button class="item file deleted" {onclick} class:selected={$selection.includes(uuid)} data-path={uuid}>
-  <div class="segment icon"><img src={process.getIconCached(item.icon)} alt="" /></div>
+  <div class="segment icon"><Icon icon={item.icon} /></div>
   <div class="segment name">{item.name}</div>
   <div class="segment type"></div>
   <div class="segment modified">{date}</div>

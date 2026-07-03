@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Plural } from "$ts/util";
   import type { QuotedDrive } from "../../types";
 
@@ -13,7 +14,7 @@
 
 <div class="multi-file">
   <div class="header">
-    <img src={process.getIconCached("FolderIcon")} alt="" />
+    <Icon icon="FolderIcon" />
     <h1>Multiple files</h1>
     <p>in {name || currentDrive.data.label}</p>
   </div>

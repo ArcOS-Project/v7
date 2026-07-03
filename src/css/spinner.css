@@ -41,6 +41,13 @@ div.spinner-center {
   align-items: center;
 }
 
+img.spinner-svg {
+  transition: opacity 0.2s;
+}
+
+img.spinner-svg.hide {
+  opacity: 0;
+}
 @keyframes spin {
   0% {
     transform: rotate(0deg);

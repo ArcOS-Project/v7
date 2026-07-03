@@ -1,10 +1,12 @@
 import type { GlobalLoadIndicatorProgress } from "$apps/components/globalloadindicator/types";
 import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserContext } from "$interfaces/IUserDaemon";
+import type { ReadableStore } from "$types/shared/writable";
 import type { ExpandedTerminal } from "$types/terminal";
-import type { ReadableStore } from "$types/writable";
 
+// !tpa
 export interface IHelpersUserContext extends IUserContext {
   GlobalLoadIndicator(
     caption?: string,
@@ -24,4 +26,7 @@ export interface IHelpersUserContext extends IUserContext {
   waitForLeaveInvocationAllow(): Promise<void>;
   safeModeNotice(): void;
   iHaveFeedback(process: IAppProcess): void;
+  openWebpage(href: string): void;
+  submitBetaFeedback(title: string, message: string): Promise<ICommandResult>;
 }
+// !endtpa

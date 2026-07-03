@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ErrorButton, Notification } from "$types/notification";
+  import type { ErrorButton, Notification } from "$types/system/notification";
   import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();
@@ -19,6 +20,8 @@
       if (show) {
         show = false;
         await Sleep(300);
+        data = incoming;
+        await Sleep(100);
       }
 
       data = incoming;
@@ -57,7 +60,7 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        <img src={process.getIconCached(data.image) || data.image} alt="" class="icon" />
+        <Icon icon={data.image} className="icon" />
       </div>
     {:else if data.icon}
       <div class="left">

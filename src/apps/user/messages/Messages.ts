@@ -1,5 +1,5 @@
 import "$css/apps/user/messages.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Messages from "./Messages.svelte";
 import { MessagingAppRuntime } from "./runtime";
 
@@ -13,12 +13,12 @@ export const MessagingApp: App = {
   },
   position: { centered: true },
   size: {
-    w: 850,
-    h: 500,
+    w: 1000,
+    h: 600,
   },
   minSize: {
-    w: 700,
-    h: 450,
+    w: 1000,
+    h: 600,
   },
   maxSize: {
     w: NaN,

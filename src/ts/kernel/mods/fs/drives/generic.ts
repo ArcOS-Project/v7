@@ -2,6 +2,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
+import { LogLevel } from "$types/shared/logging";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -9,8 +10,7 @@ import type {
   FilesystemStat,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import { LogLevel } from "$types/logging";
+} from "$types/system/fs";
 
 export class FilesystemDrive implements IFilesystemDrive {
   server: IServerManager;

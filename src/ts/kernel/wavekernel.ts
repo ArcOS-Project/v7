@@ -9,7 +9,7 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
+import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/shared/logging";
 import { handleGlobalErrors } from "../error";
 import { InitProcess } from "./init";
 import { EchoIntro } from "./intro";
@@ -133,10 +133,17 @@ export class WaveKernel implements IWaveKernel {
 
     this.Logs.push(data);
 
+    const mapping: Record<LogLevel, (...args: any[]) => void> = {
+      [LogLevel.info]: __Console__.log.bind(__Console__),
+      [LogLevel.warning]: __Console__.warn.bind(__Console__),
+      [LogLevel.error]: __Console__.error.bind(__Console__),
+      [LogLevel.critical]: __Console__.error.bind(__Console__),
+    };
+
     const dispatch = this.getModule<ISystemDispatch>("dispatch", true);
     dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
 
-    __Console__.log(
+    mapping[level](
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }

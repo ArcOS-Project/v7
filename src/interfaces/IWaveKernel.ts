@@ -1,5 +1,5 @@
 import type { IProcess } from "$interfaces/IProcess";
-import type { LogItem, LogLevel } from "$types/logging";
+import type { LogItem, LogLevel } from "$types/shared/logging";
 import type { IStateHandler } from "./IStateHandler";
 
 export interface IWaveKernel {

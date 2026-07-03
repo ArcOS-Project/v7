@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
-  import type { PartialStoreItem } from "$types/package";
+  import type { PartialStoreItem } from "$types/tpa/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
 
   const { all, process }: { all: PartialStoreItem[]; process: IAppStoreRuntime } = $props();

@@ -1,14 +1,15 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { SharedDriveType } from "$types/server/shares";
 import type {
   DirectoryReadReturn,
   ExtendedStat,
   FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/system/fs";
 import type { IServerConnector } from "../IServerManager";
 
+// !tpa
 export interface IShareConnector extends IServerConnector {
   DirGet(shareId: string, path?: string): Promise<ICommandResult<DirectoryReadReturn>>;
   DirPost(shareId: string, path: string): Promise<ICommandResult>;

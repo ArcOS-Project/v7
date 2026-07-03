@@ -1,7 +1,7 @@
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import { toBase64 } from "$ts/util/base64";
-import { type DirectoryReadReturn, type DriveCapabilities, type FolderEntry, type UserQuota } from "$types/fs";
-import type { FSQuota, LegacyConnectionInfo, UserDirectory } from "$types/legacy";
+import type { FSQuota, LegacyConnectionInfo, UserDirectory } from "$types/external/legacy";
+import { type DirectoryReadReturn, type DriveCapabilities, type FolderEntry, type UserQuota } from "$types/system/fs";
 import axios, { type AxiosInstance } from "axios";
 import { FilesystemDrive } from "./generic";
 

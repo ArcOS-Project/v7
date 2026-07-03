@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { StoreItemBanner, StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
@@ -24,7 +25,7 @@
   <div class="header" class:no-banner={!pkg.pkg.store?.banner}>
     <img src={StoreItemBanner(pkg) || StoreItemIcon(pkg)} class:fallback={!pkg.pkg.store?.banner} alt="" class="banner" />
     <div class="info">
-      <img src={StoreItemIcon(pkg)} alt="" />
+      <Icon icon={StoreItemIcon(pkg)} />
       <div class="metadata">
         <h1>
           <span class="name">{pkg.pkg.name}</span>
@@ -32,7 +33,11 @@
         </h1>
         <p class="description" title={pkg.pkg.description}>{pkg.pkg.description}</p>
         <p class="author">
-          <UserLink user={pkg?.user!} onClick={() => process.switchPage("userPage", { userId: pkg.userId })} /> · {pkg.installCount}
+          <UserLink
+            userId={pkg?.userId}
+            user={pkg?.user!}
+            onClick={() => process.switchPage("userPage", { userId: pkg.userId })}
+          /> · {pkg.installCount}
           downloads
         </p>
       </div>

@@ -1,5 +1,5 @@
 import type { AdminScopesType } from "$ts/servicehost/services/AdminBootstrapper/store";
-import type { MaybePromise } from "$types/common";
+import type { MaybePromise } from "$types/shared/common";
 
 export type QuerySourceKey = (typeof QuerySources)[number];
 export interface QueryDesignation {

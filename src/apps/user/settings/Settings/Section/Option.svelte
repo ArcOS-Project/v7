@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "$lib/Icon.svelte";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -35,7 +36,7 @@
     {#if image || icon}
       <div class="icon">
         {#if image}
-          <img src={image} alt="" />
+          <Icon icon={image} />
         {:else if icon}
           <span class="lucide icon-{icon}"></span>
         {/if}

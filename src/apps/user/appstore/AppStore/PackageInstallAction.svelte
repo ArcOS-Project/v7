@@ -3,7 +3,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon, Env } from "$ts/env";
   import { Store } from "$ts/writable";
-  import type { StoreItem, UpdateInfo } from "$types/package";
+  import type { StoreItem, UpdateInfo } from "$types/tpa/package";
   import { onMount } from "svelte";
   import InstallButton from "./PackageInstallAction/InstallButton.svelte";
   import UninstallButton from "./PackageInstallAction/UninstallButton.svelte";

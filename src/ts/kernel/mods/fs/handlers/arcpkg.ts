@@ -1,6 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env } from "$ts/env";
-import type { FileHandler } from "$types/fs";
+import type { FileHandler } from "$types/system/fs";
 
 const installArcPkg: (d: IUserDaemon) => FileHandler = (daemon) => ({
   isHandler: true,

@@ -1,11 +1,11 @@
-import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IIconsUserContext } from "$interfaces/contexts/IIconsUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { maybeIconId } from "$ts/images";
 import type { IconService } from "$ts/servicehost/services/IconService";
 import { Store } from "$ts/writable";
-import type { App } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 import { UserContext } from "../context";
 
 export class IconsUserContext extends UserContext implements IIconsUserContext {

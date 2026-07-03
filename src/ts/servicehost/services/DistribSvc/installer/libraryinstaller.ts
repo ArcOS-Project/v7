@@ -5,8 +5,8 @@ import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import type { TpaLibrary } from "$types/libraries";
-import type { ArcPackage, StoreItem } from "$types/package";
+import type { TpaLibrary } from "$types/tpa/libraries";
+import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type JSZip from "jszip";
 import { InstallerProcessBase } from "./base";
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMultiUpdateGuiRuntime } from "$interfaces/runtimes/IMultiUpdateGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
@@ -19,12 +20,7 @@
 </script>
 
 <div class="header">
-  <img
-    src={$working && $currentPackage
-      ? StoreItemIcon($currentPackage)
-      : process.getIconCached($done ? "GoodStatusIcon" : "UpdateIcon")}
-    alt=""
-  />
+  <Icon icon={$working && $currentPackage ? StoreItemIcon($currentPackage) : $done ? "GoodStatusIcon" : "UpdateIcon"} />
   <div class="info">
     <h1>
       {#if $working}
@@ -96,12 +92,7 @@
           {/if}
         </p>
         <p class="content">{item.content}</p>
-        <img
-          src={process.getIconCached(
-            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
-          )}
-          alt=""
-        />
+        <Icon icon={item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"} />
       </div>
     {/each}
   {/each}

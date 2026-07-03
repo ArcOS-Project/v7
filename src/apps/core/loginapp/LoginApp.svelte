@@ -2,7 +2,7 @@
   import safeModeBg from "$assets/bg/safemode.png";
   import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
   import { Server } from "$ts/env";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
   import LoginForm from "./LoginForm.svelte";
@@ -52,7 +52,7 @@
 
 {#if $serverInfo?.loginBottomText}
   <p class="bottom-text">
-    {`${$serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
+    {[$serverInfo?.loginBottomText, import.meta.env.DW_PREVIEW_DEP_BRANCH].filter(Boolean).join(" -- ")}
   </p>
 {/if}
 <p>{Server.url} -- {Server.authCode}</p>

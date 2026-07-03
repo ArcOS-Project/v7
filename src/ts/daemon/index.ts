@@ -19,6 +19,7 @@ import type { IThemesUserContext } from "$interfaces/contexts/IThemesUserContext
 import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserContext";
 import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserContext";
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
@@ -27,8 +28,11 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
-import { Daemon, Env, Fs, GetConnector, getKMod, SetDaemon, Stack, State } from "$ts/env";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
+import { Daemon, Env, Fs, GetConnector, SetDaemon, Stack, State, getKMod } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Log } from "$ts/logging";
+import { CommandResult } from "$ts/result";
 import { ServiceHost } from "$ts/servicehost";
 import { DefaultUserInfo } from "$ts/user/default";
 import { UserPaths } from "$ts/user/store";
@@ -36,7 +40,9 @@ import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
+import type { UserDaemonInitStage, UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo } from "$types/user";
+import axios from "axios";
 import { UserContexts } from "./store";
 
 //#endregion
@@ -55,6 +61,16 @@ export class UserDaemon extends Process implements IUserDaemon {
   public cutList = Store<string[]>([]);
   public serviceHost?: ServiceHost;
 
+  public get betaClient() {
+    return axios.create({
+      baseURL: import.meta.env.DW_BETA_URL,
+      responseType: "json",
+      params: {
+        token: this.token,
+      },
+    });
+  }
+
   public get globalDispatch() {
     return this.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch");
   }
@@ -65,6 +81,10 @@ export class UserDaemon extends Process implements IUserDaemon {
 
   public get libraries() {
     return this.serviceHost?.getService<ILibraryManagement>("LibMgmtSvc");
+  }
+
+  public get canPaste() {
+    return this.cutList().length > 0 || this.copyList().length > 0;
   }
 
   // CONTEXTS
@@ -209,5 +229,85 @@ export class UserDaemon extends Process implements IUserDaemon {
 
   GetConnector<T extends IServerConnector>(name: string): T {
     return GetConnector<T>(name, this.token);
+  }
+
+  static async Hello(token: string, username: string, userInfo?: UserInfo, parentPid = 1): Promise<ICommandResult<IUserDaemon>> {
+    Log("UserDaemon.Hello", "HELLO!");
+    const userDaemon = await Stack.spawn<IUserDaemon>(this, undefined, userInfo?._id ?? "SYSTEM", parentPid, token, username);
+    if (!userDaemon) return CommandResult.Error("Daemon process didn't come up");
+
+    return CommandResult.Ok(userDaemon);
+  }
+
+  async startUserDaemon(
+    startOptions: UserDaemonStartOptions,
+    broadcast: (m: string) => void
+  ): Promise<ICommandResult<IUserDaemon>> {
+    const { startStages, stageCallbacks } = startOptions;
+
+    // Let's first get the user info
+    const userInfoResult = await Daemon.account!.getUserInfo();
+    if (!userInfoResult.success) return CommandResult.Error(userInfoResult.errorMessage ?? "Failed to request user info");
+
+    const userInfo = userInfoResult.result!;
+    const onUserInfoResult = (await startOptions.onUserInfo?.(userInfo)) ?? true;
+
+    if (!onUserInfoResult.success) return onUserInfoResult;
+
+    async function performStartStage(stage: UserDaemonInitStage, message: string, callback: () => Promise<void>) {
+      if (startStages.includes(stage)) {
+        broadcast(message);
+        await callback();
+        await stageCallbacks?.[stage]?.(Daemon, broadcast);
+      }
+    }
+
+    await performStartStage("filesystem", "Starting filesystem", async () => {
+      await this.init!.startFilesystemSupplier();
+      await this.version!.mountSourceDrive();
+    });
+
+    await performStartStage("preferencesSync", "Starting synchronization", async () => {
+      await this.preferencesCtx!.startPreferencesSync();
+    });
+
+    await performStartStage("notifyLogin", "Notifying login activity", async () => {
+      await Daemon.activity!.logActivity("login");
+    });
+
+    await performStartStage("serviceHost", "Starting service host", async () => {
+      await this.init!.startServiceHost(broadcast);
+    });
+
+    await performStartStage("firstRun", "", async () => {
+      if (!Daemon.preferences().firstRunDone && !Daemon.preferences().appPreferences.arcShell) {
+        broadcast("Welcome to ArcOS");
+
+        await this.init!.firstRun();
+      }
+    });
+
+    await performStartStage("statusRefresh", "Starting status refresh", async () => {
+      await this.init!.startDriveNotifierWatcher();
+      await this.init!.startSystemStatusRefresh();
+    });
+
+    await performStartStage("letsGo", "Let's go!", async () => {
+      // stub; we only care about the stage callback
+    });
+
+    await performStartStage("workspaces", "Starting workspaces", async () => {
+      await this.workspaces!.startVirtualDesktops();
+    });
+
+    await performStartStage("autorun", "Running autorun", async () => {
+      await this.init?.handleShellAndAutorun();
+      await this.checks?.checkForUpdates();
+      await this.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();
+    });
+
+    this._blockLeaveInvocations = false;
+
+    return CommandResult.Ok(this);
   }
 }

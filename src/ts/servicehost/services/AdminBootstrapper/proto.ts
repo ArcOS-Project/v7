@@ -1,5 +1,5 @@
 import { Env } from "$ts/env";
-import type { ProtocolHandler } from "$types/proto";
+import type { ProtocolHandler } from "$types/services/proto";
 
 export const AdminProtocolHandlers: Record<string, ProtocolHandler> = {
   admin_bugrep: {

@@ -2,16 +2,12 @@ import type { IArcTerminal, ITerminalMode } from "$interfaces/IArcTerminal";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-import type { IMigrationService } from "$interfaces/services/IMigrationService";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, Env, GetConnector, Server, Stack, SysDispatch } from "$ts/env";
-import { Backend } from "$ts/kernel/mods/server/axios";
+import { ArcOSVersion, GetConnector, Server, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Sleep } from "$ts/sleep";
 import { LoginUser } from "$ts/user/auth";
-import { UserPaths } from "$ts/user/store";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -20,9 +16,9 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import "@xterm/xterm/css/xterm.css";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
-import { ArcTerminal } from "..";
 import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
 import { Readline } from "../readline/readline";
+import { ArcTermModeUserDaemonStartOptions } from "./store";
 
 export class TerminalMode extends Process implements ITerminalMode {
   userDaemon?: IUserDaemon;
@@ -108,86 +104,21 @@ export class TerminalMode extends Process implements ITerminalMode {
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await Stack.spawn<IUserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
+      this.rl?.println(`Starting daemon`);
+
+      const { success, result: userDaemon, errorMessage } = await UserDaemon.Hello(token, username);
+      if (!success) throw new Error(errorMessage);
 
       const broadcast = (m: string) => {
         this.rl?.println(`${CURUP}${CLRROW}${m}`);
       };
-      this.rl?.println(`Starting daemon`);
 
-      if (!userDaemon) {
-        throw new Error("Daemon process didn't come up.");
+      this.saveToken(userDaemon!);
+
+      const result = await userDaemon!.startUserDaemon(ArcTermModeUserDaemonStartOptions(this), broadcast);
+      if (!result.success) {
+        throw new Error(result.errorMessage ?? "Unknown error");
       }
-
-      this.saveToken(userDaemon);
-
-      const userInfoResult = await userDaemon.account!.getUserInfo();
-      if (!userInfoResult.success) {
-        this.rl?.println(`${CURUP}${CLRROW}${userInfoResult.errorMessage ?? "Failed to request user info"}\n`);
-        return false;
-      }
-
-      const userInfo = userInfoResult.result!;
-
-      if (userInfo.hasTotp && userInfo.restricted) {
-        const unlocked = await this.askForTotp(token);
-
-        if (!unlocked) {
-          this.rl?.println(`${CURUP}${CLRROW}2FA code invalid!`);
-          await userDaemon.account?.discontinueToken();
-          await userDaemon.killSelf();
-          return false;
-        }
-      }
-
-      broadcast(`Starting filesystem`);
-      await userDaemon.init?.startFilesystemSupplier();
-
-      broadcast(`Starting synchronization`);
-      await userDaemon.init?.startPreferencesSync();
-
-      broadcast(`Notifying login activity`);
-      await userDaemon.activity?.logActivity(`login`);
-
-      broadcast(`Starting service host`);
-      await userDaemon.init?.startServiceHost(broadcast);
-
-      broadcast(`Starting drive notifier watcher`);
-      userDaemon.init!.startDriveNotifierWatcher();
-
-      broadcast(`Indexing your files`);
-      await Backend.post("/fs/index", {}, { headers: { Authorization: `Bearer ${userDaemon.token}` } });
-
-      await userDaemon.serviceHost
-        ?.getService<IMigrationService>("MigrationSvc")
-        ?.runMigrations((m) => this.rl?.println(`${CURUP}${CLRROW}${m}`));
-
-      broadcast(`Starting status refresh`);
-      await userDaemon.init!.startSystemStatusRefresh();
-
-      broadcast(`Refreshing app storage`);
-      SysDispatch.dispatch(`app-store-refresh`);
-
-      Env.set("currentuser", username);
-      Env.set("shell_pid", undefined);
-
-      userDaemon.checks!.checkNightly();
-
-      await Sleep(10);
-
-      this.term?.clear();
-      this.arcTerm = await Stack.spawn<IArcTerminal>(
-        ArcTerminal,
-        undefined,
-        userDaemon.userInfo?._id,
-        this.pid,
-        this.term,
-        UserPaths.Home,
-        undefined,
-        this
-      );
-      this.arcTerm!.IS_ARCTERM_MODE = true;
-      this.term?.focus();
 
       return true;
     } catch (e) {
@@ -196,7 +127,7 @@ export class TerminalMode extends Process implements ITerminalMode {
       this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
       this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
 
-      return false;
+      return true;
     }
   }
 
@@ -313,7 +244,7 @@ export class TerminalMode extends Process implements ITerminalMode {
       return await this.askForTotp(token);
     }
 
-    const result = await GetConnector<ITotpConnector>("totp", token).Unlock(code);
+    const result = await GetConnector<ITotpConnector>("TotpConnector", token).Unlock(code);
 
     return !!result.success;
   }

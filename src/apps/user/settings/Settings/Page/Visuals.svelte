@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
@@ -9,14 +10,14 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("PersonalizationIcon")} alt="" />
+    <Icon icon="PersonalizationIcon" />
     <h1>Visual settings</h1>
     <p>Fine-tune the appearance of ArcOS</p>
   </div>
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some options are disabled" image={process.getIconCached("WarningIcon")}></Option>
+      <Option caption="Safe Mode - some options are disabled" image="WarningIcon"></Option>
     </Section>
   {/if}
 

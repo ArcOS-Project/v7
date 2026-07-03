@@ -1,5 +1,5 @@
 import "$css/apps/admin/executequery.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ExecuteQuery from "./ExecuteQuery.svelte";
 import { ExecuteQueryRuntime } from "./runtime";
 

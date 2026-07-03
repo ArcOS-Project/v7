@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReadableStore } from "$types/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import hljs from "highlight.js";
   import css from "highlight.js/lib/languages/css";
   import ini from "highlight.js/lib/languages/ini";
@@ -11,6 +11,7 @@
   import typescript from "highlight.js/lib/languages/typescript";
   import xml from "highlight.js/lib/languages/xml";
   import yaml from "highlight.js/lib/languages/yaml";
+  import basic from "$ts/basic/highlight";
   import { onMount } from "svelte";
 
   const {
@@ -41,6 +42,7 @@
       hljs.registerLanguage("xml", xml);
       hljs.registerLanguage("plaintext", plaintext);
       hljs.registerLanguage("sql", sql);
+      hljs.registerLanguage("basic", basic);
     }
 
     value.subscribe(update);

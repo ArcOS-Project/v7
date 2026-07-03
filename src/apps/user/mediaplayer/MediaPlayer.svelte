@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { onMount } from "svelte";
   import Bar from "./MediaPlayer/Bar.svelte";
@@ -75,7 +76,7 @@
     <Controls {process} />
   {:else}
     <div class="no-file">
-      <img src={process.getIconCached("MediaPlayerIcon")} alt="" />
+      <Icon icon={"MediaPlayerIcon"} />
       <h2>No File Opened!</h2>
       <p>Select a file to play from the File Menu or by pressing Alt+O.</p>
     </div>

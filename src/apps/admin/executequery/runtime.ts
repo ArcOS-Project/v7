@@ -9,7 +9,7 @@ import { getParentDirectory } from "$ts/util/fs";
 import { getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse, tryJsonStringify } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/apps/app";
 import type { ExpandedUserInfo } from "$types/user";
 import { ExecuteQueryAltMenu } from "./altmenu";
 import LoadQueryOverlayApp from "./LoadQuery/LoadQuery";

@@ -3,7 +3,7 @@ import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
+import type { App, AppProcessData } from "$types/apps/app";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
 import { FirstRunPages, FirstRunShortcuts } from "./store";
 import type { FirstRunPage } from "./types";

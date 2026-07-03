@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import { FilterIcons, FilterLevels } from "$apps/user/logging/store";
-  import { LogLevel } from "$types/logging";
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
+  import { LogLevel } from "$types/shared/logging";
 
   const { process }: { process: ILoggingRuntime } = $props();
   const { selectedLevel } = process;

@@ -5,7 +5,7 @@ import { ErrorIcon, WarningIcon } from "$ts/images/dialog";
 import { GoodStatusIcon } from "$ts/images/status";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import axios from "axios";
 
 export class AddServerRuntime extends AppProcess implements IAddServerRuntime {

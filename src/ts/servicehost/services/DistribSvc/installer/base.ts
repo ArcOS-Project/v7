@@ -4,7 +4,7 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/package";
+import type { ArcPackage, InstallStatus, InstallStatusMode, InstallStatusType, StoreItem } from "$types/tpa/package";
 import { fromExtension } from "human-filetypes";
 import type JSZip from "jszip";
 
@@ -214,6 +214,7 @@ export class InstallerProcessBase extends Process {
 
     this.logStatus(this.workingDirectory, "mkdir");
     try {
+      await Fs.deleteItem(this.workingDirectory, false);
       await Fs.createDirectory(this.workingDirectory, false);
       this.setCurrentStatus("done");
       return true;

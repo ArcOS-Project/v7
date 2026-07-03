@@ -2,7 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import { CommandResult } from "$ts/result";
 import { toForm } from "$ts/util/form";
-import type { DeleteResult, UpdateResult } from "$types/mongo";
+import type { DeleteResult, UpdateResult } from "$types/external/mongo";
 import type { TotpSetupResponse } from "$types/user";
 import { ServerConnector } from ".";
 

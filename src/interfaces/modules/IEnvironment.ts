@@ -1,5 +1,6 @@
 import type { IKernelModule } from "./IKernelModule";
 
+// !tpa
 export interface IEnvironment extends IKernelModule {
   _init(): Promise<void>;
   delete(key: string): boolean;
@@ -12,3 +13,4 @@ export interface IEnvironment extends IKernelModule {
   setMultiple(entries: [string, any][]): void;
   reset(): void;
 }
+// !endtpa

@@ -1,7 +1,7 @@
 import type { IConfigurator } from "$interfaces/IConfigurator";
 import type { IProcess } from "$interfaces/IProcess";
-import { LogLevel } from "$types/logging";
-import type { ReadableStore } from "$types/writable";
+import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
 import { Fs } from "./env";
 import { Log } from "./logging";
 import { arrayBufferToText, textToBlob } from "./util/convert";

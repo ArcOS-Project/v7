@@ -8,7 +8,7 @@ import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { ArcTermConfiguration } from "$types/terminal";
 import type { ArcTermColorPreset, ArcTermColors } from "./types";
 
@@ -25,13 +25,13 @@ export class ArcTermColorsRuntime extends AppProcess implements IArcTermColorsRu
 
     this.setSource(__SOURCE__);
     this.savePath = path;
-
-    this.arcTermConfiguration.subscribe((v) => {
-      this.changed.set(true);
-    });
   }
 
   async start() {
+    this.arcTermConfiguration.subscribe((v) => {
+      this.changed.set(true);
+    });
+
     const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Loading configuration...")!;
 
     await this.readConfiguration();

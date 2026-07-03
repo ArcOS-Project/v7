@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
   import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
   import { Daemon, Env } from "$ts/env";
   import { Plural } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
-  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
   const { process }: { process: IAdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;

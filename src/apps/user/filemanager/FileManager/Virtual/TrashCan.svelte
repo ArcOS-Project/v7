@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+  import ServiceGate from "$lib/ServiceGate.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
@@ -10,27 +11,30 @@
   import { Daemon } from "$ts/env";
   import { Plural } from "$ts/util";
   import { MessageBox } from "$ts/util/dialog";
-  import type { TrashIndexNode } from "$types/trash";
+  import type { TrashIndexNode } from "$types/services/trash";
+  import type { Unsubscriber } from "$types/shared/writable";
   import { onMount } from "svelte";
   import DeletedItem from "./TrashCan/DeletedItem.svelte";
 
   const { process }: { process: IFileManagerRuntime } = $props();
   const { selection } = process;
-  const trash = Daemon?.serviceHost?.getService<ITrashCanService>("TrashSvc");
 
   let items = $state<[string, TrashIndexNode][]>([]);
+  let unsub: Unsubscriber | undefined;
 
   onMount(() => {
     $selection = [];
+  });
 
-    trash?.IndexBuffer.subscribe((v) => {
-      items = Object.entries(trash?.getIndex() || {}).sort(([__, { timestamp: x }], [_, { timestamp: y }]) => {
+  function subscribe(service: ITrashCanService) {
+    unsub = service?.IndexBuffer.subscribe((v) => {
+      items = Object.entries(service?.getIndex() || {}).sort(([__, { timestamp: x }], [_, { timestamp: y }]) => {
         return x < y ? -1 : x > y ? 0 : 1;
       });
     });
-  });
+  }
 
-  async function emptyBin() {
+  async function emptyBin(service: ITrashCanService) {
     MessageBox(
       {
         title: "Empty recycle bin?",
@@ -40,7 +44,7 @@
           {
             caption: "Empty",
             action: () => {
-              trash?.emptyBin();
+              service?.emptyBin();
             },
             suggested: true,
           },
@@ -53,9 +57,9 @@
     );
   }
 
-  async function restoreSelected() {
+  async function restoreSelected(service: ITrashCanService) {
     if ($selection.length === 1) {
-      trash?.restoreTrashItem($selection[0]);
+      service?.restoreTrashItem($selection[0]);
       return;
     }
     const progress = await Daemon?.files?.FileProgress(
@@ -72,14 +76,14 @@
     progress?.show();
 
     for (const uuid of $selection) {
-      await trash?.restoreTrashItem(uuid);
+      await service?.restoreTrashItem(uuid);
       progress?.mutDone(+1);
     }
 
     progress?.stop();
   }
 
-  async function deleteSelected() {
+  async function deleteSelected(service: ITrashCanService) {
     if ($selection.length === 1) {
       const proceed = await Daemon?.helpers?.Confirm(
         "Delete item?",
@@ -92,7 +96,7 @@
 
       if (!proceed) return;
 
-      trash?.permanentlyDelete($selection[0]);
+      service?.permanentlyDelete($selection[0]);
       return;
     }
     const proceed = await Daemon?.helpers?.Confirm(
@@ -120,7 +124,7 @@
     progress?.show();
 
     for (const uuid of $selection) {
-      await trash?.permanentlyDelete(uuid);
+      await service?.permanentlyDelete(uuid);
       progress?.mutDone(+1);
     }
 
@@ -128,38 +132,53 @@
   }
 </script>
 
-{#if !trash}
-  <div class="no-trash-service">
-    <span class="lucide icon-trash-2"></span>
-    <p>The recycle bin service isn't running.</p>
-  </div>
-{:else}
-  <div class="directory-viewer" role="directory">
-    <button class="item header-row">
-      <div class="segment name">Name</div>
-      <div class="segment type"></div>
-      <div class="segment modified">Recycled</div>
-    </button>
+<ServiceGate id="TrashSvc" onActivated={subscribe} onDeactivated={() => unsub?.()}>
+  {#snippet ifActive(service: ITrashCanService)}
+    <div class="directory-viewer" role="directory">
+      <button class="item header-row">
+        <div class="segment name">Name</div>
+        <div class="segment type"></div>
+        <div class="segment modified">Recycled</div>
+      </button>
 
-    {#if items.length}
-      {#each items as [uuid, item] (uuid)}
-        <DeletedItem {item} {process} {uuid} />
-      {/each}
-    {:else}
-      <p class="empty">There's nothing in the bin</p>
-    {/if}
-  </div>
-  <ActionBar>
-    {#snippet leftContent()}
-      <ActionSubtle text="{items.length} recycled {Plural('item', items.length)}" />
-    {/snippet}
-    {#snippet rightContent()}
-      <ActionButton disabled={!items.length} suggested={!!items.length} onclick={emptyBin}>Empty trash</ActionButton>
-      <ActionSeparator />
-      <ActionGroup>
-        <ActionIconButton icon="iteration-cw" title="Restore item(s)" disabled={!$selection.length} onclick={restoreSelected} />
-        <ActionIconButton icon="trash-2" title="Delete item(s)" disabled={!$selection.length} onclick={deleteSelected} />
-      </ActionGroup>
-    {/snippet}
-  </ActionBar>
-{/if}
+      {#if items.length}
+        {#each items as [uuid, item] (uuid)}
+          <DeletedItem {item} {process} {uuid} />
+        {/each}
+      {:else}
+        <p class="empty">There's nothing in the bin</p>
+      {/if}
+    </div>
+    <ActionBar>
+      {#snippet leftContent()}
+        <ActionSubtle text="{items.length} recycled {Plural('item', items.length)}" />
+      {/snippet}
+      {#snippet rightContent()}
+        <ActionButton disabled={!items.length} suggested={!!items.length} onclick={() => emptyBin(service)}
+          >Empty trash</ActionButton
+        >
+        <ActionSeparator />
+        <ActionGroup>
+          <ActionIconButton
+            icon="iteration-cw"
+            title="Restore item(s)"
+            disabled={!$selection.length}
+            onclick={() => restoreSelected(service)}
+          />
+          <ActionIconButton
+            icon="trash-2"
+            title="Delete item(s)"
+            disabled={!$selection.length}
+            onclick={() => deleteSelected(service)}
+          />
+        </ActionGroup>
+      {/snippet}
+    </ActionBar>
+  {/snippet}
+  {#snippet ifInactive()}
+    <div class="no-trash-service">
+      <span class="lucide icon-trash-2"></span>
+      <p>The recycle bin service isn't running.</p>
+    </div>
+  {/snippet}
+</ServiceGate>

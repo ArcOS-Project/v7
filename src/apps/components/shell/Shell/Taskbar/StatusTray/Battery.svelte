@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { BatteryType } from "$types/navigator";
+  import type { ReadableStore } from "$types/shared/writable";
+  import type { BatteryType } from "$types/system/navigator";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ReadableStore } from "$types/writable";
 
   const {
     battery,

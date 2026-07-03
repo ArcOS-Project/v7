@@ -1,5 +1,5 @@
 import "$css/apps/components/oopsnotifier.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import OopsNotifier from "./OopsNotifier.svelte";
 import { OopsNotifierRuntime } from "./runtime";
 

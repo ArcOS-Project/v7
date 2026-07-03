@@ -1,5 +1,5 @@
 import "$css/apps/components/processinfo.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import ProcessInfo from "./ProcessInfo.svelte";
 import { ProcessInfoRuntime } from "./runtime";
 

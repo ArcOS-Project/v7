@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
+  import Icon from "$lib/Icon.svelte";
   import IconDetails from "./IconGrid/IconDetails.svelte";
 
   const { process }: { process: IIconEditorRuntime } = $props();
@@ -10,7 +11,7 @@
   {#if $filtered}
     {#each Object.entries($filtered) as [id, value] (id)}
       <button class="icon" onclick={() => ($selectedIcon = id)} class:active={$selectedIcon === id} title={id}>
-        <img src={process.getIconCached(value)} alt="" />
+        <Icon icon={value} />
       </button>
     {/each}
   {/if}

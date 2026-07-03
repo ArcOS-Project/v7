@@ -1,8 +1,9 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, Message } from "$types/server/messaging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { IServerConnector } from "../IServerManager";
 
+// !tpa
 export interface IMessagingConnector extends IServerConnector {
   AttachmentRead(
     messageId: string,
@@ -19,7 +20,7 @@ export interface IMessagingConnector extends IServerConnector {
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<ICommandResult>;
+  ): Promise<ICommandResult<Message[]>>;
   Read(messageId: string): Promise<ICommandResult<ExpandedMessage>>;
   Received(): Promise<ICommandResult<ExpandedMessage[]>>;
   Sent(): Promise<ICommandResult<ExpandedMessage[]>>;

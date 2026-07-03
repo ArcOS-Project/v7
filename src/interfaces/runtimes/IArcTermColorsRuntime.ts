@@ -1,8 +1,9 @@
 import type { ArcTermColorPreset } from "$apps/components/arctermcolors/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { BooleanStore, ReadableStore } from "$types/shared/writable";
 import type { ArcTermConfiguration } from "$types/terminal";
-import type { BooleanStore, ReadableStore } from "$types/writable";
 
+// !tpa
 export interface IArcTermColorsRuntime extends IAppProcess {
   CONFIG_PATH: string;
   arcTermConfiguration: ReadableStore<ArcTermConfiguration>;

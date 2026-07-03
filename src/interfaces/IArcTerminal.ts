@@ -1,6 +1,6 @@
 import type { Readline } from "$ts/terminal/readline/readline";
-import type { ElevationData } from "$types/elevation";
-import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/fs";
+import type { ElevationData } from "$types/system/elevation";
+import type { DirectoryReadReturn, RecursiveDirectoryReadReturn } from "$types/system/fs";
 import type { ArcTermConfiguration, Arguments, StaticVariableStore } from "$types/terminal";
 import type ansiEscapes from "ansi-escapes";
 import type { Terminal } from "xterm";
@@ -10,6 +10,7 @@ import type { IFilesystemDrive } from "./IFilesystemDrive";
 import type { IProcess } from "./IProcess";
 import type { IUserDaemon } from "./IUserDaemon";
 
+// !tpa
 export interface IArcTerminal extends IProcess {
   readonly CONFIG_PATH: string;
   IS_ARCTERM_MODE: boolean;

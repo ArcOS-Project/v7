@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
@@ -8,18 +9,18 @@
   const { process }: { process: INewFileRuntime } = $props();
   const { newFile } = process;
 
-  let icon = $state<string>(process.getIconCached("DefaultMimeIcon"));
+  let icon = $state<string>("DefaultMimeIcon");
 
   onMount(() => {
     newFile.subscribe((v) => {
       const info = Daemon?.assoc?.getFileAssociation(v);
-      icon = info?.icon || process.getIconCached("DefaultMimeIcon");
+      icon = info?.icon || "DefaultMimeIcon";
     });
   });
 </script>
 
 <div class="top">
-  <img src={icon} alt="" />
+  <Icon {icon} />
   <div class="right">
     <h1>New file</h1>
     <p>Think of a wonderful name for this new file:</p>

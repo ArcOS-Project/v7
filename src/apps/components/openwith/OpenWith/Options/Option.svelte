@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
-  import type { FileOpenerResult } from "$types/fs";
+  import Icon from "$lib/Icon.svelte";
+  import type { FileOpenerResult } from "$types/system/fs";
 
   const {
     process,
@@ -18,7 +19,7 @@
   class:active={$selectedId === handler.id}
   class="option"
 >
-  <img src={process.getIconCached(handler.app ? `@app::${handler.app?.id}` : handler.handler?.icon || "ComponentIcon")} alt="" />
+  <Icon icon={handler.app ? `@app::${handler.app?.id}` : handler.handler?.icon || "ComponentIcon"}></Icon>
   <div>
     <h1>{handler.type === "app" ? handler.app?.metadata.name : handler.handler?.name}</h1>
     <p>{handler.type === "handler" ? handler.handler?.description : handler.app?.metadata.author}</p>

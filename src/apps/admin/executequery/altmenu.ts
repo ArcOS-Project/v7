@@ -1,5 +1,5 @@
 import type { IExecuteQueryRuntime } from "$interfaces/runtimes/IExecuteQueryRuntime";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 import { QuerySources, type QueryExpression, type QueryExpressionsType } from "./types";
 
 export function ExecuteQueryAltMenu(runtime: IExecuteQueryRuntime): ContextMenuItem[] {

@@ -1,4 +1,4 @@
-import type { SoundStore } from "$types/soundbus";
+import type { SoundStore } from "$types/system/soundbus";
 
 import v646973636F72640A from "$assets/audio/646973636F72640A.mp3";
 import dialogError from "$assets/audio/Error.wav";

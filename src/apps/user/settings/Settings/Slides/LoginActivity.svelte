@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
   import { TimeFrames } from "$ts/user/store";
   import { groupByTimeFrame } from "$ts/util";
-  import type { LoginActivity } from "$types/activity";
+  import type { LoginActivity } from "$types/user/activity";
   import { onMount } from "svelte";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Section from "../Section.svelte";
   import Activity from "./LoginActivity/Activity.svelte";
 
@@ -23,7 +24,7 @@
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("SecurityLowIcon")} alt="" />
+    <Icon icon="SecurityLowIcon" />
     <h1>Account Activity</h1>
     <p>View the security activity on your account.</p>
   </div>

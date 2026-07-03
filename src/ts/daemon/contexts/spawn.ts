@@ -4,21 +4,24 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Daemon, Env, Stack } from "$ts/env";
+import { ThirdPartyProcess } from "$ts/apps/tpa/process";
+import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
+import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
-import type { App, AppProcessData, AppProcessSpawnOptions, TpaSpawnEntrypointResult } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import { LogLevel } from "$types/logging";
+import type { App, AppProcessData, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import { ElevationLevel } from "$types/system/elevation";
 import { UserContext } from "../context";
 
 //
 export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   private tpaEntrypointCache: Record<string, Constructs<IProcess>> = {};
+
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
@@ -32,7 +35,6 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     ...args: any[]
   ): Promise<T | undefined> {
     this.Log(`newSpawnApp: spawning ${app.id} against parent PID ${parentPid}`);
-    const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
 
     app = cloneAppMeta(app);
 
@@ -44,11 +46,38 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
       const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
 
-      if (shellDispatch) {
-        shellDispatch?.dispatch("close-start-menu");
-        shellDispatch?.dispatch("close-action-center");
+      shellDispatch?.dispatch("close-start-menu");
+      shellDispatch?.dispatch("close-action-center");
+
+      let runtime = app?.assets?.runtime;
+      let isTpaProc = false;
+
+      if (app.thirdParty && app.workingDirectory) {
+        const tpaRuntimeResult = await this.tpaEntrypoint(app as InstalledApp, ...args);
+
+        if (tpaRuntimeResult.success) {
+          const value = tpaRuntimeResult.result;
+
+          if (value?.runtime) {
+            runtime = value?.runtime;
+            isTpaProc = true;
+          } else return value?.returnValue;
+        }
       }
 
+      if (!runtime) throw new Error("Did not find a suitable runtime for execution");
+
+      const spawnOptions: AppProcessSpawnOptions | undefined = (runtime as any).spawnOptions;
+      if (spawnOptions) {
+        if (options) {
+          // Overload the spawn options onto the incoming options to replace PROPERTIES, not the entire object
+          options = applyDefaults<AppProcessSpawnOptions>(options, spawnOptions);
+        } else {
+          options = spawnOptions;
+        }
+      }
+
+      const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
       const pid = parentPid || +Env.get("shell_pid");
 
       if (options?.asOverlay) {
@@ -63,23 +92,6 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         }
       }
 
-      let runtime = app?.assets?.runtime;
-      let isTpaProc = false;
-
-      if (app.thirdParty && app.workingDirectory) {
-        const tpaRuntimeResult = await this.tpaEntrypoint(app.id, ...args);
-        if (tpaRuntimeResult.success) {
-          const value = tpaRuntimeResult.result;
-
-          if (value?.runtime) {
-            runtime = value?.runtime;
-            isTpaProc = true;
-          } else return value?.returnValue;
-        }
-      }
-
-      if (!runtime) throw new Error("Did not find a suitable runtime for execution");
-
       const argv = isTpaProc ? [UUID(), app.workingDirectory, ...args] : args;
       const proc = await Stack.spawn<T>(
         runtime as Constructs<T>,
@@ -89,6 +101,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         this.generateAppProcessData(app, renderTarget),
         ...argv
       );
+
+      if (proc instanceof ThirdPartyProcess) {
+        await proc.onStarted();
+      }
 
       return proc;
     } catch (e) {
@@ -117,23 +133,22 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     return await this.spawnAppMeta(app, parentPid, options, ...args);
   }
 
-  async tpaEntrypoint(appId: string, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>> {
+  async tpaEntrypoint(app: InstalledApp, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>> {
     if (Daemon.safeMode) {
       this.tpaError_safeMode();
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    this.Log(`Invoking TPA Entrypoint for ${appId}`);
-    if (this.tpaEntrypointCache[appId]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[appId] });
-
-    const app = this.appStorage()?.getAppSynchronous(appId);
-    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
-      if (app) this.tpaError_malformedMetadata(app);
+    if (!Daemon.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    if (!Daemon.preferences().security.enableThirdParty) {
-      this.tpaError_noEnableThirdParty();
+    this.Log(`Invoking TPA Entrypoint for ${app.id}`);
+    if (this.tpaEntrypointCache[app.id]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[app.id] });
+
+    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
+      if (app) this.tpaError_malformedMetadata(app);
       return CommandResult.Ok({ returnValue: undefined });
     }
 
@@ -149,15 +164,37 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
       gli?.stop?.();
 
-      if (!(result?.prototype instanceof ThirdPartyAppProcess)) {
+      if (!(result?.prototype instanceof ThirdPartyAppProcess) && !(result?.prototype instanceof ThirdPartyProcess)) {
         return CommandResult.Ok({ returnValue: result });
       }
 
-      this.tpaEntrypointCache[appId] = result;
+      // Only cache the entrypoint if on userfs and installed
+      if (app.workingDirectory.startsWith("U:/") && this.appStorage()?.getAppById(app.id))
+        this.tpaEntrypointCache[app.id] = result;
 
       return CommandResult.Ok({ runtime: result });
-    } catch (e) {
-      Stack.renderer?.notifyCrash(app, e);
+    } catch (e: any) {
+      if (`${e?.message || e}`.includes("expects a newer version")) {
+        MessageBox(
+          {
+            title: `${app.metadata.name} - TPA revision error`,
+            message: `This application expects a newer version of the ArcOS TPA framework. Please contact the developer for a version compatible with ArcOS version ${ArcOSVersion}.`,
+            buttons: [
+              {
+                caption: "Okay",
+                action: () => {},
+                suggested: true,
+              },
+            ],
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+          },
+          Daemon.getShell()?.pid ?? Daemon.pid,
+          true
+        );
+      } else {
+        Stack.renderer?.notifyCrash(app, e);
+      }
       gli?.stop?.();
 
       return CommandResult.Ok({ returnValue: undefined });
@@ -276,6 +313,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       data: app,
       desktop: renderTarget?.id,
     };
+  }
+
+  clearEntrypointCache() {
+    this.tpaEntrypointCache = {};
   }
 
   //#endregion

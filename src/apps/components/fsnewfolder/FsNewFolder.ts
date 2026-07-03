@@ -1,5 +1,5 @@
 import "$css/apps/components/fsnewfolder.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import NewFolder from "./NewFolder.svelte";
 import { NewFolderRuntime } from "./runtime";
 

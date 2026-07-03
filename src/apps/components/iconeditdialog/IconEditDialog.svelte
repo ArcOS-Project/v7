@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import AppType from "./IconEditDialog/AppType.svelte";
@@ -39,7 +40,7 @@
 </div>
 <div class="right">
   <div class="icon">
-    <img src={$currentIcon} alt="" />
+    <Icon icon={$currentIcon} />
   </div>
   <h1>{iconName}</h1>
 </div>

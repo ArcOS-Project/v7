@@ -1,15 +1,24 @@
+import FirstRunApp from "$apps/components/firstrun/FirstRun";
+import type { Constructs } from "$interfaces/common";
 import type { IInitUserContext } from "$interfaces/contexts/IInitUserContext";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
+import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
 import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
+import { ErrorIcon } from "$ts/images/dialog";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
+import { Sleep } from "$ts/sleep";
 import { MessageBox } from "$ts/util/dialog";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {
+  private readonly TRAY_AUTOLOAD = `autoload_loading`;
+
   private registeredAnchors: HTMLAnchorElement[] = [];
-  private firstSyncDone = false;
   public anchorInterceptObserver?: MutationObserver;
 
   constructor(id: string, daemon: IUserDaemon) {
@@ -45,34 +54,140 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
           if (currentState !== "desktop") return;
 
-          MessageBox(
-            {
-              title: "Open this page?",
-              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
-              buttons: [
-                {
-                  caption: "Stay here",
-                  action() {},
-                },
-                {
-                  caption: "Proceed",
-                  action() {
-                    window.open(anchor.href, "_blank");
-                  },
-                  suggested: true,
-                },
-              ],
-              image: "GlobeIcon",
-            },
-            +Env.get("shell_pid"),
-            true
-          );
+          Daemon.helpers?.openWebpage(anchor.href);
         });
       }
     };
 
     this.anchorInterceptObserver = new MutationObserver(handle);
     this.anchorInterceptObserver.observe(document.body, { childList: true, subtree: true });
+  }
+
+  async startSystemStatusRefresh() {
+    if (this._disposed || this.safeMode) return;
+
+    this.Log("Starting system status refresh");
+
+    setInterval(async () => {
+      Daemon!.power?.battery.set(await Daemon!.power?.batteryInfo());
+    }, 1000); // Every second
+
+    Daemon!.power?.battery.set(await Daemon!.power?.batteryInfo());
+  }
+
+  async startServiceHost(broadcast?: (msg: string) => void) {
+    this.Log("Starting service host");
+
+    Daemon!.serviceHost = await Stack.spawn<IServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
+    await this.serviceHost?.init(broadcast);
+  }
+
+  async firstRun() {
+    const process = await Stack.spawn<IFirstRunRuntime>(
+      FirstRunApp.assets.runtime as Constructs<IFirstRunRuntime>,
+      undefined,
+      this.userInfo?._id,
+      this.pid,
+      { data: { ...FirstRunApp, overlay: true }, id: "FirstRun" },
+      Daemon
+    );
+
+    if (!process) return;
+
+    Env.set("shell_pid", this.pid);
+
+    await new Promise<void>((r) => process.done.subscribe((v) => v && r()));
+
+    Env.delete("shell_pid");
+  }
+
+  async handleShellAndAutorun() {
+    if (this._disposed) return;
+
+    const proc = await Daemon?.spawn?.spawnApp<IShellRuntime>(Daemon.preferences().globalSettings.shellExec, this.pid, {
+      noWorkspace: true,
+    });
+
+    // BUG 695905e6e49c74867e992655
+    if (!proc) {
+      MessageBox(
+        {
+          title: "Shell failed",
+          message: "An error occurred while trying to spawn the shell. Please try again by restarting.",
+          buttons: [{ caption: "Restart", action: () => Daemon.power?.restart(), suggested: true }],
+          sound: "arcos.dialog.error",
+          image: ErrorIcon, // possibly no icon service
+        },
+        Daemon.pid
+      );
+      return;
+    }
+
+    const trayHost = this.serviceHost?.getService<ITrayHostService>("TrayHostSvc");
+    const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
+
+    // Create the shellHost loading icon
+    await trayHost?.createTrayIcon(this.pid, this.TRAY_AUTOLOAD, {
+      icon: "SpinnerIcon",
+    });
+
+    this.Log(`Spawning autoload applications`);
+
+    let { startup } = Daemon!.preferences();
+    startup ||= {};
+
+    await Daemon.spawn?.spawnApp("contextMenu", this.pid, { noWorkspace: true });
+
+    for (const payload in startup) {
+      if (payload === "contextMenu") continue;
+
+      const type = startup[payload];
+
+      switch (type.toLowerCase()) {
+        case "app":
+          await Daemon?.spawn?.spawnApp(payload, this.pid, { noWorkspace: true });
+          break;
+        case "file":
+          if (!this.safeMode) await Daemon!.files?.openFile(payload);
+          break;
+        case "folder":
+          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", this.pid, {}, payload);
+          break;
+        case "share":
+          await shares?.mountShareById(payload);
+          break;
+        case "disabled":
+          break;
+        default:
+          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
+      }
+    }
+
+    if (this.safeMode) Daemon!.helpers?.safeModeNotice();
+
+    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, "GoodStatusIcon");
+
+    await Sleep(1000); // Wait a second...
+    await trayHost?.disposeTrayIcon(this.pid, this.TRAY_AUTOLOAD); // ...then dispose the tray iconF
+
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+      await MessageBox(
+        {
+          title: "Firefox support",
+          message:
+            "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
+          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          image: "FirefoxIcon",
+        },
+        +Env.get("shell_pid"),
+        true
+      );
+    }
+
+    await Daemon?.version?.checkForNewVersion();
+    Daemon!.autoLoadComplete = true;
+    await proc.refreshStartMenu();
+    await proc.arcFind?.refresh();
   }
 
   async startFilesystemSupplier() {
@@ -122,65 +237,5 @@ export class InitUserContext extends UserContext implements IInitUserContext {
         return;
       }
     });
-  }
-
-  async startPreferencesSync() {
-    if (this._disposed) return;
-
-    this.Log(`Starting user preferences commit sync`);
-
-    const unsubscribe = Daemon!.preferences.subscribe(async (v) => {
-      if (this._disposed) return unsubscribe();
-      if (!v || v.isDefault) return;
-
-      v = Daemon!.themes!.checkCurrentThemeIdValidity(v);
-
-      if (!this.firstSyncDone) this.firstSyncDone = true;
-      else if (!Daemon!.preferencesCtx?.syncLock) Daemon!.preferencesCtx?.commitPreferences(v);
-
-      Daemon!.renderer?.setAppRendererClasses(v);
-      Daemon!.wallpaper?.updateWallpaper(v);
-      Daemon!.workspaces?.syncVirtualDesktops(v);
-      Daemon!.updateGlobalDispatch();
-    });
-
-    Daemon!.preferencesCtx!.preferencesUnsubscribe = unsubscribe;
-  }
-
-  async startSystemStatusRefresh() {
-    if (this._disposed || this.safeMode) return;
-
-    this.Log("Starting system status refresh");
-
-    setInterval(async () => {
-      Daemon!.power?.battery.set(await Daemon!.power?.batteryInfo());
-    }, 1000); // Every second
-
-    Daemon!.power?.battery.set(await Daemon!.power?.batteryInfo());
-  }
-
-  async startVirtualDesktops() {
-    if (this._disposed) return;
-
-    this.Log(`Starting virtual desktop system`);
-
-    const outer = document.createElement("div");
-    const inner = document.createElement("div");
-
-    outer.className = "virtual-desktop-container";
-    inner.className = "inner";
-
-    outer.append(inner);
-    Stack.renderer?.target.append(outer);
-    Daemon!.workspaces!.virtualDesktop = inner;
-
-    Daemon!.workspaces!.syncVirtualDesktops(Daemon!.preferences());
-  }
-
-  async startServiceHost(broadcast?: (msg: string) => void) {
-    this.Log("Starting service host");
-
-    Daemon!.serviceHost = await Stack.spawn<IServiceHost>(ServiceHost, undefined, this.userInfo!._id, this.pid);
-    await this.serviceHost?.init(broadcast);
   }
 }

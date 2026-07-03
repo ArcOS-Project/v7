@@ -1,5 +1,5 @@
 import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
-import type { ContextMenuItem } from "$types/app";
+import type { ContextMenuItem } from "$types/apps/app";
 
 export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
   return {
@@ -55,6 +55,11 @@ export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
         caption: "SQL",
         action: () => runtime.language.set("sql"),
         isActive: () => runtime.language() === "sql",
+      },
+      {
+        caption: "ArcBasic",
+        action: () => runtime.language.set("basic"),
+        isActive: () => runtime.language() === "basic",
       },
     ],
   };

@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { BatteryType } from "$types/navigator";
+import type { BatteryType } from "$types/system/navigator";
 import { UserContext } from "../context";
 
 export class PowerUserContext extends UserContext implements IPowerUserContext {
@@ -52,6 +52,8 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
     if (this._disposed || !canLeave) return;
     if (this.serviceHost) this.serviceHost._holdRestart = true;
 
+    await this.shell?.trayHost?.disposeAllTrayIcons();
+
     await this.serviceHost?.spinDown();
     await Stack._killSubProceses(this.pid, true);
     await State?.loadState("login", {
@@ -67,7 +69,7 @@ export class PowerUserContext extends UserContext implements IPowerUserContext {
 
     const windows = Stack.renderer?.currentState
       .map((pid) => Stack.getProcess<IAppProcess>(pid))
-      .filter((proc) => !proc?.app?.data?.core);
+      .filter((proc) => !proc?.app?.data?.core && proc?.app.id !== (Daemon.preferences().globalSettings.shellExec ?? "arcShell"));
 
     if (!windows) return true;
 

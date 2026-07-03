@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShareMgmtGuiRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
@@ -9,7 +10,7 @@
 
 {#if info}
   <div class="header">
-    <img src={process.getIconCached("ShareIcon")} alt="" />
+    <Icon icon="ShareIcon" />
     <div>
       <h1>
         <span>

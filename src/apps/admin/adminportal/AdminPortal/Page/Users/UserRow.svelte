@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { ExpandedUserInfo } from "$types/user";
-  import type { ReadableStore } from "$types/writable";
   import dayjs from "dayjs";
 
   const {
@@ -32,4 +32,5 @@
   <div class="segment created">{created}</div>
   <div class="segment approved" class:is-approved={user.approved}>{user.approved ? "Yes" : "No"}</div>
   <div class="segment admin" class:is-admin={user.admin}>{user.admin ? "Yes" : "No"}</div>
+  <div class="segment system" class:is-system={user.isSystem}>{user.isSystem ? "Yes" : "No"}</div>
 </div>

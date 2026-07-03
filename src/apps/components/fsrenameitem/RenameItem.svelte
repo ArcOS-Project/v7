@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IRenameItemRuntime } from "$interfaces/runtimes/IRenameItemRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
@@ -8,7 +9,7 @@
 </script>
 
 <div class="top">
-  <img src={process.getIconCached("TextEditorIcon")} alt="" />
+  <Icon icon="TextEditorIcon" />
   <div class="right">
     <h1>Rename file or folder</h1>
     <p>Enter a new name for the item:</p>

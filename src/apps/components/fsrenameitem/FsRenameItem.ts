@@ -1,5 +1,5 @@
 import "$css/apps/components/fsrenameitem.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import RenameItem from "./RenameItem.svelte";
 import { RenameItemRuntime } from "./runtime";
 

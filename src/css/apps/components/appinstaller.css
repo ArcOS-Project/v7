@@ -49,6 +49,14 @@
   font-weight: bold;
 }
 
+#AppInstaller > div.body div.log div.item p.content {
+  width: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #AppInstaller > div.body div.ready-to-install {
   height: 100%;
   display: flex;

@@ -1,5 +1,6 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/result";
+import { LogLevel } from "$types/shared/logging";
+import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/shared/result";
 import { AxiosError, type AxiosResponse } from "axios";
 import { Log } from "./logging";
 
@@ -17,14 +18,12 @@ export class CommandResult<T = any> implements ICommandResult<T> {
     this.success = options.success ?? false;
   }
 
-  static Ok<T>(value: T, successMessage?: string) {
-    Log(`CommandResult.Ok`, successMessage ?? "<no message>"); // DEBUG
-
+  static Ok<T>(value?: T, successMessage?: string) {
     return new this<T>(value, { success: true, successMessage });
   }
 
   static Error<T = any>(errorMessage: string) {
-    Log(`CommandResult.Error`, errorMessage ?? "<no message>"); // DEBUG
+    Log(`CommandResult.Error`, errorMessage ?? "<no message>", LogLevel.error); // DEBUG
 
     return new this<T>(undefined, { errorMessage });
   }

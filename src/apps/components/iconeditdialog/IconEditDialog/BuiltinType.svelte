@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Daemon } from "$ts/env";
   import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
 
   const { process }: { process: IIconEditDialogRuntime } = $props();
   const { type, values } = process;
@@ -19,7 +20,7 @@
   <div class="input">
     <div class="field">
       {#if $values[$type]}
-        <img src={process.getIconCached(`@builtin::${$values[$type]}`)} alt="" />
+        <Icon icon="@builtin::{$values[$type]}" />
       {/if}
       <span>{$values[$type]}</span>
     </div>

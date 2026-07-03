@@ -1,6 +1,6 @@
 <script lang="ts">
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import Bar from "./Bar.svelte";
   import Next from "./Controls/Next.svelte";
   import PlayPause from "./Controls/PlayPause.svelte";

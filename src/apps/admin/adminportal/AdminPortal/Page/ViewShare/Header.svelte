@@ -5,8 +5,8 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon, Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
+  import type { UserQuota } from "$types/system/fs";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 

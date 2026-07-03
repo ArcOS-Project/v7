@@ -2,12 +2,13 @@ import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { UpdateWriteOpResult } from "$types/mongo";
-import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/package";
+import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import type JSZip from "jszip";
 
+// !tpa
 export interface IDistributionServiceProcess extends IBaseService {
   _BUSY: string;
   preferences: UserPreferencesStore;
@@ -21,7 +22,7 @@ export interface IDistributionServiceProcess extends IBaseService {
   loadInstalledStoreItemList(noCache?: boolean): Promise<StoreItem[]>;
   writeInstalledStoreItemList(list: StoreItem[]): Promise<boolean>;
   getInstalledStoreItemById(id: string): Promise<StoreItem | undefined>;
-  addPackageToInstalled(item: ArcPackage): Promise<boolean | undefined>;
+  addPackageToInstalled(item: ArcPackage, force?: boolean): Promise<boolean | undefined>;
   removePackageFromInstalled(id: string): Promise<boolean | undefined>;
   loadInstalledPackageList(): Promise<ArcPackage[]>;
   writeInstalledPackageList(list: ArcPackage[]): Promise<boolean>;

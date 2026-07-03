@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
+  import Icon from "$lib/Icon.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./Settings/Sidebar.svelte";
@@ -42,13 +43,15 @@
       <button class="lucide icon-arrow-left" title="Go back" aria-label="Go back" onclick={() => ($slideVisible = false)}
       ></button>
     {/if}
-    <img src={process.getIconCached(pageData?.icon || "SettingsIcon")} alt="" />
+    <Icon icon={pageData?.icon || "SettingsIcon"} />
     <span>{pageData?.name || "Settings"}</span>
   </CustomTitlebar>
   <div class="page-content" class:hide>
-    {#if Page}
-      <Page {process} />
-    {/if}
+    <div class="page-wrapper">
+      {#if Page}
+        <Page {process} />
+      {/if}
+    </div>
   </div>
   <Slide {process} />
 </div>

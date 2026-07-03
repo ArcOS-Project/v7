@@ -1,7 +1,7 @@
 import type { IGlobalLoadIndicatorRuntime } from "$interfaces/runtimes/IGlobalLoadIndicatorRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { GlobalLoadIndicatorProgress } from "./types";
 
 export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoadIndicatorRuntime {
@@ -17,7 +17,9 @@ export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoa
     if (progress) this.progress.set(progress);
 
     this.setSource(__SOURCE__);
+  }
 
+  async render() {
     this.progress.subscribe((v) => {
       this.getWindow()?.classList.toggle("extended", !!v);
     });

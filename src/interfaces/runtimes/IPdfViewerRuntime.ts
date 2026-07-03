@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface IPdfViewerRuntime extends IAppProcess {
   openedFile: ReadableStore<string>;
   documentUrl: ReadableStore<string>;

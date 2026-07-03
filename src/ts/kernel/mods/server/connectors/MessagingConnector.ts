@@ -2,8 +2,8 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMessagingConnector } from "$interfaces/modules/server/IMessagingConnector";
 import { CommandResult } from "$ts/result";
 import { ToAxiosProgress } from "$ts/util";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { ExpandedMessage, ExpandedMessageNode } from "$types/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, Message } from "$types/server/messaging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import { ServerConnector } from ".";
 
 export class MessagingConnector extends ServerConnector implements IMessagingConnector {
@@ -28,7 +28,7 @@ export class MessagingConnector extends ServerConnector implements IMessagingCon
 
   async Thread(messageId?: string): Promise<ICommandResult<ExpandedMessageNode[]>> {
     try {
-      return CommandResult.FromResponse(await this.server.get("/thread" + messageId ? `/${messageId}` : ""));
+      return CommandResult.FromResponse(await this.server.get("/thread" + (messageId ? `/${messageId}` : "")));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -57,7 +57,7 @@ export class MessagingConnector extends ServerConnector implements IMessagingCon
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<ICommandResult> {
+  ): Promise<ICommandResult<Message[]>> {
     try {
       const formData = new FormData();
       formData.set("title", subject);

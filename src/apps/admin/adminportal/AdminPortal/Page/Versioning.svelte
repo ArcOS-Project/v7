@@ -2,6 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import type { IMigrationService } from "$interfaces/services/IMigrationService";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import Icon from "$lib/Icon.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Logo } from "$ts/branding";
   import { Daemon } from "$ts/env";
@@ -16,27 +17,24 @@
   let loading = $state<boolean>(false);
 
   async function populate() {
-    const { incrementProgress, caption, stop } = await Daemon.helpers!.GlobalLoadIndicator("Just a moment...", process.pid, {
-      max: data.users.length,
-      value: 0,
-      useHtml: true,
-    });
+    const { caption, stop } = await Daemon.helpers!.GlobalLoadIndicator("Just a moment...", process.pid);
     loading = true;
     versions = {};
 
-    for (const user of data.users) {
-      caption.set(
-        `Reading configuration for ${user.preferences?.account?.displayName ?? user.username} (${user.username})<br>ID: ${user._id}`
-      );
+    await Promise.all(
+      data.users.map((user) => {
+        new Promise<void>(async (r) => {
+          versions[user._id] = {
+            os: await process.admin.getRegisteredVersionFor(user.username),
+            migrations: await process.admin.getMigrationIndexFor(user.username),
+          };
 
-      versions[user._id] = {
-        os: await process.admin.getRegisteredVersionFor(user.username),
-        migrations: await process.admin.getMigrationIndexFor(user.username),
-      };
+          caption.set(`Read configuration for ${user.preferences?.account?.displayName ?? user.username} (${user.username})`);
 
-      incrementProgress?.(1);
-      versions = versions;
-    }
+          r();
+        });
+      })
+    );
 
     stop?.();
     loading = false;
@@ -52,7 +50,7 @@
 </div>
 <div class="version-list">
   <div class="row header">
-    <img src={Logo()} alt="" />
+    <Icon icon={Logo()} />
     <div class="segment username">Author</div>
     <div class="segment os-version">OS version</div>
     {#each migrations as migration}

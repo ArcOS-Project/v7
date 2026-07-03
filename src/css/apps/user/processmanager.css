@@ -161,6 +161,9 @@
 
 #processManager > div.body div.row div.segment.app-id {
   width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #processManager > div.body div.indent {

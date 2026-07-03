@@ -2,7 +2,7 @@ import { ArcOSVersion } from "$ts/env";
 import { ReleaseLogo } from "$ts/images/branding";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { RegisteredProcess } from "$ts/util/apps";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 
 // Dummy app metadata that can be used when ArcOS encounters
 // an internal exception that can be handled by error.ts

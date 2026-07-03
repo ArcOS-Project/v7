@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IMasterOptionsRuntime } from "$interfaces/runtimes/IMasterOptionsRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
@@ -13,7 +14,7 @@
 </script>
 
 <div class="header">
-  <img src={process.getIconCached("ElevationIcon")} alt="" />
+  <Icon icon="ElevationIcon" />
   <h1>ArcOS Master Options</h1>
 </div>
 <div class="content">

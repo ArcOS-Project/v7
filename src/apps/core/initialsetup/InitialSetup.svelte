@@ -2,7 +2,7 @@
   import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
   import { BETA } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import type { Component } from "svelte";
   import Actions from "./InitialSetup/Actions.svelte";
 
@@ -15,11 +15,11 @@
   pageNumber.subscribe(async (v) => {
     hide = true;
 
-    await Sleep(300);
+    await Sleep(200);
 
     PageComponent = pages[v || 0] as Component;
 
-    await Sleep(300);
+    await Sleep(100);
 
     hide = false;
   });

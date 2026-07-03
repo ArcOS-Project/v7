@@ -1,72 +1,18 @@
 import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IShareManager } from "$interfaces/services/IShareManager";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { ThirdPartyProcess } from "$ts/apps/tpa/process";
+import { Daemon, Stack, SysDispatch } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { isPopulatable } from "$ts/util/apps";
-import { MessageBox } from "$ts/util/dialog";
-import type { App } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
+import type { App } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
 import { UserContext } from "../context";
 
 export class ApplicationsUserContext extends UserContext implements IApplicationsUserContext {
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
-  }
-
-  async spawnAutoload() {
-    if (this._disposed) return;
-
-    const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
-    const autoloadApps: string[] = [];
-
-    this.Log(`Spawning autoload applications`);
-
-    let { startup } = Daemon!.preferences();
-    startup ||= {};
-
-    for (const payload in startup) {
-      const type = startup[payload];
-
-      switch (type.toLowerCase()) {
-        case "app":
-          autoloadApps.push(payload);
-          break;
-        case "file":
-          if (!this.safeMode) await Daemon!.files?.openFile(payload);
-          break;
-        case "folder":
-          if (!this.safeMode) await Daemon!.spawn?.spawnApp("fileManager", this.pid, {}, payload);
-          break;
-        case "share":
-          await shares?.mountShareById(payload);
-          break;
-        case "disabled":
-          break;
-        default:
-          this.Log(`Unknown startup type: ${type.toUpperCase()} (payload: '${payload}')`);
-      }
-    }
-
-    await Daemon!.spawn?.spawnApp("shellHost", this.pid, { noWorkspace: true }, autoloadApps);
-
-    if (this.safeMode) Daemon!.helpers?.safeModeNotice();
-
-    if (navigator.userAgent.toLowerCase().includes("firefox")) {
-      await MessageBox(
-        {
-          title: "Firefox support",
-          message:
-            "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
-          image: "FirefoxIcon",
-        },
-        +Env.get("shell_pid"),
-        true
-      );
-    }
-
-    Daemon!.autoLoadComplete = true;
   }
 
   checkDisabled(appId: string, noSafeMode?: boolean): boolean {
@@ -105,13 +51,13 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     this.Log(`Disabling application ${appId}`);
 
     const appStore = this.appStorage();
-    const app = await appStore?.getAppSynchronous(appId);
+    const app = appStore?.getAppSynchronous(appId);
 
     if (!app || this.isVital(app)) return;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
-      image: Daemon!.icons!.getAppIcon(app),
+      image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -124,7 +70,9 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       return v;
     });
 
-    const instances = Stack.renderer?.getAppInstances(appId);
+    const instances: IAppProcess[] = [...Stack.store()]
+      .map(([_, v]) => v as IAppProcess)
+      .filter((proc) => ProcessesHelper.IsAnyAppProcess(proc) && proc.app.id === appId);
 
     if (instances)
       for (const instance of instances) {
@@ -147,7 +95,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
-      image: Daemon!.icons!.getAppIcon(app),
+      image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
@@ -201,7 +149,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     const store = Stack.store();
 
     for (const [pid, proc] of [...store]) {
-      if (!proc._disposed && proc instanceof ThirdPartyAppProcess) Stack.kill(pid, true);
+      if (!proc._disposed && (proc instanceof ThirdPartyAppProcess || proc instanceof ThirdPartyProcess)) Stack.kill(pid, true);
     }
   }
 }

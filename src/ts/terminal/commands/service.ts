@@ -5,6 +5,7 @@ import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
 import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRGREEN, BRPURPLE, BRRED, BRWHITE, RESET } from "../colors";
+import type { ServiceIdentifier } from "$interfaces/IServiceHost";
 
 export class ServiceCommand extends TerminalProcess {
   static keyword = "service";
@@ -53,7 +54,7 @@ export class ServiceCommand extends TerminalProcess {
   async startCommand(argv: string[], flags: Arguments): Promise<number> {
     this.term?.rl?.println("");
 
-    const serviceId = argv[0];
+    const serviceId = argv[0] as ServiceIdentifier;
     if (!serviceId) {
       this.term?.Error(`Missing arguments`);
       return 1;
@@ -77,7 +78,7 @@ export class ServiceCommand extends TerminalProcess {
   async stopCommand(argv: string[], flags: Arguments): Promise<number> {
     this.term?.rl?.println("");
 
-    const serviceId = argv[0];
+    const serviceId = argv[0] as ServiceIdentifier;
     if (!serviceId) {
       this.term?.Error(`Missing arguments`);
       return 1;
@@ -101,7 +102,7 @@ export class ServiceCommand extends TerminalProcess {
   async restartCommand(argv: string[], flags: Arguments): Promise<number> {
     this.term?.rl?.println("");
 
-    const serviceId = argv[0];
+    const serviceId = argv[0] as ServiceIdentifier;
     if (!serviceId) {
       this.term?.Error(`Missing arguments`);
       return 1;
@@ -141,7 +142,7 @@ export class ServiceCommand extends TerminalProcess {
   }
 
   async infoCommand(argv: string[], flags: Arguments): Promise<number> {
-    const serviceId = argv[0];
+    const serviceId = argv[0] as ServiceIdentifier;
     if (!serviceId) {
       this.term?.Error(`Missing arguments`);
       return 1;

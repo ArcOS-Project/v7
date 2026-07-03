@@ -16,10 +16,13 @@ import { shareService } from "$ts/servicehost/services/ShareMgmt";
 import { trashService } from "$ts/servicehost/services/TrashSvc";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import { LogLevel } from "$types/logging";
-import type { ReadableServiceStore, ServiceChangeResult, ServiceStore } from "$types/service";
-import type { IBaseService, IServiceHost } from "../../interfaces/IServiceHost";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/services/service";
+import { LogLevel } from "$types/shared/logging";
+import type { IBaseService, IServiceHost, ServiceIdentifier } from "../../interfaces/IServiceHost";
+import { arcFindService } from "./services/ArcFindSvc";
 import { migrationService } from "./services/MigrationSvc";
+import { systemShortcutsService } from "./services/SystemShortcutsSvc";
+import { trayHostService } from "./services/TrayHostSvc";
 import { ServiceChangeResultCaptions } from "./store";
 
 export class ServiceHost extends Process implements IServiceHost {
@@ -105,12 +108,15 @@ export class ServiceHost extends Process implements IServiceHost {
 
   //#endregion
 
-  readonly STORE = new Map([
+  readonly STORE = new Map<ServiceIdentifier, Service>([
     ["TrashSvc", { ...trashService }],
     ["BugHuntUsp", { ...bhuspService }],
     ["ShareMgmt", { ...shareService }],
+    ["ArcFindSvc", { ...arcFindService }],
+    ["SystemShortcutsSvc", { ...systemShortcutsService }],
     ["AppStorage", { ...appStoreService }],
     ["ProtoService", { ...protoService }],
+    ["TrayHostSvc", { ...trayHostService }],
     ["AdminBootstrapper", { ...adminService }],
     ["FileAssocSvc", { ...fileAssocService }],
     ["GlobalDispatch", { ...globalDispatchService }],
@@ -145,14 +151,14 @@ export class ServiceHost extends Process implements IServiceHost {
     return (this._storeLoaded = true);
   }
 
-  getServiceInfo(id: string) {
+  getServiceInfo(id: ServiceIdentifier) {
     const services = this.Services.get();
     const service = services.get(id);
 
     return service;
   }
 
-  async startService(id: string, broadcast?: (msg: string) => void): Promise<ServiceChangeResult> {
+  async startService(id: ServiceIdentifier, broadcast?: (msg: string) => void): Promise<ServiceChangeResult> {
     broadcast ||= (m) => this.Log(`startService for ${id}: ${m}`);
     this.Log(`Starting service ${id}...`);
 
@@ -177,7 +183,7 @@ export class ServiceHost extends Process implements IServiceHost {
     return "success";
   }
 
-  public async stopService(id: string, broadcast?: (m: string) => void): Promise<ServiceChangeResult> {
+  public async stopService(id: ServiceIdentifier, broadcast?: (m: string) => void): Promise<ServiceChangeResult> {
     broadcast ||= (m) => this.Log(`stopService for ${id}: ${m}`);
     this.Log(`Stopping service ${id}...`);
 
@@ -204,7 +210,7 @@ export class ServiceHost extends Process implements IServiceHost {
     return "success";
   }
 
-  public async restartService(id: string): Promise<ServiceChangeResult> {
+  public async restartService(id: ServiceIdentifier): Promise<ServiceChangeResult> {
     const services = this.Services.get();
 
     if (!services.has(id)) return "err_noExist";
@@ -237,7 +243,7 @@ export class ServiceHost extends Process implements IServiceHost {
     }
   }
 
-  public getService<T extends IBaseService = IBaseService>(id: string): T | undefined {
+  public getService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined {
     const store = this.Services();
     const service = store.get(id);
 
@@ -249,12 +255,21 @@ export class ServiceHost extends Process implements IServiceHost {
     return Stack.getProcess(service.pid) as T;
   }
 
-  public hasService(id: string): boolean {
+  public hasService(id: ServiceIdentifier): boolean {
     const store = this.Services();
     const service = store.get(id);
 
     if (!store.has(id) || !service) return false;
 
     return true;
+  }
+
+  Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void) {
+    this.Services.subscribe(() => {
+      const svc = this.getService<T>(id);
+
+      if (svc) onActive(svc);
+      else onInactive?.();
+    });
   }
 }

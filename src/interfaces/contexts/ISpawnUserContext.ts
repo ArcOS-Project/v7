@@ -1,19 +1,24 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { App, AppProcessSpawnOptions } from "$types/app";
+import type { App, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/apps/app";
 
+// !tpa
 export interface ISpawnUserContext extends IUserContext {
-  spawnApp<T extends IProcess>(
-    id: string,
-    parentPid?: number,
-    options?: AppProcessSpawnOptions,
-    ...args: any[]
-  ): Promise<T | undefined>;
   spawnAppMeta<T extends IProcess>(
     app: App,
     parentPid?: number,
     options?: AppProcessSpawnOptions,
     ...args: any[]
   ): Promise<T | undefined>;
+  spawnApp<T extends IProcess>(
+    id: string,
+    parentPid?: number,
+    options?: AppProcessSpawnOptions,
+    ...args: any[]
+  ): Promise<T | undefined>;
+  tpaEntrypoint(app: InstalledApp, ...args: any[]): Promise<ICommandResult<TpaSpawnEntrypointResult>>;
   tpaError_noEnableThirdParty(): void;
+  clearEntrypointCache(): void;
 }
+// !endtpa

@@ -1,9 +1,10 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-import { sliceIntoChunks } from "$ts/util";
-import type { PartialUserTotp, Token } from "$types/admin";
+import { IsBeta } from "$ts/util";
+import type { PartialUserTotp, Token } from "$types/server/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
-import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
+import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
+import BetaFeedback from "./AdminPortal/Page/BetaFeedback.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
@@ -16,6 +17,7 @@ import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
 import Versioning from "./AdminPortal/Page/Versioning.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
+import ViewBugReportSource from "./AdminPortal/Page/ViewBugReportSource.svelte";
 import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
 import ViewStoreItem from "./AdminPortal/Page/ViewStoreItem.svelte";
@@ -44,7 +46,6 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Bug Hunt",
       icon: "bug",
       content: BugHunt,
-      separator: true,
       scopes: [AdminScopes.adminBugHuntList, AdminScopes.adminBugHuntStats],
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
@@ -73,6 +74,42 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         const id = process.switchPageProps().id;
 
         return { report: await process.admin.getBugReport(id) };
+      },
+    },
+  ],
+  [
+    "viewBugReportSource",
+    {
+      name: "View Source Code for Bug Report",
+      content: ViewBugReportSource,
+      hidden: true,
+      scopes: [AdminScopes.adminBugHuntGet],
+      icon: "",
+      parent: "viewBugReport",
+      props: async (process) => {
+        const id = process.switchPageProps().id;
+        const report = await process.admin.getBugReport(id);
+        if (!report) return { report };
+
+        const source = await process.admin.getReportSourceFile(report);
+
+        return { report, source };
+      },
+    },
+  ],
+  [
+    "betaFeedback",
+    {
+      name: "Beta feedback",
+      content: BetaFeedback,
+      hidden: !IsBeta(),
+      scopes: [],
+      icon: "flask-conical",
+      separator: true,
+      props: async (process) => {
+        const versions = (await process.admin.getBetaFeedbackVersions()).result ?? {};
+
+        return { versions };
       },
     },
   ],
@@ -262,11 +299,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Audit log",
       icon: "scroll-text",
-      content: AuditLog,
+      content: AuditLogQueryable,
       props: async (process) => {
         return {
-          // Chunk the logs into 20 items to reduce lag, and have the newest presented first.
-          audits: sliceIntoChunks((await process.admin.getAuditLog()).reverse(), 20),
           users: await process.admin.getAllUsers(),
         };
       },

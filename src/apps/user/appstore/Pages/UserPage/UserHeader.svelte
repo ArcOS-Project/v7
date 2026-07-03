@@ -1,11 +1,18 @@
 <script lang="ts">
+  import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/env";
   import { Plural } from "$ts/util";
-  import type { PartialStoreItem } from "$types/package";
+  import type { PartialStoreItem } from "$types/tpa/package";
   import type { PublicUserInfo } from "$types/user";
 
-  const { process, user, results }: { process: IAppStoreRuntime; user: PublicUserInfo; results: PartialStoreItem[] } = $props();
+  const {
+    process,
+    user,
+    results,
+    userId,
+  }: { process: IAppStoreRuntime; user: PublicUserInfo; results: PartialStoreItem[]; userId: string } = $props();
 
   const hasOfficials = results.filter((r) => r.official).length > 0;
   const hasPackages = results.length > 0;
@@ -14,9 +21,9 @@
 {#if user}
   <div class="user-header">
     <!-- TODO: add loginBackground to PublicUserInfo so that it can be used here -->
-    <img src={user.profilePicture} alt="" class="banner fallback" />
+    <img src={Daemon.GetConnector<IUserConnector>("UserConnector").LoginBgUrl(userId)} alt="" class="banner" />
     <div class="user-info">
-      <ProfilePicture height={64} fallback={user.profilePicture} showOnline online={user.dispatchClients > 0} />
+      <ProfilePicture height={64} {userId} showOnline online={user.dispatchClients > 0} />
       <div class="info">
         <h1>{user.displayName || user.username}</h1>
         <p>{results.length} {Plural("package", results.length)}</p>

@@ -14,4 +14,5 @@ export const CodTranslations: Record<string, CodLang> = {
   xml: "xml",
   arclnk: "json",
   arcpl: "plaintext",
+  bas: "basic",
 };

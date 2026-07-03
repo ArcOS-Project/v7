@@ -6,12 +6,12 @@ import { arrayBufferToText } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ArcPackage } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime{
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime {
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
-  import type { Service } from "$types/service";
+  import Icon from "$lib/Icon.svelte";
+  import type { Service } from "$types/services/service";
 
   const { process, service, id }: { process: IProcessManagerRuntime; service: Service; id: string } = $props();
   const { selected } = process;
@@ -10,7 +11,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="row service" onclick={() => ($selected = `svc#${id}`)} class:selected={$selected === `svc#${id}`}>
   <div class="segment name">
-    <img src={process.getIconCached("ComponentIcon")} alt="" />
+    <Icon icon="ComponentIcon" />
     <span>{service.name}</span>
   </div>
   <div class="segment description">{service.description}</div>

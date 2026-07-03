@@ -1,8 +1,8 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
-import { TerminalProcess } from "../process";
 import { BRBLUE, BRCYAN, BRPURPLE, BRYELLOW, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class EchoCommand extends TerminalProcess {
   public static keyword: string = "echo";

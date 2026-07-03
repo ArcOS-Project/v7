@@ -2,13 +2,15 @@ import type { FileProgressMutator, FsProgressOperation } from "$apps/components/
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { LegacyConnectionInfo } from "$types/legacy";
-import type { ArcShortcut } from "$types/shortcut";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
+import type { FileHandler, FileOpenerResult, UploadReturn } from "$types/system/fs";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 
+// !tpa
 export interface IFilesystemUserContext extends IUserContext {
   TempFs?: IMemoryFilesystemDrive;
   fileHandlers: Record<string, FileHandler>;
@@ -29,6 +31,11 @@ export interface IFilesystemUserContext extends IUserContext {
   getThumbnailFor(path: string): Promise<string | undefined>;
   mountLegacyFilesystem(connectionInfo: LegacyConnectionInfo): Promise<false | ILegacyServerDrive>;
   moveToTrashOrDeleteItem(path: string, dispatch?: boolean): Promise<boolean>;
-  normalizePath(path: string): string;
+  moveToTrashOrDeleteItemAck(directory: string, paths: string[], dispatch?: boolean): Promise<void>;
   mountSourceDrive(): Promise<IFilesystemDrive | false>;
+  uploadItems(path: string): Promise<ICommandResult<UploadReturn>>;
+  setCopyList(paths: string[]): void;
+  setCutList(paths: string[]): void;
+  pasteItems(destination: string): Promise<void>;
 }
+// !endtpa

@@ -1,4 +1,4 @@
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
 import { get, writable } from "svelte/store";
 
 export function Store<T>(initial?: T): ReadableStore<T> {

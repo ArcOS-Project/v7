@@ -49,3 +49,7 @@
 #systemSettings div.slide-wrapper.visible div.slide {
   translate: 0;
 }
+
+#systemSettings div.slide-wrapper div.slide div.window-action-bar {
+  background-color: var(--win-bg);
+}

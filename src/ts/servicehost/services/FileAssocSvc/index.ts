@@ -7,8 +7,8 @@ import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/assoc";
-import type { Service } from "$types/service";
+import type { Service } from "$types/services/service";
+import type { ExpandedFileAssociationInfo, FileAssociationConfig } from "$types/system/assoc";
 import { DefaultFileDefinitions } from "./store";
 
 export class FileAssocService extends BaseService implements IFileAssocService {
@@ -90,7 +90,7 @@ export class FileAssocService extends BaseService implements IFileAssocService {
     return {
       extension: extension,
       friendlyName: definition?.friendlyName || "Unknown",
-      icon: Daemon!.icons!.getIconCached(definition?.icon || "DefaultMimeIcon"),
+      icon: definition?.icon || "DefaultMimeIcon",
       handledBy: {
         app: storage?.getAppSynchronous(
           Object.entries(associations.apps)

@@ -1,5 +1,5 @@
 import "$css/apps/user/qlorb.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Qlorb from "./Qlorb.svelte";
 import { QlorbRuntime } from "./runtime";
 

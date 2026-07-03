@@ -1,8 +1,9 @@
 import type { MultiUpdateStatus, MultiUpdateStatusNode } from "$apps/components/multiupdategui/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { InstallStatus, StoreItem } from "$types/package";
-import type { ReadableStore } from "$types/writable";
+import type { ReadableStore } from "$types/shared/writable";
+import type { InstallStatus, StoreItem } from "$types/tpa/package";
 
+// !tpa
 export interface IMultiUpdateGuiRuntime extends IAppProcess {
   status: ReadableStore<MultiUpdateStatus>;
   currentPackage: ReadableStore<StoreItem | undefined>;

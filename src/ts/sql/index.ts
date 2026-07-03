@@ -1,5 +1,5 @@
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
-import { Fs } from "$ts/env";
+import { Daemon, Fs, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import initSqlJs from "sql.js";
 import { sqljsResultToJSON } from "../util/sql";
@@ -88,5 +88,9 @@ export class SqlInterfaceProcess extends Process implements ISqlInterfaceProcess
     } catch (e) {
       return `${e}`;
     }
+  }
+
+  static async Create(parentPid: number, path: string): Promise<ISqlInterfaceProcess | undefined> {
+    return await Stack.spawn<ISqlInterfaceProcess>(this, undefined, Daemon?.userInfo?._id, parentPid, path);
   }
 }

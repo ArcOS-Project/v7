@@ -1,7 +1,8 @@
 import type { IProcess } from "$interfaces/IProcess";
-import type { AxiosProgressEvent } from "$types/axios";
-import type { FilesystemProgressCallback } from "$types/fs";
-import { ShortLogLevelCaptions, type LogItem } from "$types/logging";
+import { ArcMode } from "$ts/metadata/mode";
+import type { AxiosProgressEvent } from "$types/libraries/axios";
+import { ShortLogLevelCaptions, type LogItem } from "$types/shared/logging";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import { passwordStrength } from "check-password-strength";
 import { sha256 as sha256Fallback } from "js-sha256";
 import leoProfanity from "leo-profanity";
@@ -138,11 +139,15 @@ export const Gap = (n: number, s = " ") => s.repeat(n);
 
 export function tryParseInt(input: any, returnsUndefined = false) {
   try {
-    return parseInt(input);
+    const parsed = parseInt(input);
+    if (Number.isNaN(parsed)) throw "";
+
+    return parsed;
   } catch {
     return returnsUndefined ? undefined : input;
   }
 }
+
 export function sortByKey<T extends any[]>(array: T, key: string, reverse = false) {
   return array.sort(function (a, b) {
     const x = a[key];
@@ -320,4 +325,31 @@ export function ToAxiosProgress(
       value: progress.loaded || 0,
       type,
     });
+}
+
+export const IsBeta = () =>
+  !import.meta.env.DEV &&
+  ArcMode() === "betabranch" &&
+  (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");
+
+const escapeMap: Record<string, string> = {
+  "\\n": "\n",
+  "\\r": "\r",
+  "\\t": "\t",
+  "\\b": "\b",
+  "\\f": "\f",
+  "\\0": "\0",
+  "\\\\": "\\",
+  '\\"': '"',
+};
+
+export function unescapeEscapeChars(str: string) {
+  return str.replaceAll(/\\[nrtbf0\\]/g, (match) => escapeMap[match]);
+}
+
+export function escapeEscapeChars(str: string) {
+  for (const key in escapeMap) {
+    str = str.replaceAll(escapeMap[key], key);
+  }
+  return str;
 }

@@ -16,7 +16,7 @@ import type {
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 
 export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
   private isNightly = false;

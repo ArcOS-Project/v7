@@ -1,14 +1,15 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
-import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
 import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { BaseService } from "$ts/servicehost/base";
 import { MessageBox } from "$ts/util/dialog";
-import type { DevEnvActivationResult, ProjectMetadata } from "$types/devenv";
-import type { Service } from "$types/service";
+import type { DevEnvActivationResult, ProjectMetadata } from "$types/services/devenv";
+import type { Service } from "$types/services/service";
 import type { AxiosInstance } from "axios";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
@@ -84,16 +85,14 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
       },
     });
 
-    Stack.store.subscribe((v) => {
+    Stack.store.subscribe(() => {
       if (this._disposed) return;
 
-      const procs = [...v]
-        .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
-        .map(([pid]) => pid);
+      const pids = this.getPids();
 
       if (this.connected) {
-        this.client?.emit("pids", procs);
-        this.pids = procs;
+        this.client?.emit("pids", pids);
+        this.pids = pids;
       }
     });
 
@@ -101,7 +100,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
     if (!this.meta) return abort("ping_failed");
     if ((this.meta.devPort || 3128) !== this.port) return abort("port_mismatch");
-    if (this.meta.buildHash !== ArcBuild()) return abort("build_mismatch");
+    if (this.meta.buildHash !== ArcBuild() && ArcMode() !== "betabranch") return abort("build_mismatch");
 
     const drive = await this.mountDevDrive();
 
@@ -124,7 +123,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
           {
             title: "ArcDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
-            image: Daemon?.icons!.getIconCached("ErrorIcon"),
+            image: "ErrorIcon",
             sound: "arcos.dialog.error",
             buttons: [{ caption: "Okay", action: () => {} }],
           },
@@ -201,11 +200,9 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
   async killTpa() {
     if (this._disposed) return this.disconnect();
 
-    const procs = [...Stack.store()]
-      .filter(([_, proc]) => proc instanceof ThirdPartyAppProcess && proc.app.id === this.meta?.metadata.appId)
-      .map(([pid]) => pid);
+    const pids = this.getPids();
 
-    for (const pid of procs) {
+    for (const pid of pids) {
       await Stack.kill(pid, true);
     }
   }
@@ -214,8 +211,8 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
     const processes = this.pids.map((pid) => Stack.getProcess<IThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
 
     for (const proc of processes) {
-      if (proc.elements[filename] && proc.elements[filename] instanceof HTMLLinkElement) {
-        const link = proc.elements[filename];
+      if (proc.elements?.[filename] && proc.elements?.[filename] instanceof HTMLLinkElement) {
+        const link = proc.elements?.[filename]!;
         const href = `${link.href}`;
 
         link.href = "";
@@ -224,6 +221,17 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
         }, 0);
       }
     }
+  }
+
+  private getPids() {
+    return [...Stack.store()]
+      .filter(
+        ([_, proc]) =>
+          ProcessesHelper.IsAnyThirdPartyProcess(proc) &&
+          proc.app.id === this.meta?.metadata.appId &&
+          proc.workingDirectory === `V:/`
+      )
+      .map(([pid]) => pid);
   }
 }
 

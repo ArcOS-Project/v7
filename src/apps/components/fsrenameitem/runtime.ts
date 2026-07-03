@@ -3,7 +3,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Fs } from "$ts/env";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
 export class RenameItemRuntime extends AppProcess implements IRenameItemRuntime {
   newName = Store<string>();

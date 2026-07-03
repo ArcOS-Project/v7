@@ -1,5 +1,5 @@
 import "$css/apps/components/shell.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShellRuntime } from "./runtime";
 import Shell from "./Shell.svelte";
 

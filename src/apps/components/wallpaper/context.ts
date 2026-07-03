@@ -2,8 +2,8 @@ import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
 import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { getParentDirectory } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { FileEntry } from "$types/fs";
+import type { AppContextMenu } from "$types/apps/app";
+import type { FileEntry } from "$types/system/fs";
 
 export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu {
   const shellPid = () => +Env.get("shell_pid");
@@ -21,6 +21,29 @@ export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu
         action: (_, runtimePath) => {
           Daemon?.files?.openWith(runtimePath);
         },
+      },
+      { sep: true },
+      {
+        caption: "Cut",
+        icon: "scissors",
+        action: (_, path) => {
+          Daemon.files?.setCutList([path]);
+        },
+      },
+      {
+        caption: "Copy",
+        icon: "copy",
+        action: (_, path) => {
+          Daemon.files?.setCopyList([path]);
+        },
+      },
+      {
+        caption: "Paste",
+        icon: "clipboard",
+        action: () => {
+          Daemon.files?.pasteItems(UserPaths.Desktop);
+        },
+        disabled: () => !Daemon.canPaste,
       },
       { sep: true },
       {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { UserPaths } from "$ts/user/store";
   import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { UserPaths } from "$ts/user/store";
   import DriveEntry from "./Sidebar/DriveEntry.svelte";
   import RootFolder from "./Sidebar/RootFolder.svelte";
 

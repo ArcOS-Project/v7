@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
-  import { ElevationLevel } from "$types/elevation";
-  import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
+  import { ElevationLevel } from "$types/system/elevation";
 
   const { process }: { process: ISecureContextRuntime } = $props();
   const { userPreferences, loading, password, data } = process;

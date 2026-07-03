@@ -6,10 +6,11 @@ import type {
 } from "$apps/user/filemanager/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { DirectoryReadReturn, FolderEntry } from "$types/fs";
-import type { ShortcutStore } from "$types/shortcut";
-import type { BooleanStore, ReadableStore, StringStore } from "$types/writable";
+import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
+import type { DirectoryReadReturn, FolderEntry } from "$types/system/fs";
+import type { ShortcutStore } from "$types/system/shortcut";
 
+// !tpa
 export interface IFileManagerRuntime extends IAppProcess {
   path: StringStore;
   contents: ReadableStore<DirectoryReadReturn | undefined>;
@@ -47,7 +48,6 @@ export interface IFileManagerRuntime extends IAppProcess {
   openFile(path: string): void;
   createShortcut(name: string, path: string, folder?: boolean): Promise<void>;
   deleteSelected(): Promise<void>;
-  confirmDeleteSelected(isUserFs?: boolean): Promise<void>;
   downloadSelected(): Promise<void>;
   singlefySelected(): void;
   updateSelection(e: MouseEvent, path: string): void;

@@ -2,8 +2,8 @@ import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { KernelLogs } from "$ts/kernel/getters";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { LogItem } from "$types/logging";
+import type { AppProcessData } from "$types/apps/app";
+import type { LogItem } from "$types/shared/logging";
 import type { CollectorResult, FilterLevel, LogSource } from "./types";
 
 export class LoggingRuntime extends AppProcess implements ILoggingRuntime {
@@ -22,16 +22,18 @@ export class LoggingRuntime extends AppProcess implements ILoggingRuntime {
     this.archive = archive || [];
     this.isArchive = this.archive.length > 0;
 
+    if (source) this.currentSource.set(source);
+    if (level !== undefined) this.selectedLevel.set(level);
+
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
     this.updateGroups();
 
     this.dispatch.subscribe("change-source", (source) => {
       this.currentSource.set(source);
     });
-
-    if (source) this.currentSource.set(source);
-    if (level !== undefined) this.selectedLevel.set(level);
-
-    this.setSource(__SOURCE__);
   }
 
   //#endregion

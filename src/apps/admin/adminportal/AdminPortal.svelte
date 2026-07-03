@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
+  import { BlankIcon } from "$ts/images/general";
   import { onMount, type Component } from "svelte";
   import Sidebar from "./AdminPortal/Sidebar.svelte";
   import StatusBar from "./AdminPortal/StatusBar.svelte";
@@ -59,7 +61,7 @@
         title="Parent directory"
       ></button>
     {/if}
-    <img src={$windowIcon} alt="" />
+    <Icon icon={$windowIcon} fallback={BlankIcon} />
     <span>{$windowTitle}</span>
   </CustomTitlebar>
   <div class="page-content">

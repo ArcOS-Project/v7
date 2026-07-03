@@ -1,6 +1,7 @@
 import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
 import type { IShareConnector } from "$interfaces/modules/server/IShareConnector";
 import { Daemon } from "$ts/env";
+import type { SharedDriveType } from "$types/server/shares";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -8,8 +9,7 @@ import type {
   FilesystemProgressCallback,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
-import type { SharedDriveType } from "$types/shares";
+} from "$types/system/fs";
 import { FilesystemDrive } from "./generic";
 
 export class SharedDrive extends FilesystemDrive implements ISharedDrive {

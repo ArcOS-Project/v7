@@ -1,12 +1,9 @@
-import {
-  DummyFileProgress,
-  type FileProgressMutator,
-  type FsProgressOperation,
-} from "$apps/components/fsprogress/types";
+import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
@@ -16,16 +13,18 @@ import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { LegacyServerDrive } from "$ts/kernel/mods/fs/drives/legacy";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
-import { DefaultFileHandlers, UserPaths } from "$ts/user/store";
+import { CommandResult } from "$ts/result";
+import { DefaultFileHandlers, SystemFolders, UserPathCaptions, UserPaths } from "$ts/user/store";
+import { Plural } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import { ElevationLevel } from "$types/elevation";
-import type { FileHandler, FileOpenerResult } from "$types/fs";
-import type { LegacyConnectionInfo } from "$types/legacy";
-import type { ArcShortcut } from "$types/shortcut";
+import type { LegacyConnectionInfo } from "$types/external/legacy";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FileHandler, FileOpenerResult, RecyclingStrategy, UploadReturn } from "$types/system/fs";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { CategorizedDiskUsage } from "$types/user";
 import { UserContext } from "../context";
 
@@ -549,32 +548,170 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     return await Fs.deleteItem(path, dispatch);
   }
 
-  normalizePath(path: string) {
-    const driveMatch = /^[A-Za-z]:/.exec(path);
-    const guidMatch = /^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}/.exec(path);
-    const prefix = driveMatch ? driveMatch[0] : guidMatch ? guidMatch[0] : "";
+  async moveToTrashOrDeleteItemAck(directory: string, paths: string[], dispatch = false) {
+    if (!paths.length) return;
 
-    let rest = path.slice(prefix.length);
+    const targetPid = Daemon.getShell()?.pid || Daemon.pid;
+    const entries = Object.entries(UserPaths);
+    const preferences = Daemon.preferences();
 
-    const hasLeading = rest.startsWith("/");
-
-    const parts = rest.split("/").filter(Boolean);
-    const stack = [];
-
-    for (const p of parts) {
-      if (p === ".") continue;
-      if (p === "..") {
-        if (stack.length) stack.pop();
-        continue;
+    for (const path of paths) {
+      for (const [key, userPath] of entries) {
+        if (
+          preferences.security.restrictSystemFolders &&
+          (SystemFolders.includes(path) ? userPath === path || getParentDirectory(path) === userPath : path === userPath)
+        ) {
+          this.SystemFolderDeletionRestricted(key);
+        }
       }
-      stack.push(p);
     }
 
-    const result = prefix + (hasLeading ? "/" : "") + stack.join("/");
-    return result || prefix || ".";
+    const isUserFs =
+      directory.startsWith(UserPaths.Root) &&
+      Daemon.serviceHost?.getService("TrashSvc") &&
+      !preferences.globalSettings.disableTrashCan;
+
+    const itemsPlural = Plural("item", paths.length);
+    const title = `Delete ${paths.length} ${itemsPlural}?`;
+    const message = isUserFs
+      ? `Are you sure you want to move ${itemsPlural} to the Recycle Bin?`
+      : `Are you sure you want to <b>permanently</b> delete the selected ${itemsPlural}? This cannot be undone.`;
+
+    const response = await new Promise<RecyclingStrategy>((r) =>
+      MessageBox(
+        {
+          title,
+          message,
+          image: "TrashIcon",
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Cancel",
+              action: () => r("cancel"),
+            },
+            {
+              caption: "Delete permanently",
+              action: () => r("incinerate"),
+              hide: () => !isUserFs,
+            },
+            {
+              caption: "Recycle",
+              action: () => r("recycle"),
+              suggested: true,
+            },
+          ],
+        },
+        targetPid,
+        true
+      )
+    );
+
+    if (response === "cancel") return;
+
+    const plural = `${paths.length} ${Plural("item", paths.length)}`;
+    const prog = await this.FileProgress(
+      {
+        max: paths.length,
+        type: "quantity",
+        icon: "TrashIcon",
+        caption: isUserFs ? `Moving ${plural} to the Recycle Bin...` : `Deleting ${plural}...`,
+        subtitle: "Working...",
+      },
+      targetPid
+    );
+
+    prog.show();
+
+    for (const path of paths) {
+      prog.updSub(path);
+
+      try {
+        if (isUserFs && response !== "incinerate") await this.moveToTrashOrDeleteItem(path, dispatch);
+        else await Fs.deleteItem(path, dispatch);
+      } catch (e: any) {
+        prog.mutErr(`Failed to delete ${getItemNameFromPath(path)}: ${e?.message ?? e}`);
+      }
+
+      prog.mutDone(+1);
+    }
+
+    SysDispatch.dispatch("fs-flush-folder", directory);
   }
 
   async mountSourceDrive(): Promise<IFilesystemDrive | false> {
     return await Fs.mountDrive<IFilesystemDrive>("src", SourceFilesystemDrive, "S");
+  }
+
+  async uploadItems(path: string, accept = "*/*", multiple = true): Promise<ICommandResult<UploadReturn>> {
+    const prog = await Daemon!.files!.FileProgress(
+      {
+        type: "size",
+        icon: "UploadIcon",
+        caption: "Uploading your files...",
+        subtitle: `To ${getItemNameFromPath(path)}`,
+      },
+      this.pid
+    );
+
+    try {
+      const result = await Fs.uploadFiles(path, accept, multiple, async (progress) => {
+        prog.show();
+        prog.setDone(0);
+        prog.setMax(progress.max + 1);
+        prog.setDone(progress.value);
+        if (progress.what) prog.updSub(progress.what);
+      });
+
+      prog.stop();
+
+      return CommandResult.Ok(result);
+    } catch (e: any) {
+      const err = e?.message ?? `${e}`;
+      prog.mutErr(err);
+    }
+
+    prog.stop();
+
+    return CommandResult.Ok([]);
+  }
+
+  public setCutList(paths: string[]) {
+    Daemon.copyList.set([]);
+    Daemon.cutList.set(paths || []);
+  }
+
+  public setCopyList(paths: string[]) {
+    Daemon.copyList.set(paths || []);
+    Daemon.cutList.set([]);
+  }
+
+  public async pasteItems(destination: string) {
+    const copyList = Daemon!.copyList();
+    const cutList = Daemon!.cutList();
+
+    if (!copyList.length && !cutList.length) return;
+
+    if (copyList.length) await this.copyMultiple(copyList, destination, this.pid);
+    else if (cutList.length) await this.moveMultiple(cutList, destination, this.pid);
+
+    Daemon?.copyList.set([]);
+    Daemon?.cutList.set([]);
+  }
+
+  SystemFolderDeletionRestricted(userPathKey: string) {
+    const name = (UserPathCaptions as any)[userPathKey];
+    const path = (UserPaths as any)[userPathKey];
+
+    MessageBox(
+      {
+        title: `${name}`,
+        message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
+        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        sound: "arcos.dialog.warning",
+        image: "InfoIcon",
+      },
+      this.pid,
+      true
+    );
   }
 }

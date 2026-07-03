@@ -2,7 +2,7 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import { Daemon } from "$ts/env";
   import { Store } from "$ts/writable";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import ListItem from "../ListItem.svelte";
 
   const { process }: { process: IShellRuntime } = $props();

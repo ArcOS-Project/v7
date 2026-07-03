@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
-  import type { AppComponentProps } from "$types/app";
+  import type { AppComponentProps } from "$types/apps/app";
   import Actions from "./SecureContext/Actions.svelte";
   import Display from "./SecureContext/Display.svelte";
   import Header from "./SecureContext/Header.svelte";
@@ -12,10 +12,10 @@
 </script>
 
 {#if data}
-  <Header {data} {process}></Header>
+  <Header {data}></Header>
   <div class="top">
     <p class="what">{@html data.what}</p>
-    <Display {data} {process} />
+    <Display {data} />
     <Notice {userPreferences} />
     <Password {process} />
     <div class="login-status">

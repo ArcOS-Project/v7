@@ -5,8 +5,8 @@ import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { FileEntry, FolderEntry } from "$types/fs";
+import type { AppContextMenu } from "$types/apps/app";
+import type { FileEntry, FolderEntry } from "$types/system/fs";
 import type { QuotedDrive } from "./types";
 
 export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContextMenu {
@@ -115,39 +115,34 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
         subItems: [
           {
             caption: "Thumbnail view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "thumbnail",
             icon: "file-image",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = true;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "thumbnail";
                 return v;
               }),
           },
           {
             caption: "Grid view",
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "grid",
             icon: "columns-3",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = true;
+                v.appPreferences.fileManager.viewMode = "grid";
                 return v;
               }),
           },
           {
-            caption: "Thumbnail view",
-            isActive: () =>
-              !runtime.userPreferences().appPreferences.fileManager?.grid &&
-              !runtime.userPreferences().appPreferences.fileManager?.thumbnails,
+            caption: "List view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "list",
             icon: "list",
             disabled: () => !!runtime.virtual(),
             action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager.thumbnails = false;
-                v.appPreferences.fileManager.grid = false;
+                v.appPreferences.fileManager.viewMode = "list";
                 return v;
               }),
           },
@@ -299,8 +294,7 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
       {
         caption: "Delete",
         icon: "trash-2",
-        action: (_, runtimePath) => {
-          runtime.selection.set([runtimePath]);
+        action: () => {
           runtime.deleteSelected();
         },
         disabled: () => !!runtime.drive()?.READONLY,

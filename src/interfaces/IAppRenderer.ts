@@ -1,8 +1,9 @@
-import type { App, AppProcessData, WindowResizer } from "$types/app";
-import type { ReadableStore } from "$types/writable";
+import type { App, AppProcessData, WindowResizer } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
 import type { IAppProcess } from "./IAppProcess";
 import type { IProcess } from "./IProcess";
 
+// !tpa
 export interface IAppRenderer extends IProcess {
   currentState: number[];
   target: HTMLDivElement;
@@ -32,3 +33,4 @@ export interface IAppRenderer extends IProcess {
   notifyCrash(data: App, reason: any, process?: IAppProcess): Promise<void>;
   centerWindow(proc: IAppProcess): Promise<void>;
 }
+// !endtpa

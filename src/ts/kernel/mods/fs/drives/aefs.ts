@@ -11,7 +11,7 @@ import type {
   FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 
 export class AdminServerDrive extends FilesystemDrive implements IFilesystemDrive {
   private targetUsername: string;

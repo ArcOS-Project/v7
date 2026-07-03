@@ -3,6 +3,7 @@
   import { Daemon } from "$ts/env";
   import { MessageBox } from "$ts/util/dialog";
   import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IShareMgmtOverlayRuntime } = $props();
   let newName = $state<string>();
@@ -45,7 +46,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("ShareIcon")} alt="" />
+    <Icon icon="ShareIcon" />
   </div>
   <div class="right">
     <h1>Rename share</h1>

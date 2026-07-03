@@ -9,7 +9,7 @@ import type {
   FolderEntry,
   RecursiveDirectoryReadReturn,
   UserQuota,
-} from "$types/fs";
+} from "$types/system/fs";
 
 export class MemoryFilesystemDrive extends FilesystemDrive implements IMemoryFilesystemDrive {
   private readonly data: Record<string, any> = {};
