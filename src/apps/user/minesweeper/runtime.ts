@@ -1,6 +1,6 @@
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
-import { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { Stack } from "$ts/env";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
