@@ -2,7 +2,7 @@
   import { globalAdminActions } from "$apps/admin/adminportal/store";
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { scopeToScopeCaption } from "$ts/util/admin";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
   const {
     append,
@@ -21,7 +21,7 @@
       {
         title: `${name} (${key})`,
         message: `<p>With this item, this admin can:</p><ul>${scopes.map((s) => `<li>${scopeToScopeCaption(s)}</li>`).join("")}</ul>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "InfoIcon",
         sound: "arcos.dialog.info",
       },

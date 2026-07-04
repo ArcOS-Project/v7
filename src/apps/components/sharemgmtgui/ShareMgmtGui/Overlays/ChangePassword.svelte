@@ -3,7 +3,7 @@
   import type { IShareManager } from "$interfaces/services/IShareManager";
   import Icon from "$lib/Icon.svelte";
   import { Daemon } from "$ts/env";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
   const { process }: { process: IShareMgmtOverlayRuntime } = $props();
 
@@ -16,7 +16,7 @@
         {
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -37,7 +37,7 @@
         {
           title: "Change password",
           message: "Failed to change your password! Something might have gone wrong on our end. Please try again later.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -50,7 +50,7 @@
           title: "Change password",
           message:
             "Your password has been changed successfully! New share members will have to use this password to access the share.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },

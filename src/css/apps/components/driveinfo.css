@@ -11,6 +11,11 @@
   text-align: center;
 }
 
+#DriveInfo > div.body div.header img.no-quota {
+  height: 84px;
+  margin-bottom: 15px;
+}
+
 #DriveInfo > div.body div.header svg.circular-progress {
   margin-bottom: 15px;
 }
@@ -32,6 +37,16 @@
   width: 100%;
   border-radius: 10px;
   height: 55px;
+}
+
+#DriveInfo > div.body div.quota div.warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#DriveInfo > div.body div.quota div.warning img {
+  height: 24px;
 }
 
 #DriveInfo > div.body div.quota h1 {

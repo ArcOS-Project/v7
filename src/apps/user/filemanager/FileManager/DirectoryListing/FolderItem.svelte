@@ -1,15 +1,15 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { RelativeTimeMod } from "$ts/dayjs";
+  import { Fs } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { join } from "$ts/util/fs";
-  import type { FsProxyInfo, FolderEntry } from "$types/system/fs";
+  import type { FolderEntry, FsProxyInfo } from "$types/system/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
   import { onMount } from "svelte";
-  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-  import { Fs } from "$ts/env";
-  import Icon from "$lib/Icon.svelte";
 
   const { process, dir }: { process: IFileManagerRuntime; dir: FolderEntry } = $props();
   const { selection } = process;

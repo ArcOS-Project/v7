@@ -9,7 +9,7 @@ import { Daemon, Fs, Stack } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { ServiceHost } from "$ts/servicehost";
 import { Sleep } from "$ts/sleep";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { UUID } from "$ts/util/uuid";
 import type { UserPreferences, Workspace } from "$types/user";
 import { UserContext } from "../context";
@@ -111,7 +111,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
           title: "Can't delete workspace",
           message:
             "The workspace you want to delete still has windows opened in it. You have to close all windows in a workspace before you can delete it.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "WarningIcon",
         },

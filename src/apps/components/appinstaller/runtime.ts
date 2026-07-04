@@ -3,7 +3,7 @@ import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRun
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Fs } from "$ts/env";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import type { AppProcessData } from "$types/apps/app";
 import type { ReadableStore } from "$types/shared/writable";
 import type { ArcPackage } from "$types/tpa/package";
@@ -39,7 +39,7 @@ export class AppInstallerRuntime extends AppProcess implements IAppInstallerRunt
         {
           title: "Can't install package",
           message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },

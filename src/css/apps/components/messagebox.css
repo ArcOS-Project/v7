@@ -30,8 +30,6 @@
 
 #messageBox div.top div.right {
   max-width: calc(100% - 60px);
-  width: 0;
-  flex-grow: 1;
 }
 
 #messageBox div.top h1 {

@@ -1,9 +1,7 @@
-import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { UserDaemon } from "$ts/daemon";
-import { Env, getKMod, Server, Stack, State } from "$ts/env";
+import { getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
@@ -11,7 +9,6 @@ import { Sleep } from "$ts/sleep";
 import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
-import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
@@ -33,9 +30,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
   public email = Store<string>();
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
-  public displayName = Store<string>();
   public server: IServerManager;
-  #userDaemon?: IUserDaemon;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -134,17 +129,13 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
     super(pid, parentPid, app);
 
     const update = () => {
-      this.identityInfoValid.set(
-        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email() && !!this.displayName()
-      );
+      this.identityInfoValid.set(!!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email());
     };
 
-    this.#userDaemon = Stack.getProcess(Env.get("userdaemon_pid"));
     this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
-    this.displayName.subscribe(update);
 
     this.pageNumber.subscribe(() => {
       this.actionsDisabled.set(false);
@@ -280,7 +271,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
 
     const confirmed = await new Promise<boolean>((r) => {
       const emailNotice = !Server.serverInfo?.noEmailVerify
-        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account.`
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account. Deactivated accounts will be manually deleted by an ArcOS administrator after 24 hours.`
         : ``;
 
       MessageBox(
@@ -346,33 +337,6 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       return;
     }
 
-    if (Server?.serverInfo?.noEmailVerify) {
-      Env.set("DISPATCH_SOCK_ID", UUID());
-      const tokenResult = await LoginUser(this.newUsername(), this.password());
-
-      if (tokenResult.success) {
-        this.#userDaemon = await Stack.spawn(
-          UserDaemon,
-          undefined,
-          this.#userDaemon?.userInfo?._id,
-          this.pid,
-          tokenResult.result!,
-          this.newUsername()
-        );
-
-        await this.#userDaemon?.account?.getUserInfo();
-        await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
-        await this.#userDaemon?.init?.startFilesystemSupplier();
-
-        this.#userDaemon?.preferences.update((v) => {
-          v.isDefault = false;
-          v.account.displayName = this.displayName();
-
-          return v;
-        });
-      }
-    }
-
     this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
@@ -403,28 +367,6 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       );
       return;
     }
-
-    this.#userDaemon = await Stack.spawn(
-      UserDaemon,
-      undefined,
-      this.#userDaemon?.userInfo?._id,
-      this.pid,
-      tokenResult.result!,
-      this.newUsername()
-    );
-
-    // set the socket ID to something bogus to fool the backend into thinking we're connected to the websocket
-    Env.set("DISPATCH_SOCK_ID", UUID());
-
-    await this.#userDaemon?.account?.getUserInfo();
-    await this.#userDaemon?.preferencesCtx?.startPreferencesSync();
-    await this.#userDaemon?.init?.startFilesystemSupplier();
-    this.#userDaemon?.preferences.update((v) => {
-      v.isDefault = false;
-      v.account.displayName = this.displayName();
-
-      return v;
-    });
 
     this.pageNumber.set(this.pageNumber() + 1);
   }

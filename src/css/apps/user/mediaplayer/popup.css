@@ -3,6 +3,10 @@
   background-color: #000 !important;
 }
 
+.theme-light #MediaPlayer.popup {
+  background-color: #fff !important;
+}
+
 #MediaPlayer.popup,
 #MediaPlayer.popup * {
   --fg: #ddd !important;

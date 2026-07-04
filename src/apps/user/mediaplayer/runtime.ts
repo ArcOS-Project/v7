@@ -9,7 +9,7 @@ import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { getReadableVibrantColor } from "$ts/util/color";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -415,7 +415,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
             title: "Failed to load file",
             message:
               "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            buttons: [BTN_OKAY_SUG],
             image: "MediaPlayerIcon",
             sound: "arcos.dialog.error",
           },
@@ -528,7 +528,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
         {
           title: "Failed to open playlist",
           message: `Media Player couldn't open the file you requested. ${e}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "MediaPlayerIcon",
         },
@@ -605,7 +605,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
         title: "Failed to play",
         message:
           `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
       },

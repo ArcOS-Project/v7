@@ -4,7 +4,7 @@ import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { getJsonHierarchy } from "$ts/util/hierarchy";
 import { tryJsonParse, tryJsonStringify } from "$ts/util/json";
@@ -401,7 +401,7 @@ export class ExecuteQueryRuntime extends AppProcess implements IExecuteQueryRunt
         title: "Inaccessible",
         message:
           "The datasource you've selected isn't available on your account. You're missing scopes to access this datasource, so the result will always be empty.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         sound: "arcos.dialog.warning",
         image: "WarningIcon",
       },

@@ -2,7 +2,7 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import type { UserStatistics } from "$types/server/admin";
   import { onMount } from "svelte";
   import type { ViewUserData } from "../../types";
@@ -160,7 +160,7 @@
         {
           title: "Temporary login - Error",
           message: `An error occurred while trying to create a temporary login for this user account. ${result.errorMessage ?? "Unknown error"}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
         },

@@ -3,7 +3,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -109,7 +109,7 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
           message: "The image you tried to open could not be read.",
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
         },
         this.parentPid,
         true

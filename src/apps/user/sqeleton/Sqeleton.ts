@@ -29,6 +29,7 @@ export const SqeletonApp: App = {
     runtime: SqeletonRuntime,
     component: Sqeleton as any,
   },
+  loadCondition: (d) => !!d.preferences().globalSettings.enableSqeleton,
   id: "Sqeleton",
 };
 

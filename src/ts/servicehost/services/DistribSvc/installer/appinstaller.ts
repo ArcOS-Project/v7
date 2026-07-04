@@ -68,7 +68,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
     const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
-    if (existing) return;
+    if (existing || this.isUpdate) return;
 
     if (app.hidden || app.core) {
       Daemon?.notifications?.sendNotification({

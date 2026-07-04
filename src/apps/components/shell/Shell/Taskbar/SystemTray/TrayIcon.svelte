@@ -20,61 +20,7 @@
 </script>
 
 {#if targetedProcess}
-  <div
-    use:contextMenu={[
-      [
-        {
-          icon: "arrow-up-from-line",
-          caption: "Focus App",
-          action: () => {
-            const appProc = Stack.getProcess(targetedProcess.parentPid) as IAppProcess;
-            if (!appProc || !appProc.app) return;
-
-            Stack.renderer?.focusPid(appProc.pid);
-          },
-        },
-        { sep: true },
-        {
-          icon: "book-copy",
-          caption: "App info",
-          action: async () => {
-            const appProc = Stack.getProcess(targetedProcess.parentPid) as IAppProcess;
-            if (!appProc || !appProc.app) return;
-
-            await process.spawnOverlayApp("AppInfo", process.pid, appProc.app.id);
-          },
-        },
-        {
-          icon: "book",
-          caption: "Process info",
-          action: async () => {
-            const parentProc = Stack.getProcess(targetedProcess.parentPid) as IProcess;
-            if (!parentProc) return;
-
-            await process.spawnOverlayApp("ProcessInfoApp", process.pid, parentProc);
-          },
-        },
-        { sep: true },
-        {
-          icon: "circle-x",
-          caption: "Close app",
-          action: async () => {
-            const appProc = Stack.getProcess(targetedProcess.parentPid) as IAppProcess;
-
-            if (!appProc) return;
-            if (appProc.app) {
-              await appProc.closeWindow();
-              return;
-            }
-
-            await appProc.killSelf();
-          },
-        },
-      ],
-      process,
-    ]}
-    class="icon"
-  >
+  <div data-contextmenu="taskbar-trayicon" class="icon">
     <Trigger {process} {discriminator} {icon} {targetedProcess} />
     <Popup {process} {discriminator} {icon} />
   </div>

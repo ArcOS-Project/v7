@@ -11,8 +11,7 @@ import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
-import { Sleep } from "$ts/sleep";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {
@@ -126,10 +125,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     const trayHost = this.serviceHost?.getService<ITrayHostService>("TrayHostSvc");
     const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
 
-    // Create the shellHost loading icon
-    await trayHost?.createTrayIcon(this.pid, this.TRAY_AUTOLOAD, {
-      icon: "SpinnerIcon",
-    });
+    trayHost?.loading.set(true);
 
     this.Log(`Spawning autoload applications`);
 
@@ -165,10 +161,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 
-    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, "GoodStatusIcon");
-
-    await Sleep(1000); // Wait a second...
-    await trayHost?.disposeTrayIcon(this.pid, this.TRAY_AUTOLOAD); // ...then dispose the tray iconF
+    trayHost?.loading.set(false);
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
       await MessageBox(
@@ -176,7 +169,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
           title: "Firefox support",
           message:
             "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "FirefoxIcon",
         },
         +Env.get("shell_pid"),

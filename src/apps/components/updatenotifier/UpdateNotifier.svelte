@@ -4,7 +4,7 @@
   import Icon from "$lib/Icon.svelte";
   import { ArcOSVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
   import Dialog from "./Dialog.svelte";
 
@@ -25,7 +25,7 @@
         content: Dialog,
         image: "UpdateIcon",
         sound: "arcos.dialog.info",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       process.parentPid,
       true
