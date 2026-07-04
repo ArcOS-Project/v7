@@ -8,7 +8,7 @@
 </ul>
 <p>
   There are 10 levels, starting at 0. The levels are decided based on how many points you have. Each level has a different color.
-  If you mis-click at any point, you'll lose upwards of a hundred points. If your score is already below 100, it will be reset
+  If you miss-click at any point, you'll lose upwards of a hundred points. If your score is already below 100, it will be reset
   back down to 0.
 </p>
 <p>

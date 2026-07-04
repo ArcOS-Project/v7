@@ -1,5 +1,5 @@
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
-import { Daemon, Fs } from "$ts/env";
+import { Daemon, Fs, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { UUID } from "$ts/util/uuid";
@@ -15,6 +15,7 @@ export class InstallerProcessBase extends Process {
   protected workingDirectory: string = "";
   protected zip?: JSZip;
   protected MISC_STEPCOUNT = 2;
+  protected isUpdate = false;
   parent: IDistributionServiceProcess;
   failReason = Store<string>();
   installing = Store<boolean>(false);
@@ -26,8 +27,10 @@ export class InstallerProcessBase extends Process {
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem) {
+  constructor(pid: number, parentPid: number, zip: JSZip, metadata: ArcPackage, item: StoreItem, isUpdate = false) {
     super(pid, parentPid);
+
+    this.isUpdate = isUpdate || false;
 
     if (metadata && zip) {
       this.metadata = metadata;
@@ -157,6 +160,7 @@ export class InstallerProcessBase extends Process {
 
       this.parent.BUSY = `${this.name}_afterSuccessfulInstallation`;
       await this.afterSuccessfulInstallation();
+      SysDispatch.dispatch(`store-item-${this.isUpdate ? "update" : "install"}`, [this.item!], true);
       this.completed.set(true);
       this.parent.BUSY = "";
       return true;

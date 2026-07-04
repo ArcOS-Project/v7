@@ -26,7 +26,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         let recentlyAdded = [...all.reverse()];
         let popular: StoreItem[] = [...sortByKey(all, "installCount")]
           .reverse()
-          .filter((p) => !p.pkg.type || p.pkg.type === "app");
+          .filter((p) => !p.blocked && !p.deprecated && (!p.pkg.type || p.pkg.type === "app"));
         let mostPopular = popular[0];
 
         recentlyAdded.length = 6;

@@ -55,7 +55,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
       MessageBox(
         {
           title: "Source code license agreement",
-          image: SecurityMediumIcon,
+          image: "SecurityMediumIcon",
           content: SourceDriveEnable,
           buttons: [
             {

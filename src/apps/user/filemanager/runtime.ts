@@ -241,10 +241,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
     }
 
     if (errorCount) {
-      this.ShowToast({
-        content: "Failed to get usage information about one or more drives",
-        icon: "triangle-alert",
-      });
+      this.Log(`Failed to get quota for one or more drives`, LogLevel.error);
     }
 
     this.drives.set(result);

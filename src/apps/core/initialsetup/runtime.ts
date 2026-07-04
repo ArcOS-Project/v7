@@ -271,7 +271,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
 
     const confirmed = await new Promise<boolean>((r) => {
       const emailNotice = !Server.serverInfo?.noEmailVerify
-        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account.`
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account. Deactivated accounts will be manually deleted by an ArcOS administrator after 24 hours.`
         : ``;
 
       MessageBox(
