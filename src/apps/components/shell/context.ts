@@ -78,7 +78,6 @@ export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
           else await runtime.pinApp(app?.id);
         },
         disabled: async (app: App) => {
-          console.log(app)
           const x = runtime.appStore()?.getAppSynchronous(app?.id);
 
           return !x;

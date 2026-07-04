@@ -23,8 +23,6 @@
     thread = await process.service.getMessageThread($message?._id!);
     reply = checkReplied(thread);
     loadingThread = false;
-
-    console.log(reply);
   }
 
   function checkReplied(thread: ExpandedMessageNode[]) {
