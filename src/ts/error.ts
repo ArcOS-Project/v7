@@ -8,6 +8,7 @@ import { Log } from "./logging";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function DoError(e: ErrorEvent | PromiseRejectionEvent) {
+    __Console__.log(e);
     if (LOCKED) {
       e.preventDefault();
       return false;

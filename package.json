@@ -61,6 +61,7 @@
     "check-password-strength": "^3.0.0",
     "colorsea": "^1.2.2",
     "dayjs": "^1.11.13",
+    "dseg": "^0.46.0",
     "fuse.js": "^7.1.0",
     "gapi-script": "^1.2.0",
     "generate-password-ts": "^1.6.5",

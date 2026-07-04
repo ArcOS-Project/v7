@@ -32,6 +32,8 @@ div.window:not(.core) {
   visibility: hidden;
   scale: 0.95;
   outline: var(--secondary-border) !important;
+  display: flex;
+  flex-direction: column;
 }
 
 div.window:not(.core).shell-colored.colored::before {
