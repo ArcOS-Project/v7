@@ -2,6 +2,7 @@ import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { ArcShortcut } from "$types/system/shortcut";
+import DisplayName from "./FirstRun/Page/DisplayName.svelte";
 import Finish from "./FirstRun/Page/Finish.svelte";
 import ProfilePicture from "./FirstRun/Page/ProfilePicture.svelte";
 import Style from "./FirstRun/Page/Style.svelte";
@@ -76,7 +77,34 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
         right: [
           {
             caption: "Next",
+            action: (process) => process.switchPage("displayName"),
+            suggested: true,
+          },
+        ],
+      },
+    },
+  ],
+  [
+    "displayName",
+    {
+      name: "What's your name?",
+      hero: true,
+      component: DisplayName,
+      actions: {
+        left: [
+          {
+            caption: "Go back",
+            action: (process) => process.switchPage("profilePicture"),
+          },
+        ],
+        right: [
+          {
+            caption: "Skip",
             action: (process) => process.switchPage("thirdParty"),
+          },
+          {
+            caption: "Save",
+            action: (process) => process.setDisplayName(),
             suggested: true,
           },
         ],
@@ -90,9 +118,17 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
       hero: true,
       component: ThirdParty,
       actions: {
-        left: [{ caption: "Go back", action: (process) => process.switchPage("profilePicture") }],
+        left: [
+          {
+            caption: "Go back",
+            action: (process) => process.switchPage("displayName"),
+          },
+        ],
         right: [
-          { caption: "Not now", action: (process) => process.switchPage("finish") },
+          {
+            caption: "Not now",
+            action: (process) => process.switchPage("finish"),
+          },
           {
             caption: "Enable",
             action: (process) => {

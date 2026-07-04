@@ -11,7 +11,7 @@ import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { IsBeta } from "$ts/util";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { toForm } from "$ts/util/form";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -183,7 +183,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
         sound: "arcos.dialog.warning",
         buttons: [
           { caption: "Restart now", action: () => Daemon!.power?.restart() },
-          { caption: "Okay", action: () => {}, suggested: true },
+          BTN_OKAY_SUG,
         ],
       },
       +Env.get("shell_pid"),

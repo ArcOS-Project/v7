@@ -7,7 +7,7 @@ import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
 import { UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -323,7 +323,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       {
         title: "Existing connection",
         message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "SqeletonIcon",
         sound: "arcos.dialog.warning",
       },
@@ -337,7 +337,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       {
         title: "Failed to open database",
         message: `Sqeleton was unable to open this database. ${e}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },

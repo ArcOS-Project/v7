@@ -4,8 +4,8 @@ import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/di
 import { tryParseInt } from "$ts/util";
 import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
-import { TerminalProcess } from "../process";
 import { BRBLUE, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";

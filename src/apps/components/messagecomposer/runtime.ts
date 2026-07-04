@@ -4,7 +4,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -120,7 +120,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
         message: `The message couldn't be sent${errorMessage}`,
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.pid,
       true

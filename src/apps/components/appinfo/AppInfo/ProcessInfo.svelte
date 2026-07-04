@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import { getKMod } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
-  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
 
   const { appId, process }: { appId: string; process: IAppInfoRuntime } = $props();
 

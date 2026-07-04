@@ -2,7 +2,7 @@ import type { IShareCreateGuiRuntime } from "$interfaces/runtimes/IShareCreateGu
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 
@@ -41,7 +41,7 @@ export class ShareCreateGuiRuntime extends AppProcess implements IShareCreateGui
           title: "Failed to create share",
           message:
             "ArcOS was unable to create the share you requested. You might already have the maximum amount of shares in your account.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },

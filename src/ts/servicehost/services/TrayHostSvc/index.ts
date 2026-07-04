@@ -10,6 +10,7 @@ import type { TrayIconDiscriminator, TrayIconOptions } from "$types/services/tra
 
 export class TrayHostService extends BaseService implements ITrayHostService {
   public trayIcons = Store<Record<TrayIconDiscriminator, ITrayIconProcess>>({});
+  public loading = Store<boolean>(true);
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (message: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);

@@ -40,7 +40,7 @@
       </li>
       <li>Process count: {Stack.store().size} running</li>
       <li>Installed apps: {appStore?.length} loaded</li>
-      <li title={Object.keys(State?.store || {}).join(", ")}>
+      <li title={Server.ConnectorNames.join(", ")}>
         Server connectors: {Server.ConnectorAmount}
       </li>
     </ul>

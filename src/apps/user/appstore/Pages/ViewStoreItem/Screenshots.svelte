@@ -6,6 +6,26 @@
   const { pkg, process }: { pkg: StoreItem; process: IAppStoreRuntime } = $props();
 
   let index = $state<number>(0);
+  let timeout: NodeJS.Timeout | undefined = undefined;
+
+  function singleClick(e: MouseEvent) {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      if (process.toastMessage()) return;
+
+      process.ShowToast({
+        content: "Double-click to enlarge",
+        icon: "zoom-in",
+      });
+    }, 300);
+  }
+
+  function enlarge(i: number) {
+    clearTimeout(timeout);
+
+    process.viewImage(StoreItemScreenshot(pkg, i), `Screenshot #${i + 1} of ${pkg.pkg.name}`);
+  }
 </script>
 
 {#if pkg.pkg.store?.screenshots}
@@ -20,7 +40,8 @@
             src={StoreItemScreenshot(pkg, i)}
             alt=""
             class:selected={i === index}
-            onclick={() => process.viewImage(StoreItemScreenshot(pkg, i), `Screenshot #${i + 1} of ${pkg.pkg.name}`)}
+            onclick={singleClick}
+            ondblclick={() => enlarge(i)}
           />
         {/each}
       </div>
