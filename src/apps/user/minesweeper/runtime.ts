@@ -9,6 +9,7 @@ import { MinesweeperAltMenu } from "./altmenu";
 import { MinesweeperBestTimesApp } from "./Overlays/besttimes/MinesweeperBestTimesApp";
 import { DefaultMinesweeperConfiguration, MinesweeperDifficulties } from "./store";
 import { type MinesweeperCell, type MinesweeperGrid, type MinesweeperMode, type MinesweeperSettings } from "./types";
+import { MinesweeperHighScoreApp } from "./Overlays/highscore/MineSweeperHighScoreApp";
 
 export class MinesweeperRuntime extends AppProcess implements IAppProcess {
   private durationInterval?: NodeJS.Timeout;
@@ -34,10 +35,11 @@ export class MinesweeperRuntime extends AppProcess implements IAppProcess {
 
   protected override overlayStore = {
     bestTimes: MinesweeperBestTimesApp,
+    highScore: MinesweeperHighScoreApp,
   };
 
   ///
-  public readonly DEBUG = false;
+  public readonly DEBUG = true;
   ///
 
   //#region LIFECYCLE
@@ -99,20 +101,12 @@ export class MinesweeperRuntime extends AppProcess implements IAppProcess {
 
     this.Log(`setDifficulty: ${difficulty}`);
 
-    if (difficulty !== "Custom") {
-      this.Settings.update((v) => {
-        v.field = MinesweeperDifficulties[difficulty];
-        v.mode = difficulty;
+    this.Settings.update((v) => {
+      v.field = MinesweeperDifficulties[difficulty];
+      v.mode = difficulty;
 
-        return v;
-      });
-
-      if (newGame) this.newGame();
-
-      return;
-    }
-
-    await this.customGame();
+      return v;
+    });
 
     if (newGame) this.newGame();
   }
@@ -374,6 +368,12 @@ export class MinesweeperRuntime extends AppProcess implements IAppProcess {
       this.notify("You Win!");
       this.revealAll();
       this.won.set(true);
+
+      const duration = Math.min(Math.floor((this.endTimeMs() - this.startTimeMs()) / 1000), 999);
+
+      if (duration < this.Settings().scores[this.Settings().mode].seconds) {
+        this.spawnOverlay("highScore", this);
+      }
     }
 
     this.grid.set(grid);
@@ -416,9 +416,5 @@ export class MinesweeperRuntime extends AppProcess implements IAppProcess {
 
   async bestTimes() {
     this.spawnOverlay("bestTimes", this);
-  }
-
-  async customGame() {
-    throw new Error("Not implemented");
   }
 }

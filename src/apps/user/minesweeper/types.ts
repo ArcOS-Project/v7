@@ -29,4 +29,4 @@ export interface MinesweeperSettings {
 
 export const Difficulties = ["Beginner", "Intermediate", "Expert"] as const;
 export type MinesweeperDifficulty = (typeof Difficulties)[number];
-export type MinesweeperMode = MinesweeperDifficulty | "Custom"
+export type MinesweeperMode = MinesweeperDifficulty;
