@@ -23,6 +23,7 @@ export interface ISqeletonRuntime extends IAppProcess {
   tempDbPath: string;
   tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs;
+  filePath?: string;
   get Interface(): ISqlInterfaceProcess | undefined;
   set Interface(value: ISqlInterfaceProcess | undefined);
 

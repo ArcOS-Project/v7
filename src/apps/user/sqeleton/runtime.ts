@@ -30,6 +30,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
   tempDbPath = `T:/${UUID()}.db.tmp`;
+  filePath?: string;
   tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs = {
     result: {
@@ -63,7 +64,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
     super(pid, parentPid, app);
 
-    this.renderArgs.path = path;
+    if (path) this.filePath = path;
 
     this.setSource(__SOURCE__);
   }
@@ -76,9 +77,9 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     await Fs.deleteItem(this.tempDbPath);
   }
 
-  async render({ path }: { path?: string }) {
-    if (path) {
-      await this.readFile(path);
+  async render() {
+    if (this.filePath) {
+      await this.readFile(this.filePath);
     }
 
     await import("$css/apps/user/sqeleton.css");
