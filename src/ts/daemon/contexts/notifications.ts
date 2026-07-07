@@ -1,5 +1,6 @@
 import type { INotificationsUserContext } from "$interfaces/contexts/INotificationsUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { IsElectron } from "$ts/electron";
 import { SysDispatch } from "$ts/env";
 import type { Notification } from "$types/system/notification";
 import { UserContext } from "../context";
@@ -23,6 +24,8 @@ export class NotificationsUserContext extends UserContext implements INotificati
     this.notifications.set(id, data);
     SysDispatch.dispatch("update-notifications", [this.notifications]);
     SysDispatch.dispatch("send-notification", [data]);
+
+    if (IsElectron()) electron.sendNotification(data);
 
     return id;
   }
