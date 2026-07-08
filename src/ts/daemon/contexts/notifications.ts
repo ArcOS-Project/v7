@@ -1,7 +1,9 @@
 import type { INotificationsUserContext } from "$interfaces/contexts/INotificationsUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Logo } from "$ts/branding";
 import { IsElectron } from "$ts/electron";
 import { SysDispatch } from "$ts/env";
+import type { IconService } from "$ts/servicehost/services/IconService";
 import type { Notification } from "$types/system/notification";
 import { UserContext } from "../context";
 
@@ -25,8 +27,13 @@ export class NotificationsUserContext extends UserContext implements INotificati
     SysDispatch.dispatch("update-notifications", [this.notifications]);
     SysDispatch.dispatch("send-notification", [data]);
 
-    if (IsElectron()) electron.sendNotification(data);
+    const iconService = this.serviceHost?.getService<IconService>("IconService");
 
+    if (IsElectron()) {
+      electron!.sendNotification(data);
+      // if (iconService && data.icon) electron.sendNotification(data, await iconService.getIcon(data.icon));
+      // else electron.sendNotification(data, Logo());
+    }
     return id;
   }
 

@@ -253,7 +253,10 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       await userDaemon.killSelf();
     }
     await State?.loadState("turnedOff");
-    if (IsElectron()) electron.closeWindow();
+    if (IsElectron()) {
+      electron!.setCanClose(true);
+      electron!.closeWindow();
+    }
   }
 
   async restart(userDaemon?: IUserDaemon) {
