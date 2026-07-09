@@ -23,12 +23,13 @@
 @import url("./state/serverdown.css");
 @import url("./state/turnedoff.css");
 @import url("./state/arcterm.css");
+@import url("./electron.css");
 
 html,
 body {
   width: 100%;
   height: 100%;
-  background-color: #000;
+  background-color: transparent;
   color: var(--fg, #fff);
   margin: 0;
   overflow: hidden;
@@ -85,7 +86,7 @@ main#main.hidden #appRenderer {
   font-family: var(--user-font, "Nunito Sans"), "Nunito Sans";
 }
 
-#appRenderer > div.window:not(.core) {
+#appRenderer>div.window:not(.core) {
   pointer-events: initial;
 }
 
@@ -99,6 +100,7 @@ main#main.hidden #appRenderer {
     opacity: 1;
   }
 }
+
 .blink {
   animation: blink 1s step-start 0s infinite;
 }

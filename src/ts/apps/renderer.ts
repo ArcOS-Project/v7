@@ -18,6 +18,7 @@ import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
 import { Sleep } from "$ts/sleep";
+import { IsElectron } from "$ts/electron";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -65,6 +66,10 @@ export class AppRenderer extends Process implements IAppRenderer {
     this.disposedCheck();
 
     if (process._disposed) return;
+
+    if (IsElectron()) {
+      this.target.classList.add("electron-app");
+    }
 
     this.Log(`Rendering PID ${process.pid}`);
 

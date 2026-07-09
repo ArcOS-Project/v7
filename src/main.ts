@@ -1,8 +1,11 @@
 import "dseg/css/dseg.css";
 import "./css/main.css";
+import { handleElectronInit } from "$types/electron";
 
 // CODE EXECUTION STARTS HERE
 async function Main() {
+  await handleElectronInit();
+
   const { WaveKernel } = await import("$ts/kernel/wavekernel");
 
   const kernel = new WaveKernel();

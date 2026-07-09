@@ -1,10 +1,11 @@
+import type { LoginAppRuntime } from "$apps/core/loginapp/runtime";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
 import { IsElectron } from "$ts/electron";
-import { ArcOSVersion, Daemon, Kernel, SetCurrentKernel, SetKernelExports } from "$ts/env";
+import { ArcOSVersion, Daemon, Kernel, SetCurrentKernel, SetKernelExports, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
@@ -98,48 +99,6 @@ export class WaveKernel implements IWaveKernel {
 
     await this.init?.jumpstart();
     __Console__.timeEnd("** Kernel init");
-
-    if (IsElectron()) {
-      electron!.onPowerOff(async () => {
-        switch (this.state?.currentState) {
-          case "desktop":
-            await Daemon.power?.shutdown();
-            break;
-
-          case "boot":
-          case "turnedOff":
-            electron!.setCanClose(true);
-            electron!.closeWindow();
-            break;
-
-          case "arcterm":
-            function getSubProcesses(parentPid: number) {
-              const subProcesses = stack.getSubProcesses(parentPid);
-              for (const [key, val] of subProcesses) {
-                if (val.name === "ArcTerminal") {
-                  (val as ArcTerminal).processLine("exit");
-
-                  electron!.setCanClose(true);
-                  setInterval(() => {
-                    if (Kernel.state?.currentState === "turnedOff") electron!.closeWindow();
-                    Kernel.Log("v7-electron", "Attempting to close window..", LogLevel.info);
-                  }, 100);
-                  break;
-                }
-
-                getSubProcesses(key);
-              }
-            }
-
-            getSubProcesses(this.initPid);
-            break;
-
-          case "login":
-          default:
-            break;
-        }
-      });
-    }
   }
 
   getModule<T = any>(id: string, dontCrash = false): T {

@@ -1,5 +1,6 @@
 import type { IAppRendererUserContext } from "$interfaces/contexts/IAppRendererUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { IsElectron } from "$ts/electron";
 import { Daemon, Stack } from "$ts/env";
 import { bestForeground, darkenColor, hex3to6, invertColor, lightenColor } from "$ts/util/color";
 import type { CustomStylePreferences, UserPreferences } from "$types/user";
@@ -59,6 +60,12 @@ export class AppRendererUserContext extends UserContext implements IAppRendererU
     renderer.classList.toggle("safe-mode", this.safeMode);
     renderer.classList.toggle("traffic-lights", v.shell.visuals.trafficLights);
     renderer.classList.toggle("hide-altmenus", v.shell.visuals.hideAltmenus);
+
+    if (IsElectron()) {
+      renderer.classList.add("electron-app");
+      const titleBar = document.getElementById("electron-titlebar")! as HTMLDivElement;
+      titleBar.setAttribute("style", style);
+    }
   }
 
   setUserStyleLoader(style: CustomStylePreferences) {

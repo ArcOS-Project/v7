@@ -25,7 +25,6 @@ import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import { LoginUserDaemonStartOptions } from "./store";
 import type { LoginAppProps, PersistenceInfo } from "./types";
-import { IsElectron } from "$ts/electron";
 
 export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -253,10 +252,6 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       await userDaemon.killSelf();
     }
     await State?.loadState("turnedOff");
-    if (IsElectron()) {
-      electron!.setCanClose(true);
-      electron!.closeWindow();
-    }
   }
 
   async restart(userDaemon?: IUserDaemon) {

@@ -3,7 +3,7 @@
   --bg: #000;
 }
 
-div.window#bootScreen > div.body {
+div.window#bootScreen>div.body {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,11 +14,11 @@ div.window#bootScreen > div.body {
   justify-content: space-around;
 }
 
-div.window#bootScreen div.body > img {
+div.window#bootScreen div.body>img {
   height: 200px;
 }
 
-div.window#bootScreen div.body > img.gray {
+div.window#bootScreen div.body>img.gray {
   filter: grayscale(50%);
   background-image: url("../../../assets/branding/glow-red.png");
 }
@@ -58,7 +58,7 @@ div.window#bootScreen div.bottom {
 }
 
 div.window#bootScreen div.top {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
