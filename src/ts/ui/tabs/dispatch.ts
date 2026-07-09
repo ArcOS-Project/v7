@@ -1,18 +1,18 @@
-import type { IProcess, IDispatch } from "$interfaces/IProcess";
+import type { IDispatch } from "$interfaces/IProcess";
 import { Log } from "$ts/logging";
+import { UUID } from "$ts/util/uuid";
 import type { DispatchCallback } from "$types/system/dispatch";
 
-export class ProcessDispatch implements IDispatch {
+export class GenericDispatch implements IDispatch {
   private store: Record<string, DispatchCallback[]> = {};
-  private parent: IProcess;
+  private uuid = UUID();
 
-  constructor(process: IProcess) {
-    Log(`ProcessDispatch::'${process.name}'`, `Constructing new dispatch for ${process.name}`);
-    this.parent = process;
+  constructor() {
+    Log(`ProcessDispatch::${this.uuid}`, `Constructing new generic dispatch`);
   }
 
   subscribe(event: string, callback: DispatchCallback) {
-    Log(`ProcessDispatch::'${this.parent.name}'`, `Subscribing to event "${event}"`);
+    Log(`GenericDispatch::${this.uuid}`, `Subscribing to event "${event}"`);
 
     if (!this.store[event]) this.store[event] = [];
 
@@ -20,7 +20,7 @@ export class ProcessDispatch implements IDispatch {
   }
 
   async dispatch(event: string, ...args: any[]) {
-    Log(`ProcessDispatch::'${this.parent.name}'`, `Dispatching event "${event}"`);
+    Log(`ProcessDispatch::${this.uuid}`, `Dispatching event "${event}"`);
 
     const callbacks = this.store[event];
 

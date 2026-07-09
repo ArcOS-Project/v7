@@ -3,7 +3,7 @@ import type { ProcessState } from "$types/system/process";
 
 // !tpa
 export interface IProcess {
-  dispatch: IProcessDispatch;
+  dispatch: IDispatch;
   pid: number;
   parentPid: number;
   name: string;
@@ -20,7 +20,7 @@ export interface IProcess {
   setSource(source: string): void;
 }
 
-export interface IProcessDispatch {
+export interface IDispatch {
   subscribe(event: string, callback: DispatchCallback): void;
   dispatch(event: string, ...args: any[]): Promise<boolean>;
 }

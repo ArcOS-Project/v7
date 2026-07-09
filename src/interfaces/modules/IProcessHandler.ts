@@ -1,6 +1,6 @@
 import type { Constructs } from "$interfaces/common";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
-import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
+import type { IProcess, IDispatch } from "$interfaces/IProcess";
 import type { ReadableStore } from "$types/shared/writable";
 import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import type { IKernelModule } from "./IKernelModule";
@@ -28,7 +28,7 @@ export interface IProcessHandler extends IKernelModule {
   getProcess<T = IProcess>(pid: number, disposedToo?: boolean): T | undefined;
   getPid(): number;
   isPid(pid: number): boolean;
-  ConnectDispatch(pid: number): IProcessDispatch | undefined;
+  ConnectDispatch(pid: number): IDispatch | undefined;
   waitForAvailable(or?: string): Promise<void>;
   getProcessContext(pid: number): ProcessContext | undefined;
 }

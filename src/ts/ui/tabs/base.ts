@@ -14,6 +14,8 @@ export class BaseTab<T extends IAppProcess = IAppProcess> implements IBaseTab<T>
   public modified = Store<boolean>(false);
   public readOnly = Store<boolean>(false);
   public loading = Store<boolean>(false);
+  public pinned = Store<boolean>(false);
+  public temporary = Store<boolean>(true);
   public className?: string;
   protected allowSaveWhenNotModified = false;
   public component?: Component<any>;
@@ -21,11 +23,18 @@ export class BaseTab<T extends IAppProcess = IAppProcess> implements IBaseTab<T>
   public tabHandler: ITabHandler<T>;
 
   constructor(parent: ITabHandler<T>, identifier: string, ...args: any[]) {
+    this.Log(`${this.constructor.name} constructing`);
+
     this.identifier = identifier;
     this.tabHandler = parent;
   }
 
-  public onOpen(): MaybePromise<ICommandResult> {
+  public onLoad(): MaybePromise<ICommandResult> {
+    // stub
+    return CommandResult.Ok();
+  }
+
+  public onCreated(): MaybePromise<ICommandResult> {
     // stub
     return CommandResult.Ok();
   }
@@ -39,15 +48,32 @@ export class BaseTab<T extends IAppProcess = IAppProcess> implements IBaseTab<T>
     return CommandResult.Ok();
   }
 
-  public async __onOpen(): Promise<ICommandResult> {
-    return await this.onOpen();
+  public async __onLoad(): Promise<ICommandResult> {
+    this.Log(`OnLoad`);
+
+    this.pinned.subscribe((v) => {
+      if (v && this.temporary()) this.temporary.set(false);
+    });
+
+    this.temporary.subscribe((v) => {
+      if (v && this.pinned()) throw new Error("Can't make a pinned tab temporary");
+    });
+
+    return await this.onLoad();
   }
 
   public async __onClose(): Promise<ICommandResult> {
+    this.Log(`OnClose`);
     return await this.onClose();
   }
 
+  public async __onCreated(): Promise<ICommandResult> {
+    this.Log(`OnCreated`);
+    return await this.onCreated();
+  }
+
   public async __onSave(): Promise<ICommandResult> {
+    this.Log(`OnSave`);
     if (!this.modified() && !this.allowSaveWhenNotModified) return CommandResult.Ok();
 
     const result = await this.onSave();

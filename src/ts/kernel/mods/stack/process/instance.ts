@@ -1,4 +1,4 @@
-import type { IProcess, IProcessDispatch } from "$interfaces/IProcess";
+import type { IProcess, IDispatch } from "$interfaces/IProcess";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { Env, Fs, Stack } from "$ts/env";
 import { Log } from "$ts/logging";
@@ -8,7 +8,7 @@ import type { ProcessState } from "$types/system/process";
 import { ProcessDispatch } from "./dispatch";
 
 export class Process implements IProcess {
-  public dispatch!: IProcessDispatch;
+  public dispatch!: IDispatch;
   public pid: number;
   public parentPid: number;
   public name = "";

@@ -7,14 +7,25 @@ import { CommandResult } from "$ts/result";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/shared/logging";
+import { GenericDispatch } from "./dispatch";
 
 export class TabHandler<T extends IAppProcess = IAppProcess, R extends IBaseTab = IBaseTab<T>> implements ITabHandler<T, R> {
   parent: T;
-  tabs = Store<R[]>([]);
+  tabs: R[] = [];
+  dispatch = new GenericDispatch();
   activeTab = Store<string>();
+  hasNormal = Store<boolean>(false);
+  hasPinned = Store<boolean>(false);
+  hasTemporary = Store<boolean>(false);
 
   constructor(parent: T) {
     this.parent = parent;
+
+    this.dispatch.subscribe("changed", () => {
+      this.hasNormal.set(!!this.tabs.filter((t) => !t.pinned && !t.temporary).length);
+      this.hasPinned.set(!!this.tabs.filter((t) => t.pinned).length);
+      this.hasTemporary.set(!!this.tabs.filter((t) => t.temporary).length);
+    });
   }
 
   Log(message: string, level = LogLevel.info) {
@@ -23,13 +34,10 @@ export class TabHandler<T extends IAppProcess = IAppProcess, R extends IBaseTab 
 
   async openTab(tab: Constructs<R, [ITabHandler<T>, string, ...any[]]>, ...args: any[]): Promise<ICommandResult<R>> {
     const instance = new tab(this, UUID(), ...args);
-    const openResult = await instance.__onOpen();
+    const openResult = await instance.__onLoad();
 
     if (openResult.success) {
-      this.tabs.update((v) => {
-        v.push(instance);
-        return v;
-      });
+      this.tabs.push(instance);
 
       return CommandResult.Ok(instance);
     }
@@ -38,7 +46,7 @@ export class TabHandler<T extends IAppProcess = IAppProcess, R extends IBaseTab 
   }
 
   async getTab(id: string): Promise<ICommandResult<R>> {
-    const tab = this.tabs().find((t) => t.identifier === id);
+    const tab = this.tabs.find((t) => t.identifier === id);
 
     if (!tab) return CommandResult.Error(`No such tab '${id}'`);
     return CommandResult.Ok(tab);
@@ -52,7 +60,7 @@ export class TabHandler<T extends IAppProcess = IAppProcess, R extends IBaseTab 
     const closeResult = await tab.__onClose();
     if (!closeResult.success) return closeResult;
 
-    this.tabs.set(this.tabs().filter((t) => t.identifier !== id));
+    this.tabs = this.tabs.filter((t) => t.identifier !== id);
 
     return CommandResult.Ok();
   }
@@ -69,7 +77,7 @@ export class TabHandler<T extends IAppProcess = IAppProcess, R extends IBaseTab 
   }
 
   getModifiedList(): R[] {
-    return this.tabs().filter((t) => !!t.modified());
+    return this.tabs.filter((t) => !!t.modified());
   }
 
   async saveAll(): Promise<ICommandResult> {
