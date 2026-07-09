@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import { sortByKey } from "$ts/util";
-  import type { SqeletonRuntime } from "../runtime";
   import Error from "./ErrorList/Error.svelte";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { errors } = process;
 </script>
 

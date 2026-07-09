@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 
@@ -10,7 +10,7 @@
     user,
     selection,
     compact = false,
-  }: { process: AdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string>; compact?: boolean } = $props();
+  }: { process: IAdminPortalRuntime; user: ExpandedUserInfo; selection: ReadableStore<string>; compact?: boolean } = $props();
   const { redacted } = process;
   const { profile } = user;
   const created = dayjs(user.createdAt).format("DD MMM YYYY");
@@ -32,4 +32,5 @@
   <div class="segment created">{created}</div>
   <div class="segment approved" class:is-approved={user.approved}>{user.approved ? "Yes" : "No"}</div>
   <div class="segment admin" class:is-admin={user.admin}>{user.admin ? "Yes" : "No"}</div>
+  <div class="segment system" class:is-system={user.isSystem}>{user.isSystem ? "Yes" : "No"}</div>
 </div>

@@ -1,8 +1,10 @@
 import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts/images/branding";
-import { AdminScopes } from "$ts/server/admin/store";
-import { sliceIntoChunks } from "$ts/util";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+import { IsBeta } from "$ts/util";
+import type { PartialUserTotp, Token } from "$types/server/admin";
 import Activities from "./AdminPortal/Page/Activities.svelte";
-import AuditLog from "./AdminPortal/Page/AuditLog.svelte";
+import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
+import BetaFeedback from "./AdminPortal/Page/BetaFeedback.svelte";
 import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
 import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
 import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
@@ -13,7 +15,9 @@ import Shares from "./AdminPortal/Page/Shares.svelte";
 import Store from "./AdminPortal/Page/Store.svelte";
 import Tokens from "./AdminPortal/Page/Tokens.svelte";
 import Users from "./AdminPortal/Page/Users.svelte";
+import Versioning from "./AdminPortal/Page/Versioning.svelte";
 import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
+import ViewBugReportSource from "./AdminPortal/Page/ViewBugReportSource.svelte";
 import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
 import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
 import ViewStoreItem from "./AdminPortal/Page/ViewStoreItem.svelte";
@@ -42,7 +46,6 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "Bug Hunt",
       icon: "bug",
       content: BugHunt,
-      separator: true,
       scopes: [AdminScopes.adminBugHuntList, AdminScopes.adminBugHuntStats],
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
@@ -75,6 +78,42 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
+    "viewBugReportSource",
+    {
+      name: "View Source Code for Bug Report",
+      content: ViewBugReportSource,
+      hidden: true,
+      scopes: [AdminScopes.adminBugHuntGet],
+      icon: "",
+      parent: "viewBugReport",
+      props: async (process) => {
+        const id = process.switchPageProps().id;
+        const report = await process.admin.getBugReport(id);
+        if (!report) return { report };
+
+        const source = await process.admin.getReportSourceFile(report);
+
+        return { report, source };
+      },
+    },
+  ],
+  [
+    "betaFeedback",
+    {
+      name: "Beta feedback",
+      content: BetaFeedback,
+      hidden: !IsBeta(),
+      scopes: [],
+      icon: "flask-conical",
+      separator: true,
+      props: async (process) => {
+        const versions = (await process.admin.getBetaFeedbackVersions()).result ?? {};
+
+        return { versions };
+      },
+    },
+  ],
+  [
     "users",
     {
       name: "Users",
@@ -97,7 +136,13 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       icon: "",
       content: ViewUser,
       props: async (process) => {
-        return { reports: await process.admin.getAllBugReports() };
+        const username = process.switchPageProps().user.username;
+
+        return {
+          reports: await process.admin.getAllBugReports(),
+          osVersion: await process.admin.getRegisteredVersionFor(username),
+          migrations: await process.admin.getMigrationIndexFor(username),
+        };
       },
       scopes: [AdminScopes.adminBugHuntGet],
       parent: "users",
@@ -206,12 +251,24 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
+    "versioning",
+    {
+      name: "Versioning",
+      icon: "git-branch",
+      content: Versioning,
+      scopes: [AdminScopes.adminUserfsFile, AdminScopes.adminUsersList],
+      props: async (process) => {
+        return { users: await process.admin.getAllUsers() };
+      },
+      separator: true,
+    },
+  ],
+  [
     "scopes",
     {
       name: "Scopes",
       icon: "telescope",
       content: Scopes,
-      separator: true,
       props: async (process) => {
         return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) }; // Filter
       },
@@ -242,11 +299,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Audit log",
       icon: "scroll-text",
-      content: AuditLog,
+      content: AuditLogQueryable,
       props: async (process) => {
         return {
-          // Chunk the logs into 20 items to reduce lag, and have the newest presented first.
-          audits: sliceIntoChunks((await process.admin.getAuditLog()).reverse(), 20),
           users: await process.admin.getAllUsers(),
         };
       },
@@ -290,7 +345,6 @@ export const LogoTranslations: Record<string, string> = {
   unstable: UnstableLogo,
 };
 
-// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const specificAdminActions: SpecificAdminActions = {
   logs: {
     caption: "View logs",
@@ -464,7 +518,6 @@ export const specificAdminActions: SpecificAdminActions = {
   },
 };
 
-// TODO: MOVE TO ADMIN RESOURCE DRIVE
 export const globalAdminActions: SpecificAdminActions = {
   god: {
     caption: "God Admin",
@@ -608,4 +661,15 @@ export const globalAdminActions: SpecificAdminActions = {
     caption: "ARD",
     scopes: [AdminScopes.adminAfsQuota, AdminScopes.adminAfsRead, AdminScopes.adminAfsWrite],
   },
+};
+
+export const DefaultTotpInfo: PartialUserTotp = {
+  _id: "",
+  activated: false,
+  userId: "",
+};
+
+export const DefaultTokenInfo: Token = {
+  value: "",
+  userId: "",
 };

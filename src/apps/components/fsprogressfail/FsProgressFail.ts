@@ -1,5 +1,5 @@
 import "$css/apps/components/fsprogressfail.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import FsProgressFail from "./FsProgressFail.svelte";
 import { FsProgressFailRuntime } from "./runtime";
 

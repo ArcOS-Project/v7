@@ -1,14 +1,15 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { ShellTrayIcon } from "$apps/components/shell/types";
-  import type { Process } from "$ts/process/instance";
+  import type { IProcess } from "$interfaces/IProcess";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import type { ShellTrayIcon } from "$types/services/tray";
 
   const {
     process,
     discriminator,
     icon,
     targetedProcess,
-  }: { process: ShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: Process } = $props();
+  }: { process: IShellRuntime; discriminator: string; icon: ShellTrayIcon; targetedProcess: IProcess } = $props();
   const { openedTrayPopup } = process;
 
   async function openThis() {
@@ -23,5 +24,5 @@
   class:active={discriminator === $openedTrayPopup}
   disabled={discriminator === $openedTrayPopup}
 >
-  <img src={process.getIconCached(icon.icon) || icon.icon} alt={discriminator} />
+  <Icon icon={icon.icon} />
 </button>

@@ -14,7 +14,6 @@ import { AdminBugHuntReportClose } from "./commands/bughunt/report/close";
 import { AdminBugHuntReportDelete } from "./commands/bughunt/report/delete";
 import { AdminBugHuntReportOpen } from "./commands/bughunt/report/open";
 import { AdminBugHuntStats } from "./commands/bughunt/stats";
-import { AdminHelp } from "./commands/help";
 import { AdminIndexingDelete } from "./commands/indexing/delete";
 import { AdminIndexingForce } from "./commands/indexing/force";
 import { AdminIndexingListAll } from "./commands/indexing/list/all";
@@ -59,6 +58,8 @@ import { AdminUserPreferencesGet } from "./commands/user/preferences/get";
 import { AdminUserPreferencesSet } from "./commands/user/preferences/set";
 import { AdminUserQuotaGet } from "./commands/user/quota/get";
 import { AdminUserQuotaSet } from "./commands/user/quota/set";
+import { AdminUserSystemSet } from "./commands/user/system/set";
+import { AdminUserTemppassword } from "./commands/user/temppassword";
 
 export const AdminCommandStore = {
   server: {
@@ -118,6 +119,10 @@ export const AdminCommandStore = {
       get: AdminUserQuotaGet,
       set: AdminUserQuotaSet,
     },
+    system: {
+      set: AdminUserSystemSet,
+    },
+    temppassword: AdminUserTemppassword,
   },
   mount: AdminMount,
   activities: {
@@ -138,7 +143,6 @@ export const AdminCommandStore = {
     delete: AdminTotpDelete,
     deactivate: AdminTotpDeactivate,
   },
-  "?": AdminHelp,
   accessors: {
     list: {
       all: AdminAccessorsListAll,

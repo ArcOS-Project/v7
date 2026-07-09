@@ -1,15 +1,16 @@
-import { DevelopmentEnvironment } from "$ts/devenv";
-import { DevEnvActivationResultCaptions } from "$types/devenv";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
+import { ArcMode } from "$ts/metadata/mode";
+import { DevEnvActivationResultCaptions } from "$types/services/devenv";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import { BRGREEN, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRGREEN, RESET } from "../store";
 
 export class DevenvCommand extends TerminalProcess {
   static keyword: string = "devenv";
   static description: string = "Connect to an ArcDev environment";
 
-  commands: Record<string, (term: ArcTerminal, flags: Arguments, argv: string[]) => Promise<number>> = {
+  commands: Record<string, (term: IArcTerminal, flags: Arguments, argv: string[]) => Promise<number>> = {
     connect: this.connect.bind(this),
     disconnect: this.disconnect.bind(this),
   };
@@ -24,7 +25,7 @@ export class DevenvCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const command = argv.shift() || "";
 
     if (!this.commands[command]) {
@@ -36,17 +37,17 @@ export class DevenvCommand extends TerminalProcess {
     return await this.commands[command](term, flags, argv);
   }
 
-  async connect(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  async connect(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const port = +argv[0] || 3128;
-    const serviceInfo = term.daemon?.serviceHost?.getServiceInfo("DevEnvironment");
+    const serviceInfo = this.serviceHost?.getServiceInfo("DevEnvironment");
 
     if (serviceInfo?.pid) {
       term.Error("ArcDev is already running. Disconnect first with 'devenv disconnect'.");
       return 1;
     }
 
-    await term.daemon?.serviceHost?.startService("DevEnvironment");
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+    await this.serviceHost?.startService("DevEnvironment");
+    const service = this.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Warning("Failed to start DevEnvironment service. Please report.");
@@ -56,7 +57,15 @@ export class DevenvCommand extends TerminalProcess {
     const result = await service.connect(port);
 
     if (result === "success") {
+      if (ArcMode() === "betabranch") {
+        term.Warning(
+          `You're running the development environment on a ${BRYELLOW}Beta${RESET} build of ArcOS, and as such, a mismatching build hash between your project and ArcOS is ignored. If anything goes wrong, please contact an ArcOS developer as soon as you can.\n\n`,
+          "WARNING"
+        );
+      }
+
       term.Info(`Now running for ${BRGREEN}${service.meta?.metadata.name}${RESET} (${service.meta?.metadata.appId})`, "Success");
+
       return 0;
     }
 
@@ -68,15 +77,15 @@ export class DevenvCommand extends TerminalProcess {
     return 1;
   }
 
-  async disconnect(term: ArcTerminal) {
-    const service = term.daemon?.serviceHost?.getService<DevelopmentEnvironment>("DevEnvironment");
+  async disconnect(term: IArcTerminal) {
+    const service = this.serviceHost?.getService<IDevelopmentEnvironment>("DevEnvironment");
 
     if (!service) {
       term.Error("There is no development environment running");
       return 1;
     }
 
-    await term.daemon?.serviceHost?.stopService("DevEnvironment");
+    await this.serviceHost?.stopService("DevEnvironment");
     term.Info("Disconnected successfully.");
 
     return 0;

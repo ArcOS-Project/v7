@@ -1,27 +1,28 @@
 <script lang="ts">
-  import { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
-  import { Wallpapers } from "$ts/wallpaper/store";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon, Stack } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
   import { Store } from "$ts/writable";
   import type { Workspace } from "$types/user";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
-  const { userDaemon, userPreferences, workspaceManagerOpened } = process;
-  const { Wallpaper } = userDaemon || {}!;
+  const { process }: { process: IShellRuntime } = $props();
+  const { userPreferences, workspaceManagerOpened } = process;
+  const userDaemon = Daemon;
+  const { Wallpaper } = userDaemon?.wallpaper! || {}!;
 
   let workspaces: Workspace[] = $state([]);
   let windowCounts = Store<Record<string, number>>({});
 
   onMount(() => {
-    const sub = KernelStack().store.subscribe((v) => {
+    const sub = Stack.store.subscribe((v) => {
       $windowCounts = {};
 
       for (const workspace of workspaces) {
         $windowCounts[workspace.uuid] = [...v].filter(
-          ([_, p]) => p instanceof AppProcess && p.app.desktop === workspace.uuid
+          ([_, p]) => ProcessesHelper.IsAnyGraphicalAppProcess(p) && p.app.desktop === workspace.uuid
         ).length;
       }
     });
@@ -52,8 +53,24 @@
           style="--wallpaper: url('{$Wallpaper ? $Wallpaper.url : Wallpapers.img0.url}');"
           onclick={() => ($userPreferences.workspaces.index = i)}
           class:selected={$userPreferences.workspaces.index === i}
-          data-contextmenu="workspaces-desktop"
-          use:contextProps={[desktop]}
+          use:contextMenu={[
+            [
+              {
+                caption: "Go here",
+                action: () => {
+                  Daemon?.workspaces?.switchToDesktopByUuid(desktop.uuid);
+                },
+                icon: "arrow-right",
+              },
+              {
+                caption: "Delete workspace",
+                action: () => {
+                  Daemon.workspaces?.deleteVirtualDesktopAck(desktop);
+                },
+              },
+            ],
+            process,
+          ]}
         >
           <div class="number">{i + 1}</div>
           <div class="bottom">
@@ -80,7 +97,12 @@
     {/if}
   </div>
 
-  <button class="add" aria-label="Add Desktop" onclick={() => userDaemon?.createWorkspace()} disabled={workspaces.length >= 10}>
+  <button
+    class="add"
+    aria-label="Add Desktop"
+    onclick={() => userDaemon?.workspaces?.createWorkspace()}
+    disabled={workspaces.length >= 10}
+  >
     <span class="lucide icon-plus"></span>
   </button>
 </div>

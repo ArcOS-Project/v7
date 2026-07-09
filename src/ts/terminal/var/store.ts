@@ -1,9 +1,9 @@
-import { ArcOSVersion } from "$ts/env";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { ArcOSVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { UserPaths } from "$ts/server/user/store";
+import { UserPaths } from "$ts/user/store";
 import type { VariableStore } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import {
   BLACK,
   BLUE,
@@ -27,12 +27,12 @@ import {
   RESET,
   WHITE,
   YELLOW,
-} from "../store";
+} from "../colors";
 
-export function getArcTermStore(term: ArcTerminal): VariableStore {
+export function getArcTermStore(term: IArcTerminal): VariableStore {
   return {
     username: {
-      get: () => term.env.get("currentuser") || "stranger",
+      get: () => Env.get("currentuser") || "stranger",
       readOnly: true,
       canDelete: false,
     },
@@ -185,6 +185,11 @@ export function getArcTermStore(term: ArcTerminal): VariableStore {
     },
     CURRIGHT: {
       get: () => CURRIGHT,
+      readOnly: true,
+      canDelete: false,
+    },
+    ERRORVALUE: {
+      get: () => (term.lastCommandErrored ? "true" : ""),
       readOnly: true,
       canDelete: false,
     },

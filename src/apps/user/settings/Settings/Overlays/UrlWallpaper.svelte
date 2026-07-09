@@ -1,8 +1,11 @@
 <script lang="ts">
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { onMount } from "svelte";
-  import type { OverlayRuntime } from "../../overlay";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
   const { userPreferences } = process;
 
   let wallpaper = $state("");
@@ -49,7 +52,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={valid ? wallpaper : process.getIconCached("DesktopIcon")} alt="" />
+    <Icon icon={valid ? wallpaper : "DesktopIcon"} />
   </div>
   <div class="right">
     <h1>Change Wallpaper</h1>
@@ -57,7 +60,10 @@
     <input type="url" bind:value={wallpaper} oninput={check} onkeydown={check} placeholder="https://example.com/image.png" />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={cancel}>Cancel</button>
-  <button class="suggested" disabled={!valid} onclick={apply}>Apply</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={cancel}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!valid} onclick={apply}>Apply</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,0 +1,243 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import type { IDevelopmentEnvironment } from "$interfaces/services/IDevelopmentEnvironment";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
+import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
+import { BaseService } from "$ts/servicehost/base";
+import { MessageBox } from "$ts/util/dialog";
+import type { DevEnvActivationResult, ProjectMetadata } from "$types/services/devenv";
+import type { Service } from "$types/services/service";
+import type { AxiosInstance } from "axios";
+import axios from "axios";
+import { io, Socket } from "socket.io-client";
+
+export class DevelopmentEnvironment extends BaseService implements IDevelopmentEnvironment {
+  public connected = false;
+  private port?: number;
+  private url?: string;
+  private client: Socket | undefined;
+  private axios?: AxiosInstance;
+  public meta?: ProjectMetadata;
+  private pids: number[] = [];
+
+  //#region LIFECYCLE
+
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
+
+    window.addEventListener("onbeforeunload", () => {
+      this.stop();
+    });
+
+    this.setSource(__SOURCE__);
+  }
+
+  async deactivate(broadcast?: (m: string) => void) {
+    broadcast?.("Stopping development environment");
+
+    await this.disconnect();
+  }
+
+  async start() {
+    this.initBroadcast?.("Starting development environment");
+
+    setTimeout(() => {
+      if (!this.connected && this.host.getService("DevEnvironment")?.pid) {
+        Daemon.notifications?.sendNotification({
+          title: "Development Environment",
+          message:
+            "The Development Environment service wasn't connected within 5 seconds of its startup. The service will be stopped.",
+          timeout: 3000,
+          image: "DevEnvFsIcon",
+        });
+        this.host.stopService("DevEnvironment");
+      }
+    }, 5000);
+  }
+
+  //#endregion
+
+  async connect(port: number): Promise<DevEnvActivationResult> {
+    const abort = (code: DevEnvActivationResult) => {
+      return new Promise<DevEnvActivationResult>((r) => {
+        this.disconnect();
+        r(code);
+      });
+    };
+
+    if (this._disposed) {
+      abort("ping_failed");
+    }
+
+    if (this.connected) return abort("already_connected");
+
+    this.url = `http://localhost:${port}`;
+    this.port = port;
+    this.axios = axios.create({
+      baseURL: this.url,
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
+
+    Stack.store.subscribe(() => {
+      if (this._disposed) return;
+
+      const pids = this.getPids();
+
+      if (this.connected) {
+        this.client?.emit("pids", pids);
+        this.pids = pids;
+      }
+    });
+
+    this.meta = await this.getProjectMeta();
+
+    if (!this.meta) return abort("ping_failed");
+    if ((this.meta.devPort || 3128) !== this.port) return abort("port_mismatch");
+    if (this.meta.buildHash !== ArcBuild() && ArcMode() !== "betabranch") return abort("build_mismatch");
+
+    const drive = await this.mountDevDrive();
+
+    if (!drive) return abort("drivemnt_failed");
+
+    return new Promise((r) => {
+      let resolved = false;
+
+      this.client = io(this.url, { transports: ["websocket"] });
+      this.client.on("connect", async () => {
+        if (this._disposed) return this.disconnect();
+
+        this.connected = true;
+        resolved = true;
+        r("success");
+      });
+
+      this.client.on("disconnect", (reason) => {
+        MessageBox(
+          {
+            title: "ArcDev stopped",
+            message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+            buttons: [{ caption: "Okay", action: () => {} }],
+          },
+          +Env.get("shell_pid"),
+          true
+        );
+
+        this.killTpa();
+        this.host.stopService("DevEnvironment");
+      });
+
+      this.client.on("open-file", (file: string) => {
+        if (this._disposed) return this.disconnect();
+        Daemon?.files!.openFile(file);
+      });
+      this.client.on("restart-tpa", () => {
+        if (this._disposed) return this.disconnect();
+        this.restartTpa();
+      });
+      this.client.on("refresh-css", (filename: string) => {
+        this.refreshCSS(filename);
+      });
+
+      setTimeout(() => {
+        if (this._disposed) return this.disconnect();
+
+        if (!resolved) {
+          r("websock_failed");
+          this.disconnect();
+        }
+      }, 3000);
+    });
+  }
+
+  async disconnect() {
+    this.axios = undefined;
+    this.url = undefined;
+    this.port = undefined;
+    this.client?.disconnect();
+    this.client?.removeAllListeners();
+    this.connected = false;
+    await Fs.umountDrive("devenv", true);
+    this.host.stopService("DevEnvironment");
+    return undefined;
+  }
+
+  async getProjectMeta() {
+    if (this._disposed) return this.disconnect();
+
+    try {
+      const response = await this.axios?.get("/ping");
+
+      return response?.data as ProjectMetadata;
+    } catch {
+      return undefined;
+    }
+  }
+
+  async mountDevDrive() {
+    if (this._disposed) return this.disconnect();
+
+    const result = await Fs.mountDrive("devenv", DevDrive, "V", undefined, this.axios, this.url);
+
+    return !!result;
+  }
+
+  async restartTpa() {
+    if (this._disposed) return this.disconnect();
+
+    await this.killTpa();
+    await Daemon?.files!.openFile("V:/_app.tpa");
+  }
+
+  async killTpa() {
+    if (this._disposed) return this.disconnect();
+
+    const pids = this.getPids();
+
+    for (const pid of pids) {
+      await Stack.kill(pid, true);
+    }
+  }
+
+  async refreshCSS(filename: string) {
+    const processes = this.pids.map((pid) => Stack.getProcess<IThirdPartyAppProcess>(pid)).filter((proc) => !!proc);
+
+    for (const proc of processes) {
+      if (proc.elements?.[filename] && proc.elements?.[filename] instanceof HTMLLinkElement) {
+        const link = proc.elements?.[filename]!;
+        const href = `${link.href}`;
+
+        link.href = "";
+        setTimeout(() => {
+          link.href = href;
+        }, 0);
+      }
+    }
+  }
+
+  private getPids() {
+    return [...Stack.store()]
+      .filter(
+        ([_, proc]) =>
+          ProcessesHelper.IsAnyThirdPartyProcess(proc) &&
+          proc.app.id === this.meta?.metadata.appId &&
+          proc.workingDirectory === `V:/`
+      )
+      .map(([pid]) => pid);
+  }
+}
+
+export const devEnvironmentService: Service = {
+  name: "Development Environment",
+  description: "Enables the development of apps",
+  process: DevelopmentEnvironment,
+  initialState: "stopped",
+};

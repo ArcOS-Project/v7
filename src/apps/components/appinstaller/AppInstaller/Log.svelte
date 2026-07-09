@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Sleep } from "$ts/sleep";
-  import type { AppInstallerRuntime } from "../runtime";
 
-  const { process }: { process: AppInstallerRuntime } = $props();
+  const { process }: { process: IAppInstallerRuntime } = $props();
   const { status, focused, installing } = process.progress!;
 
   focused.subscribe(async (v) => {
@@ -35,13 +36,8 @@
             %logType.generic%
           {/if}
         </p>
-        <p class="content">{item.content}</p>
-        <img
-          src={process.getIconCached(
-            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
-          )}
-          alt=""
-        />
+        <p class="content" title={item.content}>{item.content}</p>
+        <Icon icon={item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"} />
       </div>
     {/each}
   {/if}

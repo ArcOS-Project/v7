@@ -1,0 +1,53 @@
+import type { IMigrationNodeConstructor } from "$interfaces/IMigrationNode";
+import type { IMigrationService } from "$interfaces/services/IMigrationService";
+import { Daemon, Fs } from "$ts/env";
+import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { join } from "$ts/util/fs";
+import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import { MigrationNode } from "../node";
+
+export class AppShortcutsMigration extends MigrationNode {
+  static override name = "AppShortcutsMig";
+  static override friendlyName = "App shortcuts migration";
+
+  constructor(self: IMigrationNodeConstructor, svc: IMigrationService) {
+    super(self, svc);
+  }
+
+  async runMigration(cb?: MigrationStatusCallback): Promise<MigrationResult> {
+    try {
+      const contents: DirectoryReadReturn | undefined = await Fs.readDir(UserPaths.AppShortcuts);
+      const storage = await Daemon!.appStorage()?.get();
+
+      if (!storage) return { result: "err_noop", errorMessage: "Nothing to do." };
+      if (!contents) await Fs.createDirectory(UserPaths.AppShortcuts);
+
+      for (const app of storage) {
+        const existing = contents?.files?.filter((f) => f.name === `${app.id}.arclnk`)[0];
+
+        if (existing) continue;
+
+        cb?.(`Creating shortcut for ${app.id}`);
+
+        Daemon!.shortcuts?.createShortcut(
+          {
+            name: app.id,
+            target: app.id,
+            type: "app",
+            icon: `@app::${app.id}`,
+          },
+          join(UserPaths.AppShortcuts, `${app.id}.arclnk`)
+        );
+        await Sleep(50);
+      }
+
+      await Daemon.appreg?.updateStartMenuFolder();
+
+      return { result: "err_ok", successMessage: "Updated" };
+    } catch (e) {
+      return { result: "err_failure", errorMessage: `${e}` };
+    }
+  }
+}

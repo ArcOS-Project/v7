@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { UserPaths } from "$ts/server/user/store";
-  import type { FolderEntry } from "$types/fs";
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { UserPaths } from "$ts/user/store";
+  import type { FolderEntry } from "$types/system/fs";
 
-  const { process, folder }: { process: FileManagerRuntime; folder: FolderEntry } = $props();
+  const { process, folder }: { process: IFileManagerRuntime; folder: FolderEntry } = $props();
 
   const { path } = process;
 </script>

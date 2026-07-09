@@ -1,10 +1,12 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IOopsStackTracerRuntime } from "$interfaces/runtimes/IOopsStackTracerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import type { App, AppProcessData } from "$types/app";
-import type { ParsedStackFrame } from "../oopsnotifier/types";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
-export class OopsStackTracerRuntime extends AppProcess {
+export class OopsStackTracerRuntime extends AppProcess implements IOopsStackTracerRuntime {
   data: App;
-  proc?: AppProcess;
+  proc?: IAppProcess;
   exception: Error | PromiseRejectionEvent;
   stackFrames: ParsedStackFrame[];
   trace: string = "";
@@ -18,7 +20,7 @@ export class OopsStackTracerRuntime extends AppProcess {
     app: AppProcessData,
     data: App,
     exception: Error | PromiseRejectionEvent,
-    process: AppProcess | undefined,
+    process: IAppProcess | undefined,
     stackFrames: ParsedStackFrame[]
   ) {
     super(pid, parentPid, app);

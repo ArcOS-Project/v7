@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { MessageComposerRuntime } from "../runtime";
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+  import Recipient from "./ToField/Recipient.svelte";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { recipients, sending } = process;
 
   let value = $state<string>();
@@ -28,17 +29,8 @@
 <div class="field to">
   <p class="name">%toField.to%</p>
   <div class="value">
-    {#each $recipients as recipient}
-      <div class="recipient">
-        <span>{recipient}</span>
-        <button
-          class="lucide icon-x"
-          onclick={() => process.removeRecipient(recipient)}
-          aria-label="%toField.removeRecipient({recipient})%"
-          disabled={$sending}
-          title="%toField.removeRecipient({recipient})%"
-        ></button>
-      </div>
+    {#each $recipients as recipient (recipient)}
+      <Recipient {recipient} {process} />
     {/each}
     <input type="text" {onkeydown} bind:value placeholder="%toField.enterUsername%" disabled={$sending} {onblur} />
   </div>

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { LoggingRuntime } from "$apps/user/logging/runtime";
   import { LogItemIcons } from "$apps/user/logging/store";
-  import { LogLevel, type LogItem } from "$types/logging";
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { LogLevel, type LogItem } from "$types/shared/logging";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
 
-  const { item, process }: { item: LogItem; process: LoggingRuntime } = $props();
+  const { item, process }: { item: LogItem; process: ILoggingRuntime } = $props();
   let timestamp = $state("");
   let now = $state(0);
 
@@ -18,7 +19,7 @@
 
 <div class="row item-{LogLevel[item.level]}" class:new={now && now < item.timestamp + 600}>
   <div class="segment icon">
-    <img src={process.getIconCached(LogItemIcons[item.level])} alt={LogLevel[item.level]} />
+    <Icon icon={LogItemIcons[item.level]!} />
   </div>
   <div class="segment timestamp">{timestamp}</div>
   <div class="segment message" title={item.message}><span>{item.message}</span></div>

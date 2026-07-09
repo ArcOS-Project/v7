@@ -1,13 +1,17 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { OverlayRuntime } from "../../overlay";
+  import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: ISettingsOverlayRuntime } = $props();
 
   let newUsername = $state("");
 
   async function changeIt() {
-    const result = await process.userDaemon?.changeUsername(newUsername);
+    const result = await Daemon?.account?.changeUsername(newUsername);
 
     process.closeWindow();
 
@@ -17,7 +21,7 @@
           title: "Change username",
           message:
             "Failed to change username! Either the username isn't allowed, it's already in use or you didn't approve the elevation request. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -29,7 +33,7 @@
         {
           title: "Change username",
           message: "Your username has been updated! You might have to restart ArcOS before the changes take effect everywhere.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },
@@ -42,7 +46,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("AccountIcon")} alt="" />
+    <Icon icon="AccountIcon" />
   </div>
   <div class="right">
     <h1>Change your username</h1>
@@ -50,7 +54,10 @@
     <input type="username" placeholder="New username" bind:value={newUsername} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newUsername} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newUsername} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

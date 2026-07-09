@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/server/user/store";
-  import type { LoginActivity } from "$types/activity";
+  import { ActivityCaptionTranslations, ActivityIconTranslations } from "$ts/user/store";
+  import type { LoginActivity } from "$types/user/activity";
   import dayjs from "dayjs";
 
   const { activity }: { activity: LoginActivity } = $props();

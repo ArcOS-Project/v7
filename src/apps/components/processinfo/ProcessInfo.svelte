@@ -1,26 +1,42 @@
 <script lang="ts">
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import { AppProcess } from "$ts/apps/process";
-  import type { ProcessInfoRuntime } from "./runtime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon, Env, Stack } from "$ts/env";
+  import { ProcessesHelper } from "$ts/helpers/processes";
+  import { Sleep } from "$ts/sleep";
+  import { formatBytes } from "$ts/util/fs";
 
-  const { process }: { process: ProcessInfoRuntime } = $props();
-  const { proc, parent, inherit } = process;
+  const { process }: { process: IProcessInfoRuntime } = $props();
+  const { proc, parent, procConstructor: inherit } = process;
 
-  const icon =
-    proc instanceof AppProcess ? process.userDaemon?.getAppIcon(proc.app.data) : process.getIconCached("ComponentIcon");
-  const children = process.handler.getSubProcesses(proc!.pid);
-  const context = process.handler.getProcessContext(proc!.pid);
+  const icon = ProcessesHelper.IsAnyAppProcess(proc!) ? `@app::${proc.app.id}` : "ComponentIcon";
+  const children = Stack.getSubProcesses(proc!.pid);
+  const context = Stack.getProcessContext(proc!.pid);
 
   function info() {
-    process.spawnOverlayApp("AppInfo", +process.env.get("shell_pid"), (proc as AppProcess).app.id);
+    process.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), (proc as IAppProcess).app.id);
+  }
+
+  async function viewSourceFile() {
+    await process.closeWindow();
+    const enabled = await Daemon.version?.enableSourceDrive();
+
+    if (!enabled) return;
+
+    await Sleep(10);
+    await process.spawnApp("cod", +Env.get("shell_pid"), `S:/${proc?.sourceUrl!}`);
   }
 </script>
 
 {#if proc}
   <div class="header">
-    <img src={icon} alt="" />
+    <Icon {icon} />
     <div class="base-info">
       <h1>{proc.name}</h1>
       <p>Process {proc.pid}</p>
@@ -29,9 +45,9 @@
   <InfoBlock>
     <InfoRow>
       <Segment title="Type">{inherit?.name || "Unknown"}</Segment>
-      <Segment title="PID">{proc.pid}</Segment>
       <Segment title="Parent PID">{proc.parentPid} ({parent?.name || "?"})</Segment>
       <Segment title="Children">{children.size}</Segment>
+      <Segment title="Memory">{formatBytes(proc.MEMORY)}</Segment>
     </InfoRow>
     <InfoRow>
       <Segment title="Critical">{process._criticalProcess ? "Yes" : "No"}</Segment>
@@ -45,7 +61,7 @@
       <Segment title="Source Type">{proc.sourceUrl ? "Original" : "Interpreted"}</Segment>
     </InfoRow>
   </InfoBlock>
-  {#if proc instanceof AppProcess}
+  {#if ProcessesHelper.IsAnyAppProcess(proc)}
     <InfoBlock>
       <InfoRow>
         <Segment title="App ID" alt={proc.app.id}>{proc.app.id}</Segment>
@@ -54,9 +70,16 @@
       </InfoRow>
     </InfoBlock>
   {/if}
-  <div class="actions">
-    <button class="kill" onclick={() => process.kill(proc)}>Kill</button>
-    <button onclick={info} disabled={!(proc instanceof AppProcess)}>App Info</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Okay</button>
-  </div>
+  <ActionBar floating>
+    {#snippet leftContent()}
+      <ActionButton className="kill" onclick={() => process.kill(proc)}>Kill</ActionButton>
+    {/snippet}
+    {#snippet rightContent()}
+      {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}
+        <ActionButton onclick={viewSourceFile}>View source</ActionButton>
+      {/if}
+      <ActionButton onclick={info} disabled={!ProcessesHelper.IsAnyAppProcess(proc)}>App Info</ActionButton>
+      <ActionButton suggested onclick={() => process.closeWindow()}>Okay</ActionButton>
+    {/snippet}
+  </ActionBar>
 {/if}

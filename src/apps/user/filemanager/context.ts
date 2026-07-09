@@ -1,14 +1,15 @@
-import { MessageBox } from "$ts/dialog";
-import { UserPaths } from "$ts/server/user/store";
-import { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
+import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
+import { Daemon, Env, Fs } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/app";
-import type { FileEntry, FolderEntry } from "$types/fs";
-import type { FileManagerRuntime } from "./runtime";
+import type { AppContextMenu } from "$types/apps/app";
+import type { FileEntry, FolderEntry } from "$types/system/fs";
 import type { QuotedDrive } from "./types";
 
-export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextMenu {
+export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContextMenu {
   return {
     "sidebar-drive": [
       {
@@ -50,12 +51,12 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "x",
         disabled: (drive: QuotedDrive) =>
-          drive.data.FIXED || (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id,
+          drive.data.FIXED || (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id,
       },
       {
         caption: "Leave share",
         action: (drive: QuotedDrive) => {
-          const share = drive.data as SharedDrive;
+          const share = drive.data as ISharedDrive;
 
           MessageBox(
             {
@@ -66,9 +67,9 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
                 {
                   caption: "Leave",
                   action: async () => {
-                    const shares = runtime.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt");
+                    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt");
 
-                    await runtime.fs.umountDrive(share.shareId!);
+                    await Fs.umountDrive(share.shareId!);
                     await shares?.leaveShare(share.shareId!);
 
                     runtime.userPreferences.update((v) => {
@@ -90,13 +91,14 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         },
         icon: "log-out",
         disabled: (drive: QuotedDrive) =>
-          (drive.data as SharedDrive).shareInfo.userId === runtime.userDaemon?.userInfo?._id ||
+          (drive.data as ISharedDrive).shareInfo.userId === Daemon?.userInfo?._id ||
           runtime.shareAccessIsAdministrative(drive.data),
       },
       { sep: true },
       {
         caption: "Manage share...",
-        action: (drive: QuotedDrive) => runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as SharedDrive).shareId),
+        action: (drive: QuotedDrive) =>
+          runtime.spawnOverlayApp("ShareMgmtGui", runtime.pid, (drive.data as ISharedDrive).shareId),
         icon: "wrench",
       },
       {
@@ -112,26 +114,37 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         icon: "eye",
         subItems: [
           {
-            caption: "Compact grid",
-            icon: "columns-3",
-            action: () => {
+            caption: "Thumbnail view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "thumbnail",
+            icon: "file-image",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = true;
+                v.appPreferences.fileManager.viewMode = "thumbnail";
                 return v;
-              });
-            },
-            isActive: () => !!runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
+          },
+          {
+            caption: "Grid view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "grid",
+            icon: "columns-3",
+            disabled: () => !!runtime.virtual(),
+            action: () =>
+              runtime.userPreferences.update((v) => {
+                v.appPreferences.fileManager.viewMode = "grid";
+                return v;
+              }),
           },
           {
             caption: "List view",
+            isActive: () => runtime.userPreferences().appPreferences.fileManager?.viewMode === "list",
             icon: "list",
-            action: () => {
+            disabled: () => !!runtime.virtual(),
+            action: () =>
               runtime.userPreferences.update((v) => {
-                v.appPreferences.fileManager!.grid = false;
+                v.appPreferences.fileManager.viewMode = "list";
                 return v;
-              });
-            },
-            isActive: () => !runtime.userPreferences().appPreferences.fileManager?.grid,
+              }),
           },
         ],
       },
@@ -146,20 +159,20 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Cut items",
         disabled: () => !runtime.selection().length || !!runtime.drive()?.READONLY,
-        isActive: () => !!runtime.cutList().length,
+        isActive: () => !!Daemon!.cutList().length,
         action: () => runtime.setCutFiles(),
         icon: "scissors",
       },
       {
         caption: "Copy items",
         disabled: () => !runtime.selection().length,
-        isActive: () => !!runtime.copyList().length,
+        isActive: () => !!Daemon!.copyList().length,
         action: () => runtime.setCopyFiles(),
         icon: "copy",
       },
       {
         caption: "Paste items",
-        disabled: () => (!runtime.cutList().length && !runtime.copyList().length) || !!runtime.drive()?.READONLY,
+        disabled: () => (!Daemon!.cutList().length && !Daemon!.copyList().length) || !!runtime.drive()?.READONLY,
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
       },
@@ -199,7 +212,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Open in ArcTerm",
         icon: "terminal",
         action: () => {
-          runtime.spawnApp("ArcTerm", +runtime.env.get("shell_pid"), runtime.path());
+          runtime.spawnApp("ArcTerm", +Env.get("shell_pid"), runtime.path());
         },
       },
       {
@@ -209,13 +222,13 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
           const path = runtime.path();
           const parentPath = getParentDirectory(path);
           const name = getItemNameFromPath(path);
-          const parent = await runtime.fs.readDir(parentPath);
+          const parent = await Fs.readDir(parentPath);
           const dir = parent?.dirs.filter((d) => d.name === name)[0] || parent;
           const isRoot = parentPath === path;
 
           if (isRoot) {
             try {
-              const drive = runtime.fs.getDriveByPath(path);
+              const drive = Fs.getDriveByPath(path);
               runtime.spawnOverlayApp("DriveInfo", runtime.pid, drive);
               return;
             } catch {}
@@ -238,7 +251,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          Daemon?.files?.openWith(runtimePath);
         },
       },
       {
@@ -253,7 +266,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -261,7 +274,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -281,8 +294,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Delete",
         icon: "trash-2",
-        action: (_, runtimePath) => {
-          runtime.selection.set([runtimePath]);
+        action: () => {
           runtime.deleteSelected();
         },
         disabled: () => !!runtime.drive()?.READONLY,
@@ -305,7 +317,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
       {
         caption: "Open with...",
         action: (_, runtimePath) => {
-          runtime.userDaemon?.openWith(runtimePath);
+          Daemon?.files?.openWith(runtimePath);
         },
       },
       { sep: true },
@@ -313,7 +325,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -321,7 +333,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -389,7 +401,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Cut",
         icon: "scissors",
         action: (_, runtimePath) => {
-          runtime.cutList.set([runtimePath]);
+          Daemon!.cutList.set([runtimePath]);
         },
         disabled: () => !!runtime.drive()?.READONLY,
       },
@@ -397,7 +409,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Copy",
         icon: "copy",
         action: (_, runtimePath) => {
-          runtime.copyList.set([runtimePath]);
+          Daemon!.copyList.set([runtimePath]);
         },
       },
       {
@@ -485,7 +497,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
             caption: "Advanced System Settings...",
             icon: "monitor-cog",
             action: () => {
-              runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"));
+              runtime.spawnApp("AdvSystemSettings", +Env.get("shell_pid"));
             },
           },
         ],
@@ -494,7 +506,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Settings...",
         icon: "settings-2",
         action: () => {
-          runtime.userDaemon?.spawnApp("systemSettings", +runtime.env.get("shell_pid"));
+          runtime.spawnApp("systemSettings", +Env.get("shell_pid"));
         },
       },
     ],
@@ -516,7 +528,7 @@ export function FileManagerContextMenu(runtime: FileManagerRuntime): AppContextM
         caption: "Properties...",
         icon: "wrench",
         action: () => {
-          runtime.userDaemon?.spawnApp("AdvSystemSettings", +runtime.env.get("shell_pid"), "Recycling");
+          runtime.spawnApp("AdvSystemSettings", +Env.get("shell_pid"), "Recycling");
         },
       },
     ],

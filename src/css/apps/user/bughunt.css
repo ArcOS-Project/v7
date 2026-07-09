@@ -1,6 +1,5 @@
 @import url("./bughunt/sidebar.css");
 @import url("./bughunt/container.css");
-@import url("./bughunt/actionbar.css");
 @import url("./bughunt/creator.css");
 @import url("./bughunt/logging.css");
 @import url("./bughunt/userdata.css");
@@ -24,4 +23,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#BugHunt > div.body div.window-action-bar {
+  background-color: var(--win-bg);
 }

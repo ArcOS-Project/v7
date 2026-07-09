@@ -1,17 +1,18 @@
+import type { IWriterReplaceRuntime } from "$interfaces/runtimes/IWriterReplaceRuntime";
+import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
-import type { AppProcessData } from "$types/app";
-import type { WriterRuntime } from "../runtime";
+import { Stack } from "$ts/env";
+import type { AppProcessData } from "$types/apps/app";
 
-export class ReplaceRuntime extends AppProcess {
-  parent: WriterRuntime;
+export class WriterReplaceRuntime extends AppProcess implements IWriterReplaceRuntime {
+  parent: IWriterRuntime;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.parent = KernelStack().getProcess(parentPid)!;
+    this.parent = Stack.getProcess(parentPid)!;
 
     this.setSource(__SOURCE__);
   }

@@ -1,6 +1,6 @@
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { getKMod } from "$ts/env";
-import type { SystemDispatchType } from "$types/kernel";
-import { arrayToBlob } from "./convert";
+import { arrayBufferToBlob } from "./convert";
 
 export const sizeUnits = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
@@ -67,7 +67,7 @@ export function getParentDirectory(p: string): string {
 }
 
 export function onFileChange(path: string, callback: () => void) {
-  const dispatch = getKMod<SystemDispatchType>("dispatch");
+  const dispatch = getKMod<ISystemDispatch>("dispatch");
 
   dispatch.subscribe("fs-flush-file", (data) => {
     if (data[0] === path) callback();
@@ -77,7 +77,7 @@ export function onFileChange(path: string, callback: () => void) {
 }
 
 export function onFolderChange(path: string, callback: () => void) {
-  const dispatch = getKMod<SystemDispatchType>("dispatch");
+  const dispatch = getKMod<ISystemDispatch>("dispatch");
 
   dispatch.subscribe<string>("fs-flush-folder", (data) => {
     if (!path || data === path) callback();
@@ -105,7 +105,7 @@ export function formatBytes(bytes: number) {
 export function DownloadFile(file: ArrayBuffer, filename: string, mimetype?: string) {
   if (!file || !filename) return;
 
-  const blob = arrayToBlob(file, mimetype);
+  const blob = arrayBufferToBlob(file, mimetype);
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
 
@@ -114,4 +114,29 @@ export function DownloadFile(file: ArrayBuffer, filename: string, mimetype?: str
   anchor.target = "_blank";
   anchor.click();
   anchor.remove();
+}
+
+export function normalizePath(path: string) {
+  const driveMatch = /^[A-Za-z]:/.exec(path);
+  const guidMatch = /^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}/.exec(path);
+  const prefix = driveMatch ? driveMatch[0] : guidMatch ? guidMatch[0] : "";
+
+  let rest = path.slice(prefix.length);
+
+  const hasLeading = rest.startsWith("/");
+
+  const parts = rest.split("/").filter(Boolean);
+  const stack = [];
+
+  for (const p of parts) {
+    if (p === ".") continue;
+    if (p === "..") {
+      if (stack.length) stack.pop();
+      continue;
+    }
+    stack.push(p);
+  }
+
+  const result = prefix + (hasLeading ? "/" : "") + stack.join("/");
+  return result || prefix || ".";
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { TimeFrames } from "$ts/server/user/store";
-  import type { PartialStoreItem, StoreItem } from "$types/package";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import { TimeFrames } from "$ts/user/store";
+  import type { PartialStoreItem, StoreItem } from "$types/tpa/package";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: AppStoreRuntime } =
+  const { groups, all, process }: { groups: Record<string, StoreItem[]>; all: PartialStoreItem[]; process: IAppStoreRuntime } =
     $props();
 </script>
 
@@ -14,7 +14,6 @@
       <PackageGrid {items} name={TimeFrames[frame]} {process} />
     {/if}
   {/each}
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

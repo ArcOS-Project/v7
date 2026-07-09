@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { IconEditDialogRuntime } from "../runtime";
+  import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
 
-  const { process }: { process: IconEditDialogRuntime } = $props();
+  const { process }: { process: IIconEditDialogRuntime } = $props();
   const { type, values } = process;
 
   async function choose() {
     $values[$type] =
-      (await process.userDaemon!.IconPicker({
-        forWhat: process.id!,
+      (await Daemon!.helpers!.IconPicker({
+        forWhat: process.iconName!,
         defaultIcon: $values[$type] || "ComponentIcon",
       })) || $values[$type];
   }
@@ -18,7 +20,7 @@
   <div class="input">
     <div class="field">
       {#if $values[$type]}
-        <img src={process.getIconCached(`@builtin::${$values[$type]}`)} alt="" />
+        <Icon icon="@builtin::{$values[$type]}" />
       {/if}
       <span>{$values[$type]}</span>
     </div>

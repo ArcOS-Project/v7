@@ -8,45 +8,43 @@
  *
  * © IzKuipers 2025
  */
+import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { KernelServerUrl } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { TryGetDaemon, UserDaemon } from "$ts/server/user/daemon";
-import { ThirdPartyProps } from "$ts/tpa/props";
-import { authcode } from "$ts/util";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { ThirdPartyProps } from "$ts/apps/tpa/props";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-import type { App } from "$types/app";
-import type { ThirdPartyPropMap } from "$types/thirdparty";
+import { UUID } from "$ts/util/uuid";
+import type { App } from "$types/apps/app";
+import type { ParsedImportStatement, ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
-import * as walk from "acorn-walk";
 
 export class JsExec extends Process {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
   props?: ThirdPartyPropMap;
-  userDaemon?: UserDaemon;
   app?: App;
   args: any[];
   metaPath?: string;
   filePath?: string;
   workingDirectory: string;
+  operationId: string;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
     super(pid, parentPid);
 
-    this.userDaemon = TryGetDaemon();
     this.args = args;
     this.filePath = filePath;
     this.workingDirectory = getParentDirectory(filePath);
     this.name = "JsExec";
     this.setSource(__SOURCE__);
+    this.operationId = UUID();
   }
 
   async start() {
-    if (!this.userDaemon || !this.filePath) return false;
+    if (!this.filePath) return false;
 
     this.props = ThirdPartyProps(this);
   }
@@ -57,20 +55,14 @@ export class JsExec extends Process {
   async getTpaUrl(wrapped: string) {
     this.Log(`Getting TPA file URL`);
 
-    const postUrl = this.getTpaPostUrl();
-    const serverUrl = KernelServerUrl();
     const { appId, userId, filename } = this.getTpaUrlInfo();
-    const now = Date.now();
-    const ac = authcode();
-
     try {
-      await Backend.post(postUrl, textToBlob(wrapped), {
-        headers: { Authorization: `Bearer ${this.userDaemon?.token}` },
-      });
+      const urlResult = await Daemon!.GetConnector<ITpaConnector>("TpaConnector").CreateUrl(wrapped, userId, appId, filename);
 
-      return `${serverUrl}/tpa/v3/${userId}/${now}/${appId}@${filename}${ac}`;
-    } catch {
-      throw new JsExecError(`Failed to create momentary TPA URL`);
+      if (!urlResult.success) throw new JsExecError();
+      return urlResult.result!;
+    } catch (e: any) {
+      throw new JsExecError(`Failed to create momentary TPA URL: ${e?.message ?? e}`);
     }
   }
 
@@ -82,7 +74,7 @@ export class JsExec extends Process {
 
   getTpaUrlInfo() {
     const appId = this.app?.id || "ArcOS";
-    const userId = this.userDaemon?.userInfo?._id || "SYSTEM";
+    const userId = Daemon?.userInfo?._id || "SYSTEM";
     const filename = getItemNameFromPath(this.filePath!);
 
     return { appId, userId, filename };
@@ -111,7 +103,7 @@ export class JsExec extends Process {
   async getContents() {
     this.Log(`Reading script contents`);
 
-    const unwrapped = arrayToText((await this.fs.readFile(this.filePath!))!);
+    const unwrapped = this.convertImportStatementsToRegex(arrayBufferToText((await Fs.readFile(this.filePath!))!)!);
     if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
 
     await this.testFileContents(unwrapped);
@@ -121,10 +113,12 @@ export class JsExec extends Process {
 
     return await this.exec(tpaUrl);
   }
+
   //#endregion
   //#region HELPERS
-  setApp(app: App, metaPath: string) {
-    this.Log(`Setting app data to ${app.id} (${metaPath})`);
+
+  setApp(app: App, metaPath?: string) {
+    this.Log(`Setting app data to ${app.id} (${metaPath ?? "<unknown meta>"})`);
 
     if (this.app) return;
 
@@ -144,49 +138,50 @@ export class JsExec extends Process {
     return `export default async function({${Object.keys(this.props).join(",")}}) {\nconst global = arguments;\n${contents}\n}`;
   }
 
-  async testFileContents(unwrapped: string) {
-    const ast = acorn.parse(unwrapped, {
-      sourceType: "module",
-      ecmaVersion: "latest",
-      allowReturnOutsideFunction: true,
-      allowAwaitOutsideFunction: true,
-    });
-    const hasExport = ast.body.some((node) => node.type.startsWith("Export"));
-    const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
-    const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
-    const domReferences = await this.testFileContents_detectDomReferences(ast);
+  private convertImportStatementsToRegex(sourceFile: string) {
+    if (!sourceFile) return sourceFile;
+    const regex =
+      /import(?:(?:(?:[ \n\t]+(?<default>[^ *\n\t\{\},]+)[ \n\t]*(?:,|[ \n\t]+))?(?<destructured>[ \n\t]*\{(?:[ \n\t]*[^ \n\t"'\{\}]+[ \n\t]*,?)+\})?[ \n\t]*)|[ \n\t]*\*[ \n\t]*as[ \n\t]+(?<wildcard>[^ \n\t\{\}]+)[ \n\t]+)from[ \n\t]*(?:['"])(?<filename>[^'"\n]+)(?<quote>['"])/gm;
+    const matches = sourceFile
+      .matchAll(regex)
+      .toArray()
+      .map((m) => ({ ...m.groups, original: m[0] })) as ParsedImportStatement[];
 
-    for (const key in domReferences) {
-      if ((domReferences as any)[key]) throw new JsExecError(`References to ${key} are not allowed.`);
+    for (const match of matches) {
+      const { destructured, default: defaultImport, filename, quote, wildcard } = match;
+      let loadStatement = `const ${destructured || defaultImport || wildcard} = await load(${quote}${filename}${quote})`;
+
+      sourceFile = sourceFile.replace(match.original, loadStatement);
     }
 
-    if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
-    if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
-    if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
+    return sourceFile;
   }
 
-  async testFileContents_detectDomReferences(ast: acorn.Program) {
-    const results = { documentBody: false, appRenderer: false };
+  async testFileContents(unwrapped: string) {
+    try {
+      const ast = acorn.parse(unwrapped, {
+        sourceType: "module",
+        ecmaVersion: "latest",
+        allowReturnOutsideFunction: true,
+        allowAwaitOutsideFunction: true,
+      });
+      const hasExport = ast.body.some((node) => node.type.startsWith("Export"));
+      const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
+      const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
 
-    walk.simple(ast, {
-      MemberExpression(node) {
-        const { object, property } = node;
-        if (object.type === "Identifier" && object.name === "document") {
-          switch ((property as any).name) {
-            case "body":
-              results.documentBody = true;
-              break;
-          }
-        }
-      },
-      Literal(node) {
-        if (typeof node.value === "string" && node.value.includes("#appRenderer")) results.appRenderer = true;
-      },
-    });
-
-    return results;
+      if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
+      if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
+      if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
+    } catch (e) {
+      throw new JsExecError(`An error occurred while parsing the source file: ${e}`);
+    }
   }
+
   //#endregion
+
+  static async Invoke(filePath: string, ...args: any[]) {
+    return await Stack.spawn<JsExec>(JsExec, undefined, undefined, +Env.get("userdaemon_pid"), filePath, ...args);
+  }
 }
 
 export class JsExecError extends Error {

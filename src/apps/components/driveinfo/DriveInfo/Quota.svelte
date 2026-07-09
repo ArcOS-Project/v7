@@ -1,27 +1,35 @@
 <script lang="ts">
+  import type { IDriveInfoRuntime } from "$interfaces/runtimes/IDriveInfoRuntime";
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
+  import type { UserQuota } from "$types/system/fs";
 
-  const { quota }: { quota: UserQuota } = $props();
+  const { quota, process }: { quota: UserQuota; process: IDriveInfoRuntime } = $props();
 </script>
 
 <div class="quota">
-  <div class="part used">
-    <div class="dot"></div>
-    <div class="info">
-      <h1>
-        %quota.used({quota.percentage.toFixed(0)})%
-      </h1>
-      <p>{formatBytes(quota.used)}</p>
+  {#if quota.max > 0}
+    <div class="part used">
+      <div class="dot"></div>
+      <div class="info">
+        <h1>
+          %quota.used({quota.percentage.toFixed(0)})%
+        </h1>
+        <p>{formatBytes(quota.used)}</p>
+      </div>
     </div>
-  </div>
-  <div class="part free">
-    <div class="dot"></div>
-    <div class="info">
-      <h1>
-        %quota.free({(100 - quota.percentage).toFixed(0)})%
-      </h1>
-      <p>{formatBytes(quota.free)}</p>
+    <div class="part free">
+      <div class="dot"></div>
+      <div class="info">
+        <h1>
+          %quota.free({(100 - quota.percentage).toFixed(0)})%
+        </h1>
+        <p>{formatBytes(quota.free)}</p>
+      </div>
     </div>
-  </div>
+  {:else}
+    <div class="warning">
+      <img src={process.getIconCached("WarningIcon")} alt="" />
+      <span>Couldn't get the quota of this drive</span>
+    </div>
+  {/if}
 </div>

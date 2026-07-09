@@ -1,0 +1,19 @@
+import type { CommandResultOptions } from "$types/shared/result";
+import type { Constructs } from "./common";
+
+// !tpa
+export interface ICommandResult<T = any> {
+  result: T | undefined;
+  error?: Error;
+  errorMessage?: string;
+  successMessage?: string;
+  success: boolean;
+}
+
+export interface ICommandResultConstructor extends Constructs<ICommandResult> {
+  Ok<T>(value: T, successMessage?: string): ICommandResult<T>;
+  Error<T = any>(errorMessage: string): ICommandResult<T>;
+
+  new <T>(result?: T, options?: CommandResultOptions): ICommandResult<T>;
+}
+// !endtpa

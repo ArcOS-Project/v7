@@ -1,5 +1,5 @@
 import "$css/apps/components/globalloadindicator.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import GlobalLoadIndicator from "./GlobalLoadIndicator.svelte";
 import { GlobalLoadIndicatorRuntime } from "./runtime";
 
@@ -16,11 +16,11 @@ export const GlobalLoadIndicatorApp: App = {
     h: NaN,
   },
   minSize: {
-    w: 320,
-    h: 80,
+    w: 400,
+    h: 72,
   },
   maxSize: {
-    w: 500,
+    w: 550,
     h: 260,
   },
   state: {

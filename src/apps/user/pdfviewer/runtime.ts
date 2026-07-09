@@ -1,11 +1,13 @@
+import type { IPdfViewerRuntime } from "$interfaces/runtimes/IPdfViewerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { arrayToBlob } from "$ts/util/convert";
+import { Daemon, Fs } from "$ts/env";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class PdfViewerRuntime extends AppProcess {
+export class PdfViewerRuntime extends AppProcess implements IPdfViewerRuntime {
   openedFile = Store<string>();
   documentUrl = Store<string>();
 
@@ -28,8 +30,10 @@ export class PdfViewerRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
+
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         return await this.readFileIndirectFallback(path);
@@ -44,7 +48,9 @@ export class PdfViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.FileProgress(
+    this.Log(`Reading file in full using readFile because DFA accessing failed: ${path}`);
+
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,
@@ -55,7 +61,7 @@ export class PdfViewerRuntime extends AppProcess {
     );
 
     try {
-      const contents = await this.fs.readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -70,7 +76,7 @@ export class PdfViewerRuntime extends AppProcess {
             message: "The file you tried to open could not be read.",
             image: "ErrorIcon",
             sound: "arcos.dialog.error",
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            buttons: [BTN_OKAY_SUG],
           },
           this.parentPid,
           true
@@ -80,7 +86,7 @@ export class PdfViewerRuntime extends AppProcess {
         return;
       }
 
-      const blob = arrayToBlob(contents);
+      const blob = arrayBufferToBlob(contents);
       const url = URL.createObjectURL(blob);
 
       this.openedFile.set(path);

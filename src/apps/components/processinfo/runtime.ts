@@ -1,43 +1,49 @@
+import type { Constructs } from "$interfaces/common";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IProcessInfoRuntime } from "$interfaces/runtimes/IProcessInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
-import { ProcessKillResultCaptions } from "$ts/process/store";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ProcessKillResult } from "$types/process";
+import { Daemon, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { MessageBox } from "$ts/util/dialog";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ProcessKillResult } from "$types/system/process";
 
-export class ProcessInfoRuntime extends AppProcess {
-  parent?: Process;
-  proc?: Process;
-  inherit?: typeof Process;
+export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntime {
+  parent?: IProcess;
+  proc?: IProcess;
+  // The class constructor of the targeted process
+  procConstructor?: Constructs<IProcess>;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, proc: Process) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, proc: IProcess) {
     super(pid, parentPid, app);
 
     this.proc = proc || this;
-    this.parent = this.handler.getProcess(this.proc.parentPid);
-    this.inherit = Object.getPrototypeOf(this.proc.constructor);
+    this.parent = Stack.getProcess(this.proc.parentPid);
+    this.procConstructor = Object.getPrototypeOf(this.proc.constructor);
 
     this.setSource(__SOURCE__);
   }
 
   //#endregion
 
-  async kill(proc: Process) {
-    const elevated = await this.userDaemon?.manuallyElevate({
+  async kill(proc: IProcess) {
+    this.Log(`kill: ${proc.pid}`);
+
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: this.getIconCached(proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon"),
+      image: (ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
-      description: proc instanceof AppProcess ? "Application" : "Process",
+      description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
       level: ElevationLevel.high,
     });
 
     if (!elevated) return;
 
-    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+    const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 
     MessageBox(
       {
@@ -51,7 +57,7 @@ export class ProcessInfoRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await KernelStack().kill(proc.pid, true);
+              const result = await Stack.kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);
@@ -67,6 +73,8 @@ export class ProcessInfoRuntime extends AppProcess {
   }
 
   killError(name: string, result: ProcessKillResult) {
+    this.Log(`killError: ${name} -> ${result}`);
+
     const caption = ProcessKillResultCaptions[result];
 
     MessageBox(

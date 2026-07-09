@@ -1,19 +1,21 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
-import type { ShellTrayIcon, TrayPopup } from "$apps/components/shell/types";
-import { KernelStack } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import type { ContextMenuItem } from "$types/app";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
+import { Env, Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import type { ContextMenuItem } from "$types/apps/app";
+import type { ShellTrayIcon, TrayPopup } from "$types/services/tray";
 import { mount, unmount } from "svelte";
 
-export class TrayIconProcess extends Process {
+export class TrayIconProcess extends Process implements ITrayIconProcess {
   targetPid: number;
   identifier: string;
   popup?: TrayPopup;
   context?: ContextMenuItem[];
-  action?: (targetedProcess: Process) => void;
+  action?: (targetedProcess: IProcess) => void;
   componentMount: Record<string, any> = {};
   icon: string;
-  shell: ShellRuntime;
+  shell: IShellRuntime;
 
   //#region LIFECYCLE
 
@@ -26,7 +28,7 @@ export class TrayIconProcess extends Process {
     this.icon = data.icon;
     this.context = data.context;
     this.action = data.action;
-    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"))!;
+    this.shell = Stack.getProcess(+Env.get("shell_pid"))!;
     this.name = "TrayIconProcess";
 
     this.setSource(__SOURCE__);
@@ -34,7 +36,7 @@ export class TrayIconProcess extends Process {
 
   async __render() {
     const popupBody = this.getPopupBody();
-    const target = KernelStack().getProcess(this.targetPid)!;
+    const target = Stack.getProcess(this.targetPid)!;
 
     if (this.popup?.component) {
       this.Log("Mounting tray popup component");
@@ -55,10 +57,10 @@ export class TrayIconProcess extends Process {
   async stop() {
     if (this.componentMount && Object.entries(this.componentMount).length) unmount(this.componentMount);
 
-    this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
+    if (this.STATE !== "stopping") this.shell.trayHost?.disposeTrayIcon?.(this.targetPid, this.identifier);
   }
 
-  async renderPopup(popup: HTMLDivElement, target: Process) {}
+  async renderPopup(popup: HTMLDivElement, target: IProcess) {}
 
   //#endregion
 

@@ -1,0 +1,156 @@
+div.window.glass div.window-action-bar {
+  background-color: var(--button-glass-bg);
+  border-top-color: var(--button-glass-bg);
+}
+
+div.window div.window-action-bar {
+  height: 51px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: var(--win-border);
+  justify-content: space-between;
+}
+
+div.window div.window-action-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+div.window div.window-action-bar > div.left {
+  width: 0;
+  flex-grow: 1;
+}
+
+div.window div.window-action-bar.floating {
+  height: 52px;
+  border-radius: 15px;
+  box-shadow: var(--secondary-box-shadow);
+  background-color: var(--button-bg);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
+  border-top: none;
+  width: 100%;
+  margin-top: auto;
+}
+
+div.window div.window-action-bar .lucide {
+  font-weight: normal !important;
+}
+
+div.window div.action-bar-sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.window div.window-action-bar div.icon-action-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+div.window div.window-action-bar button.action-bar-button {
+  padding: 0;
+  height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+}
+
+div.window div.window-action-bar button.action-bar-button div.button-content {
+  padding: 0 15px;
+  height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 30px;
+}
+
+div.window div.window-action-bar button.action-bar-button.has-icon div.button-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  padding-right: 15px;
+}
+
+div.window div.window-action-bar button.action-bar-button.has-icon span.lucide {
+  font-size: 16px;
+  display: block;
+  height: 16px;
+  line-height: 16px;
+}
+
+div.window div.window-action-bar button.action-bar-button div.button-content.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+div.window div.window-action-bar button.action-bar-button div.spinner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.window div.window-action-bar button.action-bar-icon-button {
+  width: 30px;
+  height: 30px;
+  min-width: unset !important;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  min-width: fit-content;
+}
+
+div.window div.window-action-bar button.action-bar-button * {
+  color: inherit !important;
+}
+
+div.window div.window-action-bar div.sep {
+  width: 1px;
+  height: 20px;
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.window div.window-action-bar div.action-bar-pill {
+  height: 30px;
+  border-radius: 8px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--button-bg);
+  border: var(--win-border);
+  background-color: transparent;
+}
+
+div.window div.window-action-bar div.action-bar-pill div.key {
+  font-weight: bold;
+  opacity: 0.5;
+  padding-right: 8px;
+  border-right: var(--button-glass-hover-bg) 1px solid;
+  line-height: 20px;
+}
+
+div.window div.window-action-bar p.action-bar-subtle {
+  opacity: 0.5;
+  padding: 0 5px;
+}
+
+div.window div.window-action-bar p.action-bar-subtle.mono {
+  font-family: "Source Code Pro";
+}

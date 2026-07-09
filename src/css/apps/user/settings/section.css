@@ -21,6 +21,8 @@
   background-color: var(--button-bg);
   overflow: hidden;
   box-shadow: var(--secondary-box-shadow);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #systemSettings section div.content div.option {
@@ -80,6 +82,19 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+#systemSettings section div.content div.option div.name div.icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#systemSettings section div.content div.option div.name span.lucide {
+  font-size: 16px;
+  color: var(--accent-light);
 }
 
 #systemSettings section div.content div.option div.name img {

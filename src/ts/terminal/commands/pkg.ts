@@ -1,13 +1,14 @@
-import { DistributionServiceProcess } from "$ts/distrib";
-import { UserPaths } from "$ts/server/user/store";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
+import { Fs } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
-import { ElevationLevel } from "$types/elevation";
+import { ElevationLevel } from "$types/system/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import type { ArcTerminal } from "..";
+import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../store";
 
 const typeCaptions: Record<string, string> = {
   mkdir: "Creating folder",
@@ -19,7 +20,7 @@ const typeCaptions: Record<string, string> = {
 export class PkgCommand extends TerminalProcess {
   public static keyword: string = "pkg";
   public static description: string = "ArcOS package manager commandline";
-  private distrib?: DistributionServiceProcess;
+  private distrib?: IDistributionServiceProcess;
 
   //#region LIFECYCLE
 
@@ -31,8 +32,8 @@ export class PkgCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
-    this.distrib = this.term!.daemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+    this.distrib = this.term!.daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
 
     if (!argv[0]) {
       this.term?.Error("Missing arguments.");
@@ -99,27 +100,25 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(
-      `Installing ${BRGREEN}${pkg.name}${RESET} v${pkg.pkg.version} by ${BRGREEN}${pkg.pkg.author}${RESET}.`
-    );
-    this.term?.rl?.println(`\n${BRBLUE}${pkg.pkg.description}${RESET}\n`);
-    this.term?.rl?.println(`${BRPURPLE}Compressed size${RESET}:   ${formatBytes(pkg.size)}`);
-    this.term?.rl?.println(`${BRPURPLE}Last updated${RESET}:      ${dayjs(pkg.lastUpdated).format("DD MMM YYYY, HH:mm:ss")}`);
-    this.term?.rl?.println(`${BRPURPLE}Downloads${RESET}:         ${pkg.installCount}`);
-    this.term?.rl?.println(`${BRPURPLE}Installs to${RESET}:       ${pkg.pkg.installLocation}`);
+    this.rl!.println(`Installing ${BRGREEN}${pkg.name}${RESET} v${pkg.pkg.version} by ${BRGREEN}${pkg.pkg.author}${RESET}.`);
+    this.rl!.println(`\n${BRBLUE}${pkg.pkg.description}${RESET}\n`);
+    this.rl!.println(`${BRPURPLE}Compressed size${RESET}:   ${formatBytes(pkg.size)}`);
+    this.rl!.println(`${BRPURPLE}Last updated${RESET}:      ${dayjs(pkg.lastUpdated).format("DD MMM YYYY, HH:mm:ss")}`);
+    this.rl!.println(`${BRPURPLE}Downloads${RESET}:         ${pkg.installCount}`);
+    this.rl!.println(`${BRPURPLE}Installs to${RESET}:       ${pkg.pkg.installLocation}`);
 
-    const confirm = await this.term?.rl?.read(`\nDo you want to install this package (y/n)? `);
+    const confirm = await this.rl!.read(`\nDo you want to install this package (y/n)? `);
 
     if (confirm?.toLowerCase() !== "y") {
       this.term?.Error("Abort.");
       return 1;
     }
 
-    this.term?.rl?.println("");
-    this.term?.rl?.println("Loading...");
+    this.rl!.println("");
+    this.rl!.println("Loading...");
 
     const installer = await this.distrib!.storeItemInstaller(pkg._id, (prog) => {
-      this.term?.rl?.println(
+      this.rl!.println(
         `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
           prog.max
         )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
@@ -155,7 +154,7 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Done.`);
+    this.rl!.println(`${CURUP}${CLRROW}Done.`);
 
     return 0;
   }
@@ -172,19 +171,19 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    const confirm = await this.term?.rl?.read(`Do you want to remove this package (y/n)? `);
+    const confirm = await this.rl!.read(`Do you want to remove this package (y/n)? `);
 
     if (confirm?.toLowerCase() !== "y") {
       this.term?.Error("Abort.");
       return 1;
     }
 
-    this.term?.rl?.println(`\n${BRGREEN}Now uninstalling '${local.name}'...${RESET}\n`);
+    this.rl!.println(`\n${BRGREEN}Now uninstalling '${local.name}'...${RESET}\n`);
 
-    this.term?.rl?.println("Loading...");
+    this.rl!.println("Loading...");
 
     const result = await this.distrib?.uninstallPackage(local.pkg.appId, true, (stage) => {
-      this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
+      this.rl!.println(`${CURUP}${CLRROW}${stage}`);
     });
 
     if (!result) {
@@ -192,7 +191,7 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}${CURUP}${CURUP}${CLRROW}Done.`);
+    this.rl!.println(`${CURUP}${CLRROW}${CURUP}${CURUP}${CLRROW}Done.`);
 
     return 0;
   }
@@ -206,14 +205,14 @@ export class PkgCommand extends TerminalProcess {
     }
 
     for (const item of result) {
-      this.term?.rl?.println(item.name);
+      this.rl!.println(item.name);
     }
 
     return 0;
   }
 
   async updateAll(): Promise<number> {
-    this.term?.rl?.println("Checking for updates...");
+    this.rl!.println("Checking for updates...");
 
     const elevated = await this.elevate();
 
@@ -222,23 +221,21 @@ export class PkgCommand extends TerminalProcess {
     const outdatedPackages = await this.distrib!.checkForAllStoreItemUpdates();
 
     if (!outdatedPackages.length) {
-      this.term?.rl?.println(`${CURUP}${CLRROW}There are no updates available.`);
+      this.rl!.println(`${CURUP}${CLRROW}There are no updates available.`);
       return 0;
     }
 
-    this.term?.rl?.println(
+    this.rl!.println(
       `\nGood news: ${BRBLUE}${outdatedPackages.length}${RESET} ${Plural("package", outdatedPackages.length)} can be updated.\n`
     );
 
     for (const outdated of outdatedPackages) {
-      this.term?.rl?.println(
-        ` - ${outdated.name} - from ${BRGREEN}${outdated.oldVer}${RESET} to ${BRGREEN}${outdated.newVer}${RESET}`
-      );
+      this.rl!.println(` - ${outdated.name} - from ${BRGREEN}${outdated.oldVer}${RESET} to ${BRGREEN}${outdated.newVer}${RESET}`);
     }
 
-    const confirm = await this.term?.rl?.read(`\nDo you want to update these packages (y/n)? `);
+    const confirm = await this.rl!.read(`\nDo you want to update these packages (y/n)? `);
 
-    this.term?.rl?.println("");
+    this.rl!.println("");
 
     if (confirm?.toLowerCase() !== "y") {
       this.term?.Error("Abort.");
@@ -246,12 +243,12 @@ export class PkgCommand extends TerminalProcess {
     }
 
     for (const outdated of outdatedPackages) {
-      this.term?.rl?.println(`Updating ${BRBLUE}${outdated.name}${RESET}...`);
+      this.rl!.println(`Updating ${BRBLUE}${outdated.name}${RESET}...`);
 
-      this.term?.rl?.println("Loading...");
+      this.rl!.println("Loading...");
 
       const installer = await this.distrib!.updateStoreItem(outdated.pkg._id, true, (prog) => {
-        this.term?.rl?.println(
+        this.rl!.println(
           `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
             prog.max
           )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
@@ -281,7 +278,7 @@ export class PkgCommand extends TerminalProcess {
         }
       });
 
-      this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
+      this.rl!.println(`${CURUP}${CLRROW}Loading...`);
 
       const result = await installer?.__go();
 
@@ -289,12 +286,12 @@ export class PkgCommand extends TerminalProcess {
         this.term?.Error(`Failed to finish update`, outdated.name);
       }
 
-      this.term?.rl?.println(
+      this.rl!.println(
         `${CURUP}${CLRROW}${CURUP}${CLRROW}Updated ${BRBLUE}${outdated.name}${RESET} to version ${outdated.newVer}.`
       );
     }
 
-    this.term?.rl?.println("\nDone.");
+    this.rl!.println("\nDone.");
 
     return 0;
   }
@@ -311,10 +308,10 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(`Updating ${BRBLUE}${local.name}${RESET}...`);
+    this.rl!.println(`Updating ${BRBLUE}${local.name}${RESET}...`);
 
     const installer = await this.distrib!.updateStoreItem(local._id, false, (prog) => {
-      this.term?.rl?.println(
+      this.rl!.println(
         `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
           prog.max
         )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
@@ -322,7 +319,7 @@ export class PkgCommand extends TerminalProcess {
     });
 
     if (!installer) {
-      this.term?.rl?.println(`${CURUP}${CLRROW}Already up to date.`);
+      this.rl!.println(`${CURUP}${CLRROW}Already up to date.`);
       return 1;
     }
 
@@ -344,7 +341,7 @@ export class PkgCommand extends TerminalProcess {
       }
     });
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
+    this.rl!.println(`${CURUP}${CLRROW}Loading...`);
 
     const result = await installer?.__go();
 
@@ -352,7 +349,7 @@ export class PkgCommand extends TerminalProcess {
       this.term?.Error(`Failed to finish update`, name);
     }
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}${CURUP}${CLRROW}Updated ${BRBLUE}${name}${RESET}.`);
+    this.rl!.println(`${CURUP}${CLRROW}${CURUP}${CLRROW}Updated ${BRBLUE}${name}${RESET}.`);
 
     return 0;
   }
@@ -369,32 +366,32 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println("Deleting app preferences...");
+    this.rl!.println("Deleting app preferences...");
 
     this.distrib?.preferences.update((v) => {
       v.appPreferences[name] = {};
       return v;
     });
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Deleting configuration...`);
+    this.rl!.println(`${CURUP}${CLRROW}Deleting configuration...`);
 
     try {
-      await this.fs.deleteItem(join(UserPaths.Configuration, name));
+      await Fs.deleteItem(join(UserPaths.Configuration, name));
     } catch {}
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Uninstalling app...`);
+    this.rl!.println(`${CURUP}${CLRROW}Uninstalling app...`);
 
     const uninstallResult = await this.distrib?.uninstallPackage(local.pkg.appId, true, (stage) => {
-      this.term?.rl?.println(`${CURUP}${CLRROW}${stage}`);
+      this.rl!.println(`${CURUP}${CLRROW}${stage}`);
     });
 
     if (!uninstallResult) {
       this.term?.Warning("Uninstall failed; proceeding anyway.");
-      this.term?.rl?.println("");
+      this.rl!.println("");
     }
 
     const installer = await this.distrib!.storeItemInstaller(local._id, (prog) => {
-      this.term?.rl?.println(
+      this.rl!.println(
         `${CURUP}${CLRROW}Downloading package: ${BRBLUE}${formatBytes(prog.value)}${RESET} of ${BRBLUE}${formatBytes(
           prog.max
         )}${RESET} (${((100 / prog.max) * prog.value).toFixed(2)}%)`
@@ -422,7 +419,7 @@ export class PkgCommand extends TerminalProcess {
       }
     });
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Loading...`);
+    this.rl!.println(`${CURUP}${CLRROW}Loading...`);
 
     const installResult = await installer?.__go();
 
@@ -432,25 +429,23 @@ export class PkgCommand extends TerminalProcess {
       return 1;
     }
 
-    this.term?.rl?.println(`${CURUP}${CLRROW}Done.`);
+    this.rl!.println(`${CURUP}${CLRROW}Done.`);
 
     return 0;
   }
 
   async help(): Promise<number> {
-    this.term?.rl?.println("ArcOS Package Manager\n\nUsage: pkg <command> [...]\n");
-    this.term?.rl?.println("Commands:");
-    this.term?.rl?.println("- install <name>      Installs the specified package");
-    this.term?.rl?.println("- remove <name>       Removes a package, if installed");
-    this.term?.rl?.println("- update <name>       If available, updates the package");
-    this.term?.rl?.println("- updateall           Performs updates on all packages that have them");
-    this.term?.rl?.println("- reinstall <name>    Completely reinstalls a package, including configuration");
-    this.term?.rl?.println("- search <query>      Searches all packages for a string");
-    this.term?.rl?.println("- help                Shows this help listing.");
-    this.term?.rl?.println("- list                Lists all packages on the server. Installed apps are blue.");
-    this.term?.rl?.println(
-      "\nThird-party applications have to be turned on in the Security Center in order to use this command."
-    );
+    this.rl!.println("ArcOS Package Manager\n\nUsage: pkg <command> [...]\n");
+    this.rl!.println("Commands:");
+    this.rl!.println("- install <name>      Installs the specified package");
+    this.rl!.println("- remove <name>       Removes a package, if installed");
+    this.rl!.println("- update <name>       If available, updates the package");
+    this.rl!.println("- updateall           Performs updates on all packages that have them");
+    this.rl!.println("- reinstall <name>    Completely reinstalls a package, including configuration");
+    this.rl!.println("- search <query>      Searches all packages for a string");
+    this.rl!.println("- help                Shows this help listing.");
+    this.rl!.println("- list                Lists all packages on the server. Installed apps are blue.");
+    this.rl!.println("\nThird-party applications have to be turned on in the Security Center in order to use this command.");
 
     return 0;
   }
@@ -459,11 +454,11 @@ export class PkgCommand extends TerminalProcess {
     const all = await this.distrib!.getAllStoreItems();
     const installed = await this.distrib!.loadInstalledStoreItemList();
 
-    this.term?.rl?.println("");
+    this.rl!.println("");
 
     for (const item of all) {
       const color = installed.filter((i) => item._id === i._id)[0] ? BRBLUE : RESET;
-      this.term?.rl?.println(`- ${color}${item.name}${RESET}`);
+      this.rl!.println(`- ${color}${item.name}${RESET}`);
     }
 
     return 0;
@@ -472,7 +467,7 @@ export class PkgCommand extends TerminalProcess {
   async elevate(): Promise<boolean> {
     return await this.term!.elevate({
       what: "ArcOS needs your permission to run the pkg command.",
-      image: this.term?.daemon?.getIconCached("ArcTermIcon")!,
+      image: "ArcTermIcon",
       title: "Package manager",
       description: "ArcTerm command",
       level: ElevationLevel.medium,

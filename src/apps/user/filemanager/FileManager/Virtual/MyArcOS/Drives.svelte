@@ -1,24 +1,19 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "$apps/user/filemanager/runtime";
   import type { QuotedDrive } from "$apps/user/filemanager/types";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { SharedDrive } from "$ts/shares/drive";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import { onMount } from "svelte";
+  import Drive from "./Drives/Drive.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { drives, userPreferences } = process;
 
-  let sorted = $state<[string, QuotedDrive][]>([]);
-
-  onMount(() => {
-    $userPreferences.appPreferences.fileManager.myExpandDrives ??= true;
-  });
-
-  drives.subscribe((v) => {
-    sorted = Object.entries(v).sort((a, b) =>
+  let sorted = $derived<[string, QuotedDrive][]>(
+    Object.entries($drives).sort((a, b) =>
       a[1].data.driveLetter?.toLowerCase() || "~" > (b[1].data.driveLetter?.toLowerCase() || "~") ? -1 : 0
-    );
-  });
+    )
+  );
+
+  onMount(() => ($userPreferences.appPreferences.fileManager.myExpandDrives ??= true));
 </script>
 
 <section class="drives">
@@ -34,33 +29,7 @@
   {#if $userPreferences.appPreferences.fileManager.myExpandDrives}
     <div class="content">
       {#each sorted as [id, drive] (`${id}-${drive.data.uuid}`)}
-        {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
-          <button
-            class="drive"
-            onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
-            data-contextmenu={drive.data.IDENTIFIES_AS === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
-            use:contextProps={[
-              drive,
-              `${drive.data.driveLetter || drive.data.uuid}:`,
-              () => process.unmountDrive(drive.data, id),
-            ]}
-            disabled={drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked}
-          >
-            <img src={process.getIconCached("DriveIcon")} alt="" />
-            <div>
-              <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
-              <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
-              {#if !drive.quota.unknown}
-                <div class="usage">
-                  <div class="bar">
-                    <div class="inner" style="--w: {(100 / drive.quota.max) * drive.quota.used}%"></div>
-                  </div>
-                  <p class="percent">{((100 / drive.quota.max) * drive.quota.used).toFixed(0)}%</p>
-                </div>
-              {/if}
-            </div>
-          </button>
-        {/if}
+        <Drive {id} {drive} {process} />
       {/each}
     </div>
   {/if}

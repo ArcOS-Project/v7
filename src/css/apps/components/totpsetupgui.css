@@ -24,6 +24,15 @@
   padding: 0;
   text-align: center;
 }
+/* removes up and down arrows from inputs */
+#TotpSetupGui > div.body div.inputs input::-webkit-outer-spin-button,
+#TotpSetupGui > div.body div.inputs input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+#TotpAuthGui > div.body div.inputs input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
 #TotpSetupGui > div.body h1 {
   font-size: 18px;

@@ -133,7 +133,8 @@
   width: 200px;
 }
 #AdminPortal div.container.users div.user-row div.segment.email {
-  width: 200px;
+  width: 0;
+  flex-grow: 1;
   margin-right: auto;
 }
 
@@ -145,6 +146,7 @@
   margin-left: auto;
 }
 
+#AdminPortal div.container.users div.user-row div.segment.system,
 #AdminPortal div.container.users div.user-row div.segment.admin,
 #AdminPortal div.container.users div.user-row div.segment.approved {
   width: 35px;
@@ -164,6 +166,11 @@
 #AdminPortal div.container.users div.user-row div.segment.admin.is-admin {
   background-color: var(--clr-orange-bg);
   color: var(--clr-orange-fg);
+}
+
+#AdminPortal div.container.users div.user-row div.segment.system.is-system {
+  background-color: var(--clr-blue-bg);
+  color: var(--clr-blue-fg);
 }
 
 #AdminPortal div.container.users div.user-row img {

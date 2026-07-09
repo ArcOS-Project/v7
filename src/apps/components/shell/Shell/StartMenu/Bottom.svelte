@@ -1,11 +1,14 @@
 <script lang="ts">
-  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { IArcFindService } from "$interfaces/services/IArcFindService";
+  import ServiceGate from "$lib/ServiceGate.svelte";
   import { Sleep } from "$ts/sleep";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../../runtime";
+  import { StartMenuActions } from "../../store";
+  import Search from "./Bottom/Search.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
-  const { searchQuery, startMenuOpened, searchLoading } = process;
+  const { process }: { process: IShellRuntime } = $props();
+  const { startMenuOpened, userPreferences } = process;
 
   let searchBar = $state<HTMLInputElement>();
 
@@ -29,33 +32,26 @@
     }}
     autocomplete="off"
   >
-    {#if $searchLoading}
-      <div class="loading">
-        <HtmlSpinner height={16} thickness={2} />
-        <span>Refreshing</span>
-      </div>
-    {:else if !process.safeMode}
-      <span class="lucide icon-search"></span>
-      <input
-        type="text"
-        role="searchbox"
-        placeholder="Search..."
-        bind:value={$searchQuery}
-        bind:this={searchBar}
-        onkeydown={(e) => process.MutateIndex(e)}
-        disabled={process.safeMode}
-      />
-    {/if}
+    <ServiceGate id="ArcFindSvc">
+      {#snippet ifActive(service: IArcFindService)}
+        <Search bind:searchBar {service} safeMode={process.safeMode} />
+      {/snippet}
+    </ServiceGate>
   </form>
-  <div class="actions">
-    <button class="file-manager" aria-label="Your files" onclick={() => process.spawnApp("fileManager", process.pid)}>
-      <span class="lucide icon-folder-open"></span>
-    </button>
-    <button class="settings" aria-label="Settings" onclick={() => process.spawnApp("systemSettings", process.pid)}>
-      <span class="lucide icon-settings-2"></span>
-    </button>
-    <button class="shutdown" aria-label="Shutdown" onclick={() => process.exit()}>
-      <span class="lucide icon-power"></span>
-    </button>
-  </div>
+  {#if Object.keys(StartMenuActions).filter((e) => $userPreferences.shell.start.actions?.includes(e)).length}
+    <div class="actions">
+      {#each Object.entries(StartMenuActions) as [id, action] (id)}
+        {#if $userPreferences.shell.start.actions?.includes(id)}
+          <button
+            class={action.className || ""}
+            aria-label={action.caption}
+            onclick={() => action.action(process)}
+            title={action.caption}
+          >
+            <span class="lucide icon-{action.icon}"></span>
+          </button>
+        {/if}
+      {/each}
+    </div>
+  {/if}
 </div>

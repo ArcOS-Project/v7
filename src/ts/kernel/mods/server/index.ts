@@ -1,0 +1,247 @@
+import type { Constructs } from "$interfaces/common";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import { getKMod } from "$ts/env";
+import { tryJsonParse } from "$ts/util/json";
+import type { ServerInfo, ServerOption } from "$types/server";
+import axios from "axios";
+import { KernelModule } from "../../module";
+import { Backend } from "./axios";
+import { MessagingConnector } from "./connectors/MessagingConnector";
+import { ShareConnector } from "./connectors/ShareConnector";
+import { StoreConnector } from "./connectors/StoreConnector";
+import { TotpConnector } from "./connectors/TotpConnector";
+import { TpaConnector } from "./connectors/TpaConnector";
+import { UserConnector } from "./connectors/UserConnector";
+
+export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
+
+export class ServerManager extends KernelModule implements IServerManager {
+  private get SERVERS_LOCALSTORAGE_KEY() {
+    return "v7-servers";
+  }
+  private get CURRENT_LOCALSTORAGE_KEY() {
+    return "v7-currentserver";
+  }
+  private currentServer?: ServerOption;
+  private dispatch: ISystemDispatch;
+  public connected: boolean = false;
+  public serverInfo: ServerInfo | undefined;
+  public previewBranch?: string;
+  public servers: ServerOption[] = [];
+
+  private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector, MessagingConnector];
+  private _store: Record<"" | string, IServerConnector[]> = {};
+
+  public get ConnectorNames() {
+    return this.STORE.map((s) => s.name);
+  }
+
+  public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {
+    this._store[token] ??= [];
+
+    let instance = this._store[token]?.find((i) => i.name === id) as T;
+    if (!instance) {
+      const constructor = this.STORE.find((c) => c.name === id) as Constructs<T> | undefined;
+      if (!constructor) throw new Error(`Tried to construct unknown ServerConnector ${id}`);
+
+      instance = new constructor(token || undefined);
+      this._store[token] ??= [];
+      this._store[token].push(instance);
+    }
+
+    return instance!;
+  }
+
+  public get ConnectorAmount() {
+    return this.STORE.length;
+  }
+
+  get url() {
+    return this.currentServer?.url;
+  }
+
+  get hostname() {
+    if (!this.url) return undefined;
+    return new URL(this.url).hostname;
+  }
+
+  get authCode() {
+    return this.currentServer?.authCode;
+  }
+
+  public static isConnected() {
+    const server = getKMod<IServerManager>("server", true);
+
+    return server && server.connected;
+  }
+  public static url() {
+    const server = getKMod<IServerManager>("server", true);
+
+    return server ? server.url : undefined;
+  }
+
+  //#region LIFECYCLE
+
+  constructor(kernel: IWaveKernel, id: string) {
+    super(kernel, id);
+
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
+  }
+
+  async _init() {
+    const fromMeta = import.meta.env.DW_SERVER_URL;
+
+    if (!fromMeta) throw new Error("This ArcOS instance is improperly configured. DW_SERVER_URL is not set.");
+    if (!fromMeta.startsWith("http") || fromMeta.endsWith("/"))
+      throw new Error("This ArcOS instance is improperly configured. DW_SERVER_URL is malformed.");
+
+    this.loadServers();
+
+    await this.switchServer(localStorage.getItem(this.CURRENT_LOCALSTORAGE_KEY) || fromMeta);
+
+    if (!this.currentServer) await this.switchServer(fromMeta);
+    if (!this.currentServer)
+      throw new Error("Didn't get a server URL after switching to current server. Has localStorage been manually altered?");
+  }
+
+  //#endregion
+
+  private async testConnection(server: ServerOption) {
+    this.Log(`testConnection: ${server.url}`);
+
+    this.isKmod();
+
+    const response = await axios.get(`/ping`, {
+      timeout: 3000,
+      timeoutErrorMessage: "We're offline",
+      baseURL: server.url,
+      params: server.authCode ? { authcode: server.authCode } : {},
+    });
+    if (response.status !== 200) throw new Error("Invalid response from server");
+
+    const data = response.data as ServerInfo;
+    const { validation } = data;
+
+    if (validation !== VALIDATION_STR) throw new Error("Server validation string doesn't match ours");
+
+    this.serverInfo = data;
+    this.currentServer = server;
+    this.checkIfPreviewDeployment();
+    this.Log("Connection is good to go :D");
+  }
+
+  async checkUsernameAvailability(username: string) {
+    this.isKmod();
+    return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityUsername(username)).success;
+  }
+
+  async checkEmailAvailability(email: string) {
+    this.isKmod();
+    return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityEmail(email)).success;
+  }
+
+  private checkIfPreviewDeployment() {
+    const previewBranchName = import.meta.env.DW_PREVIEW_DEP_BRANCH;
+
+    if (!previewBranchName) return false;
+
+    document.title = `ArcOS - PREVIEW ${previewBranchName}`;
+    this.previewBranch = previewBranchName;
+  }
+
+  async switchServer(url: string) {
+    this.Log(`switchServer: ${url}`);
+
+    this.connected = false;
+
+    try {
+      const server = this.servers.find((s) => s.url === url);
+      if (!server) return false;
+
+      this.currentServer = server;
+
+      await this.testConnection(server);
+
+      this.dispatch.dispatch("server-connected");
+      this.connected = true;
+      localStorage.setItem(this.CURRENT_LOCALSTORAGE_KEY, server.url);
+
+      Backend.defaults.params = server.authCode ? { authcode: server.authCode } : {};
+      Backend.defaults.baseURL = server.url;
+      this._store = {};
+
+      if (!server.system) document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
+      else document.title = "ArcOS";
+
+      return true;
+    } catch (e) {
+      this.dispatch.dispatch("server-connection-failed");
+
+      this.Log(`${e}`);
+      return false;
+    }
+  }
+
+  loadServers() {
+    this.Log(`loadServers`);
+
+    const stored = localStorage.getItem(this.SERVERS_LOCALSTORAGE_KEY);
+    if (!stored) return this.resetServers();
+
+    const array = tryJsonParse<ServerOption[]>(stored);
+    if (typeof array === "string" || !Array.isArray(array)) return this.resetServers();
+
+    this.servers = array;
+  }
+
+  writeServers(servers: ServerOption[]) {
+    this.Log(`writeServers`);
+    this.dispatch.dispatch("server-updated", [servers], true);
+
+    const string = JSON.stringify(servers, null, 0);
+    localStorage.setItem(this.SERVERS_LOCALSTORAGE_KEY, string);
+    localStorage.setItem(this.CURRENT_LOCALSTORAGE_KEY, this.currentServer?.url ?? import.meta.env.DW_SERVER_URL);
+    this.servers = servers;
+  }
+
+  resetServers() {
+    this.Log(`resetServers`);
+
+    this.writeServers([
+      {
+        url: import.meta.env.DW_SERVER_URL,
+        authCode: import.meta.env.DW_SERVER_AUTHCODE ?? "",
+        name: "Main server",
+        system: true,
+        icon: "cloud-cog",
+      },
+    ]);
+  }
+
+  addServer(config: ServerOption) {
+    this.Log(`addServer: ${config.url} (${config.authCode ? "Private" : "Public"})`);
+
+    if (this.servers.length >= 8) return false;
+    if (this.isAdded(config.url)) return false;
+
+    this.writeServers([...this.servers, config]);
+
+    return true;
+  }
+
+  removeServer(url: string) {
+    this.Log(`removeServer: ${url}`);
+    if (!this.isAdded(url)) return false;
+
+    this.writeServers(this.servers.filter((s) => s.url !== url));
+
+    return true;
+  }
+
+  isAdded(url: string) {
+    return !!this.servers.find((s) => url === s.url);
+  }
+}

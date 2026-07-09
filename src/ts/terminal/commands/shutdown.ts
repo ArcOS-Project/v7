@@ -1,4 +1,7 @@
-import type { ArcTerminal } from "..";
+import { State, SysDispatch } from "$ts/env";
+import { logItemToStr } from "$ts/util";
+import { type LogItem } from "$types/shared/logging";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
 
 export class ShutdownCommand extends TerminalProcess {
@@ -7,8 +10,27 @@ export class ShutdownCommand extends TerminalProcess {
 
   //#region LIFECYCLE
 
-  protected async main(term: ArcTerminal) {
-    term.daemon?.shutdown();
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.setSource(__SOURCE__);
+  }
+
+  protected async main() {
+    if (this.term?.IS_ARCTERM_MODE) {
+      this.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
+
+      SysDispatch.subscribe<[LogItem]>("kernel-log", ([data]) => {
+        this.rl?.println(logItemToStr(data));
+      });
+
+      await this.daemon?.serviceHost?.stop();
+      await this.daemon?.killSelf();
+      State.loadState("turnedOff");
+    } else {
+      await this.daemon?.power?.shutdown();
+    }
+
     return -256;
   }
 

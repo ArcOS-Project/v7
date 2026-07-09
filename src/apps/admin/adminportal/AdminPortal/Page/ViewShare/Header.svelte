@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import { ShareManager } from "$ts/shares";
+  import { Daemon, Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { UserQuota } from "$types/fs";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
+  import type { UserQuota } from "$types/system/fs";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 
@@ -13,7 +14,7 @@
     process,
     share,
     author,
-  }: { process: AdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
+  }: { process: IAdminPortalRuntime; share: SharedDriveType; author: ExpandedUserInfo | undefined } = $props();
 
   const username = author?.username;
 
@@ -27,10 +28,10 @@
   });
 
   async function mountShare() {
-    if (process.fs.drives[share._id]) await process.fs.umountDrive(share._id, true);
+    if (Fs.drives[share._id]) await Fs.umountDrive(share._id, true);
     else {
-      const drive = await process.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!.mountShareById(share._id);
-      if (drive) process.spawnApp("fileManager", +process.env.get("shell_pid"), `${drive.uuid}:/`);
+      const drive = await Daemon!.serviceHost!.getService<IShareManager>("ShareMgmt")!.mountShareById(share._id);
+      if (drive) process.spawnApp("fileManager", +Env.get("shell_pid"), `${drive.uuid}:/`);
     }
 
     process.switchPage("viewShare", { share }, true);
@@ -49,7 +50,7 @@
       </p>
       <p class="usage">Using {formatBytes(quota.used)} of {formatBytes(quota.max)} ({quota.percentage.toFixed(2)}%)</p>
     </div>
-    <button onclick={mountShare}>{process.fs.drives[share._id] ? "Unmount" : "Mount"}</button>
+    <button onclick={mountShare}>{Fs.drives[share._id] ? "Unmount" : "Mount"}</button>
   {:else}
     <p class="error-text">Failed to get quota</p>
   {/if}

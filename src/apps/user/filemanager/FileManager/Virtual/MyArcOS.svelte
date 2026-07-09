@@ -1,10 +1,17 @@
 <script lang="ts">
-  import type { FileManagerRuntime } from "../../runtime";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import type { IRecentFilesService } from "$interfaces/services/IRecentFilesService";
+  import ServiceGate from "$lib/ServiceGate.svelte";
   import Drives from "./MyArcOS/Drives.svelte";
-  import UserPaths from "./MyArcOS/UserPaths.svelte";
+  import RecentFiles from "./MyArcOS/RecentFiles.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
 </script>
 
 <Drives {process} />
-<UserPaths {process} />
+
+<ServiceGate id="RecentFilesSvc">
+  {#snippet ifActive(service: IRecentFilesService)}
+    <RecentFiles {process} {service} />
+  {/snippet}
+</ServiceGate>

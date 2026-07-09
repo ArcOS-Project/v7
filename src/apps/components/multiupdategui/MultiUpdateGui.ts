@@ -1,5 +1,5 @@
 import "$css/apps/components/multiupdategui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MultiUpdateGui from "./MultiUpdateGui.svelte";
 import { MultiUpdateGuiRuntime } from "./runtime";
 

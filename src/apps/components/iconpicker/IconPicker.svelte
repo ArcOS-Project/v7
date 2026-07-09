@@ -1,10 +1,12 @@
 <script lang="ts">
+  import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import Header from "./IconPicker/Header.svelte";
   import Icon from "./IconPicker/Icon.svelte";
-  import type { IconPickerRuntime } from "./runtime";
   import { ICON_GROUP_CAPTIONS } from "./store";
 
-  const { process }: { process: IconPickerRuntime } = $props();
+  const { process }: { process: IIconPickerRuntime } = $props();
   const { groups, selected, defaultIcon } = process;
 </script>
 
@@ -23,17 +25,15 @@
   {/each}
 </div>
 
-<div class="actions">
-  <div class="left">
-    <button
-      class="reset-icon"
-      onclick={() => ($selected = defaultIcon || process.getIconCached("DefaultIcon"))}
-      disabled={$selected === defaultIcon}>%reset%</button
-    >
-    <button class="random" onclick={() => process.selectRandom()}>%random%</button>
-  </div>
-  <div class="right">
-    <button class="cancel" onclick={() => process.cancel()}>%general.cancel%</button>
-    <button class="suggested" onclick={() => process.confirm()} disabled={!$selected}>%choose%</button>
-  </div>
-</div>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton onclick={() => ($selected = defaultIcon || "DefaultIcon")} disabled={$selected === defaultIcon}>
+      %reset%
+    </ActionButton>
+    <ActionButton onclick={() => process.selectRandom()}>%random%</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.cancel()}>%general.cancel%</ActionButton>
+    <ActionButton suggested onclick={() => process.confirm()} disabled={!$selected}>%choose%</ActionButton>
+  {/snippet}
+</ActionBar>

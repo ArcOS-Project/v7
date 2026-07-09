@@ -1,0 +1,22 @@
+#AdvSystemSettings > div.body div.migrations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#AdvSystemSettings > div.body div.migrations div.table-wrapper p.error-text {
+  text-align: center;
+  padding: 30px 60px;
+}
+
+#AdvSystemSettings > div.body div.migrations div.table-wrapper .run {
+  padding: 0;
+  width: 0;
+  text-align: center;
+}
+
+#AdvSystemSettings > div.body div.migrations div.table-wrapper button.run-migration {
+  height: 30px;
+  border-radius: 0;
+  outline: none;
+}

@@ -1,8 +1,9 @@
 <script lang="ts">
   import backdrop from "$assets/sqeleton/backdrop.svg";
-  import type { SqeletonRuntime } from "../runtime";
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { data: app } = process.app;
 </script>
 
@@ -10,7 +11,7 @@
   <img src={backdrop} alt="" class="backdrop" />
   <div class="header">
     <h1>
-      <img src={app.metadata.icon} alt="" />
+      <Icon icon={app.metadata.icon} />
       <span class="name">{app.metadata.name}</span>
       <span class="version">v{app.metadata.version}</span>
     </h1>

@@ -1,5 +1,5 @@
 import "$css/apps/components/driveinfo.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import DriveInfo from "./DriveInfo.svelte";
 import { DriveInfoRuntime } from "./runtime";
 

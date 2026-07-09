@@ -1,24 +1,26 @@
+import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { MessagingInterface } from "$ts/server/messaging";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { MessageCreateData } from "$types/messaging";
+import type { AppProcessData } from "$types/apps/app";
+import type { MessageCreateData } from "$types/server/messaging";
 import mime from "mime";
 import type { Attachment } from "./types";
 
-export class MessageComposerRuntime extends AppProcess {
+export class MessageComposerRuntime extends AppProcess implements IMessageComposerRuntime {
   sending = Store<boolean>(false);
   recipients = Store<string[]>([]);
   attachments = Store<Attachment[]>([]);
   title = Store<string>("");
   body = Store<string>("");
   replyId: string | undefined;
-  service: MessagingInterface;
+  service: IMessagingInterface;
 
   //#region LIFECYCLE
 
@@ -33,7 +35,7 @@ export class MessageComposerRuntime extends AppProcess {
     }
     if (replyId) this.replyId = replyId;
 
-    this.service = this.userDaemon!.serviceHost!.getService<MessagingInterface>("MessagingService")!;
+    this.service = Daemon!.serviceHost!.getService<IMessagingInterface>("MessagingService")!;
 
     this.setSource(__SOURCE__);
   }
@@ -50,7 +52,7 @@ export class MessageComposerRuntime extends AppProcess {
 
     this.sending.set(true);
 
-    const prog = await this.userDaemon?.FileProgress(
+    const prog = await Daemon?.files!.FileProgress(
       {
         type: "none",
         caption: "%apps.MessageComposer.sendProg.caption%",
@@ -60,7 +62,7 @@ export class MessageComposerRuntime extends AppProcess {
       this.pid
     );
 
-    const sent = await this.service.sendMessage(
+    const sentResult = await this.service.sendMessage(
       title(),
       recipients(),
       body(),
@@ -79,11 +81,13 @@ export class MessageComposerRuntime extends AppProcess {
 
     prog?.stop();
 
-    if (!sent) this.sendFailed();
+    if (!sentResult.success) this.sendFailed(sentResult.errorMessage);
     else this.closeWindow();
   }
 
   async discard() {
+    this.Log(`discard`);
+
     if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
@@ -91,7 +95,13 @@ export class MessageComposerRuntime extends AppProcess {
         message: "%apps.MessageComposer.discardMessage.title%",
         buttons: [
           { caption: "%general.cancel%", action: () => {} },
-          { caption: "%general.discard%", action: () => this.closeWindow(), suggested: true },
+          {
+            caption: "%general.discard%",
+            action: () => {
+              this.closeWindow();
+            },
+            suggested: true,
+          },
         ],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
@@ -101,15 +111,20 @@ export class MessageComposerRuntime extends AppProcess {
     );
   }
 
-  sendFailed() {
+  sendFailed(errorMessage?: string) {
+    errorMessage ||=
+      "It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.";
+
+    this.Log(`sendFailed`);
+
     this.sending.set(false);
     MessageBox(
       {
-        title: "%apps.MessageComposer.sendFailed.title%",
-        message: "%apps.MessageComposer.sendFailed.message%",
+title: "%apps.MessageComposer.sendFailed.title%",
+        message: `%apps.MessageComposer.sendFailed.message% ${errorMessage}`,
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
-        buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.pid,
       true
@@ -120,15 +135,17 @@ export class MessageComposerRuntime extends AppProcess {
   //#region ATTACHMENTS
 
   async addAttachment() {
+    this.Log(`addAttachment`);
+
     const attachments: Attachment[] = [];
-    const paths = await this.userDaemon!.LoadSaveDialog({
+    const paths = await Daemon!.files!.LoadSaveDialog({
       title: "%apps.MessageComposer.addAttachment.title%",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
     });
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         max: 100,
         type: "none",
@@ -144,7 +161,7 @@ export class MessageComposerRuntime extends AppProcess {
       const mimetype = mime.getType(path);
       const filename = getItemNameFromPath(path);
       try {
-        const contents = await this.fs.readFile(path, (progress) => {
+        const contents = await Fs.readFile(path, (progress) => {
           prog.show();
           prog.updateCaption(
             progress.what
@@ -181,10 +198,14 @@ export class MessageComposerRuntime extends AppProcess {
   }
 
   filesToAttachments(...files: File[]): Attachment[] {
+    this.Log(`filesToAttachments: ${files.length} specimens`);
+
     return files.map((f) => ({ data: f, uuid: UUID() })); // Give each Node file a UUID
   }
 
   removeAttachment(uuid: string) {
+    this.Log(`removeAttachment: ${uuid}`);
+
     this.attachments.update((v) => v.filter((a) => a.uuid !== uuid));
   }
 
@@ -192,6 +213,8 @@ export class MessageComposerRuntime extends AppProcess {
   //#region MISC
 
   removeRecipient(recipient: string) {
+    this.Log(`removeRecipient: ${recipient}`);
+
     this.recipients.update((v) => {
       return v.filter((r) => r !== recipient);
     });

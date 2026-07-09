@@ -1,20 +1,21 @@
+import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+import type { IShareListGuiRuntime } from "$interfaces/runtimes/IShareListGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import type { ShareManager } from "$ts/shares";
-import type { SharedDrive } from "$ts/shares/drive";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { SharedDriveType } from "$types/shares";
+import type { AppProcessData } from "$types/apps/app";
+import type { SharedDriveType } from "$types/server/shares";
 
-export class ShareListGuiRuntime extends AppProcess {
+export class ShareListGuiRuntime extends AppProcess implements IShareListGuiRuntime {
   ownedShares = Store<SharedDriveType[]>([]);
   joinedShares = Store<SharedDriveType[]>([]);
   selectedShare = Store<string>();
   selectedIsOwn = Store<boolean>(false);
   selectedIsMounted = Store<boolean>(false);
   loading = Store<boolean>(false);
-  shares: ShareManager;
+  shares: IShareManager;
   thisUserId: string;
 
   //#region LIFECYCLE
@@ -22,34 +23,43 @@ export class ShareListGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
-    this.thisUserId = this.userDaemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
-
-    this.selectedShare.subscribe((v) => {
-      this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
-      this.selectedIsMounted.set(!!this.fs.drives[v]); // Check if the selected share is mounted
-    });
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.thisUserId = Daemon?.userInfo?._id!; // Get the user's ID using a lot of questionmarks (damn)
 
     this.setSource(__SOURCE__);
   }
 
   async start() {
+    this.selectedShare.subscribe((v) => {
+      this.selectedIsOwn.set(!!this.ownedShares().filter((s) => s._id === v)[0]); // Filter the owned shares to determine if the selection is owned
+      this.selectedIsMounted.set(!!Fs.drives[v]); // Check if the selected share is mounted
+    });
+
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
+
     this.loading.set(true);
     this.ownedShares.set(await this.shares.getOwnedShares()); // Get owned shares from manager
     this.joinedShares.set(await this.shares.getJoinedShares()); // Get joined shares from manager
     this.loading.set(false);
+
+    stop();
   }
 
   //#endregion
   //#region ACTIONS
 
   async manageShare() {
+    this.Log(`manageShare: ${this.selectedShare()}`);
+
     this.closeWindow(); // Close the listgui
     this.spawnOverlayApp("ShareMgmtGui", this.parentPid, this.selectedShare()); // Spawn the mgmtgui
   }
 
   async leaveShare() {
     const shareId = this.selectedShare(); // Get the selected share
+
+    this.Log(`leaveShare: ${shareId}`);
+
     MessageBox(
       {
         title: "Leave share?",
@@ -59,7 +69,7 @@ export class ShareListGuiRuntime extends AppProcess {
           {
             caption: "Leave",
             action: async () => {
-              await this.fs.umountDrive(shareId); // First unmount the share
+              await Fs.umountDrive(shareId); // First unmount the share
               await this.shares.leaveShare(shareId); // Then leave it
 
               this.userPreferences.update((v) => {
@@ -85,6 +95,8 @@ export class ShareListGuiRuntime extends AppProcess {
     const isMounted = this.selectedIsMounted(); // Is mounted?
     const shareId = this.selectedShare(); // Selected share
 
+    this.Log(`mountShare: ${shareId}`);
+
     if (isMounted) {
       MessageBox(
         {
@@ -95,7 +107,7 @@ export class ShareListGuiRuntime extends AppProcess {
             {
               caption: "Unmount",
               action: () => {
-                this.fs.umountDrive(shareId); // First unmount it
+                Fs.umountDrive(shareId); // First unmount it
                 this.selectedIsMounted.set(false); // Then clear the selection
               },
               suggested: true,
@@ -117,20 +129,22 @@ export class ShareListGuiRuntime extends AppProcess {
 
   async openShare() {
     const shareId = this.selectedShare(); // Get the selected share
-    const drive = this.fs.drives[shareId] as SharedDrive; // Get the mount
+    const drive = Fs.drives[shareId] as ISharedDrive; // Get the mount
+
+    this.Log(`openShare: ${shareId}`);
 
     if (!drive) return; // No mount? return
 
     const path = `${drive.uuid}:/`;
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
-    if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
+    if (parent && Daemon?.helpers?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager; navigate it instead
-      const dispatch = KernelStack().ConnectDispatch(this.parentPid);
+      const dispatch = Stack.ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a fresh file manager
-      this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+      this.spawnApp("fileManager", +Env.get("shell_pid"), path);
     }
 
     this.closeWindow(); // Finally close the listgui

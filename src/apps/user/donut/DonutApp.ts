@@ -1,5 +1,5 @@
 import "$css/apps/user/donut.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Donut from "./Donut.svelte";
 import { DonutAppRuntime } from "./runtime";
 

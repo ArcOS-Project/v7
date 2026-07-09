@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { AdminScopes } from "$ts/server/admin/store";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon } from "$ts/env";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { scopeToScopeCaption } from "$ts/util/admin";
   import { onMount } from "svelte";
-  import { AdminPortalRuntime } from "../../runtime";
   import type { ViewScopesData } from "../../types";
   import GlobalPills from "./ViewScopes/GlobalPills.svelte";
   import PagePills from "./ViewScopes/PagePills.svelte";
   import SpecificPills from "./ViewScopes/SpecificPills.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: ViewScopesData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: ViewScopesData } = $props();
   const { admin, scopes } = data;
 
   let scopeList = $state<string[]>([...(admin.adminScopes || [])]);
@@ -47,7 +48,7 @@
   async function save() {
     if (
       scopeList.includes(AdminScopes.adminGod) &&
-      !(await process.userDaemon!.Confirm(
+      !(await Daemon!.helpers?.Confirm(
         "Are you sure?",
         "This user has the <code>admin.god</code> scope applied. This means that they can access all administrative functions of Sacruda, regardless of any other scopes. Are you sure you want to save these changes?",
         "Cancel",

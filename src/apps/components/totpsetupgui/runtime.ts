@@ -1,10 +1,11 @@
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ITotpSetupGuiRuntime } from "$interfaces/runtimes/ITotpSetupGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { toForm } from "$ts/form";
-import { Backend } from "$ts/server/axios";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class TotpSetupGuiRuntime extends AppProcess {
+export class TotpSetupGuiRuntime extends AppProcess implements ITotpSetupGuiRuntime {
   public code = Store<string>("");
   public url = Store<string>("");
 
@@ -17,15 +18,13 @@ export class TotpSetupGuiRuntime extends AppProcess {
   }
 
   async render() {
-    try {
-      const response = await Backend.post("/totp/setup", {}, { headers: { Authorization: `Bearer ${this.userDaemon?.token}` } });
-
-      if (response.status !== 200) throw "";
-
-      this.url.set(response.data.url);
-    } catch {
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Setup();
+    if (!result.success) {
       this.closeWindow();
+      return;
     }
+
+    this.url.set(result.result!.url);
   }
 
   //#endregion
@@ -48,25 +47,17 @@ export class TotpSetupGuiRuntime extends AppProcess {
 
     const string = this.code();
 
+    this.Log(`activateTotp: ${string}`);
+
     if (string.length !== 6) return false;
 
-    try {
-      const response = await Backend.post("/totp/activate", toForm({ code: string }), {
-        headers: { Authorization: `Bearer ${this.userDaemon?.token}` },
-      });
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Activate(string);
+    if (!result.success) return false;
 
-      const unlocked = response.status === 200;
+    await this.closeWindow();
+    Daemon!.userInfo.hasTotp = true;
 
-      if (!unlocked) return false;
-
-      await this.closeWindow();
-
-      this.userDaemon!.userInfo.hasTotp = true;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   //#endregion

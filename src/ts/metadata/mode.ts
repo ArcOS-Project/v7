@@ -3,7 +3,7 @@ import { Kernel } from "$ts/env";
 
 export async function getMode() {
   __Console__.time("Get Mode");
-  const kernel = Kernel()!;
+  const kernel = Kernel!;
 
   kernel.Log("branding", "Attempting to retrieve mode from /mode");
 
@@ -18,4 +18,4 @@ export async function getMode() {
   }
 }
 
-export const ArcMode = () => Kernel()!.ARCOS_MODE;
+export const ArcMode = () => Kernel!.ARCOS_MODE;

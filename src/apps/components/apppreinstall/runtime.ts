@@ -1,15 +1,17 @@
+import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import type { DistributionServiceProcess } from "$ts/distrib";
-import { tryJsonParse } from "$ts/json";
-import { arrayToText } from "$ts/util/convert";
+import { Daemon, Env, Fs } from "$ts/env";
+import { arrayBufferToText } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ArcPackage } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppPreInstallRuntime extends AppProcess {
+export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRuntime {
   pkgPath: string;
   zip: JSZip | undefined;
   metadata = Store<ArcPackage>();
@@ -42,7 +44,7 @@ export class AppPreInstallRuntime extends AppProcess {
             {
               caption: "%apps.AppPreInstall.noEnableThirdParty.takeMeThere%",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -52,7 +54,7 @@ export class AppPreInstallRuntime extends AppProcess {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
@@ -60,24 +62,24 @@ export class AppPreInstallRuntime extends AppProcess {
       return;
     }
 
-    const prog = await this.userDaemon?.FileProgress(
+    const prog = await Daemon?.files!.FileProgress(
       {
         type: "size",
         icon: "DownloadIcon",
         caption: "%apps.AppPreInstall.readingPackage%",
         subtitle: this.pkgPath,
       },
-      +this.env.get("shell_pid")
+      +Env.get("shell_pid")
     );
 
     try {
-      const distrib = this.userDaemon?.serviceHost?.getService<DistributionServiceProcess>("DistribSvc")!;
+      const distrib = Daemon?.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc")!;
 
       if (!(await distrib.validatePackage(this.pkgPath))) {
         return this.fail("Package is corrupt; missing files");
       }
 
-      const content = await this.userDaemon?.fs.readFile(this.pkgPath, (progress) => {
+      const content = await Fs.readFile(this.pkgPath, (progress) => {
         prog?.show();
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
@@ -97,16 +99,7 @@ export class AppPreInstallRuntime extends AppProcess {
       }
 
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
-      const metadata = tryJsonParse<ArcPackage>(arrayToText(metaBinary));
-
-      if (!metadata || typeof metadata === "string") {
-        return this.fail("%apps.AppPreInstall.errors.noMeta%");
-      }
-
-      if (metadata.appId.includes(".") || metadata.appId.includes("-")) {
-        return this.fail("%apps.AppPreInstall.errors.appIdMalformed%");
-      }
-
+      const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
       this.metadata.set(metadata);
     } catch {
       return this.fail("%apps.AppPreInstall.errors.fsError%");
@@ -117,23 +110,27 @@ export class AppPreInstallRuntime extends AppProcess {
   //#region DISTRIB
 
   fail(reason: string) {
+    this.Log(`Fail: ${reason}`);
+
     MessageBox(
       {
         title: "%apps.AppPreInstall.fail.title%",
         message: `%apps.AppPreInstall.fail.messagePartial% ${reason}`,
-        buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
       true
     );
     this.closeWindow();
   }
 
   async install() {
+    this.Log(`Proceeding with installation`);
+
     const meta = this.metadata();
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "%apps.AppPreInstall.elevation.what%",
       title: meta.name,
       description: `%apps.AppPreInstall.elevation.description(${meta.author}::${meta.version})%`,
@@ -144,7 +141,7 @@ export class AppPreInstallRuntime extends AppProcess {
     if (!elevated) return;
 
     await this.closeWindow();
-    this.spawnOverlayApp("AppInstaller", +this.env.get("shell_pid"), this.metadata, this.zip);
+    this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.zip);
   }
 
   //#endregion

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import { formatBytes } from "$ts/util/fs";
-  import type { ReadableStore } from "$ts/writable";
-  import type { StoreItem } from "$types/package";
+  import type { ReadableStore } from "$types/shared/writable";
+  import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
 
@@ -13,7 +14,7 @@
     item,
     user,
     selection,
-  }: { process: AdminPortalRuntime; item: StoreItem; user: ExpandedUserInfo; selection: ReadableStore<string> } = $props();
+  }: { process: IAdminPortalRuntime; item: StoreItem; user: ExpandedUserInfo; selection: ReadableStore<string> } = $props();
   const { redacted } = process;
   const { profile } = user;
   const lastUpdated = dayjs(item.lastUpdated).format("DD MMM YYYY");
@@ -32,7 +33,7 @@
     <button class="link" onclick={() => process.switchPage("viewUser", { user })}>{user.username}</button>
   </div>
   <div class="segment name">
-    <img src={StoreItemIcon(item)} alt="" />
+    <Icon icon={StoreItemIcon(item)} />
     <span>{item.name}</span>
   </div>
   <div class="segment version">{item.pkg.version}</div>

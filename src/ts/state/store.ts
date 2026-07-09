@@ -10,13 +10,14 @@ import LicenseDeclinedRender from "../../state/licensedeclined/render";
 import ServerDownRender from "../../state/serverdown/render";
 import ServerDownHtml from "../../state/serverdown/serverdown.html?url";
 import TurnedOffHtml from "../../state/turnedoff/turnedoff.html?url";
-import type { AppModuleLoader, State } from "../../types/state";
+import type { AppModuleLoader, State } from "../../types/system/state";
 
 const globs = Object.values(
   import.meta.glob([
     "$apps/core/bootscreen/bootScreen",
     "$apps/core/initialsetup/initialSetupWizard",
     "$apps/core/loginapp/loginApp",
+    "$apps/core/switchserver/SwitchServer",
   ])
 );
 
@@ -71,5 +72,10 @@ export const States: Record<string, State> = {
     identifier: "arcterm",
     render: ArcTermRender,
     html: ArcTermHtml,
+  },
+  switchServer: {
+    name: "Switch Server",
+    identifier: "switchServer",
+    appModule: globs[3] as AppModuleLoader,
   },
 };

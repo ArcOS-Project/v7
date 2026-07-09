@@ -1,12 +1,14 @@
+import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutPropertiesRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon, Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { ArcShortcut } from "$types/shortcut";
+import type { AppProcessData } from "$types/apps/app";
+import type { ArcShortcut } from "$types/system/shortcut";
 
-export class ShortcutPropertiesRuntime extends AppProcess {
+export class ShortcutPropertiesRuntime extends AppProcess implements IShortcutPropertiesRuntime {
   shortcutData = Store<ArcShortcut>();
   iconStore = getAllImages();
   path?: string;
@@ -32,7 +34,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   //#region ACTIONS
 
   async save() {
-    const result = await this.userDaemon?.createShortcut(this.shortcutData(), this.path!);
+    const result = await Daemon?.shortcuts?.createShortcut(this.shortcutData(), this.path!, true);
 
     if (result) {
       await this.closeWindow();
@@ -45,7 +47,7 @@ export class ShortcutPropertiesRuntime extends AppProcess {
         message: "An error occurred while trying to save the shortcut. Please try again",
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.parentPid,
       true
@@ -53,19 +55,20 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async goTarget() {
+    this.Log(`goTarget`);
     const data = this.shortcutData();
 
     await this.closeWindow();
 
     switch (data.type) {
       case "app":
-        await this.userDaemon?.spawnOverlay("AppInfo", +this.env.get("shell_pid"), data.target);
+        await this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), data.target);
         break;
       case "file":
-        await this.userDaemon?.spawnApp("fileManager", +this.env.get("shell_pid"), getParentDirectory(data.target));
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), getParentDirectory(data.target));
         break;
       case "folder":
-        await this.userDaemon?.spawnApp("fileManager", +this.env.get("shell_pid"), data.target);
+        await this.spawnApp("fileManager", +Env.get("shell_pid"), data.target);
         break;
       case "new":
         await this.closeWindow();
@@ -74,21 +77,21 @@ export class ShortcutPropertiesRuntime extends AppProcess {
   }
 
   async changeIcon() {
-    const data = this.shortcutData();
-    const icon = await this.userDaemon?.IconPicker({
-      defaultIcon: data.icon,
-      forWhat: data.name,
-    });
+    this.Log(`changeIcon`);
 
-    data.icon = icon || data.icon;
+    const data = this.shortcutData();
+
+    data.icon = await Daemon.helpers!.IconEditor(data.icon, data.icon, "Shortcut icon");
 
     this.shortcutData.set(data);
   }
 
   async pickTarget() {
+    this.Log(`pickTarget`);
+
     const data = this.shortcutData();
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Pick a new target",
       icon: data.icon,
       folder: data.type === "folder",

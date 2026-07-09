@@ -1,20 +1,21 @@
-import type { UserDaemon } from "$ts/server/user/daemon";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ExitAction } from "./types";
 
 export const ExitActions: Record<string, ExitAction> = {
   restart: {
-    action: (daemon: UserDaemon) => daemon.restart(),
+    action: (daemon: IUserDaemon) => daemon.power!.restart(),
     caption: "%exitActions.restart%",
     icon: "RestartIcon",
   },
   shutdown: {
-    action: (daemon: UserDaemon) => daemon.shutdown(),
+    action: (daemon: IUserDaemon) => daemon.power!.shutdown(),
     caption: "%exitActions.shutdown%",
     icon: "ShutdownIcon",
   },
   logoff: {
-    action: (daemon: UserDaemon) => daemon.logoff(),
-    alternateAction: (daemon: UserDaemon) => daemon.logoffSafeMode(),
+    action: (daemon: IUserDaemon) => daemon.power!.logoff(),
+    alternateAction: (daemon: IUserDaemon) => daemon.power!.logoffSafeMode(),
+    alternateCaption: "Safe mode",
     caption: "%exitActions.logoff%",
     icon: "LogoutIcon",
   },

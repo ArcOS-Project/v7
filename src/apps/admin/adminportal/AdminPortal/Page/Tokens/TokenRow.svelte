@@ -1,14 +1,15 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ExpandedToken } from "$types/admin";
+  import { MessageBox } from "$ts/util/dialog";
+  import type { ExpandedToken } from "$types/server/admin";
   import dayjs from "dayjs";
   import Cookies from "js-cookie";
   import { UAParser } from "ua-parser-js";
 
-  const { token, process }: { token: ExpandedToken; process: AdminPortalRuntime } = $props();
+  const { token, process }: { token: ExpandedToken; process: IAdminPortalRuntime } = $props();
   const { redacted } = process;
   const parsed = UAParser(token.userAgent);
   const lastUsed = dayjs(token.lastUsed).format("D MMM YYYY, HH:mm");
@@ -25,7 +26,7 @@
             caption: "Log In As",
             suggested: true,
             action: async () => {
-              await process.userDaemon?.logoff();
+              await Daemon?.power?.logoff();
               await Sleep(3000);
               const cookieOptions = {
                 expires: 14,
@@ -33,8 +34,8 @@
               };
               Cookies.set("arcToken", token.value, cookieOptions);
               Cookies.set("arcUsername", token.user?.username!, cookieOptions);
-              process.userDaemon!._disposed = false;
-              await process.userDaemon?.restart();
+              Daemon!.STATE = "running";
+              await Daemon?.power?.restart();
             },
           },
         ],

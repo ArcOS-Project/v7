@@ -1,33 +1,29 @@
-import { ArcOSVersion, KernelStack } from "$ts/env";
-import { KernelLogs } from "$ts/getters";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IBugHunt } from "$interfaces/modules/IBugHunt";
+import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
+import { KernelLogs } from "$ts/kernel/getters";
+import { Backend } from "$ts/kernel/mods/server/axios";
 import { KernelModule } from "$ts/kernel/module";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Backend } from "$ts/server/axios";
-import { UserDaemon } from "$ts/server/user/daemon";
-import type { BugReport, OutgoingBugReport } from "$types/bughunt";
-import type { ConstructedWaveKernel, EnvironmentType, ServerManagerType } from "$types/kernel";
+import type { App } from "$types/apps/app";
+import type { BugReport, OutgoingBugReport } from "$types/server/bughunt";
 import { defaultReportOptions } from "./store";
 
-export class BugHunt extends KernelModule {
-  server: ServerManagerType;
-  env: EnvironmentType;
-
+export class BugHunt extends KernelModule implements IBugHunt {
   //#region LIFECYCLE
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
-
-    this.server = kernel.getModule<ServerManagerType>("server");
-    this.env = kernel.getModule<EnvironmentType>("env");
   }
 
   async _init(): Promise<void> {}
 
   //#endregion
 
-  createReport(options = defaultReportOptions): OutgoingBugReport {
-    const server = URL.parse(this.server.url)?.host;
+  createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
+    const server = URL.parse(Server.url || "https://arcapi.nl")?.host;
 
     return {
       title: options.title,
@@ -42,6 +38,9 @@ export class BugHunt extends KernelModule {
       mode: ArcMode(),
       build: ArcBuild(),
       public: options.public,
+      isAppReport: !!app,
+      reportAppId: app?.id,
+      reportAppPkgId: storeItemId,
     };
   }
 
@@ -58,8 +57,8 @@ export class BugHunt extends KernelModule {
   }
 
   getToken() {
-    const daemonPid = +this.env.get("userdaemon_pid");
-    const userDaemon = KernelStack().getProcess<UserDaemon>(daemonPid);
+    const daemonPid = +Env.get("userdaemon_pid");
+    const userDaemon = Stack.getProcess<IUserDaemon>(daemonPid);
 
     if (!daemonPid || !userDaemon) return "";
 
@@ -76,9 +75,9 @@ export class BugHunt extends KernelModule {
     }
   }
 
-  async getPublicBugReports(): Promise<BugReport[]> {
+  async getPublicBugReports(token: string): Promise<BugReport[]> {
     try {
-      const response = await Backend.get(`/bughunt/reports/public`);
+      const response = await Backend.get(`/bughunt/reports/public`, { headers: { Authorization: `Bearer ${token}` } });
 
       return response.data as BugReport[];
     } catch {

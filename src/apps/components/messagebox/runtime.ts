@@ -1,10 +1,12 @@
+import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
 import { AppProcess } from "$ts/apps/process";
+import { SoundBus } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
-import type { MessageBoxData } from "$types/messagebox";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import type { MessageBoxData } from "$types/shared/messagebox";
 
-export class MessageBoxRuntime extends AppProcess {
+export class MessageBoxRuntime extends AppProcess implements IMessageBoxRuntime {
   data: MessageBoxData | undefined;
   acted = Store<boolean>(false);
 
@@ -21,7 +23,7 @@ export class MessageBoxRuntime extends AppProcess {
       image: "ComponentIcon",
     };
 
-    if (this.data.sound) this.soundBus.playSound(this.data.sound); // Play the sound
+    if (this.data.sound) SoundBus.playSound(this.data.sound); // Play the sound
 
     this.setSource(__SOURCE__);
   }
@@ -45,9 +47,10 @@ export class MessageBoxRuntime extends AppProcess {
     if (this.acted()) return true;
 
     // Gross way to determine the primary action of the dialog
+    // Suggested buttons with a hide callback won't be picked.
     await this.data?.buttons
       .reverse()
-      .filter((b) => b.suggested)[0]
+      .filter((b) => b.suggested && !b.hide)[0]
       ?.action();
 
     return true;

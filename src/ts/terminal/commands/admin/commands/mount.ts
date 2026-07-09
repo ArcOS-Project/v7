@@ -1,5 +1,5 @@
-import { AdminScopes } from "$ts/server/admin/store";
-import type { AdminCommandType } from "../../admin";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+import type { AdminCommandType } from "$types/terminal";
 
 export const AdminMount: AdminCommandType = async (term, admin, argv) => {
   if (

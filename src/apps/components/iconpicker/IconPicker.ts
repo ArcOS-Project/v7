@@ -1,5 +1,5 @@
 import "$css/apps/components/iconpicker.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import IconPicker from "./IconPicker.svelte";
 import { IconPickerRuntime } from "./runtime";
 

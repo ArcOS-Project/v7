@@ -1,6 +1,5 @@
 @import url("./securecontext/header.css");
 @import url("./securecontext/top.css");
-@import url("./securecontext/actions.css");
 
 .shade-SecureContext {
   background-position: center;
@@ -34,4 +33,34 @@
 
 #SecureContext {
   overflow: visible;
+}
+
+#SecureContext div.window-action-bar {
+  background-color: var(--glass-alt-bg);
+  border-top: var(--win-border);
+}
+
+#SecureContext div.window-action-bar button.approve {
+  font-weight: bold;
+}
+
+#SecureContext div.window-action-bar button.approve.level-medium,
+#SecureContext div.window-action-bar button.approve.level-medium * {
+  background-color: rgba(255, 159, 5) !important;
+  color: #000 !important;
+}
+
+#SecureContext div.window-action-bar button.approve:hover:not(:active) {
+  filter: brightness(1.2);
+}
+
+#SecureContext div.window-action-bar button.approve.level-low,
+#SecureContext div.window-action-bar button.approve.level-low * {
+  background-color: rgba(112, 199, 77) !important;
+  color: #000 !important;
+}
+#SecureContext div.window-action-bar button.approve.level-high,
+#SecureContext div.window-action-bar button.approve.level-high * {
+  background-color: rgba(228, 54, 54) !important;
+  color: #fff !important;
 }

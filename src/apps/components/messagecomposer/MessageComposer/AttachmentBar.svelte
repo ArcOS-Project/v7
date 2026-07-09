@@ -1,8 +1,10 @@
 <script lang="ts">
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
-  import type { MessageComposerRuntime } from "../runtime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { attachments, sending } = process;
 </script>
 
@@ -10,11 +12,7 @@
   <div class="attachment-bar">
     {#each $attachments as attachment, i (`${attachment.uuid}-${i}`)}
       <div class="attachment">
-        <img
-          src={process.userDaemon?.assoc?.getFileAssociation(attachment.data.name)?.icon ||
-            process.getIconCached("DefaultMimeIcon")}
-          alt=""
-        />
+        <Icon icon={Daemon?.assoc?.getFileAssociation(attachment.data.name)?.icon || "DefaultMimeIcon"} />
         <span>{attachment.data.name}</span>
         <span class="size">({formatBytes(attachment.data.size)})</span>
         <button

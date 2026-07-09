@@ -1,8 +1,8 @@
-import type { ContextMenuItem } from "$types/app";
-import type { AdminPortalRuntime } from "../runtime";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+import type { ContextMenuItem } from "$types/apps/app";
 import { AdminPortalPageStore } from "../store";
 
-export function PageMenu(process: AdminPortalRuntime): ContextMenuItem {
+export function PageMenu(process: IAdminPortalRuntime): ContextMenuItem {
   // We have to do some weird shit to make a ContextMenuItem array of admin pages...
   const pages: ContextMenuItem[] = [...AdminPortalPageStore]
     .filter(([_, v]) => !v.hidden) // Only visible pages

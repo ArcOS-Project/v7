@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { OopsNotifierRuntime } from "./runtime";
+  import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
+  import Icon from "$lib/Icon.svelte";
 
-  const { process }: { process: OopsNotifierRuntime } = $props();
+  const { process }: { process: IOopsNotifierRuntime } = $props();
   const { data } = process;
 </script>
 
 <div class="header">
-  <img src={process.userDaemon?.getAppIcon(data) || process.getIconCached("ComponentIcon")} alt="" />
+  <Icon icon="@app::{data.id}" fallback="ErrorIcon" />
   <h1>{data?.id === "ArcOS" ? "System error occurred" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
     {#if data?.id === "ArcOS"}
@@ -16,8 +17,7 @@
       If you were in the middle of something, the information you were working on might be lost. You can view the stack trace,
       which can tell you why the app crashed.
     {:else}
-      An unknown error occurred that wasn't handled properly. Unsaved information might have been lost. That's all I could figure
-      out.
+      An unknown error occurred that wasn't handled properly. {process.exception}
     {/if}
   </p>
 </div>

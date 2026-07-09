@@ -1,18 +1,20 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import type { AppProcess } from "$ts/apps/process";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { KernelStack } from "$ts/env";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon, Stack } from "$ts/env";
+  import { BlankIcon } from "$ts/images/general";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
 
-  const { openedProcess, pid, process }: { openedProcess: AppProcess; pid: number; process: ShellRuntime } = $props();
-  const { windowTitle, windowIcon } = openedProcess;
+  const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
+  const { windowTitle, windowIcon, blinking } = openedProcess;
   const { userPreferences } = process;
-  const { focusedPid } = KernelStack().renderer!;
+  const { focusedPid } = Stack.renderer!;
 
   function focus() {
-    KernelStack().renderer?.focusPid(pid);
+    Stack.renderer?.focusPid(pid);
 
-    if (openedProcess.app.desktop) process.userDaemon?.switchToDesktopByUuid(openedProcess.app.desktop);
+    if (openedProcess.app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
 </script>
 
@@ -21,16 +23,13 @@
   onclick={focus}
   class:active={$focusedPid == openedProcess.pid}
   class:iconic={!$userPreferences.shell.taskbar.labels}
+  class:blinking={$blinking}
   data-pid={pid}
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}
 >
-  <img
-    src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")}
-    alt=""
-    class="backdrop"
-  />
-  <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
+  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} className="backdrop" />
+  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} />
   {#if $userPreferences.shell.taskbar.labels}
     <span class="title">{$windowTitle}</span>
   {/if}

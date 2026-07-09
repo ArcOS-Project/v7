@@ -1,21 +1,23 @@
 <script lang="ts">
-  import type { ReadableStore } from "$ts/writable";
+  import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
+  import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
-  import type { ItemInfoRuntime } from "../runtime";
   import type { ItemInfo } from "../types";
 
-  const { info, process }: { info: ReadableStore<ItemInfo>; process: ItemInfoRuntime } = $props();
+  const { info, process }: { info: ReadableStore<ItemInfo>; process: IItemInfoRuntime } = $props();
 
   let icon = $state<string>();
 
   onMount(() => {
-    const assoc = process.userDaemon?.assoc?.getFileAssociation($info.name);
-    icon = $info.isFolder ? process.getIconCached("FolderIcon") : assoc?.icon || process.getIconCached("DefaultMimeIcon");
+    const assoc = Daemon?.assoc?.getFileAssociation($info.name);
+    icon = $info.isFolder ? "FolderIcon" : assoc?.icon || "DefaultMimeIcon";
   });
 </script>
 
 <div class="header">
-  <img src={$info.name ? icon || process.getIconCached("DefaultMimeIcon") : process.getIconCached("DriveIcon")} alt="" />
+  <Icon icon={$info.name ? icon || "DefaultMimeIcon" : "DriveIcon"} />
   <div>
     <h1>{$info.name || $info.location.parent || $info.location.drive}</h1>
     {#if $info.name && ($info.location.parent || $info.location.drive)}

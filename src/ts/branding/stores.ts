@@ -1,4 +1,6 @@
 import {
+  BetaBranchLogo as betabranch,
+  DevBranchLogo as devbranch,
   DevelopmentLogo as development,
   EsrLogo as esr,
   NightlyLogo as nightly,
@@ -14,6 +16,8 @@ export const MODES: Record<string, string> = {
   rc,
   esr,
   nightly,
+  betabranch,
+  devbranch,
 };
 
 export const ALIASED_MODES: Record<string, string> = {
@@ -23,4 +27,6 @@ export const ALIASED_MODES: Record<string, string> = {
   rc: "RcLogo",
   esr: "EsrLogo",
   nightly: "NightlyLogo",
+  devbranch: "DevBranchLogo",
+  betabranch: "BetaBranchLogo",
 };

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
+  import type { ITotpSetupGuiRuntime } from "$interfaces/runtimes/ITotpSetupGuiRuntime";
+  import { Daemon } from "$ts/env";
+  import { MessageBox } from "$ts/util/dialog";
   import QRCode from "@castlenine/svelte-qrcode";
   import { onMount } from "svelte";
   import Input from "./TotpSetupGui/Input.svelte";
-  import type { TotpSetupGuiRuntime } from "./runtime";
 
-  const { process }: { process: TotpSetupGuiRuntime } = $props();
+  const { process }: { process: ITotpSetupGuiRuntime } = $props();
   const { code, url } = process;
   let errored = $state(false);
   let locked = $state(false);
@@ -57,7 +58,7 @@
             "Two-factor authentication has now been enabled on your account. You must restart for the changes to fully take effect.",
           buttons: [
             { caption: "Restart later", action: () => {} },
-            { caption: "Restart now", suggested: true, action: () => process.userDaemon?.restart() },
+            { caption: "Restart now", suggested: true, action: () => Daemon?.power?.restart() },
           ],
           sound: "arcos.dialog.info",
           image: "GoodStatusIcon",

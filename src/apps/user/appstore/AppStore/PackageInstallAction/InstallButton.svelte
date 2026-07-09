@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { ReadableStore } from "$ts/writable";
-  import type { StoreItem } from "$types/package";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import { MessageBox } from "$ts/util/dialog";
+  import type { ReadableStore } from "$types/shared/writable";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
-  import type { AppStoreRuntime } from "../../runtime";
 
   const {
     process,
@@ -11,7 +11,7 @@
     installed,
     compact = false,
   }: {
-    process: AppStoreRuntime;
+    process: IAppStoreRuntime;
     installed: ReadableStore<StoreItem | undefined>;
     pkg: ReadableStore<StoreItem>;
     compact: boolean;

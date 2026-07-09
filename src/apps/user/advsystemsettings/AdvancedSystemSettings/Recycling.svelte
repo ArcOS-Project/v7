@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { TrashCanService } from "$ts/server/user/trash";
+  import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
+  import type { ITrashCanService } from "$interfaces/services/ITrashCanService";
+  import { Daemon, Env } from "$ts/env";
   import { Plural } from "$ts/util";
+  import { MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
-  import type { AdvSysSetRuntime } from "../runtime";
 
-  const { process }: { process: AdvSysSetRuntime } = $props();
+  const { process }: { process: IAdvSysSetRuntime } = $props();
   const { preferencesBuffer } = process;
 
-  const trash = process.userDaemon?.serviceHost?.getService<TrashCanService>("TrashSvc");
+  const trash = Daemon?.serviceHost?.getService<ITrashCanService>("TrashSvc");
   let size = $state(Object.entries(trash?.IndexBuffer() || {}).length);
 
   onMount(() => {
@@ -70,6 +71,6 @@
 </section>
 
 <section class="actions">
-  <button onclick={emptyBin}>Empty...</button>
-  <button onclick={() => process.spawnApp("fileManager", +process.env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
+  <button onclick={emptyBin} disabled={!size}>Empty...</button>
+  <button onclick={() => process.spawnApp("fileManager", +Env.get("shell_pid"), "::recycle_bin")}>Open bin</button>
 </section>

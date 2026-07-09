@@ -1,24 +1,47 @@
 <script lang="ts">
-  import type { MessageBoxButton } from "$types/messagebox";
-  import type { MessageBoxRuntime } from "../runtime";
+  import type { IMessageBoxRuntime } from "$interfaces/runtimes/IMessageBoxRuntime";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import type { MessageBoxButton } from "$types/shared/messagebox";
+  import { onMount } from "svelte";
 
   let disabled = $state(false);
+  let hidden = $state(false);
 
   const {
     button,
     process,
     suggestedDisabled,
-  }: { button: MessageBoxButton; process: MessageBoxRuntime; suggestedDisabled: boolean } = $props();
+  }: { button: MessageBoxButton; process: IMessageBoxRuntime; suggestedDisabled: boolean } = $props();
+
+  onMount(async () => {
+    if (button.disabled) {
+      disabled = await button.disabled();
+    }
+
+    if (button.hide) {
+      hidden = await button.hide();
+    }
+  });
 
   async function go() {
+    if (hidden) return;
+
     disabled = true;
 
     process.acted.set(true);
-    await button.action();
-    await process.closeWindow();
+    const actionResult = await button.action();
+
+    if (actionResult !== false) {
+      await process.closeWindow();
+    } else {
+      process.acted.set(false);
+      disabled = true;
+    }
   }
 </script>
 
-<button onclick={go} class:suggested={button.suggested} disabled={disabled || (suggestedDisabled && button.suggested)}>
-  {button.caption}
-</button>
+{#if !hidden}
+  <ActionButton suggested={button.suggested} onclick={go} disabled={disabled || (suggestedDisabled && button.suggested)}>
+    {button.caption}
+  </ActionButton>
+{/if}

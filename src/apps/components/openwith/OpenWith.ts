@@ -1,5 +1,5 @@
 import "$css/apps/components/openwith.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import OpenWith from "./OpenWith.svelte";
 import { OpenWithRuntime } from "./runtime";
 

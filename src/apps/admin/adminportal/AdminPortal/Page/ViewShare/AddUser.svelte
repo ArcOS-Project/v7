@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import type { SharedDriveType } from "$types/shares";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon } from "$ts/env";
+  import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { process, users, share }: { process: AdminPortalRuntime; users: ExpandedUserInfo[]; share: SharedDriveType } = $props();
+  const { process, users, share }: { process: IAdminPortalRuntime; users: ExpandedUserInfo[]; share: SharedDriveType } = $props();
 
   let contestant = $state<string>();
   let loading = $state<boolean>(false);
 
   async function addUser() {
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm user add?",
       `Are you sure you want to add this user to '${share.shareName}'?`,
       "Cancel",

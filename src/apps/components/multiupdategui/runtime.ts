@@ -1,15 +1,17 @@
+import type { IMultiUpdateGuiRuntime } from "$interfaces/runtimes/IMultiUpdateGuiRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { DistributionServiceProcess } from "$ts/distrib";
+import { Daemon, SysDispatch } from "$ts/env";
 import { Plural } from "$ts/util";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { InstallStatus, StoreItem, UpdateInfo } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { InstallStatus, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { MultiUpdateStatus, MultiUpdateStatusNode } from "./types";
 
-export class MultiUpdateGuiRuntime extends AppProcess {
+export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGuiRuntime {
   private updates: UpdateInfo[];
-  private distrib: DistributionServiceProcess;
+  private distrib: IDistributionServiceProcess;
   private win: HTMLDivElement | undefined;
   public status = Store<MultiUpdateStatus>([]);
   public currentPackage = Store<StoreItem | undefined>();
@@ -26,7 +28,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, updates: UpdateInfo[]) {
     super(pid, parentPid, app);
 
-    this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
     this.updates = Array.isArray(updates) ? updates : [];
 
     this.setSource(__SOURCE__);
@@ -61,7 +63,7 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   async onClose(): Promise<boolean> {
-    this.systemDispatch.dispatch("mugui-done");
+    SysDispatch.dispatch("mugui-done");
 
     return true;
   }
@@ -70,6 +72,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   //#region PACKAGE
 
   updatePackageStatus(appId: string, newData: Partial<MultiUpdateStatusNode>) {
+    this.Log(`updatePackageStatus: ${appId}: ${newData.state}`);
+
     this.status.update((v) => {
       const index = v.map((n) => n.pkg.pkg.appId).indexOf(appId);
       v[index] = { ...v[index], ...newData };
@@ -79,6 +83,8 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   }
 
   packageFailed(appId: string) {
+    this.Log(`packageFailed: ${appId}`);
+
     this.updatePackageStatus(appId, { state: "failed", done: 100, max: 100 });
   }
 
@@ -86,9 +92,11 @@ export class MultiUpdateGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async go() {
+    this.Log(`GO!`);
+
     this.working.set(true);
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `%apps.MultiUpdateGui.elevation(${this.updates.length}::${Plural("app", this.updates.length)})%`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,

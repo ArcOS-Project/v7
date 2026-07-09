@@ -1,10 +1,9 @@
 <script lang="ts">
+  import Icon from "$lib/Icon.svelte";
   import Spinner from "$lib/Spinner.svelte";
-  import type { FileManagerRuntime } from "../runtime";
-  const { process }: { process: FileManagerRuntime } = $props();
 </script>
 
 <div class="splash">
-  <img src={process.getIconCached("FileManagerIcon")} alt="" />
+  <Icon icon="FileManagerIcon" />
   <Spinner height={30} />
 </div>

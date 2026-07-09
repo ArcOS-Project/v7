@@ -1,4 +1,4 @@
-div.shell div.startmenu div.top div.folders button {
+div.shell div.startmenu div.top div.right-pane button {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -7,7 +7,7 @@ div.shell div.startmenu div.top div.folders button {
   background-color: transparent;
 }
 
-div.shell div.startmenu div.top div.folders > div.content {
+div.shell div.startmenu div.top div.right-pane > div.content {
   border-top: var(--button-glass-bg) 1px solid;
   margin-top: 5px;
   padding-top: 5px;
@@ -15,24 +15,24 @@ div.shell div.startmenu div.top div.folders > div.content {
   overflow-y: scroll;
 }
 
-div.shell div.startmenu div.top div.folders button:hover {
+div.shell div.startmenu div.top div.right-pane button:hover {
   background-color: var(--button-glass-bg);
 }
 
-div.shell div.startmenu div.top div.folders button:active {
+div.shell div.startmenu div.top div.right-pane button:active {
   background-color: var(--button-glass-active-bg);
 }
 
-div.shell div.startmenu div.top div.folders button.user-button {
+div.shell div.startmenu div.top div.right-pane button.user-button {
   font-weight: bold;
 }
 
-div.shell div.startmenu div.top div.folders button img {
+div.shell div.startmenu div.top div.right-pane button img {
   width: 24px;
   height: 24px;
 }
 
-div.shell div.startmenu div.top div.folders button span {
+div.shell div.startmenu div.top div.right-pane button span {
   display: block;
   width: 0;
   flex-grow: 1;
@@ -42,7 +42,7 @@ div.shell div.startmenu div.top div.folders button span {
   text-align: left;
 }
 
-div.shell div.startmenu div.top div.folders {
+div.shell div.startmenu div.top div.right-pane {
   width: 170px;
   background-color: var(--shell-component-bg);
   border-radius: 10px;
@@ -52,6 +52,6 @@ div.shell div.startmenu div.top div.folders {
   outline-offset: -1px;
 }
 
-.theme-light div.shell div.startmenu div.top div.folders button:hover {
+.theme-light div.shell div.startmenu div.top div.right-pane button:hover {
   background-color: var(--glass-ultradark);
 }

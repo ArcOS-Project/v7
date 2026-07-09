@@ -1,33 +1,28 @@
 <script lang="ts">
+  import type { IMessageComposerRuntime } from "$interfaces/runtimes/IMessageComposerRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import Pill from "$lib/Window/ActionBar/ActionPill.svelte";
+  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { MessageComposerRuntime } from "../runtime";
 
-  const { process }: { process: MessageComposerRuntime } = $props();
+  const { process }: { process: IMessageComposerRuntime } = $props();
   const { title, body, recipients, sending, attachments } = process;
 </script>
 
-<div class="action-bar">
-  <!-- Sum of attachments: https://stackoverflow.com/a/16751601 -->
-  <div class="pill">
-    <p class="caption">%actionBar.body%</p>
-    <p class="value">{formatBytes($body.length)}</p>
-  </div>
-  <div class="pill">
-    <p class="caption">%actionBar.attachments%</p>
-    <p class="value">{formatBytes($attachments.map((a) => a.data.size).reduce((partialSum, a) => partialSum + a, 0))}</p>
-  </div>
-  <div class="actions">
-    <button
-      class="lucide icon-paperclip"
-      title="%actionBar.addAttachment%"
-      onclick={() => process.addAttachment()}
-      aria-label="%actionBar.addAttachment%"
-      disabled={$sending}
-    ></button>
-    <div class="sep"></div>
-    <button
-      class="lucide icon-trash-2 discard"
+<ActionBar>
+  {#snippet leftContent()}
+    <Pill key={"%actionBar.body%"}>{formatBytes($body.length)}</Pill>
+    <Pill key={"%actionBar.attachments%"}>{formatBytes($attachments.map((a) => a.data.size).reduce((a, b) => a + b, 0))}</Pill>
+  {/snippet}
+  {#snippet rightContent()}
+    <IconActionButton icon="paperclip" title="%actionBar.addAttachment%" disabled={$sending} onclick={() => process.addAttachment()} />
+    <Separator />
+    <IconActionButton
+      icon="trash-2"
       title="%actionBar.discardMessage%"
+      disabled={$sending}
       onclick={() => process.discard()}
       aria-label="%actionBar.discardMessage%"
       disabled={$sending}

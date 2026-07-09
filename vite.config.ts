@@ -3,12 +3,14 @@ import { defineConfig, Plugin } from "vite";
 import path, { resolve } from "path";
 import ts from "typescript";
 import { writeFile } from "fs/promises";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     svelte(),
     GenerateGlobalTypesPlugin(),
+    nodePolyfills(),
     {
       name: "inject-source-path",
       transform(code, id) {
@@ -26,6 +28,7 @@ export default defineConfig({
       $types: resolve(__dirname, "./src/types"),
       $ts: resolve(__dirname, "./src/ts"),
       $lib: resolve(__dirname, "./src/lib"),
+      $interfaces: resolve(__dirname, "./src/interfaces"),
       $lang: resolve(__dirname, "./src/lang"),
     },
   },
@@ -39,6 +42,9 @@ export default defineConfig({
     },
     assetsInlineLimit: 1,
     minify: true,
+  },
+  esbuild: {
+    keepNames: true,
   },
   base: "",
 });

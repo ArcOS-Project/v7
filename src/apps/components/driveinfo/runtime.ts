@@ -1,21 +1,22 @@
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { IDriveInfoRuntime } from "$interfaces/runtimes/IDriveInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { FilesystemDrive } from "$ts/drives/drive";
-import { ServerDrive } from "$ts/drives/server";
-import { USERFS_UUID } from "$ts/env";
-import type { AppProcessData } from "$types/app";
-import type { UserQuota } from "$types/fs";
-import type { RenderArgs } from "$types/process";
+import { Daemon, USERFS_UUID } from "$ts/env";
+import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
+import type { AppProcessData } from "$types/apps/app";
+import type { UserQuota } from "$types/system/fs";
 import type { CategorizedDiskUsage } from "$types/user";
 
-export class DriveInfoRuntime extends AppProcess {
-  drive?: FilesystemDrive;
+export class DriveInfoRuntime extends AppProcess implements IDriveInfoRuntime {
+  drive?: IFilesystemDrive;
   isUserFs = false;
   usage?: CategorizedDiskUsage;
   quota?: UserQuota;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, drive: FilesystemDrive) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, drive: IFilesystemDrive) {
     super(pid, parentPid, app);
 
     if (drive && drive instanceof FilesystemDrive) this.drive = drive;
@@ -26,14 +27,19 @@ export class DriveInfoRuntime extends AppProcess {
   async start() {
     if (!this.drive) return false;
 
-    this.isUserFs = this.drive instanceof ServerDrive && this.drive.uuid === USERFS_UUID;
+    this.isUserFs = this.drive instanceof UserDrive && this.drive.uuid === USERFS_UUID;
+
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator(
+      this.isUserFs ? "Probing and categorizing your filesystem..." : "Probing drive information..."
+    )!;
+
     this.quota = await this.drive.quota();
 
-    if (this.isUserFs) this.usage = await this.userDaemon?.determineCategorizedDiskUsage();
-  }
+    if (this.isUserFs) {
+      this.usage = await Daemon?.files?.determineCategorizedDiskUsage();
+    }
 
-  render(args: RenderArgs) {
-    this.getBody().setAttribute("data-prefix", "apps.DriveInfo");
+    stop();
   }
 
   //#endregion

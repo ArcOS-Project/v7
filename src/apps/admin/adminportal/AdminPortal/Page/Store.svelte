@@ -1,14 +1,15 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
-  import type { StoreItem } from "$types/package";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { StoreData, StorePageFilters } from "../../types";
   import StoreRow from "./Store/StoreRow.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: StoreData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: StoreData } = $props();
   const { items, users } = data;
 
   const filters: StorePageFilters[] = ["all", "official", "deprecated"];
@@ -48,7 +49,7 @@
 </div>
 <div class="item-list">
   <div class="item-row header">
-    <img src={Logo()} alt="" />
+    <Icon icon={Logo()} />
     <div class="segment author">Author</div>
     <div class="segment name">Name</div>
     <div class="segment version">Version</div>

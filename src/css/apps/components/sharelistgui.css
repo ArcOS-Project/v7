@@ -25,7 +25,7 @@
 
 #ShareListGui > div.body div.listing {
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 15px;
   border: var(--win-border);
   margin-bottom: 20px;
   height: calc(100% - 50px - 20px - 20px - 52px);
@@ -78,30 +78,6 @@
   color: var(--accent-light);
 }
 
-#ShareListGui > div.body div.actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: var(--button-bg);
-  box-shadow: var(--secondary-box-shadow);
-}
-
-#ShareListGui > div.body div.actions div.sep {
-  width: 1px;
-  height: 20px;
-  background-color: var(--button-glass-hover-bg);
-}
-#ShareListGui > div.body div.actions button {
-  height: 32px;
-}
-
-#ShareListGui > div.body div.actions button.create {
-  margin-right: auto;
-}
-
 #ShareListGui > div.body button.refresh {
   width: 16px;
   height: 16px;
@@ -112,6 +88,7 @@
   justify-content: center;
   scale: 1 !important;
   background-color: transparent;
+  outline: none;
 }
 
 #ShareListGui > div.body button.refresh.loading {

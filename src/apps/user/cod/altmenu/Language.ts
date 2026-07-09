@@ -1,7 +1,7 @@
-import type { ContextMenuItem } from "$types/app";
-import type { CodRuntime } from "../runtime";
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
+import type { ContextMenuItem } from "$types/apps/app";
 
-export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
+export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
   return {
     caption: "Language",
     subItems: [
@@ -27,6 +27,11 @@ export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
         isActive: () => runtime.language() === "javascript",
       },
       {
+        caption: "TypeScript",
+        action: () => runtime.language.set("typescript"),
+        isActive: () => runtime.language() === "typescript",
+      },
+      {
         caption: "JSON",
         action: () => runtime.language.set("json"),
         isActive: () => runtime.language() === "json",
@@ -50,6 +55,11 @@ export function LanguageMenu(runtime: CodRuntime): ContextMenuItem {
         caption: "SQL",
         action: () => runtime.language.set("sql"),
         isActive: () => runtime.language() === "sql",
+      },
+      {
+        caption: "ArcBasic",
+        action: () => runtime.language.set("basic"),
+        isActive: () => runtime.language() === "basic",
       },
     ],
   };

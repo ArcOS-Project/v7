@@ -1,12 +1,14 @@
+import type { ILightsOffLevels, ILightsOffRuntime } from "$interfaces/runtimes/ILightsOffRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { Store, type ReadableStore } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
+import { MessageBox } from "$ts/util/dialog";
+import { Store } from "$ts/writable";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
 import { LightsOffLevels } from "./levels";
 import type { LightsOffGrid } from "./types";
 
-export class LightsOffRuntime extends AppProcess {
+export class LightsOffRuntime extends AppProcess implements ILightsOffRuntime {
   xModifiers = [-1, 0, +1];
   yModifiers = [-1, +1];
   Grid: ReadableStore<LightsOffGrid> = Store([
@@ -19,7 +21,7 @@ export class LightsOffRuntime extends AppProcess {
   Transitioning = Store<boolean>(false);
   Clicks = Store<number>(0);
   LEVEL = Store<number>(0);
-  Levels: LightsOffLevels;
+  Levels: ILightsOffLevels;
 
   //#region LIFECYCLE
 
@@ -28,6 +30,12 @@ export class LightsOffRuntime extends AppProcess {
 
     this.Levels = new LightsOffLevels(this);
 
+    this.setSource(__SOURCE__);
+  }
+
+  //#endregion
+
+  async start() {
     this.Grid.subscribe((v) => {
       if (!v) return;
 
@@ -38,11 +46,7 @@ export class LightsOffRuntime extends AppProcess {
     this.Clicks.subscribe(() => this.saveData());
 
     this.loadData();
-
-    this.setSource(__SOURCE__);
   }
-
-  //#endregion
 
   containsLights() {
     this.Log("Checking lights");
@@ -73,6 +77,8 @@ export class LightsOffRuntime extends AppProcess {
       this.pid,
       true
     );
+
+    return false;
   }
 
   ToggleLight(x: number, y: number) {

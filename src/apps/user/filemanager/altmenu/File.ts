@@ -1,7 +1,7 @@
-import type { ContextMenuItem } from "$types/app";
-import type { FileManagerRuntime } from "../runtime";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { ContextMenuItem } from "$types/apps/app";
 
-export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
+export function FileMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {
     caption: "File",
     subItems: [
@@ -9,7 +9,7 @@ export function FileMenu(runtime: FileManagerRuntime): ContextMenuItem {
         caption: "New window",
         icon: "plus",
         action: () => {
-          runtime.userDaemon?.spawnApp("fileManager", undefined, runtime.path());
+          runtime.spawnApp("fileManager", undefined, runtime.path());
         },
       },
       {

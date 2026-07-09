@@ -1,18 +1,21 @@
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { UserPaths } from "$ts/user/store";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { AppProcessData } from "$types/app";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppProcessData } from "$types/apps/app";
 import { CodAccelerators } from "./accelerators";
 import { CodAltMenu } from "./altmenu";
 import { CodTranslations } from "./store";
 import type { CodLang } from "./types";
 
-export class CodRuntime extends AppProcess {
+export class CodRuntime extends AppProcess implements ICodRuntime {
   language = Store<CodLang>("plaintext");
   buffer = Store<string>("");
   openedFile = Store<string>("");
@@ -20,7 +23,8 @@ export class CodRuntime extends AppProcess {
   mimetype = Store<string>("");
   directoryName = Store<string>("");
   original = Store<string>("");
-  mimeIcon = Store<string>(this.getIconCached("DefaultMimeIcon"));
+  drive = Store<IFilesystemDrive | undefined>();
+  mimeIcon = Store<string>("DefaultMimeIcon");
   public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
 
   //#region LIFECYCLE
@@ -39,6 +43,10 @@ export class CodRuntime extends AppProcess {
     if (!path) return;
 
     await this.readFile(path);
+
+    this.language.subscribe(() => {
+      if (!this._disposed) this.buffer.set(this.buffer()); // Force re-render of <CodeEditor/>
+    });
   }
 
   async onClose(): Promise<boolean> {
@@ -89,7 +97,8 @@ export class CodRuntime extends AppProcess {
   //#endregion
 
   async readFile(path: string) {
-    const prog = await this.userDaemon!.FileProgress(
+    this.Log(`readFile: ${path}`);
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading code`,
@@ -102,27 +111,30 @@ export class CodRuntime extends AppProcess {
     prog.show();
 
     try {
-      const contents = await this.fs.readFile(path, (progress) => {
+      const contents = await Fs.readFile(path, (progress) => {
         prog.setMax(progress.max);
         prog.setDone(progress.value);
       });
 
-      await Sleep(0);
+      // Sleeping to give FsProgress the time to render if the file is done loading before FsProgress has a chance to show.
+      await Sleep(500);
       await prog.stop();
 
       if (!contents) {
         throw new Error("Failed to get the contents of the file.");
       }
 
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      this.drive.set(Fs.getDriveByPath(path));
 
-      this.buffer.set(arrayToText(contents));
+      const info = Daemon?.assoc?.getFileAssociation(path);
+
+      this.buffer.set(arrayBufferToText(contents)!);
       this.openedFile.set(path);
       this.filename.set(getItemNameFromPath(path));
       this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
       this.original.set(`${this.buffer()}`);
       this.mimetype.set(info?.friendlyName || "Unknown");
-      this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+      this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
       this.windowTitle.set(this.filename());
       this.windowIcon.set(this.mimeIcon());
 
@@ -138,7 +150,7 @@ export class CodRuntime extends AppProcess {
         {
           title: "Failed to read file",
           message: `Cod was unable to open the file you requested: ${e}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.error",
         },
@@ -149,6 +161,8 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveChanges(force = false) {
+    this.Log(`saveChanges force=${force}`);
+
     const opened = this.openedFile();
     const buffer = this.buffer();
 
@@ -157,7 +171,7 @@ export class CodRuntime extends AppProcess {
 
     const filename = this.filename();
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Saving ${filename}`,
@@ -168,7 +182,7 @@ export class CodRuntime extends AppProcess {
     );
 
     try {
-      await this.fs.writeFile(opened, textToBlob(buffer), async (progress) => {
+      await Fs.writeFile(opened, textToBlob(buffer), async (progress) => {
         await prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
@@ -180,7 +194,9 @@ export class CodRuntime extends AppProcess {
   }
 
   async saveAs() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    this.Log(`saveAs`);
+
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the file",
       icon: "CodIcon",
       startDir: UserPaths.Documents,
@@ -190,21 +206,23 @@ export class CodRuntime extends AppProcess {
 
     if (!path) return;
 
-    const info = this.userDaemon?.assoc?.getFileAssociation(path);
+    const info = Daemon?.assoc?.getFileAssociation(path);
 
     this.openedFile.set(path);
     this.filename.set(getItemNameFromPath(path));
     this.directoryName.set(getItemNameFromPath(getParentDirectory(path)));
     this.original.set(`${this.buffer()}`);
     this.mimetype.set(info?.friendlyName || "Unknown");
-    this.mimeIcon.set(info?.icon || this.getIconCached("DefaultMimeIcon"));
+    this.mimeIcon.set(info?.icon || "DefaultMimeIcon");
     this.windowTitle.set(this.filename());
     this.windowIcon.set(this.mimeIcon());
     await this.saveChanges(true);
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    this.Log(`openFile`);
+
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to open",
       icon: "CodIcon",
       startDir: UserPaths.Documents,

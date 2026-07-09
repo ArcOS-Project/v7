@@ -1,48 +1,54 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { type CalendarMonth } from "$apps/components/shell/types";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
+  import { CalendarHelper } from "$ts/helpers/calendar";
+  import type { CalendarMonth } from "$types/shared/calendar";
   import dayjs, { Dayjs } from "dayjs";
   import weekOfYear from "dayjs/plugin/weekOfYear";
+  import { onMount } from "svelte";
   import Controls from "./Calendar/Controls.svelte";
   import Day from "./Calendar/Day.svelte";
   import Header from "./Calendar/Header.svelte";
   import Top from "./Calendar/Top.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { calendarOpened, userPreferences } = process;
 
   dayjs.extend(weekOfYear);
 
   let date = $state<Dayjs>(dayjs().date(1));
-  let month = $state<CalendarMonth>(process.getCalendarMonth());
+  let month = $state<CalendarMonth>();
+
+  onMount(update);
 
   function update() {
-    month = process.getCalendarMonth(date.format("YYYY-MM-DD"));
+    month = CalendarHelper.getCalendarMonth(date.format("YYYY-MM-DD"));
   }
 </script>
 
-<div class="calendar-popup shell-colored" class:opened={$calendarOpened} class:colored={$userPreferences.shell.taskbar.colored}>
-  <Top h12={$userPreferences.shell.taskbar.clock12hr} />
-  <div class="bottom">
-    {#if month}
-      <Controls bind:date {update} />
-      <div class="calendar">
-        <Header />
-        <div class="grid">
-          {#each month?.prepended as day (day.fullDate)}
-            <Day past {day} />
-          {/each}
-          {#each month?.current as day (day.fullDate)}
-            <Day {day} />
-          {/each}
-          {#each month?.appended as day (day.fullDate)}
-            <Day future {day} />
-          {/each}
+{#if month}
+  <div class="calendar-popup shell-colored" class:opened={$calendarOpened} class:colored={$userPreferences.shell.taskbar.colored}>
+    <Top h12={$userPreferences.shell.taskbar.clock12hr} />
+    <div class="bottom">
+      {#if month}
+        <Controls bind:date {update} />
+        <div class="calendar">
+          <Header />
+          <div class="grid">
+            {#each month?.prepended as day (day.fullDate)}
+              <Day past {day} />
+            {/each}
+            {#each month?.current as day (day.fullDate)}
+              <Day {day} />
+            {/each}
+            {#each month?.appended as day (day.fullDate)}
+              <Day future {day} />
+            {/each}
+          </div>
         </div>
-      </div>
-    {:else}
-      <Spinner height={32} />
-    {/if}
+      {:else}
+        <Spinner height={32} />
+      {/if}
+    </div>
   </div>
-</div>
+{/if}

@@ -1,8 +1,8 @@
-import { RegisteredProcess } from "$ts/apps/util";
 import { ArcOSVersion } from "$ts/env";
 import { ReleaseLogo } from "$ts/images/branding";
-import { Process } from "$ts/process/instance";
-import type { App } from "$types/app";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { RegisteredProcess } from "$ts/util/apps";
+import type { App } from "$types/apps/app";
 
 // Dummy app metadata that can be used when ArcOS encounters
 // an internal exception that can be handled by error.ts
@@ -14,7 +14,6 @@ export const ArcOSApp: App = RegisteredProcess({
     icon: ReleaseLogo,
   },
   assets: {
-    // We need something, so might as well use the init
     runtime: Process,
   },
   id: "ArcOS", // Note: might confict with older versions of NikN_ArcOS

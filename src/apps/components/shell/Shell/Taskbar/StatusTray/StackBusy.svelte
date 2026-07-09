@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BooleanStore } from "$ts/writable";
+  import type { BooleanStore } from "$types/shared/writable";
 
   const { stackBusy }: { stackBusy: BooleanStore } = $props();
 </script>

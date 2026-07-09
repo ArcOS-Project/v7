@@ -7,12 +7,14 @@
 #OpenWith > div.body {
   padding: 0;
   overflow: hidden;
-  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
 }
 
 #OpenWith > div.body > div.top {
   padding: 15px;
-  height: calc(100% - 51px);
+  height: 0;
+  flex-grow: 1;
 }
 
 #OpenWith div.body > div.top div.options {
@@ -59,18 +61,6 @@
   opacity: 0.5;
 }
 
-#OpenWith div.body > div.bottom button {
-  height: 30px;
-  min-width: unset !important;
-}
-
-#OpenWith div.body > div.bottom div.mode {
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 #OpenWith div.body > div.top div.options button:hover {
   background-color: var(--button-glass-bg);
 }
@@ -109,12 +99,6 @@
   white-space: nowrap;
 }
 
-#OpenWith div.body > div.bottom {
-  background-color: var(--button-glass-bg);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  height: 51px;
-  border-top: var(--win-border);
+#OpenWith > div.body > div.window-action-bar button.suggested {
+  min-width: unset;
 }

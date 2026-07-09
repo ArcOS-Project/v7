@@ -1,0 +1,44 @@
+<script lang="ts">
+  import { DriveIconsMulticolor } from "$apps/user/filemanager/store";
+  import type { QuotedDrive } from "$apps/user/filemanager/types";
+  import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+
+  const { drive, id, process }: { drive: QuotedDrive; id: string; process: IFileManagerRuntime } = $props();
+  const { userPreferences } = process;
+
+  let isShare = $derived(drive.data.IDENTIFIES_AS === "share");
+  let isLocked = $derived(isShare && (drive.data as ISharedDrive)?.shareInfo?.locked);
+  let usagePercentage = $derived((100 / drive.quota.max) * drive.quota.used);
+</script>
+
+{#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
+  <button
+    class="drive"
+    onclick={() => process.navigate(`${drive.data.driveLetter || drive.data.uuid}:/`)}
+    data-contextmenu={isShare ? "sidebar-shared-drive" : "sidebar-drive"}
+    use:contextProps={[drive, `${drive.data.driveLetter || drive.data.uuid}:`, () => process.unmountDrive(drive.data, id)]}
+    disabled={isLocked}
+  >
+    <Icon icon={DriveIconsMulticolor[drive.data.IDENTIFIES_AS] || "DriveIcon"} />
+    <div>
+      <h1>{drive.data.driveLetter ? `${drive.data.label} (${drive.data.driveLetter}:)` : drive.data.label}</h1>
+      <p class="fs">{drive.data.FILESYSTEM_LONG}</p>
+
+      {#if !drive.quota.unknown && drive.quota.max > 0}
+        <div class="usage">
+          <div class="bar">
+            <div class="inner" style="--w: {usagePercentage}%"></div>
+          </div>
+          <p class="percent">{usagePercentage.toFixed(0)}%</p>
+        </div>
+      {:else}
+        <div class="usage">
+          <div class="bar"></div>
+        </div>
+      {/if}
+    </div>
+  </button>
+{/if}

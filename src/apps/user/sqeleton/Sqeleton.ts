@@ -1,4 +1,4 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SqeletonRuntime } from "./runtime";
 import Sqeleton from "./Sqeleton.svelte";
 
@@ -29,6 +29,7 @@ export const SqeletonApp: App = {
     runtime: SqeletonRuntime,
     component: Sqeleton as any,
   },
+  loadCondition: (d) => !!d.preferences().globalSettings.enableSqeleton,
   id: "Sqeleton",
 };
 

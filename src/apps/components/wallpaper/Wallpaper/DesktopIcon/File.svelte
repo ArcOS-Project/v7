@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
+  import { Daemon } from "$ts/env";
   import { formatBytes, join } from "$ts/util/fs";
-  import type { FileEntry } from "$types/fs";
-  import type { ArcShortcut } from "$types/shortcut";
+  import type { FileEntry } from "$types/system/fs";
+  import type { ArcShortcut } from "$types/system/shortcut";
   import { onMount } from "svelte";
-  import type { WallpaperRuntime } from "../../runtime";
   import DesktopIcon from "../DesktopIcon.svelte";
 
-  const { process, file, i }: { process: WallpaperRuntime; file: FileEntry; i: number } = $props();
+  const { process, file, i }: { process: IWallpaperRuntime; file: FileEntry; i: number } = $props();
   const { shortcuts } = process;
 
   const path = join(process.directory, file.name);
@@ -17,11 +18,11 @@
   let shortcutIcon = $state<string>();
 
   onMount(async () => {
-    const info = process.userDaemon?.assoc?.getFileAssociation(file.name);
+    const info = Daemon?.assoc?.getFileAssociation(file.name);
     shortcut = $shortcuts[file.name];
-    if (shortcut) shortcutIcon = process.getIconCached(shortcut.icon);
-    icon = info?.icon || process.getIconCached("DefaultMimeIcon");
-    if (info?.friendlyName === "Image file") icon = (await process.userDaemon?.getThumbnailFor(path)) || icon;
+    if (shortcut) shortcutIcon = shortcut.icon;
+    icon = info?.icon || "DefaultMimeIcon";
+    if (info?.friendlyName === "Image file") icon = (await Daemon?.files?.getThumbnailFor(path)) || icon;
     render = true;
   });
 </script>
@@ -30,7 +31,7 @@
   <DesktopIcon
     {process}
     caption={shortcut?.name || file.name}
-    icon={(shortcut ? shortcutIcon : icon) || process.getIconCached("DefaultMimeIcon")}
+    icon={(shortcut ? shortcutIcon : icon) || "DefaultMimeIcon"}
     alt={shortcut
       ? `Target: ${shortcut.target}\nType: Shortcut (${shortcut.type})`
       : `Location: ${path}\nType: ${file.mimeType}\nSize: ${size}`}
@@ -39,7 +40,7 @@
     contextMenu={shortcut ? "shortcut-icon" : "file-icon"}
     props={[file, path, shortcut]}
     action={() => {
-      process.userDaemon?.openFile(path, shortcut);
+      Daemon?.files?.openFile(path, shortcut);
     }}
     {i}
   />

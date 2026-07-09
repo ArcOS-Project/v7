@@ -153,31 +153,3 @@
   align-items: center;
   gap: 10px;
 }
-#IconEditorApp > div.body div.action-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 10px;
-  height: 50px;
-  border-top: var(--win-border);
-  background-color: var(--win-bg);
-}
-
-#IconEditorApp > div.body div.action-bar p.count {
-  opacity: 0.5;
-  margin-right: auto;
-  margin-left: 10px;
-}
-
-#IconEditorApp > div.body div.action-bar button.suggested {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding-left: 10px;
-  min-width: unset;
-}
-
-#IconEditorApp > div.body div.action-bar button.suggested span.lucide {
-  font-weight: normal;
-  font-size: 16px;
-}

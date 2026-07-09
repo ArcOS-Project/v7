@@ -1,19 +1,25 @@
 <script lang="ts">
-  import type { NewFolderRuntime } from "./runtime";
+  import type { INewFolderRuntime } from "$interfaces/runtimes/INewFolderRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: NewFolderRuntime } = $props();
+  const { process }: { process: INewFolderRuntime } = $props();
   const { newFolder } = process;
 </script>
 
 <div class="top">
-  <img src={process.getIconCached("FolderIcon")} alt="" />
+  <Icon icon="FolderIcon" />
   <div class="right">
     <h1>%apps.FsNewFolder.title%</h1>
     <p>%apps.FsNewFile.subtitle%</p>
     <input type="text" bind:value={$newFolder} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>%general.cancel%</button>
-  <button class="suggested" disabled={!$newFolder} onclick={() => process.createFolder()}> %apps.FsNewFolder.create% </button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>%general.cancel%</ActionButton>
+    <ActionButton suggested disabled={!$newFolder} onclick={() => process.createFolder()}>%apps.FsNewFolder.create%</ActionButton>
+  {/snippet}
+</ActionBar>

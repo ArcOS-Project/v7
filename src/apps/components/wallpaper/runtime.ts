@@ -1,18 +1,19 @@
+import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { tryJsonParse } from "$ts/json";
-import { UserPaths } from "$ts/server/user/store";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { ConfigurationBuilder } from "$ts/config";
+import { Daemon, Fs, SysDispatch } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { DirectoryReadReturn } from "$types/fs";
-import { LogLevel } from "$types/logging";
-import type { ShortcutStore } from "$types/shortcut";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
+import type { DirectoryReadReturn } from "$types/system/fs";
+import type { ShortcutStore } from "$types/system/shortcut";
 import { WallpaperContextMenu } from "./context";
 import type { DesktopIcons } from "./types";
 
-export class WallpaperRuntime extends AppProcess {
+export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
   CONFIG_PATH = join(UserPaths.System, "DesktopIcons.json");
   contents = Store<DirectoryReadReturn | undefined>();
   selected = Store<string>();
@@ -21,7 +22,14 @@ export class WallpaperRuntime extends AppProcess {
   orphaned = Store<string[]>([]);
   loading = Store<boolean>(false);
   directory: string;
-  Configuration = Store<DesktopIcons>({});
+  Positions = Store<DesktopIcons>({});
+  Configuration = new ConfigurationBuilder<DesktopIcons>()
+    .ForProcess(this)
+    .ReadsFrom(this.Positions)
+    .WritesTo(this.CONFIG_PATH)
+    .WithDefaults({})
+    .WithCooldown(500)
+    .Build();
 
   public contextMenu: AppContextMenu = WallpaperContextMenu(this);
 
@@ -31,7 +39,7 @@ export class WallpaperRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.directory = desktopDir || UserPaths.Desktop;
-    this.systemDispatch.subscribe<string>("fs-flush-folder", async (path) => {
+    SysDispatch.subscribe<string>("fs-flush-folder", async (path) => {
       if (!path || this._disposed) return;
 
       if (path.startsWith(this.directory)) {
@@ -43,22 +51,11 @@ export class WallpaperRuntime extends AppProcess {
   }
 
   async start() {
-    const migrated = await this.migrateDesktopIcons();
-    if (!migrated) await this.loadConfiguration();
-
-    let firstSub = false;
-
-    this.Configuration.subscribe((v) => {
-      if (!firstSub) {
-        firstSub = true;
-        return;
-      }
-      this.writeConfiguration(v);
-    });
+    await this.Configuration.initialize();
   }
 
   async render() {
-    this.closeIfSecondInstance();
+    if (await this.closeIfSecondInstance()) return false;
 
     try {
       await this.updateContents();
@@ -67,7 +64,7 @@ export class WallpaperRuntime extends AppProcess {
         {
           title: "Failed to load the desktop",
           message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -85,7 +82,7 @@ export class WallpaperRuntime extends AppProcess {
     this.Log("Refreshing desktop icons!");
 
     try {
-      const contents = await this.fs.readDir(this.directory);
+      const contents = await Fs.readDir(this.directory);
       const shortcuts = contents?.shortcuts || {};
 
       this.shortcuts.set(shortcuts);
@@ -103,7 +100,7 @@ export class WallpaperRuntime extends AppProcess {
 
   findAndDeleteOrphans(contents: DirectoryReadReturn | undefined) {
     const orphaned = this.orphaned();
-    const config = this.Configuration();
+    const config = this.Positions();
     let orphanedCount = 0;
 
     for (const id of Object.keys(config)) {
@@ -121,7 +118,7 @@ export class WallpaperRuntime extends AppProcess {
       }
     }
 
-    if (orphanedCount) this.Configuration.set(config);
+    if (orphanedCount) this.Positions.set(config);
     this.orphaned.set(orphaned);
   }
 
@@ -131,7 +128,7 @@ export class WallpaperRuntime extends AppProcess {
     if (!wrapper) return { x: 0, y: 0 };
 
     return new Promise((r) => {
-      this.Configuration.update((v) => {
+      this.Positions.update((v) => {
         function resolve(x: number, y: number) {
           r({ x, y });
           v[`icon$${identifier}`] = { x, y };
@@ -187,100 +184,18 @@ export class WallpaperRuntime extends AppProcess {
   //#region FILESYSTEM
 
   async deleteItem(path: string) {
-    const filename = getItemNameFromPath(path);
+    if (this._disposed) return false;
+    this.Log(`deleteItem`);
 
-    MessageBox(
-      {
-        title: `Delete file?`,
-        message: `Are you sure you want to <b>permanently</b> delete ${filename}? This cannot be undone.`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          {
-            caption: "Delete",
-            action: () => {
-              try {
-                this.fs.deleteItem(path, true);
-              } catch {}
-            },
-            suggested: true,
-          },
-        ],
-        image: "WarningIcon",
-        sound: "arcos.dialog.warning",
-      },
-      +this.env.get("shell_pid"),
-      true
-    );
+    await Daemon.files!.moveToTrashOrDeleteItemAck(UserPaths.Desktop, [path]);
+    return true;
   }
 
   async uploadItems() {
     if (this._disposed) return;
+    this.Log(`uploadItems`);
 
-    const prog = await this.userDaemon!.FileProgress(
-      {
-        type: "size",
-        icon: "UploadIcon",
-        caption: "Uploading your files...",
-        subtitle: `To ${getItemNameFromPath(this.directory)}`,
-      },
-      +this.env.get("shell_pid")
-    );
-
-    try {
-      await this.fs.uploadFiles(this.directory, "*/*", true, async (progress) => {
-        prog.show();
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        if (progress.what) prog.updSub(progress.what);
-      });
-    } catch {
-      prog.mutErr(`Failed to upload files! One of the files you tried to upload might be too big.`);
-    }
-
-    prog.mutDone(+1);
-  }
-
-  //#endregion
-  //#region CONFIGURATION
-
-  async loadConfiguration() {
-    const contents = await this.fs.readFile(this.CONFIG_PATH);
-    if (!contents) return await this.writeConfiguration({});
-
-    const json = tryJsonParse<DesktopIcons>(arrayToText(contents));
-    if (!json || typeof json === "string") return await this.writeConfiguration({});
-
-    this.Configuration.set(json);
-  }
-
-  async writeConfiguration(data: DesktopIcons) {
-    await this.fs.writeFile(this.CONFIG_PATH, textToBlob(JSON.stringify(data, null, 2)));
-
-    return data;
-  }
-
-  // 7.0.5 -> 7.0.6+
-  // Migration of desktop icons from the preferences to a dedicated file in U:/System
-  async migrateDesktopIcons() {
-    const migrationPath = join(UserPaths.Migrations, "DeskIconMig-706.lock");
-    const pref = this.userPreferences().appPreferences.desktopIcons;
-    const migration = await this.fs.stat(migrationPath);
-
-    if (pref && !migration) {
-      await this.writeConfiguration(pref);
-      this.Configuration.set(pref);
-
-      this.userPreferences.update((v) => {
-        delete v.appPreferences.desktopIcons;
-        return v;
-      });
-
-      await this.fs.writeFile(migrationPath, textToBlob(`${Date.now()}`));
-      return true;
-    }
-
-    return false;
+    await Daemon.files?.uploadItems(UserPaths.Desktop);
   }
 
   //#endregion

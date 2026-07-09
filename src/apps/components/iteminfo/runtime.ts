@@ -1,14 +1,16 @@
+import type { IItemInfoRuntime } from "$interfaces/runtimes/IItemInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { arrayToText } from "$ts/util/convert";
+import { Daemon, Env, Fs } from "$ts/env";
+import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { FileEntry, FolderEntry } from "$types/fs";
-import type { RenderArgs } from "$types/process";
-import type { ArcShortcut } from "$types/shortcut";
+import type { AppProcessData } from "$types/apps/app";
+import type { FileEntry, FolderEntry } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
+import type { ArcShortcut } from "$types/system/shortcut";
 import type { ItemInfo } from "./types";
 
-export class ItemInfoRuntime extends AppProcess {
+export class ItemInfoRuntime extends AppProcess implements IItemInfoRuntime {
   info = Store<ItemInfo>();
   shortcut = Store<ArcShortcut>();
 
@@ -32,13 +34,13 @@ export class ItemInfoRuntime extends AppProcess {
     file = file as FileEntry | FolderEntry;
 
     try {
-      const drive = this.fs.getDriveByPath(path);
+      const drive = Fs.getDriveByPath(path);
       const name = getItemNameFromPath(path);
       const parent = getItemNameFromPath(getParentDirectory(path));
       const split = path.split(".");
       const extension = file.mimeType ? split[split.length - 1] : undefined;
       const isShortcut = file?.name?.endsWith(".arclnk");
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      const info = Daemon?.assoc?.getFileAssociation(path);
 
       this.info.set({
         meta: {
@@ -62,7 +64,7 @@ export class ItemInfoRuntime extends AppProcess {
 
       if (isShortcut) {
         // Longwinded and godawful way to get the shortcut metadata in this file
-        this.shortcut.set(JSON.parse(arrayToText((await this.fs.readFile(this.info().location.fullPath))!)));
+        this.shortcut.set(JSON.parse(arrayBufferToText((await Fs.readFile(this.info().location.fullPath))!)!)); // hoooo this is awful ;-;
       }
     } catch {
       this.closeWindow();
@@ -73,23 +75,29 @@ export class ItemInfoRuntime extends AppProcess {
   //#region ACTIONS
 
   async open() {
+    this.Log(`Opening item`);
+
     const info = this.info();
     await this.closeWindow(); // First get the process out of here
 
     if (info.isFolder) {
-      await this.spawnApp("fileManager", +this.env.get("shell_pid"), info.location.fullPath);
+      await this.spawnApp("fileManager", +Env.get("shell_pid"), info.location.fullPath);
     } else {
       const path = info.location.fullPath;
 
-      this.userDaemon?.openFile(path, this.shortcut());
+      Daemon?.files?.openFile(path, this.shortcut());
     }
   }
 
   async openWith(path: string) {
+    this.Log(`openWith: ${path}`);
+
     await this.spawnOverlayApp("OpenWith", this.parentPid, path);
   }
 
   async renameItem() {
+    this.Log(`renameItem`);
+
     this.spawnOverlayApp("FsRenameItem", this.pid, this.info().location.fullPath);
   }
 

@@ -1,5 +1,6 @@
+import { Daemon } from "$ts/env";
 import { groupByTimeFrame, sortByKey } from "$ts/util";
-import type { PartialStoreItem, StoreItem } from "$types/package";
+import type { StoreItem } from "$types/tpa/package";
 import Everything from "./Pages/Everything.svelte";
 import Home from "./Pages/Home.svelte";
 import Installed from "./Pages/Installed.svelte";
@@ -25,7 +26,7 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
         let recentlyAdded = [...all.reverse()];
         let popular: StoreItem[] = [...sortByKey(all, "installCount")]
           .reverse()
-          .filter((p) => !p.pkg.type || p.pkg.type === "app");
+          .filter((p) => !p.blocked && !p.deprecated && (!p.pkg.type || p.pkg.type === "app"));
         let mostPopular = popular[0];
 
         recentlyAdded.length = 6;
@@ -155,9 +156,9 @@ export const appStorePages: StorePages = new Map<string, StorePage>([
       content: UserPage as any,
       async props(process, { userId }) {
         const results = await process.distrib.getStoreItemsByAuthor(userId);
-        const user = await process.userDaemon?.getPublicUserInfoOf(userId);
+        const user = await Daemon?.account?.getPublicUserInfoOf(userId);
 
-        return { results, user };
+        return { results, user, userId };
       },
     },
   ],

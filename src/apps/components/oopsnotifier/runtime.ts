@@ -1,18 +1,19 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IOopsNotifierRuntime } from "$interfaces/runtimes/IOopsNotifierRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { AppProcess } from "$ts/apps/process";
-import { ApplicationStorage } from "$ts/apps/storage";
-import type { App, AppProcessData } from "$types/app";
-import { parse } from "stacktrace-parser";
-import type { ParsedStackFrame, ParsedStackUrl } from "./types";
+import { Daemon, Env, SoundBus } from "$ts/env";
+import { ErrorUtils } from "$ts/util/error";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { ParsedStackFrame } from "$types/libraries/error";
 
-export class OopsNotifierRuntime extends AppProcess {
+export class OopsNotifierRuntime extends AppProcess implements IOopsNotifierRuntime {
   data: App;
   exception: Error | PromiseRejectionEvent;
-  process?: AppProcess;
+  process?: IAppProcess;
   installed = false;
   parseFailed = false;
   stackFrames: ParsedStackFrame[] = [];
-  URL_REGEX =
-    /http(s|)\:\/\/[a-zA-Z.\:0-9]+(\/tpa\/v3\/)(?<userId>[a-zA-Z0-9]+)\/(?<timestamp>[0-9]+)\/(?<appId>[A-Za-z0-9_-]+(_|)[A-Za-z0-9_-]+)@(?<filename>[a-zA-Z0-9_-]+\.js)/gm;
 
   //#region LIFECYCLE
 
@@ -22,7 +23,7 @@ export class OopsNotifierRuntime extends AppProcess {
     app: AppProcessData,
     data: App,
     exception: Error | PromiseRejectionEvent,
-    process?: AppProcess
+    process?: IAppProcess
   ) {
     super(pid, parentPid, app);
 
@@ -34,37 +35,22 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    this.soundBus.playSound("arcos.dialog.error");
+    SoundBus.playSound("arcos.dialog.error");
 
     try {
-      this.parseStack();
+      this.stackFrames = ErrorUtils.parseStack(this.exception);
 
-      const storage = this.userDaemon?.serviceHost?.getService<ApplicationStorage>("AppStorage");
+      const storage = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
 
       if (storage && this.stackFrames[0].parsed?.appId) {
         const app = storage.getAppSynchronous(this.stackFrames[0].parsed.appId);
         if (app) this.data ||= app;
       }
 
-      this.installed = !!(await storage?.getAppSynchronous(this.data.id));
+      this.installed = !!storage?.getAppSynchronous(this.data.id);
     } catch {
       this.stackFrames = [];
       this.parseFailed = true;
-    }
-  }
-
-  parseStack() {
-    const stack = this.exception instanceof PromiseRejectionEvent ? this.exception.reason : this.exception.stack;
-    if (!stack) return;
-
-    const parsed = parse(stack);
-    const regex = new RegExp(this.URL_REGEX);
-
-    for (const frame of parsed) {
-      this.stackFrames.push({
-        ...frame,
-        parsed: regex.exec(frame?.file || "")?.groups as ParsedStackUrl,
-      });
     }
   }
 
@@ -72,9 +58,12 @@ export class OopsNotifierRuntime extends AppProcess {
   //#region ACTIONS
 
   async details() {
-    const proc = await this.userDaemon?.spawnOverlay(
+    this.Log(`Invoking the power of OopsStackTracer to bestow upon the user the details of the error that lies within`);
+
+    const proc = await Daemon?.spawn?.spawnApp(
       "OopsStackTracer",
-      +this.env.get("shell_pid"),
+      +Env.get("shell_pid"),
+      { asOverlay: true },
       this.data,
       this.exception,
       this.process,
@@ -85,9 +74,11 @@ export class OopsNotifierRuntime extends AppProcess {
   }
 
   async reopen() {
+    this.Log(`Reopening crashed application!`);
+
     if (!this.installed) return;
 
-    await this.spawnApp(this.data.id, this.process?.parentPid || +this.env.get("shell_pid"));
+    await this.spawnApp(this.data.id, this.process?.parentPid || +Env.get("shell_pid"));
     this.closeWindow();
   }
 

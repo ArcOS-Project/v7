@@ -1,6 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { ReadableStore } from "$ts/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { ExpandedUserInfo } from "$types/user";
 
   const { user, redacted }: { user: ExpandedUserInfo; redacted: ReadableStore<boolean> } = $props();
@@ -17,6 +17,9 @@
       {/if}
       {#if user.approved}
         <div class="badge approved">Approved</div>
+      {/if}
+      {#if user.isSystem}
+        <div class="badge system">System</div>
       {/if}
     </div>
   </div>

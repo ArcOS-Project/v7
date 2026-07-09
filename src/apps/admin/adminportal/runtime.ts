@@ -1,27 +1,29 @@
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { AdminBootstrapper } from "$ts/server/admin";
-import { ShareManager } from "$ts/shares";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { BugReport } from "$types/bughunt";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { BugReport } from "$types/server/bughunt";
 import axios from "axios";
 import { AdminPortalAltMenu } from "./altmenu";
 import { AdminPortalPageStore } from "./store";
 import type { BugReportFileUrlParseResult, BugReportTpaFile } from "./types";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class AdminPortalRuntime extends AppProcess {
+export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntime {
   ready = Store<boolean>(false);
   currentPage = Store<string>("");
   switchPageProps = Store<Record<string, any>>({});
   redacted = Store<boolean>(true);
   propSize = Store<number>(0);
-  shares: ShareManager;
-  admin: AdminBootstrapper;
+  shares: IShareManager;
+  admin: IAdminBootstrapper;
 
   protected overlayStore: Record<string, App> = {
     userdata: BugHuntUserDataApp,
@@ -32,8 +34,8 @@ export class AdminPortalRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: string, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.admin = this.userDaemon!.serviceHost!.getService<AdminBootstrapper>("AdminBootstrapper")!;
-    this.shares = this.userDaemon!.serviceHost!.getService<ShareManager>("ShareMgmt")!;
+    this.admin = Daemon!.serviceHost!.getService<IAdminBootstrapper>("AdminBootstrapper")!;
+    this.shares = Daemon!.serviceHost!.getService<IShareManager>("ShareMgmt")!;
     this.switchPage(page || "dashboard", props || {});
     this.altMenu.set(AdminPortalAltMenu(this));
 
@@ -41,7 +43,7 @@ export class AdminPortalRuntime extends AppProcess {
   }
 
   async start() {
-    await this.fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
+    await Fs.createDirectory("T:/Apps/AdminPortal"); // temp folder for saveTpaFilesOfBugReport
 
     if (!this.admin) {
       this.switchPage("noAdminBootstrapper", {}, true);
@@ -61,7 +63,7 @@ export class AdminPortalRuntime extends AppProcess {
           title: "Broken link",
           message:
             "The page you tried to navigate to isn't registered in the Admin Portal's page store. If you didn't do this yourself, please check in with Izaak.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ElevationIcon",
           sound: "arcos.dialog.warning",
         },
@@ -89,6 +91,8 @@ export class AdminPortalRuntime extends AppProcess {
   //#region TPA
 
   async saveTpaFilesOfBugReport(report: BugReport) {
+    this.Log(`saveTpaFilesOfBugReport: ${report._id ?? "<unknown report>"}`);
+
     // Regular expression assumes URL format:
     // https://domain.tld/tpa/v3/userId/timestamp/appId@filename.js
     const regex =
@@ -107,7 +111,7 @@ export class AdminPortalRuntime extends AppProcess {
       try {
         const content = await axios.get(file.url, { responseType: "text" }); // responseType ensures we get a string back
         const source = content.data as string;
-        await this.fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
+        await Fs.writeFile(filePath, textToBlob(source, "text/javascript")); // Now we write the code to temp
 
         // Finally save it
         result.push({
@@ -125,6 +129,26 @@ export class AdminPortalRuntime extends AppProcess {
         });
       }
     }
+
+    return result;
+  }
+
+  //#endregion
+  //#region UTILS
+
+  async viewUserById(userId: string) {
+    this.Log(`viewUserById: ${userId}`);
+    const user = (await this.admin.getAllUsers()).find((u) => u._id === userId);
+
+    this.switchPage("viewUser", { user });
+  }
+
+  compileCrumbs(parent: string): string[] {
+    const result: string[] = [];
+    const parentData = AdminPortalPageStore.get(parent);
+
+    if (parentData?.parent) result.push(...this.compileCrumbs(parentData?.parent));
+    result.push(parentData?.name!);
 
     return result;
   }

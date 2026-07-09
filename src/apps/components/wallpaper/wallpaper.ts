@@ -1,5 +1,5 @@
 import "$css/apps/components/wallpaper.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { WallpaperRuntime } from "./runtime";
 import Wallpaper from "./Wallpaper.svelte";
 

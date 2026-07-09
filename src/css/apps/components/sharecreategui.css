@@ -48,18 +48,3 @@
   background-color: var(--button-bg);
   width: 100%;
 }
-
-#ShareCreateGui > div.body div.actions {
-  margin-top: auto;
-  padding: 10px;
-  background-color: var(--button-bg);
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: var(--secondary-box-shadow);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-#ShareCreateGui > div.body div.actions button.joined {
-  margin-right: auto;
-}

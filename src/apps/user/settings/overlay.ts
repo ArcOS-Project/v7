@@ -1,17 +1,18 @@
+import type { ISettingsOverlayRuntime } from "$interfaces/runtimes/ISettingsOverlayRuntime";
+import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
-import type { AppProcessData } from "$types/app";
-import type { SettingsRuntime } from "./runtime";
+import { Stack } from "$ts/env";
+import type { AppProcessData } from "$types/apps/app";
 
-export class OverlayRuntime extends AppProcess {
-  parentProcess: SettingsRuntime;
+export class SettingsOverlayRuntime extends AppProcess implements ISettingsOverlayRuntime {
+  parentProcess: ISettingsRuntime;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.parentProcess = KernelStack().getProcess(this.parentPid)!;
+    this.parentProcess = Stack.getProcess(this.parentPid)!;
 
     this.setSource(__SOURCE__);
   }

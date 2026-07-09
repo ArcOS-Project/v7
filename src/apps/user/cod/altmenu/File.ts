@@ -1,8 +1,9 @@
+import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
+import { Env } from "$ts/env";
 import { getParentDirectory } from "$ts/util/fs";
-import type { ContextMenuItem } from "$types/app";
-import type { CodRuntime } from "../runtime";
+import type { ContextMenuItem } from "$types/apps/app";
 
-export function FileMenu(runtime: CodRuntime): ContextMenuItem {
+export function FileMenu(runtime: ICodRuntime): ContextMenuItem {
   return {
     caption: "File",
     subItems: [
@@ -37,7 +38,7 @@ export function FileMenu(runtime: CodRuntime): ContextMenuItem {
         caption: "Open file location",
         action: () => {
           const parent = getParentDirectory(runtime.openedFile());
-          runtime.spawnApp("fileManager", +runtime.env.get("shell_pid"), parent);
+          runtime.spawnApp("fileManager", +Env.get("shell_pid"), parent);
         },
         disabled: () => !runtime.openedFile(),
         icon: "folder-up",

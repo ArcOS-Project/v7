@@ -1,7 +1,7 @@
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { FileManagerRuntime } from "./runtime";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
-export function FileManagerAccelerators(runtime: FileManagerRuntime): AppKeyCombinations {
+export function FileManagerAccelerators(runtime: IFileManagerRuntime): AppKeyCombinations {
   return [
     {
       key: "Delete",
@@ -79,6 +79,13 @@ export function FileManagerAccelerators(runtime: FileManagerRuntime): AppKeyComb
       key: "Enter",
       action: () => {
         runtime.EnterKey(false);
+      },
+    },
+    {
+      alt: true,
+      key: "N",
+      action: () => {
+        runtime.spawnApp(runtime.app.data.id, runtime.parentPid);
       },
     },
   ];

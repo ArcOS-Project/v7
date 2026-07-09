@@ -41,8 +41,9 @@
 #logging div.options div.current-source {
   flex-grow: 1;
   max-width: calc(100% - 51px);
-  background-color: var(--button-bg);
+  background-color: var(--win-bg);
   border-radius: var(--button-border-rad);
+  border: var(--button-glass-bg) 1px solid;
   /* line-height: 30px; */
   padding: 3px;
   overflow: hidden;
@@ -71,7 +72,7 @@
   gap: 5px;
   background-color: var(--button-glass-bg);
   height: 24px;
-  border-radius: 5px;
+  border-radius: 7px;
 }
 
 #logging div.options div.current-source div.pill span.lucide {

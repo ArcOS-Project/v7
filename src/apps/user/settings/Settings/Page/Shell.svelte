@@ -1,23 +1,25 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
   import Section from "../Section.svelte";
   import Option from "../Section/Option.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
-  const { battery } = process.userDaemon || {}!;
+  const { battery } = Daemon?.power! || {}!;
 </script>
 
 <div class="centered-layout">
   <div class="header">
-    <img src={process.getIconCached("TaskbarIcon")} alt="" />
+    <Icon icon="TaskbarIcon" />
     <h1>The ArcOS Shell</h1>
     <p>The taskbar, start menu and action center</p>
   </div>
 
   {#if process.safeMode}
     <Section>
-      <Option caption="Safe Mode - some options are disabled" image={process.getIconCached("WarningIcon")}></Option>
+      <Option caption="Safe Mode - some options are disabled" image="WarningIcon"></Option>
     </Section>
   {/if}
 
@@ -50,6 +52,12 @@
         onclick={() => ($userPreferences.shell.taskbar.clockDate = !$userPreferences.shell.taskbar.clockDate)}>Date</button
       >
     </Option>
+    <Option caption="Only show apps from the current workspace">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.openedAppsPerWorkspace} />
+    </Option>
+    <Option caption="Start button logo matches accent color">
+      <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.accentedStartButton} />
+    </Option>
   </Section>
   <Section caption="Action Center">
     <Option caption="Weather location">
@@ -67,6 +75,9 @@
   <Section caption="Start Menu">
     <Option caption="Disable app groups">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.start.noGroups} />
+    </Option>
+    <Option caption="Actions">
+      <button onclick={() => process.showSlide("shell_startMenuActions")}>Customize...</button>
     </Option>
   </Section>
 </div>

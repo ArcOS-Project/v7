@@ -1,13 +1,16 @@
+import type { IIconEditorRuntime } from "$interfaces/runtimes/IIconEditorRuntime";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
-import { IconService } from "$ts/icon";
+import { Daemon, Env } from "$ts/env";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class IconEditorRuntime extends AppProcess {
+export class IconEditorRuntime extends AppProcess implements IIconEditorRuntime {
   iconGroups = Store<Record<string, string[]>>({});
   icons = Store<Record<string, string>>({});
   filtered = Store<Record<string, string>>({});
-  iconService?: IconService;
+  iconService?: IIconService;
   selectedIcon = Store<string>("");
   selectedGroup = Store<string>("");
   hasChanges = Store<boolean>(false);
@@ -19,9 +22,9 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   async start() {
-    this.iconService = this.userDaemon?.serviceHost?.getService<IconService>("IconService");
+    this.iconService = Daemon?.serviceHost?.getService<IIconService>("IconService");
     this.setGroups();
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.icons.subscribe(() => {
       this.hasChanges.set(true);
       this.updateFiltered();
@@ -36,7 +39,7 @@ export class IconEditorRuntime extends AppProcess {
   async onClose(): Promise<boolean> {
     if (!this.hasChanges()) return true;
 
-    const saveChanges = await this.userDaemon?.Confirm(
+    const saveChanges = await Daemon?.helpers?.Confirm(
       "Save changes?",
       "Do you want to save the changes you made to your icon set?",
       "Discard",
@@ -46,7 +49,7 @@ export class IconEditorRuntime extends AppProcess {
     );
 
     if (saveChanges) {
-      this.iconService?.Configuration.set({ ...this.icons() });
+      this.iconService?.Icons.set({ ...this.icons() });
       this.hasChanges.set(false);
     }
 
@@ -56,7 +59,8 @@ export class IconEditorRuntime extends AppProcess {
   //#endregion
 
   revert() {
-    this.icons.set({ ...(this.iconService?.Configuration() || {}) });
+    this.Log(`Reverting changes`);
+    this.icons.set({ ...(this.iconService?.Icons() || {}) });
     this.setGroups();
     this.selectedIcon.set("");
     this.selectedGroup.set("");
@@ -64,8 +68,9 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   setGroups() {
-    const groups = this.iconService?.getGroupedIcons();
+    this.Log(`setGroups`);
 
+    const groups = this.iconService?.getGroupedIcons();
     if (!groups) return;
 
     const result: Record<string, string[]> = Object.fromEntries(Object.entries(groups).map(([k, v]) => [k, Object.keys(v)]));
@@ -74,18 +79,46 @@ export class IconEditorRuntime extends AppProcess {
   }
 
   updateFiltered(v = this.selectedGroup()) {
+    this.Log(`updateFiltered`);
+
     const icons = this.icons();
     this.filtered.set(!v ? icons : Object.fromEntries(Object.entries(icons).filter(([k]) => this.iconGroups()[v]?.includes(k))));
   }
 
   async save() {
-    this.iconService?.Configuration.set({ ...this.icons() });
+    this.Log(`Saving changes`);
+
+    this.iconService?.Icons.set({ ...this.icons() });
     this.hasChanges.set(false);
-    this.closeWindow();
-    this.userDaemon?.restart();
+    await this.closeWindow();
+
+    MessageBox(
+      {
+        title: this.app.data.metadata.name,
+        message: "You have to restart ArcOS for the changes to the icons to take effect.",
+        buttons: [
+          { caption: "Restart later", action: () => {} },
+          { caption: "Restart now", action: () => Daemon?.power?.restart(), suggested: true },
+        ],
+        image: this.app.data.metadata.icon,
+        sound: "arcos.dialog.info",
+      },
+      +Env.get("shell_pid"),
+      true
+    );
   }
 
   async editIcon() {
-    this.spawnOverlayApp("IconEditDialog", this.pid, this.icons, this.selectedIcon());
+    this.Log(`editIcon: ${this.selectedIcon()}`);
+    const icon = await Daemon.helpers!.IconEditor(
+      this.icons()[this.selectedIcon()],
+      `@builtin::${this.selectedIcon()}`,
+      this.selectedIcon()
+    );
+
+    this.icons.update((v) => {
+      v[this.selectedIcon()] = icon;
+      return v;
+    });
   }
 }

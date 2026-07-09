@@ -1,49 +1,42 @@
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { DistributionServiceProcess } from "$ts/distrib";
-import { StoreItemIcon } from "$ts/distrib/util";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
+import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
-import { arrayToBlob } from "$ts/util/convert";
-import { UUID } from "$ts/uuid";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import { StoreItemIcon } from "$ts/util/distrib";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { FilesystemProgressCallback } from "$types/fs";
-import type { StoreItem } from "$types/package";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 import axios from "axios";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import TakenDown from "./AppStore/TakenDown.svelte";
 import { appStorePages } from "./store";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { Sleep } from "$ts/sleep";
 
-export class AppStoreRuntime extends AppProcess {
+export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
   searchQuery = Store<string>("");
   loadingPage = Store<boolean>(false);
   pageProps = Store<Record<string, any>>({});
   searching = Store<boolean>(false);
   currentPage = Store<string>("");
-  operations: Record<string, InstallerProcessBase> = {};
-  distrib: DistributionServiceProcess;
+  operations: Record<string, IInstallerProcessBase> = {};
+  distrib: IDistributionServiceProcess;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, page?: number, props?: Record<string, any>) {
     super(pid, parentPid, app);
 
-    this.distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
-
-    this.searchQuery.subscribe((v) => {
-      if (!v) {
-        this.searching.set(false);
-        if (this.currentPage() === "search") this.switchPage("home");
-      }
-    });
-
+    this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
     this.renderArgs = { page, props };
-
     this.setSource(__SOURCE__);
   }
 
@@ -54,18 +47,25 @@ export class AppStoreRuntime extends AppProcess {
           title: "App store unavailable",
           message:
             "The Distribution Service isn't running anymore. Please restart ArcOS, and then try again. If this keeps happening, contact an ArcOS Administrator.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
       return false;
     }
 
-    this.systemDispatch.subscribe("mugui-done", () => {
+    this.searchQuery.subscribe((v) => {
+      if (!v) {
+        this.searching.set(false);
+        if (this.currentPage() === "search") this.switchPage("home");
+      }
+    });
+
+    SysDispatch.subscribe("mugui-done", () => {
       this.switchPage(this.currentPage(), this.pageProps(), true);
     });
   }
@@ -102,14 +102,18 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async Search() {
+    this.Log(`Searching`);
+
     this.searching.set(true);
     this.switchPage("search", { query: this.searchQuery() });
   }
 
   async installPackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`installPackage: ${pkg?._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.Confirm(
+      const go = await Daemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Are you sure you want to continue installing it?",
         "Cancel",
@@ -119,12 +123,12 @@ export class AppStoreRuntime extends AppProcess {
       if (!go) return 0;
     }
 
-    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !Daemon?.userInfo?.admin) {
       MessageBox(
         {
           title: "Can't install package",
           message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
         },
@@ -135,7 +139,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -160,9 +164,11 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updatePackage(pkg: StoreItem, onDownloadProgress?: FilesystemProgressCallback) {
+    this.Log(`updatePackage: ${pkg._id}`);
+
     const freshPkg = (await this.distrib.getStoreItem(pkg._id))!;
     if (freshPkg.deprecated) {
-      const go = await this.userDaemon!.Confirm(
+      const go = await Daemon!.helpers?.Confirm(
         "Are you sure?",
         "The author of this package marked it as <b>deprecated</b>. This means that the package is unmaintained and outdated. Do you want to uninstall it instead of updating?",
         "Uninstall",
@@ -170,17 +176,17 @@ export class AppStoreRuntime extends AppProcess {
       );
 
       if (!go) {
-        await this.userDaemon?.uninstallPackageWithStatus(pkg.pkg.appId, true);
+        await Daemon?.appreg?.uninstallPackageWithStatus(pkg.pkg.appId, true);
         return 0;
       }
     }
 
-    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !this.userDaemon?.userInfo?.admin) {
+    if (freshPkg.verifiedVer !== freshPkg.pkg.version && !Daemon?.userInfo?.admin) {
       MessageBox(
         {
           title: "Can't update package",
           message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
         },
@@ -191,7 +197,7 @@ export class AppStoreRuntime extends AppProcess {
       return 0;
     }
 
-    const elevated = await this.userDaemon!.manuallyElevate({
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -215,7 +221,9 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async deprecatePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    this.Log(`deprecatePackage: ${pkg._id}`);
+
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -228,10 +236,14 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deprecateStoreItem(pkg._id);
 
     this.switchPage("manageStoreItem", { id: pkg._id }, true);
+
+    return true;
   }
 
   async deletePackage(pkg: StoreItem) {
-    const elevated = await this.userDaemon!.manuallyElevate({
+    this.Log(`deletePackage: ${pkg._id}`);
+
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -244,19 +256,23 @@ export class AppStoreRuntime extends AppProcess {
     await this.distrib!.publishing_deleteStoreItem(pkg._id);
 
     this.switchPage("madeByYou");
+
+    return true;
   }
 
   async publishPackage() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    this.Log(`publishPackage`);
+
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select package to publish",
       icon: "AppStoreIcon",
       extensions: [".arc"],
       startDir: UserPaths.Documents,
     });
 
-    if (!path) return;
+    if (!path) return false;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         caption: "Publishing your package",
         subtitle: path,
@@ -280,7 +296,7 @@ export class AppStoreRuntime extends AppProcess {
           title: "Failed to publish package",
           message:
             "The server didn't accept your package. Maybe its format is incorrect or another package with the same name already exists.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -297,7 +313,9 @@ export class AppStoreRuntime extends AppProcess {
   }
 
   async updateStoreItem(pkg: StoreItem) {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    this.Log(`updateStoreItem: ${pkg._id}`);
+
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: `Select update for '${pkg.pkg.name}'`,
       icon: StoreItemIcon(pkg),
       extensions: [".arc"],
@@ -306,7 +324,7 @@ export class AppStoreRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         caption: "Updating your store item",
         subtitle: path,
@@ -315,20 +333,21 @@ export class AppStoreRuntime extends AppProcess {
       this.pid
     );
 
-    const result = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
+    const updateResult = await this.distrib.publishing_updateStoreItemFromPath(pkg._id, path, (progress) => {
       prog.show();
       prog.setMax(progress.max + 1);
       prog.setDone(progress.value);
       if (progress.what) prog.updSub(progress.what);
     });
 
-    if (!result) {
+    prog.stop();
+
+    if (!updateResult.success) {
       MessageBox(
         {
           title: "Failed to update store item",
-          message:
-            "The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          message: `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: ${updateResult.errorMessage ?? "Unknown error"}`,
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -340,11 +359,11 @@ export class AppStoreRuntime extends AppProcess {
     }
 
     await this.switchPage("manageStoreItem", { id: pkg._id }, true);
-
-    prog.stop();
   }
 
   readmeFallback(pkg: StoreItem): string {
+    this.Log(`readmeFallback: ${pkg._id}`);
+
     const times = Plural("time", pkg.installCount);
     dayjs.extend(advancedFormat);
 
@@ -367,28 +386,33 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   learnMoreBlocking() {
+    this.Log(`learnMoreBlocking`);
+
     MessageBox(
       {
         title: "What is a blocked package?",
         content: TakenDown as any,
         image: "InfoIcon",
         sound: "arcos.dialog.info",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.pid,
       true
     );
   }
 
-  registerOperation(id: string, proc: InstallerProcessBase) {
-    if (this.operations[id]) return false;
+  registerOperation(id: string, proc: IInstallerProcessBase) {
+    this.Log(`registerOperation: ${id} for ${proc.pid}`);
 
+    if (this.operations[id]) return false;
     this.operations[id] = proc;
 
     return true;
   }
 
   discardOperation(id: string) {
+    this.Log(`discardOperation: ${id}`);
+
     if (!this.operations[id]) return false;
 
     delete this.operations[id];
@@ -401,14 +425,16 @@ The author hasn't provided a readme file themselves, so this one has been automa
   }
 
   async viewImage(url: string, name?: string) {
+    this.Log(`viewImage: ${url} name=${name}`);
+
     const uuid = name || UUID();
     const path = `T:/Apps/${this.app.id}/${uuid}`;
     const array = await axios.get(url, { responseType: "arraybuffer" });
 
     try {
-      await this.fs.writeFile(path, arrayToBlob(array.data));
+      await Fs.writeFile(path, arrayBufferToBlob(array.data));
     } catch {}
 
-    this.spawnApp("ImageViewer", +this.env.get("shell_pid"), path);
+    this.spawnApp("ImageViewer", +Env.get("shell_pid"), path);
   }
 }

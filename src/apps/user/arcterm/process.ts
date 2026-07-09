@@ -1,12 +1,21 @@
-import { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import { KernelStack } from "$ts/env";
-import { Process } from "$ts/process/instance";
-import { UserDaemon } from "$ts/server/user/daemon";
+import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { Env, Fs, Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcTerminal } from "$ts/terminal";
-import type { AppProcessData } from "$types/app";
+import { DefaultColors } from "$ts/terminal/colors";
+import { UserPaths } from "$ts/user/store";
+import { hexToRgb } from "$ts/util/color";
+import { arrayBufferToText } from "$ts/util/convert";
+import { join } from "$ts/util/fs";
+import type { AppProcessData } from "$types/apps/app";
+import type { ArcTermConfiguration } from "$types/terminal";
 
 export class ArcTermRuntime extends Process {
-  term: ArcTerminal | undefined;
+  readonly CONFIG_PATH = join(UserPaths.Configuration, "ArcTerm/arcterm.conf");
+
+  config?: ArcTermConfiguration;
+  term: IArcTerminal | undefined;
   path: string | undefined;
   app: AppProcessData;
 
@@ -24,12 +33,14 @@ export class ArcTermRuntime extends Process {
   }
 
   protected async start(): Promise<any> {
-    const daemonPid = +this.env.get("userdaemon_pid");
-    const daemon = KernelStack().getProcess<UserDaemon>(daemonPid);
+    const daemonPid = +Env.get("userdaemon_pid");
+    const daemon = Stack.getProcess<IUserDaemon>(daemonPid);
+
+    await this.readConfig();
 
     if (!daemon) return false;
 
-    const proc = await daemon.spawnApp<TerminalWindowRuntime>("TerminalWindow", this.pid);
+    const proc = await daemon.spawn?.spawnApp<ITerminalWindowRuntime>("TerminalWindow", this.pid);
 
     if (!proc) return false;
 
@@ -37,14 +48,59 @@ export class ArcTermRuntime extends Process {
     proc.windowTitle.set("ArcTerm");
     proc.windowIcon.set(this.app.data.metadata.icon);
 
-    this.term = await KernelStack().spawn<ArcTerminal>(
+    proc.term!.options.theme = {
+      // RED
+      brightRed: this.config?.red || DefaultColors.red,
+      red: this.config?.red || DefaultColors.red,
+      // GREEN
+      brightGreen: this.config?.green || DefaultColors.green,
+      green: this.config?.green || DefaultColors.green,
+      // YELLOW
+      brightYellow: this.config?.yellow || DefaultColors.yellow,
+      yellow: this.config?.yellow || DefaultColors.yellow,
+      // BLUE
+      brightBlue: this.config?.blue || DefaultColors.blue,
+      blue: this.config?.blue || DefaultColors.blue,
+      // CYAN
+      brightCyan: this.config?.cyan || DefaultColors.cyan,
+      cyan: this.config?.cyan || DefaultColors.cyan,
+      // MAGENTA
+      brightMagenta: this.config?.magenta || DefaultColors.magenta,
+      magenta: this.config?.magenta || DefaultColors.magenta,
+      // FORE/BACK GROUND
+      background: this.config?.background || DefaultColors.background,
+      foreground: this.config?.foreground || DefaultColors.foreground,
+      brightBlack: this.config?.brightBlack || DefaultColors.brightBlack,
+    };
+
+    const window = proc.getWindow();
+
+    window?.style.setProperty(
+      "--terminal-background",
+      `rgba(${hexToRgb(this.config?.background || DefaultColors.background).join(", ")}, ${this.config?.backdropOpacity ?? DefaultColors.backdropOpacity})`
+    );
+    window?.style.setProperty("--terminal-background-inactive", this.config?.background || DefaultColors.background);
+    window?.style.setProperty("--fg", this.config?.foreground || DefaultColors.foreground);
+
+    this.term = await Stack.spawn<IArcTerminal>(
       ArcTerminal,
-      daemon.getCurrentDesktop(),
+      daemon.workspaces?.getCurrentDesktop(),
       daemon.userInfo?._id,
       proc.pid,
       proc.term,
-      this.path
+      this.path,
+      this.config
     );
+  }
+
+  async readConfig() {
+    const contents = await Fs.readFile(this.CONFIG_PATH);
+
+    if (!contents) return;
+
+    const json = JSON.parse(arrayBufferToText(contents)!);
+
+    this.config = json as ArcTermConfiguration;
   }
 
   //#endregion

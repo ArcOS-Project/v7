@@ -1,27 +1,26 @@
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { ITotpAuthGuiRuntime } from "$interfaces/runtimes/ITotpAuthGuiRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { toForm } from "$ts/form";
-import { Backend } from "$ts/server/axios";
-import type { AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
+import { Daemon, SysDispatch } from "$ts/env";
+import { InfoIcon } from "$ts/images/dialog";
+import { MessageBox } from "$ts/util/dialog";
+import type { AppProcessData } from "$types/apps/app";
 
-export class TotpAuthGuiRuntime extends AppProcess {
-  private token: string;
+export class TotpAuthGuiRuntime extends AppProcess implements ITotpAuthGuiRuntime {
   private dispatchId: string;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, token: string, dispatchId: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, dispatchId: string) {
     super(pid, parentPid, app);
 
-    this.token = token;
     this.dispatchId = dispatchId;
 
     this.setSource(__SOURCE__);
   }
 
-  render(args: RenderArgs) {
-    if (!this.token || !this.dispatchId) {
+  render() {
+    if (!Daemon!.token || !this.dispatchId) {
       this.closeWindow();
       return false;
     }
@@ -43,30 +42,22 @@ export class TotpAuthGuiRuntime extends AppProcess {
   }
 
   async verifyTotp(code: string) {
-    if (!this.validate(code)) return false;
+    this.Log(`verifyTotp: ${code}`);
 
-    if (code.length !== 6) return false;
+    if (!this.validate(code) || code.length !== 6) return false;
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${this.token}` },
-      });
+    const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Unlock(code);
+    if (!result.success) return false;
 
-      const unlocked = response.status === 200;
+    await this.closeWindow();
+    this.doDispatch();
 
-      if (!unlocked) return false;
-
-      await this.closeWindow();
-
-      this.doDispatch();
-
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   cantAccess() {
+    this.Log(`cantAccess`);
+
     MessageBox(
       {
         title: "ArcOS Security",
@@ -74,7 +65,7 @@ export class TotpAuthGuiRuntime extends AppProcess {
           "Lost access to your authenticator app? Not a problem! Please contact an ArcOS System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
         buttons: [{ caption: "Okay", action: () => this.cancel(), suggested: true }],
         sound: "arcos.dialog.info",
-        image: "InfoIcon",
+        image: InfoIcon,
       },
       this.parentPid,
       true
@@ -85,11 +76,15 @@ export class TotpAuthGuiRuntime extends AppProcess {
   //#region ACTIONS
 
   async doDispatch() {
-    this.systemDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
+    this.Log(`Dispatching unlock confirmation to ${this.dispatchId}`);
+
+    SysDispatch.dispatch("totp-unlock-success", [this.dispatchId]);
   }
 
   async cancel() {
-    this.systemDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
+    this.Log(`Dispatching unlock cancellation to ${this.dispatchId}`);
+
+    SysDispatch.dispatch("totp-unlock-cancel", [this.dispatchId]);
     this.closeWindow();
   }
 

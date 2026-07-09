@@ -1,27 +1,53 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import { UserPaths } from "$ts/server/user/store";
+import { ConfigurationBuilder } from "$ts/config";
+import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
-import { arrayToText, textToBlob } from "$ts/util/convert";
+import { UserPaths } from "$ts/user/store";
+import { getReadableVibrantColor } from "$ts/util/color";
+import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/app";
-import type { RenderArgs } from "$types/process";
+import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { FileEntry } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
+import mime from "mime";
+import { parseBuffer, type IAudioMetadata } from "music-metadata";
 import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
-import type { PlayerState } from "./types";
+import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
 
-export class MediaPlayerRuntime extends AppProcess {
+export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
+  private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");
+  private readonly COVERIMAGES_PATH = join(UserPaths.Configuration, "MediaPlayer", "CoverImages");
   public queue = Store<string[]>([]);
   public queueIndex = Store<number>(0);
   public url = Store<string>();
   public player: HTMLVideoElement | undefined;
+  public seeking = Store<boolean>(false);
+  public loopMode = Store<LoopMode>(LoopMode.None);
   public State = Store<PlayerState>({ paused: true, current: 0, duration: 0 });
   public isVideo = Store<boolean>(false);
   public Loaded = Store<boolean>(false);
   public playlistPath = Store<string>();
+  public pinControls = Store<boolean>(false);
+  MetadataConfiguration = Store<MetadataConfiguration>({});
+  CurrentMediaMetadata = Store<AudioFileMetadata | undefined>();
+  CurrentCoverUrl = Store<string | undefined>();
+  LoadingMetadata = Store<boolean>(false);
+  mediaSpecificAccentColor = Store<string>("");
+  Configuration = new ConfigurationBuilder()
+    .ForProcess(this)
+    .ReadsFrom(this.MetadataConfiguration)
+    .WritesTo(this.METADATA_PATH)
+    .WithDefaults({})
+    .Build();
 
   override contextMenu: AppContextMenu = {
     player: [
@@ -29,14 +55,14 @@ export class MediaPlayerRuntime extends AppProcess {
         caption: "Enter fullscreen",
         disabled: async () => !!this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          KernelStack().renderer?.toggleFullscreen(this.pid);
+          Stack.renderer?.toggleFullscreen(this.pid);
         },
       },
       {
         caption: "Exit fullscreen",
         disabled: async () => !this.getWindow()?.classList.contains("fullscreen"),
         action: () => {
-          KernelStack().renderer?.toggleFullscreen(this.pid);
+          Stack.renderer?.toggleFullscreen(this.pid);
         },
       },
     ],
@@ -51,6 +77,41 @@ export class MediaPlayerRuntime extends AppProcess {
     this.acceleratorStore.push(...MediaPlayerAccelerators(this));
 
     this.renderArgs.file = file;
+
+    this.setSource(__SOURCE__);
+  }
+
+  async onClose() {
+    this.Reset();
+    this.player?.remove();
+    return true;
+  }
+
+  protected async start(): Promise<any> {
+    await Fs.createDirectory(getParentDirectory(this.METADATA_PATH));
+    await Fs.createDirectory(this.COVERIMAGES_PATH);
+    await this.Configuration.initialize();
+
+    this.CurrentMediaMetadata.subscribe(async (v) => {
+      this.setMediaSessionMetadata(v);
+
+      if (!v?.title) return;
+
+      this.windowTitle.set(v.title);
+    });
+  }
+
+  protected async stop(): Promise<any> {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+    }
+    this.Reset();
+    this.player?.remove();
+  }
+
+  async render({ file }: RenderArgs) {
+    const firstInstance = await this.closeIfSecondInstance();
+
     this.queueIndex.subscribe((v) => this.handleSongChange(v));
 
     this.State.subscribe((v) => {
@@ -69,31 +130,47 @@ export class MediaPlayerRuntime extends AppProcess {
       }
     });
 
-    this.setSource(__SOURCE__);
-  }
+    this.CurrentCoverUrl.subscribe(async (v) => {
+      if (!v) return this.mediaSpecificAccentColor.set("");
 
-  async onClose() {
-    this.Reset();
-    this.player?.remove();
-    return true;
-  }
+      this.mediaSpecificAccentColor.set(await getReadableVibrantColor(v));
+    });
 
-  protected async stop(): Promise<any> {
-    this.Reset();
-    this.player?.remove();
-  }
+    this.mediaSpecificAccentColor.subscribe((v) => {
+      const window = this.getWindow();
 
-  async render({ file }: RenderArgs) {
+      if (!v || !window) return;
+
+      // Merging goes here
+    });
+
+    if (firstInstance) {
+      if (file) {
+        if (file.endsWith(".arcpl")) firstInstance.readPlaylist(file);
+        else firstInstance.readFile([file]);
+      }
+
+      return;
+    }
+
+    navigator.mediaSession?.setActionHandler("play", this.Play.bind(this));
+    navigator.mediaSession?.setActionHandler("pause", this.Pause.bind(this));
+    navigator.mediaSession?.setActionHandler("previoustrack", this.previousSong.bind(this));
+    navigator.mediaSession?.setActionHandler("nexttrack", this.nextSong.bind(this));
+    navigator.mediaSession?.setActionHandler("seekto", (details) => {
+      this.SeekTo(details.seekTime!);
+    });
+
     if (file) {
       if (file.endsWith(".arcpl")) this.readPlaylist(file);
       else this.readFile([file]);
     }
 
-    this.shell?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
+    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.createTrayIcon?.(this.pid, this.app.id, {
       icon: "MediaPlayerIcon",
       popup: {
         width: 250,
-        height: 160,
+        height: 185,
         component: TrayPopup as any,
       },
     });
@@ -102,24 +179,30 @@ export class MediaPlayerRuntime extends AppProcess {
   //#endregion
 
   public setPlayer(player: HTMLVideoElement) {
+    this.Log(`setPlayer: #${player.id}.${player.className}`);
+
     this.player = player;
 
     this.player.addEventListener("timeupdate", () => this.updateState());
     this.player.addEventListener("pause", () => this.updateState());
     this.player.addEventListener("play", () => this.updateState());
+    this.player.addEventListener("seeking", () => this.seeking.set(true));
+    this.player.addEventListener("seeked", () => this.seeking.set(false));
   }
 
   public Reset() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Reset`);
+
+    if (this._disposed || !this.player) return;
 
     this.player.src = this.url.get();
     this.player.currentTime = 0;
   }
 
   public async Play() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Play`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       await this.player.play();
@@ -127,8 +210,9 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public async Pause() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Pause`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       this.player.pause();
@@ -136,19 +220,62 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   public Seek(mod: number) {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Seek: ${mod}`);
+
+    if (this._disposed || !this.player) return;
 
     this.player.currentTime += mod;
   }
 
+  public SeekTo(secondTime: number) {
+    this.Log(`SeekTo: ${secondTime}`);
+
+    if (this._disposed || !this.player) return;
+
+    this.player.currentTime = secondTime;
+  }
+
   public Stop() {
-    if (this._disposed) return;
-    if (!this.player) return;
+    this.Log(`Stop`);
+
+    if (this._disposed || !this.player) return;
 
     try {
       this.player.pause();
       this.player.currentTime = 0;
+    } catch {}
+  }
+
+  public async SetLoopNone() {
+    this.Log(`SetLoopNone`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.None);
+    } catch {}
+  }
+
+  public async SetLoopAll() {
+    this.Log(`SetLoopAll`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = false;
+      this.loopMode.set(LoopMode.All);
+    } catch {}
+  }
+
+  public async SetLoopOne() {
+    this.Log(`SetLoopOne`);
+
+    if (this._disposed || !this.player) return;
+
+    try {
+      this.player.loop = true;
+      this.loopMode.set(LoopMode.One);
     } catch {}
   }
 
@@ -167,28 +294,18 @@ export class MediaPlayerRuntime extends AppProcess {
       duration: this.player.duration,
     };
 
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = state.paused ? "paused" : "playing";
+    }
+
     this.State.set(state);
   }
 
-  public formatTime(seconds: number) {
-    if (this._disposed) return "--:--";
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  }
-
-  public openFileLocation() {
-    if (this._disposed) return;
-    const path = this.queue.get()[this.queueIndex()];
-
-    if (!path) return;
-
-    this.spawnApp("fileManager", this.parentPid, getParentDirectory(path));
-  }
-
   public async openFile() {
+    this.Log(`openFile`);
+
     if (this._disposed) return;
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select an audio or video file to open",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -197,10 +314,13 @@ export class MediaPlayerRuntime extends AppProcess {
 
     if (!path) return;
 
-    await this.readFile([path]);
+    if (path.endsWith(".arcpl")) await this.readPlaylist(path);
+    else await this.readFile([path]);
   }
 
   async readFile(paths: string[], addToQueue = false) {
+    this.Log(`readFile: ${paths.length} files, addToQueue=${addToQueue}`);
+
     if (this._disposed) return;
     if (addToQueue && this.queue().length) {
       this.queue.update((v) => {
@@ -217,11 +337,21 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   nextSong() {
+    this.Log(`nextSong`);
+
     if (this._disposed) return;
     let index = this.queueIndex();
     const queue = this.queue();
 
     if (index + 1 > queue.length - 1) {
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(0);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index++;
@@ -229,8 +359,11 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async previousSong() {
+    this.Log(`previousSong`);
+
     if (this._disposed) return;
     let index = this.queueIndex();
+    const queue = this.queue();
 
     if (this.State().current >= 2) {
       this.player!.currentTime = 0;
@@ -239,19 +372,33 @@ export class MediaPlayerRuntime extends AppProcess {
     }
 
     if (index - 1 < 0) {
+      if (this.loopMode() == LoopMode.All) {
+        this.queueIndex.set(queue.length - 1);
+        if (queue.length - 1 === 0) {
+          // handle singular song loop
+          this.SeekTo(0);
+          this.Play();
+        }
+      }
       return;
     }
     index--;
     this.queueIndex.set(index);
   }
 
+  //#region QUEUE
+
   clearQueue() {
+    this.Log(`clearQueue`);
+
     if (this._disposed) return;
     this.queueIndex.set(0);
     this.queue.set([]);
   }
 
   async handleSongChange(v: number) {
+    this.Log(`handleSongChange: ${v}`);
+
     if (this._disposed) return;
     const path = this.queue()[v];
 
@@ -260,7 +407,7 @@ export class MediaPlayerRuntime extends AppProcess {
     this.Loaded.set(false);
 
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         MessageBox(
@@ -268,7 +415,7 @@ export class MediaPlayerRuntime extends AppProcess {
             title: "Failed to load file",
             message:
               "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            buttons: [BTN_OKAY_SUG],
             image: "MediaPlayerIcon",
             sound: "arcos.dialog.error",
           },
@@ -278,27 +425,28 @@ export class MediaPlayerRuntime extends AppProcess {
         return;
       }
 
-      const info = this.userDaemon?.assoc?.getFileAssociation(path);
+      const fileAssociation = Daemon?.assoc?.getFileAssociation(path);
 
-      this.isVideo.set(info?.friendlyName === "Video file");
+      this.isVideo.set(fileAssociation?.friendlyName === "Video file");
       this.url.set(url);
       this.windowTitle.set(`${getItemNameFromPath(path)} - Media Player`);
-      this.windowIcon.set(info?.icon || this.getIconCached("MediaPlayerIcon"));
-
+      this.windowIcon.set(fileAssociation?.icon || "MediaPlayerIcon");
       this.Reset();
 
       await Sleep(10);
       await this.player?.play();
 
+      this.parseMetadata(path);
+
       this.Loaded.set(true);
-    } catch {
-      this.failedToPlay();
+    } catch (e) {
+      this.failedToPlay(e);
     }
   }
 
   async addToQueue() {
     if (this._disposed) return;
-    const paths = await this.userDaemon!.LoadSaveDialog({
+    const paths = await Daemon!.files!.LoadSaveDialog({
       title: "Select a file to add to the queue",
       icon: "MediaPlayerIcon",
       startDir: getParentDirectory(this.queue()[this.queueIndex()]) || UserPaths.Music,
@@ -312,6 +460,8 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   moveQueueItem(sourceIndex: number, targetIndex: number) {
+    this.Log(`moveQueueItem: ${sourceIndex} -> ${targetIndex}`);
+
     if (this._disposed) return;
     const currentQueue = this.queue(); // Get the current value of the queue store
     if (!currentQueue) return;
@@ -326,11 +476,16 @@ export class MediaPlayerRuntime extends AppProcess {
     this.queue.set(currentQueue);
   }
 
-  async savePlaylist() {
+  //#endregion
+  //#region PLAYLISTS
+
+  async savePlaylist(queue = this.queue()) {
+    this.Log(`savePlaylist`);
+
     if (this._disposed) return;
     const playlist = btoa(JSON.stringify(this.queue(), null, 2));
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Save playlist",
       icon: this.app.data.metadata.icon,
       isSave: true,
@@ -340,30 +495,26 @@ export class MediaPlayerRuntime extends AppProcess {
     if (!path) return;
 
     try {
-      await this.fs.writeFile(path, textToBlob(playlist, "text/plain"));
+      await Fs.writeFile(path, textToBlob(playlist, "text/plain"));
+
+      const queueIndex = this.queueIndex();
+      this.Loaded.set(false);
+      this.queue.set(queue);
+      this.queueIndex.set(0);
+      if (!queueIndex) this.handleSongChange(0);
+      this.playlistPath.set(path);
     } catch {}
   }
 
-  async loadPlaylist() {
-    if (this._disposed) return;
-    const [path] = await this.userDaemon!.LoadSaveDialog({
-      title: "Open playlist",
-      icon: this.app.data.metadata.icon,
-      extensions: [".arcpl"],
-    });
-
-    if (!path) return;
-
-    this.readPlaylist(path);
-  }
-
   async readPlaylist(path: string) {
+    this.Log(`readPlaylist: ${path}`);
+
     if (this._disposed) return;
     try {
-      const contents = await this.fs.readFile(path);
+      const contents = await Fs.readFile(path);
       if (!contents) throw new Error("Failed to read playlist");
 
-      const queue = JSON.parse(atob(arrayToText(contents)));
+      const queue = JSON.parse(atob(arrayBufferToText(contents)!));
       if (!queue || !Array.isArray(queue)) throw new Error("Playlist is not valid");
 
       const queueIndex = this.queueIndex();
@@ -377,7 +528,7 @@ export class MediaPlayerRuntime extends AppProcess {
         {
           title: "Failed to open playlist",
           message: `Media Player couldn't open the file you requested. ${e}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "MediaPlayerIcon",
         },
@@ -388,8 +539,10 @@ export class MediaPlayerRuntime extends AppProcess {
   }
 
   async createPlaylistShortcut() {
+    this.Log(`createPlaylistShortcut`);
+
     if (this._disposed) return;
-    const paths = await this.userDaemon?.LoadSaveDialog({
+    const paths = await Daemon?.files?.LoadSaveDialog({
       title: "Pick where to create the shortcut",
       icon: "FolderIcon",
       folder: true,
@@ -400,7 +553,7 @@ export class MediaPlayerRuntime extends AppProcess {
 
     const filename = getItemNameFromPath(this.playlistPath());
 
-    this.userDaemon?.createShortcut(
+    Daemon?.shortcuts?.createShortcut(
       {
         type: "file",
         target: this.playlistPath(),
@@ -411,18 +564,196 @@ export class MediaPlayerRuntime extends AppProcess {
     );
   }
 
-  async failedToPlay() {
+  async folderAsPlaylist() {
+    this.Log(`folderAsPlaylist`);
+
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose a folder to scan for media",
+      icon: this.app.data.metadata.icon,
+      startDir: UserPaths.Music,
+      folder: true,
+    });
+
+    if (!path) return;
+
+    const content = await Fs.readDir(path);
+    const mediaFiles: FileEntry[] = [];
+
+    for (const file of content?.files || []) {
+      const extensions = this.app.data.opens?.extensions?.filter((e) => file.name.endsWith(e) && e !== ".arcpl");
+      if (!extensions?.length) continue;
+
+      mediaFiles.push(file);
+    }
+
+    this.Stop();
+    const playlist = mediaFiles.map((f) => join(path, f.name));
+    this.queue.set(playlist);
+    await this.parseEntireQueue();
+    await this.savePlaylist(this.queue());
+  }
+
+  //#endregion
+  //#region ERRORS
+
+  async failedToPlay(e?: any) {
+    this.Log(`failedToPlay: ${e}`);
+
     if (this._disposed) return;
     MessageBox(
       {
         title: "Failed to play",
-        message: `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        message:
+          `Media Player failed to play the file you wanted to open. It might not be a (supported) audio or video file. Please try a different file.<br><br>Details: ${e ?? ""}`.trim(),
+        buttons: [BTN_OKAY_SUG],
         image: "MediaPlayerIcon",
         sound: "arcos.dialog.error",
       },
       this.pid,
       true
     );
+    this.Loaded.set(true);
   }
+
+  //#endregion
+  //#region METADATA
+
+  async normalizeMetadata(meta: IAudioMetadata): Promise<AudioFileMetadata> {
+    this.Log(`normalizeMetadata`);
+
+    const result: AudioFileMetadata = {};
+
+    result.artist = meta?.common?.artist;
+    result.genre = meta?.common?.genre?.join(", ");
+    result.title = meta?.common?.title;
+    result.year = Number.isNaN(meta?.common?.year) ? undefined : meta?.common?.year;
+    result.album = meta?.common?.album;
+
+    const coverImage =
+      meta?.common?.picture?.find((p) => p.description?.toLowerCase().includes("cover")) || meta?.common?.picture?.[0];
+    const coverImageBytes = coverImage?.data;
+    const coverImageBuffer = coverImageBytes?.buffer.slice(
+      coverImageBytes.byteOffset,
+      coverImageBytes.byteOffset + coverImageBytes.byteLength
+    ) as ArrayBuffer | undefined;
+    const coverImageType = coverImage?.format;
+
+    if (coverImageBuffer) {
+      const path = join(this.COVERIMAGES_PATH, `${UUID()}.${coverImageType?.split("/")[1] || "png"}`);
+      const written = await Fs.writeFile(path, arrayBufferToBlob(coverImageBuffer, coverImageType), undefined, false);
+
+      if (written) result.coverImagePath = path;
+    }
+
+    return result;
+  }
+
+  async parseMetadata(path: string, apply = true): Promise<ICommandResult<AudioFileMetadata>> {
+    this.Log(`parseMetadata: ${path} apply=${apply}`);
+
+    try {
+      if (apply) {
+        this.CurrentCoverUrl.set("");
+        this.CurrentMediaMetadata.set(undefined);
+      }
+
+      const existing = this.MetadataConfiguration()[path];
+      if (existing) {
+        if (apply) this.CurrentMediaMetadata.set(existing);
+        return CommandResult.Ok(existing);
+      }
+
+      if (apply) {
+        this.CurrentCoverUrl.set("");
+        this.LoadingMetadata.set(true);
+      }
+
+      const content = await Fs.readFile(path);
+      if (!content) {
+        if (apply) this.LoadingMetadata.set(false);
+        return CommandResult.Error("Failed to read the source file");
+      }
+
+      const metadata = await parseBuffer(new Uint8Array(content));
+      const normalized = await this.normalizeMetadata(metadata);
+
+      if (apply) {
+        this.LoadingMetadata.set(false);
+        this.CurrentMediaMetadata.set(normalized);
+      }
+      this.MetadataConfiguration.update((v) => {
+        v[path] = normalized;
+
+        return v;
+      });
+
+      return CommandResult.Ok(normalized);
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
+    }
+  }
+
+  async setMediaSessionMetadata(metadata?: AudioFileMetadata): Promise<void> {
+    if ("mediaSession" in navigator) {
+      this.Log("updating mediaSession");
+
+      const albumCoverURL = metadata?.coverImagePath ? await Fs.direct(metadata!.coverImagePath!) : undefined;
+      this.CurrentCoverUrl.set(albumCoverURL);
+      const albumCoverMime = metadata?.coverImagePath ? mime.getType(metadata!.coverImagePath!) : null;
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata?.title ?? "ArcOS Media Player",
+        artist: metadata?.artist ?? "Unknown Artist",
+        album: metadata?.album ?? "Unknown Album",
+        artwork: [
+          {
+            src: albumCoverURL ?? this.getIconCached("MediaPlayerIcon"),
+            type: albumCoverMime ?? "image/svg+xml",
+          },
+        ],
+      });
+    }
+  }
+
+  async parseEntireQueue() {
+    const queue = this.queue();
+
+    if (!queue.length) return;
+
+    const gli = await Daemon.helpers?.GlobalLoadIndicator("Just a moment...", this.pid, {
+      max: this.queue().length,
+      value: 0,
+    });
+
+    for (const path of queue) {
+      gli?.caption.set(`Scanning ${getItemNameFromPath(path)}...`);
+      await this.parseMetadata(path, false);
+      gli?.incrementProgress?.(1);
+    }
+
+    await gli?.stop();
+  }
+
+  //#endregion
+  //#region UTILS
+
+  public formatTime(seconds: number) {
+    if (this._disposed) return "--:--";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  }
+
+  public openFileLocation() {
+    this.Log(`openFileLocation`);
+
+    if (this._disposed) return;
+    const path = this.queue.get()[this.queueIndex()];
+
+    if (!path) return;
+
+    this.spawnApp("fileManager", this.parentPid, getParentDirectory(path));
+  }
+
+  //#endregion
 }

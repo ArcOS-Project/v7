@@ -1,5 +1,6 @@
-import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { State } from "$ts/env";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
 
 export class LogoutCommand extends TerminalProcess {
@@ -16,8 +17,20 @@ export class LogoutCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]) {
-    term.daemon?.logoff();
+  protected async main(term: IArcTerminal) {
+    if (this.term?.IS_ARCTERM_MODE) {
+      this.rl?.println(`${BRBLUE}Goodbye.${RESET}`);
+
+      term.terminalMode?.resetCookies();
+      await term.daemon?.account?.discontinueToken();
+      await term.daemon?.serviceHost?.stop();
+      await term.daemon?.killSelf();
+      term.term?.dispose();
+      await term.terminalMode?.killSelf();
+      await State.loadState("arcterm", {});
+    } else {
+      term.daemon?.power?.logoff();
+    }
     return -256;
   }
 }

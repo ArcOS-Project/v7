@@ -1,7 +1,8 @@
-import type { ContextMenuItem } from "$types/app";
-import type { FileManagerRuntime } from "../runtime";
+import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+import { Daemon } from "$ts/env";
+import type { ContextMenuItem } from "$types/apps/app";
 
-export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
+export function EditMenu(runtime: IFileManagerRuntime): ContextMenuItem {
   return {
     caption: "Edit",
     subItems: [
@@ -26,7 +27,7 @@ export function EditMenu(runtime: FileManagerRuntime): ContextMenuItem {
         action: () => runtime.pasteFiles(),
         icon: "clipboard",
         disabled: () =>
-          (!runtime.copyList().length && !runtime.cutList().length) || !!runtime.virtual() || !!runtime.drive()?.READONLY,
+          (!Daemon!.copyList().length && !Daemon!.cutList().length) || !!runtime.virtual() || !!runtime.drive()?.READONLY,
       },
     ],
   };

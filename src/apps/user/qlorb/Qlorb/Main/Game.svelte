@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import { onMount } from "svelte";
-  import type { QlorbRuntime } from "../../runtime";
   import type { Box } from "../../types";
   import BoxComponent from "./Game/Box.svelte";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { Clicks, Score, Boxes } = process;
 
   let offset = $state(0);

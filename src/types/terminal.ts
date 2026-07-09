@@ -1,14 +1,15 @@
-import type { TerminalWindowRuntime } from "$apps/components/terminalwindow/runtime";
-import type { ArcTerminal } from "$ts/terminal";
+import type { IArcTerminal, ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { Terminal } from "xterm";
 
+// !tpa
 export interface TerminalCommand {
   keyword: string;
   description: string;
   hidden?: boolean;
-  exec: (term: ArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
+  exec: (term: IArcTerminal, flags: Arguments, argv: string[]) => number | Promise<number>;
 }
-export type Arguments = Record<string, string | boolean>;
+export type Arguments = Record<string, string | boolean | any[] | object>;
 export interface Variable {
   get: () => string | undefined;
   set?: (v: string) => Promise<any> | any;
@@ -27,5 +28,17 @@ export interface ArcTermConfiguration {
   prompt?: string;
   greeting?: string;
   noLogo?: boolean;
+  red?: string;
+  green?: string;
+  yellow?: string;
+  blue?: string;
+  cyan?: string;
+  magenta?: string;
+  foreground?: string;
+  background?: string;
+  brightBlack?: string;
+  backdropOpacity?: number;
 }
-export type ExpandedTerminal = Terminal & { process?: TerminalWindowRuntime };
+export type ExpandedTerminal = Terminal & { process?: ITerminalWindowRuntime };
+export type AdminCommandType = (term: IArcTerminal, admin: IAdminBootstrapper, argv: string[]) => Promise<number>;
+// !endtpa

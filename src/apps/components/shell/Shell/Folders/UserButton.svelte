@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/env";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../../runtime";
 
   const {
     userPreferences,
@@ -9,11 +10,11 @@
     username,
   }: {
     userPreferences: UserPreferencesStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 
-  const { userDaemon } = process;
+  const userDaemon = Daemon;
 
   function onclick() {
     process.spawnApp("systemSettings", process.pid);
@@ -21,7 +22,7 @@
 </script>
 
 <button class="user-button" {onclick}>
-  <ProfilePicture height={24} {userDaemon} />
+  <ProfilePicture height={24} />
   <span class="name">
     {#if username}
       {$userPreferences.account.displayName || username}

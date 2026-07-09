@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AcceleratorOverviewRuntime } from "./runtime";
+  import type { IAcceleratorOverviewRuntime } from "$interfaces/runtimes/IAcceleratorOverviewRuntime";
 
-  const { process }: { process: AcceleratorOverviewRuntime } = $props();
+  const { process }: { process: IAcceleratorOverviewRuntime } = $props();
   const { store, apps } = process;
 </script>
 

@@ -12,10 +12,10 @@
  *
  * © IzKuipers 2025
  */
-import { KernelStack } from "$ts/env";
-import { Process } from "$ts/process/instance";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { type IDisposable, type ITerminalAddon, Terminal } from "@xterm/xterm";
-import type { ArcTerminal } from "..";
 import { type Highlighter, IdentityHighlighter } from "./highlight";
 import { History } from "./history";
 import { type Input, InputType, parseInput } from "./keymap";
@@ -43,18 +43,18 @@ export class Readline extends Process implements ITerminalAddon {
   private highWatermark = 10000;
   private lowWatermark = 1000;
   private highWater = false;
-  private state: State | undefined;
+  public state: State | undefined;
   private checkHandler: CheckHandler = () => true;
   private ctrlCHandler: CtrlCHandler = () => {
     return;
   };
-  public terminal: ArcTerminal | undefined;
+  public terminal: IArcTerminal | undefined;
 
   private pauseHandler: PauseHandler = (resume: boolean) => {
     return;
   };
 
-  constructor(pid: number, parentPid: number, terminal?: ArcTerminal) {
+  constructor(pid: number, parentPid: number, terminal?: IArcTerminal) {
     super(pid, parentPid);
     this.terminal = terminal;
     this.name = "Readline";
@@ -63,14 +63,7 @@ export class Readline extends Process implements ITerminalAddon {
   }
 
   async start() {
-    this.history = await KernelStack().spawn(
-      History,
-      undefined,
-      this.terminal?.daemon?.userInfo?._id,
-      this.pid,
-      50,
-      this.terminal
-    );
+    this.history = await Stack.spawn(History, undefined, this.terminal?.daemon?.userInfo?._id, this.pid, 50, this.terminal);
     this.history?.restore();
   }
 
@@ -241,7 +234,7 @@ export class Readline extends Process implements ITerminalAddon {
 
       this.state?.killSelf();
 
-      this.state = await KernelStack().spawn(
+      this.state = await Stack.spawn(
         State,
         undefined,
         this.terminal?.daemon?.userInfo?._id,
@@ -336,7 +329,7 @@ export class Readline extends Process implements ITerminalAddon {
         this.state.moveCursorToEnd();
         this.term?.write("^C\r\n");
         this.state?.killSelf();
-        this.state = await KernelStack().spawn(
+        this.state = await Stack.spawn(
           State,
           undefined,
           this.terminal?.daemon?.userInfo?._id,

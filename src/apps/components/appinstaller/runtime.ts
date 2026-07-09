@@ -1,14 +1,16 @@
+import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
+import type { IAppInstallerRuntime } from "$interfaces/runtimes/IAppInstallerRuntime";
+import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { DistributionServiceProcess } from "$ts/distrib";
-import type { InstallerProcessBase } from "$ts/distrib/installer/base";
-import { type ReadableStore } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { ArcPackage } from "$types/package";
+import { Daemon, Env, Fs } from "$ts/env";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import type { AppProcessData } from "$types/apps/app";
+import type { ReadableStore } from "$types/shared/writable";
+import type { ArcPackage } from "$types/tpa/package";
 import JSZip from "jszip";
 
-export class AppInstallerRuntime extends AppProcess {
-  progress?: InstallerProcessBase;
+export class AppInstallerRuntime extends AppProcess implements IAppInstallerRuntime {
+  progress?: IInstallerProcessBase;
   metadata?: ArcPackage;
   isLibrary = false;
   zip?: JSZip;
@@ -29,7 +31,7 @@ export class AppInstallerRuntime extends AppProcess {
     if (!(this.zip instanceof JSZip) || !this.metadata) return false; // No ZIP object? Then die.
 
     // Get the distribution service
-    const distrib = this.userDaemon!.serviceHost!.getService<DistributionServiceProcess>("DistribSvc")!;
+    const distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
 
     if (!distrib) {
       // Should never happen unless nik fucked something up (yes, nik)
@@ -37,11 +39,11 @@ export class AppInstallerRuntime extends AppProcess {
         {
           title: "%apps.AppInstaller.noDistrib.title%",
           message: "%apps.AppInstaller.noDistrib.message%",
-          buttons: [{ caption: "%general.okay%", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
       return false;
@@ -67,7 +69,7 @@ export class AppInstallerRuntime extends AppProcess {
             {
               caption: "%apps.AppInstaller.noEnableThirdParty.takeMeThere%",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
@@ -77,7 +79,7 @@ export class AppInstallerRuntime extends AppProcess {
             },
           ],
         },
-        +this.env.get("shell_pid"),
+        +Env.get("shell_pid"),
         true
       );
 
@@ -90,17 +92,19 @@ export class AppInstallerRuntime extends AppProcess {
   //#region DISTRIB
 
   async revert() {
+    this.Log(`Reverting changes`);
+
     // I don't know how well this revert works because a package install
     // has never really errored for me before.
 
     // TODO: change rollback for library installment
 
     if (!this.isLibrary) {
-      const gli = await this.userDaemon?.GlobalLoadIndicator("%apps.AppInstaller.rollback%", this.pid);
+      const gli = await Daemon?.helpers?.GlobalLoadIndicator("Rolling back changes...", this.pid);
 
       try {
-        await this.fs.deleteItem(this.metadata!.installLocation);
-        await this.userDaemon?.uninstallPackageWithStatus(this.metadata!.appId, false);
+        await Fs.deleteItem(this.metadata!.installLocation);
+        await Daemon?.appreg?.uninstallPackageWithStatus(this.metadata!.appId, false);
       } catch {
         // Silently error
       }
@@ -112,8 +116,10 @@ export class AppInstallerRuntime extends AppProcess {
   }
 
   runNow() {
+    this.Log(`Running freshly installed application`);
+
     this.closeWindow();
-    this.spawnApp(this.metadata!.appId, +this.env.get("shell_pid"));
+    this.spawnApp(this.metadata!.appId, +Env.get("shell_pid"));
   }
 
   // More of a middleman than a method imho

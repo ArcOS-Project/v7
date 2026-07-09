@@ -1,9 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { Daemon } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
   import type { ExpandedUserInfo } from "$types/user";
 
-  const { user, process }: { user: ExpandedUserInfo; process: AdminPortalRuntime } = $props();
+  const { user, process }: { user: ExpandedUserInfo; process: IAdminPortalRuntime } = $props();
 
   let newQuota = $state<number | undefined>();
   let loading = $state<boolean>(false);
@@ -12,7 +13,7 @@
 
   async function changeQuota() {
     if (!newQuota) return;
-    const confirm = await process.userDaemon?.Confirm(
+    const confirm = await Daemon?.helpers?.Confirm(
       "Confirm quota change?",
       `Are you sure you want to change the quota of '${user.username}' to ${formatBytes(newQuota)}?`,
       "Cancel",

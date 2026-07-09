@@ -1,14 +1,15 @@
-import type { AppProcess } from "$ts/apps/process";
-import { contextProps } from "$ts/context/actions.svelte";
-import { KernelStack } from "$ts/env";
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICustomTitlebar } from "$interfaces/ICustomTitlebar";
+import { Stack } from "$ts/env";
+import { contextProps } from "$ts/ui/context/actions.svelte";
 
-export class CustomTitlebar {
+export class CustomTitlebar implements ICustomTitlebar {
   #className = "";
-  #process: AppProcess;
+  #process: IAppProcess;
   #titlebar?: HTMLDivElement;
   #target?: HTMLElement;
 
-  constructor(process: AppProcess, className = "") {
+  constructor(process: IAppProcess, className = "") {
     this.#process = process;
     this.#className = className;
   }
@@ -17,7 +18,7 @@ export class CustomTitlebar {
     if (this.#titlebar) throw new Error("CustomTitlebar instance already consumed");
 
     this.#target = target;
-    this.#titlebar = KernelStack()?.renderer?._renderTitlebar(this.#process);
+    this.#titlebar = Stack?.renderer?._renderTitlebar(this.#process);
 
     if (!this.#titlebar) throw new Error("CustomTitlebar: failed to create titlebar");
     if (this.#className) this.#titlebar.classList.add(this.#className);

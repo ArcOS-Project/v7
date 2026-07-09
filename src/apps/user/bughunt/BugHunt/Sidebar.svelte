@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProfilePicture from "$lib/ProfilePicture.svelte";
+  import { Daemon } from "$ts/env";
   import dayjs from "dayjs";
   import type { BugHuntRuntime } from "../runtime";
   import Loading from "./Loading.svelte";
@@ -10,10 +11,20 @@
 
 <div class="sidebar">
   <div class="tabs">
-    <button class="tab private" onclick={() => process.changeTab("private")} class:suggested={$currentTab === "private"}>
+    <button
+      class="tab private"
+      onclick={() => process.changeTab("private")}
+      class:suggested={$currentTab === "private"}
+      disabled={$loading}
+    >
       Yours
     </button>
-    <button class="tab public" onclick={() => process.changeTab("public")} class:suggested={$currentTab === "public"}>
+    <button
+      class="tab public"
+      onclick={() => process.changeTab("public")}
+      class:suggested={$currentTab === "public"}
+      disabled={$loading}
+    >
       Public
     </button>
   </div>
@@ -36,10 +47,10 @@
     {/if}
   </div>
   <div class="account">
-    <ProfilePicture userDaemon={process.userDaemon} height={32}></ProfilePicture>
+    <ProfilePicture height={32}></ProfilePicture>
     <div>
       <h1>{$userPreferences.account.displayName || username}</h1>
-      <p>{process.userDaemon?.userInfo?.email || "ArcOS User"}</p>
+      <p>{Daemon?.userInfo?.email || "ArcOS User"}</p>
     </div>
   </div>
 </div>

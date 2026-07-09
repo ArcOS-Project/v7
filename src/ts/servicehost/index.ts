@@ -1,0 +1,275 @@
+import { Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { adminService } from "$ts/servicehost/services/AdminBootstrapper";
+import { appStoreService } from "$ts/servicehost/services/AppStorage";
+import { bhuspService } from "$ts/servicehost/services/BugHuntUsp";
+import { devEnvironmentService } from "$ts/servicehost/services/DevEnvironment";
+import { distributionService } from "$ts/servicehost/services/DistribSvc";
+import { fileAssocService } from "$ts/servicehost/services/FileAssocSvc";
+import { globalDispatchService } from "$ts/servicehost/services/GlobalDispatch";
+import iconService from "$ts/servicehost/services/IconService";
+import { libraryManagementService } from "$ts/servicehost/services/LibMgmtSvc";
+import { messagingService } from "$ts/servicehost/services/MessagingService";
+import { protoService } from "$ts/servicehost/services/ProtoService";
+import { recentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
+import { shareService } from "$ts/servicehost/services/ShareMgmt";
+import { trashService } from "$ts/servicehost/services/TrashSvc";
+import { MessageBox } from "$ts/util/dialog";
+import { Store } from "$ts/writable";
+import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/services/service";
+import { LogLevel } from "$types/shared/logging";
+import type { IBaseService, IServiceHost, ServiceIdentifier } from "../../interfaces/IServiceHost";
+import { arcFindService } from "./services/ArcFindSvc";
+import { migrationService } from "./services/MigrationSvc";
+import { systemShortcutsService } from "./services/SystemShortcutsSvc";
+import { trayHostService } from "./services/TrayHostSvc";
+import { ServiceChangeResultCaptions } from "./store";
+
+export class ServiceHost extends Process implements IServiceHost {
+  public Services: ReadableServiceStore = Store<ServiceStore>();
+  public _holdRestart = false;
+  private _storeLoaded = false;
+
+  //#region LIFECYCLE
+
+  constructor(pid: number, parentPid: number) {
+    super(pid, parentPid);
+
+    this.name = "ServiceHost";
+
+    this.setSource(__SOURCE__);
+  }
+
+  public async initialRun(broadcast?: (msg: string) => void) {
+    const services = this.Services.get();
+    const startErrors: Record<string, ServiceChangeResult> = {};
+
+    for (const [id, service] of [...services]) {
+      if (!service.initialState || service.initialState != "started") continue;
+      service.id = id;
+
+      const startResult = await this.startService(id, broadcast);
+      if (startResult.startsWith("err_") && startResult !== "err_startCondition") {
+        startErrors[service.name] = startResult;
+        broadcast?.(`Service ${service.name} failed to start.`);
+      }
+    }
+
+    if (Object.keys(startErrors).length) {
+      let list = "";
+
+      for (const serviceName in startErrors) {
+        list += `<li>${serviceName}: ${ServiceChangeResultCaptions[startErrors[serviceName]]}</li>`;
+      }
+
+      MessageBox(
+        {
+          title: "Service Host",
+          message: `One or more services failed to start. ArcOS might not behave as usual. You can choose to restart to try again.<br><br><ul>${list}</ul>`,
+          buttons: [
+            { caption: "Restart", action: () => {} },
+            { caption: "Ignore", action: () => {}, suggested: true },
+          ],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        +Env.get("userdaemon_pid"),
+        true
+      );
+    }
+  }
+
+  public async spinDown(broadcast?: (msg: string) => void) {
+    this._holdRestart = true;
+
+    for (const [id, service] of [...this.Services()]) {
+      if (service.pid) await this.stopService(id, broadcast);
+    }
+
+    await this.killSelf();
+  }
+
+  async init(broadcast?: (msg: string) => void) {
+    this.loadStore(this.STORE);
+    await this.initialRun(broadcast);
+
+    Stack.store.subscribe(() => this.verifyServicesProcesses());
+    this.Services.subscribe(() => SysDispatch.dispatch("services-flush"));
+  }
+
+  async stop() {
+    this._holdRestart = true;
+
+    // Gracefully stop each service
+    for (const [id, service] of [...this.Services()]) {
+      if (service.pid) await this.stopService(id);
+    }
+  }
+
+  //#endregion
+
+  readonly STORE = new Map<ServiceIdentifier, Service>([
+    ["TrashSvc", { ...trashService }],
+    ["BugHuntUsp", { ...bhuspService }],
+    ["ShareMgmt", { ...shareService }],
+    ["ArcFindSvc", { ...arcFindService }],
+    ["SystemShortcutsSvc", { ...systemShortcutsService }],
+    ["AppStorage", { ...appStoreService }],
+    ["ProtoService", { ...protoService }],
+    ["TrayHostSvc", { ...trayHostService }],
+    ["AdminBootstrapper", { ...adminService }],
+    ["FileAssocSvc", { ...fileAssocService }],
+    ["GlobalDispatch", { ...globalDispatchService }],
+    ["MessagingService", { ...messagingService }],
+    ["DevEnvironment", { ...devEnvironmentService }],
+    ["DistribSvc", { ...distributionService }],
+    ["IconService", { ...iconService }],
+    ["LibMgmtSvc", { ...libraryManagementService }],
+    ["MigrationSvc", { ...migrationService }],
+    ["RecentFilesSvc", { ...recentFilesService }],
+  ]);
+
+  public loadStore(store: ServiceStore) {
+    if (this._storeLoaded) {
+      this.Log(`Can't load another store: a store is already loaded.`, LogLevel.error);
+
+      return false;
+    }
+
+    this.Log(`Loading store (${store.size} services)`);
+
+    for (const [id, service] of [...store]) {
+      const { process, startCondition } = service;
+      service.id = id;
+      service.loadedAt = new Date().getTime();
+
+      store.set(id, { ...JSON.parse(JSON.stringify(service)), process, startCondition });
+    }
+
+    this.Services.set(store);
+
+    return (this._storeLoaded = true);
+  }
+
+  getServiceInfo(id: ServiceIdentifier) {
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    return service;
+  }
+
+  async startService(id: ServiceIdentifier, broadcast?: (msg: string) => void): Promise<ServiceChangeResult> {
+    broadcast ||= (m) => this.Log(`startService for ${id}: ${m}`);
+    this.Log(`Starting service ${id}...`);
+
+    const services = this.Services.get();
+    const service = services.get(id);
+    if (!services.has(id) || !service) return "err_noExist";
+
+    const canStart = service.startCondition ? await service.startCondition(Stack.getProcess(this.parentPid)!) : true;
+
+    if (!canStart) return "err_startCondition";
+    if (service.pid) return "err_alreadyRunning";
+
+    const instance = await Stack.spawn(service.process, undefined, Daemon?.userInfo?._id, this.pid, id, this, broadcast);
+    if (!instance) return "err_spawnFailed";
+
+    service.pid = instance.pid;
+    service.changedAt = new Date().getTime();
+
+    services.set(id, service);
+    this.Services.set(services);
+
+    return "success";
+  }
+
+  public async stopService(id: ServiceIdentifier, broadcast?: (m: string) => void): Promise<ServiceChangeResult> {
+    broadcast ||= (m) => this.Log(`stopService for ${id}: ${m}`);
+    this.Log(`Stopping service ${id}...`);
+
+    const services = this.Services.get();
+    const service = services.get(id);
+
+    if (!services.has(id) || !service) return "err_noExist";
+    if (!service.pid) return "err_notRunning";
+
+    this._holdRestart = true;
+
+    const proc = Stack.getProcess<IBaseService>(service.pid);
+
+    proc?.deactivate(broadcast);
+
+    await Stack.kill(service.pid, true);
+
+    service.pid = undefined;
+    service.changedAt = new Date().getTime();
+    services.set(id, service);
+    this.Services.set(services);
+    this._holdRestart = false;
+
+    return "success";
+  }
+
+  public async restartService(id: ServiceIdentifier): Promise<ServiceChangeResult> {
+    const services = this.Services.get();
+
+    if (!services.has(id)) return "err_noExist";
+
+    await this.stopService(id);
+    const started = await this.startService(id);
+
+    return started;
+  }
+
+  public async verifyServicesProcesses() {
+    if (this._holdRestart) return;
+
+    const services = this.Services.get();
+
+    for (const [id, service] of [...services]) {
+      if (!service.pid || Stack.isPid(service.pid)) continue;
+
+      this.Log(`Process of ${id} doesn't exist anymore! Restarting service...`, LogLevel.warning);
+
+      Daemon.getShell()?.ShowToast(
+        {
+          content: `Service ${service.name} got restarted because of a problem`,
+          icon: "power",
+        },
+        3000
+      );
+
+      await this.restartService(id);
+    }
+  }
+
+  public getService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined {
+    const store = this.Services();
+    const service = store.get(id);
+
+    if (!service?.pid) {
+      if (store.has(id)) this.Log(`Tried to get inactive service '${id}'!`, LogLevel.warning);
+      return undefined;
+    }
+
+    return Stack.getProcess(service.pid) as T;
+  }
+
+  public hasService(id: ServiceIdentifier): boolean {
+    const store = this.Services();
+    const service = store.get(id);
+
+    if (!store.has(id) || !service) return false;
+
+    return true;
+  }
+
+  Gate<T extends IBaseService>(id: ServiceIdentifier, onActive: (service: T) => void, onInactive?: () => void) {
+    this.Services.subscribe(() => {
+      const svc = this.getService<T>(id);
+
+      if (svc) onActive(svc);
+      else onInactive?.();
+    });
+  }
+}

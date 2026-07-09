@@ -1,6 +1,9 @@
+import type { ITerminalWindowRuntime } from "$interfaces/IArcTerminal";
 import { AppProcess } from "$ts/apps/process";
-import { KernelStack } from "$ts/env";
-import type { AppProcessData } from "$types/app";
+import { Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { DefaultColors } from "$ts/terminal/colors";
+import type { AppProcessData } from "$types/apps/app";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
@@ -8,7 +11,7 @@ import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { Terminal } from "xterm";
 
-export class TerminalWindowRuntime extends AppProcess {
+export class TerminalWindowRuntime extends AppProcess implements ITerminalWindowRuntime {
   term: Terminal | undefined;
   overridePopulatable: boolean = true;
 
@@ -19,6 +22,8 @@ export class TerminalWindowRuntime extends AppProcess {
 
     this.setSource(__SOURCE__);
   }
+
+  async start() {}
 
   async render() {
     const body = this.getBody();
@@ -31,18 +36,19 @@ export class TerminalWindowRuntime extends AppProcess {
       fontSize: 13,
       fontFamily: "Source Code Pro",
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
+        background: "#0000",
       },
       scrollback: 500,
     });
@@ -68,13 +74,13 @@ export class TerminalWindowRuntime extends AppProcess {
 
   protected async stop() {
     setTimeout(() => {
-      const parent = KernelStack().getProcess(this.parentPid);
+      const parent = Stack.getProcess(this.parentPid);
 
-      if (!parent || parent instanceof AppProcess) return;
+      if (!parent || ProcessesHelper.IsAnyAppProcess(parent)) return;
 
-      const children = KernelStack().getSubProcesses(this.parentPid);
+      const children = Stack.getSubProcesses(this.parentPid);
 
-      if (!children.size) KernelStack().kill(this.parentPid);
+      if (!children.size) Stack.kill(this.parentPid);
     });
   }
 

@@ -1,13 +1,14 @@
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { getKMod } from "$ts/env";
-import { getAllJsonPaths, getJsonHierarchy } from "$ts/hierarchy";
-import { tryJsonParse } from "$ts/json";
-import { AdminBootstrapper } from "$ts/server/admin";
-import { ElevationLevel } from "$types/elevation";
-import type { ServerManagerType } from "$types/kernel";
-import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import { getAllJsonPaths, getJsonHierarchy } from "$ts/util/hierarchy";
+import { tryJsonParse } from "$ts/util/json";
+import { ElevationLevel } from "$types/system/elevation";
+import type { AdminCommandType } from "$types/terminal";
+import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../colors";
 import { TerminalProcess } from "../process";
-import { BOLD, BRBLACK, BRRED, BRYELLOW, RESET, UNDERLINE } from "../store";
+import { AdminHelp } from "./admin/commands/help";
 import { AdminCommandStore, RESULT_CAPTIONS } from "./admin/store";
 
 export class AdminCommand extends TerminalProcess {
@@ -25,23 +26,23 @@ export class AdminCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     const elevated = await term.elevate({
       what: "ArcTerm wants to open the Administrator Console",
       title: "Administrator Console",
       description: "Izaak Kuipers",
-      image: term.daemon?.getIconCached("ElevationIcon")!,
+      image: "ElevationIcon",
       level: ElevationLevel.medium,
     });
 
     if (!elevated) return 1;
 
     const paths = getAllJsonPaths(AdminCommandStore).map((a) => a.replaceAll(".", " "));
-    const admin = term.daemon?.serviceHost?.getService<AdminBootstrapper>("AdminBootstrapper");
-    const server = getKMod<ServerManagerType>("server");
+    const admin = term.daemon?.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper");
+    const server = getKMod<IServerManager>("server");
 
     term.term.clear();
-    term.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
+    this.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${server.url}\r\n`);
 
     if (!admin) {
       term.Error("Access is denied.");
@@ -49,11 +50,11 @@ export class AdminCommand extends TerminalProcess {
       return 1;
     }
 
-    term.rl?.println(
+    this.rl?.println(
       `${BRRED}${BOLD}WARNING!${RESET} Sensitive information may be displayed in query results.\r\n         ${BOLD}Do not share screenshots of this utility.${RESET}\r\n`
     );
 
-    if (!term.daemon?.userInfo?.hasTotp && term.daemon?.userInfo?.admin) {
+    if (!this.daemon?.userInfo?.hasTotp && this.daemon?.userInfo?.admin) {
       term.Warning(
         `\r\nYou're an administrator ${BOLD}without two-factor authentication enabled${RESET}.\r\nThis is grounds for revoking of administrative privileges.\r\nPlease go to Settings and enable 2FA ${UNDERLINE}${BOLD}as soon as possible${RESET}.\r\n`,
         "Security Vulnerability"
@@ -71,6 +72,11 @@ export class AdminCommand extends TerminalProcess {
         if (response === ".clear") {
           term.term.clear();
 
+          return await prompt();
+        }
+
+        if (response === "?") {
+          await AdminHelp(term, admin, []);
           return await prompt();
         }
 
@@ -95,5 +101,3 @@ export class AdminCommand extends TerminalProcess {
     });
   }
 }
-
-export type AdminCommandType = (term: ArcTerminal, admin: AdminBootstrapper, argv: string[]) => Promise<number>;

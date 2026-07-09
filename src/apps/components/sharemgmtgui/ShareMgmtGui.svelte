@@ -1,18 +1,23 @@
 <script lang="ts">
-  import type { ShareMgmtGuiRuntime } from "./runtime";
+  import type { IShareMgmtGuiRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: ShareMgmtGuiRuntime } = $props();
+  const { process }: { process: IShareMgmtGuiRuntime } = $props();
   const { members, info, selectedMember, myShare } = process;
 </script>
 
 {#if info}
   <div class="header">
-    <img src={process.getIconCached("ShareIcon")} alt="" />
+    <Icon icon="ShareIcon" />
     <div>
       <h1>
-        {info.shareName}
+        <span>
+          {info.shareName}
+        </span>
         {#if info.locked}
-          <span class="lucide icon-triangle-alert"></span>
+          <span class="lucide icon-triangle-alert locked" title="This share is locked!"></span>
         {/if}
       </h1>
       <p>Share of {info.ownerName}</p>
@@ -64,8 +69,12 @@
       </div>
     {/if}
   </div>
-  <div class="actions">
-    <button class="delete" disabled={!myShare} onclick={() => process.deleteShare()}>Delete share</button>
-    <button class="suggested" onclick={() => process.closeWindow()}>Close</button>
-  </div>
+  <ActionBar floating>
+    {#snippet leftContent()}
+      <ActionButton disabled={!myShare} onclick={() => process.deleteShare()} className="delete">Delete share</ActionButton>
+    {/snippet}
+    {#snippet rightContent()}
+      <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    {/snippet}
+  </ActionBar>
 {/if}

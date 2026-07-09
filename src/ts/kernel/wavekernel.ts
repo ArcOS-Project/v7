@@ -1,25 +1,28 @@
+import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel } from "$ts/env";
+import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
-import type { ProcessHandlerType } from "$types/kernel";
-import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/logging";
+import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/shared/logging";
 import { handleGlobalErrors } from "../error";
-import { StateHandler } from "../state";
 import { InitProcess } from "./init";
+import { EchoIntro } from "./intro";
 import { KernelModules } from "./module/store";
 import { prematurePanic } from "./premature";
 
-export class WaveKernel {
+export class WaveKernel implements IWaveKernel {
   public modules: string[] = [];
   public PANICKED = false;
   public Logs: LogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
-  public state: StateHandler | undefined;
+  public state: IStateHandler | undefined;
   public initPid = -1;
   public params = new URLSearchParams(location.search);
   public ARCOS_MODE = "release";
@@ -42,7 +45,7 @@ export class WaveKernel {
     }
   }
 
-  async panic(reason: string) {
+  async panic(reason: string, brief?: string) {
     if (this.PANICKED) return;
 
     this.PANICKED = true;
@@ -52,18 +55,21 @@ export class WaveKernel {
     if (!state) {
       this.Log(`WaveKernel::panic`, `\n\n${reason}`);
 
-      prematurePanic();
+      prematurePanic(brief);
 
       return;
     }
 
-    state.loadState("crash-screen", { text: reason }, true);
+    state.loadState("crash-screen", { text: reason, brief }, true);
 
     throw reason;
   }
 
   async _init() {
-    (window as any).__DW_INIT__ = true;
+    EchoIntro();
+
+    window.__DW_STATUS__ = "async WaveKernel._init";
+    window.__DW_INIT__ = true;
 
     __Console__.time("** Kernel init");
     this.Log(`KERNEL`, `Called _init`);
@@ -79,7 +85,9 @@ export class WaveKernel {
 
     await this._kernelModules();
 
-    const stack = this.getModule<ProcessHandlerType>("stack");
+    SetKernelExports();
+
+    const stack = this.getModule<IProcessHandler>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess, undefined, "SYSTEM");
     this.initPid = this.init?.pid ?? 0;
@@ -115,16 +123,27 @@ export class WaveKernel {
 
   public Log(source: string, message: string, level = LogLevel.info) {
     const timestamp = Date.now();
-
-    this.Logs.push({
+    const data: LogItem = {
       timestamp,
       source,
       message,
       level,
       kernelTime: timestamp - this.startMs,
-    });
+    };
 
-    __Console__.log(
+    this.Logs.push(data);
+
+    const mapping: Record<LogLevel, (...args: any[]) => void> = {
+      [LogLevel.info]: __Console__.log.bind(__Console__),
+      [LogLevel.warning]: __Console__.warn.bind(__Console__),
+      [LogLevel.error]: __Console__.error.bind(__Console__),
+      [LogLevel.critical]: __Console__.error.bind(__Console__),
+    };
+
+    const dispatch = this.getModule<ISystemDispatch>("dispatch", true);
+    dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
+
+    mapping[level](
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
   }

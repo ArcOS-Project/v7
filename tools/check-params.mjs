@@ -1,15 +1,13 @@
-// check-params.js
-// Run with: node check-params.js
-// Requires: npm install typescript glob
-
-import ts from "typescript";
-import { glob } from "glob";
 import fs from "fs";
+import { glob } from "glob";
 import path from "path";
+import ts from "typescript";
 
 const items = [];
 
-async function main() {
+export async function checkParameters() {
+    console.log("Checking parameters...");
+
   const files = await glob("src/**/*.{ts,svelte}");
 
   for (const file of files) {
@@ -32,7 +30,7 @@ async function main() {
 
     process.exit(1);
   } else {
-    console.log("No methods contain more than 8 parameters!");
+    console.log("\n✅ No methods contain more than 8 parameters!\n");
   }
 }
 
@@ -59,8 +57,3 @@ function checkNode(node, file) {
 
   ts.forEachChild(node, (child) => checkNode(child, file));
 }
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});

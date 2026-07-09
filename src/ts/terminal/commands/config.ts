@@ -1,6 +1,6 @@
-import type { ArcTerminal } from "..";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { BRBLACK, BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, RESET } from "../store";
 
 export class ConfigCommand extends TerminalProcess {
   public static keyword = "config";
@@ -16,9 +16,9 @@ export class ConfigCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     for (const [key, value] of Object.entries(term.config)) {
-      term.rl?.println(`# ${BRBLUE}${key}${BRBLACK}:${RESET} ${value}`);
+      this.rl?.println(`# ${BRBLUE}${key}${BRBLACK}:${RESET} ${value}`);
     }
     return 0;
   }

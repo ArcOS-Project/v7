@@ -1,21 +1,22 @@
+import type { IShareCreateGuiRuntime } from "$interfaces/runtimes/IShareCreateGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import type { ShareManager } from "$ts/shares";
+import { Daemon, Env, Stack } from "$ts/env";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class ShareCreateGuiRuntime extends AppProcess {
+export class ShareCreateGuiRuntime extends AppProcess implements IShareCreateGuiRuntime {
   shareName = Store<string>();
   sharePassword = Store<string>();
-  shares: ShareManager;
+  shares: IShareManager;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
 
     this.setSource(__SOURCE__);
   }
@@ -24,6 +25,8 @@ export class ShareCreateGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     const name = this.shareName();
     const password = this.sharePassword();
 
@@ -38,7 +41,7 @@ export class ShareCreateGuiRuntime extends AppProcess {
           title: "Failed to create share",
           message:
             "ArcOS was unable to create the share you requested. You might already have the maximum amount of shares in your account.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -56,21 +59,23 @@ export class ShareCreateGuiRuntime extends AppProcess {
     if (!drive) return;
 
     const path = `${drive.uuid}:/`;
-    const parent = KernelStack().getProcess(this.parentPid);
+    const parent = Stack.getProcess(this.parentPid);
 
-    if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
+    if (parent && Daemon?.helpers?.ParentIs(this, "fileManager")) {
       // In case the parent is a file manager, navigate it instead
-      const dispatch = KernelStack().ConnectDispatch(this.parentPid);
+      const dispatch = Stack.ConnectDispatch(this.parentPid);
       dispatch?.dispatch("navigate", path);
     } else {
       // Otherwise spawn a new file manager
-      this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+      this.spawnApp("fileManager", +Env.get("shell_pid"), path);
     }
 
     this.closeWindow(); // Finally close the creategui
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the creategui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

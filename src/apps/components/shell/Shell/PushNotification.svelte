@@ -1,10 +1,12 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { SoundBus, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { ErrorButton, Notification } from "$types/notification";
+  import type { ErrorButton, Notification } from "$types/system/notification";
   import { onMount } from "svelte";
-  import type { ShellRuntime } from "../runtime";
 
-  const { process }: { process: ShellRuntime } = $props();
+  const { process }: { process: IShellRuntime } = $props();
   const { actionCenterOpened, userPreferences } = process;
 
   let timeout: NodeJS.Timeout | undefined;
@@ -12,17 +14,19 @@
   let show = $state(false);
 
   onMount(() => {
-    process.systemDispatch.subscribe("send-notification", async ([incoming]) => {
+    SysDispatch.subscribe("send-notification", async ([incoming]) => {
       if ($actionCenterOpened) return;
 
       if (show) {
         show = false;
         await Sleep(300);
+        data = incoming;
+        await Sleep(100);
       }
 
       data = incoming;
       show = true;
-      process.soundBus.playSound("arcos.notification");
+      SoundBus.playSound("arcos.notification");
 
       if (timeout) clearTimeout(timeout);
 
@@ -56,7 +60,7 @@
   {#if data}
     {#if data.image}
       <div class="left">
-        <img src={process.getIconCached(data.image) || data.image} alt="" class="icon" />
+        <Icon icon={data.image} className="icon" />
       </div>
     {:else if data.icon}
       <div class="left">

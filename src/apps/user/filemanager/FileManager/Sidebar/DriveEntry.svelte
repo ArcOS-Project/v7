@@ -1,17 +1,17 @@
 <script lang="ts">
+  import type { ISharedDrive } from "$interfaces/drives/ISharedDrive";
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { SharedDrive } from "$ts/shares/drive";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { FileManagerRuntime } from "../../runtime";
   import { DriveIcons } from "../../store";
   import type { QuotedDrive } from "../../types";
 
-  const { process, drive, id }: { process: FileManagerRuntime; drive: QuotedDrive; id: string } = $props();
+  const { process, drive, id }: { process: IFileManagerRuntime; drive: QuotedDrive; id: string } = $props();
 
   const { path } = process;
 
-  const locked = drive.data.IDENTIFIES_AS === "share" && (drive.data as SharedDrive).shareInfo?.locked;
+  const locked = drive.data.IDENTIFIES_AS === "share" && (drive.data as ISharedDrive).shareInfo?.locked;
   let identifier = `${drive.data.driveLetter || drive.data.uuid}:`;
   let identifiesAs = drive.data.IDENTIFIES_AS || "generic";
 
@@ -38,7 +38,7 @@
       (locked)
     {/if}
   </span>
-  {#if !drive.quota.unknown}
+  {#if !drive.quota.unknown && drive.quota.max > 0}
     <CircularProgress
       className="progress {drive.quota.percentage >= 80 ? 'almost-full' : ''}"
       max={drive.quota.max}

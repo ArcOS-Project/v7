@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { QlorbRuntime } from "../runtime";
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { MessageBox } from "$ts/util/dialog";
   import Background from "./Main/Background.svelte";
   import Help from "./Start/Help.svelte";
 
-  const { process }: { process: QlorbRuntime } = $props();
+  const { process }: { process: IQlorbRuntime } = $props();
   const { CurrentPage } = process;
 
   function start() {
@@ -34,7 +35,7 @@
     <Background />
     <div class="fullscreen center-flex">
       <h1 class="title">
-        <img src={process.getIconCached(process.app.data.metadata.icon)} alt="" />
+        <Icon icon={process.app.data.metadata.icon} />
         <span>Qlorb</span>
         <p>Catch orbs, get points, and get frustrated!</p>
       </h1>
@@ -76,10 +77,6 @@
     font-size: 26px;
   }
 
-  h1.title img {
-    height: 96px;
-  }
-
   h1.title p {
     opacity: 0.5;
     font-weight: 100;
@@ -102,9 +99,5 @@
     font-family: "Material Icons Round";
     font-size: 20px;
     margin-left: auto;
-  }
-
-  img {
-    height: 50px;
   }
 </style>

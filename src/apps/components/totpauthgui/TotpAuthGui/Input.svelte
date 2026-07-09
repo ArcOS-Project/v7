@@ -18,7 +18,9 @@
   }
 
   onMount(() => {
-    els[0]?.focus();
+    setTimeout(() => {
+      els[0]?.focus();
+    }, 200);
   });
 
   function handleMoveAndBackspace(e) {
@@ -33,10 +35,14 @@
         e.preventDefault();
         els[max(0, targetIndex - 1)]?.focus();
         break;
+      case "ArrowUp":
+      case "ArrowDown": // prevent up and down arrow keys from modifying the input's value and causing unexpected values
+        e.preventDefault();
+        break;
       case "Backspace": //Backspace
         e.preventDefault();
 
-        // if curent cell is empty we want to backspace the previous cell
+        // if current cell is empty we want to backspace the previous cell
         if (!values[targetIndex] && values[targetIndex] != 0) {
           els[max(0, targetIndex - 1)]?.focus();
           values[targetIndex - 1] = null;
@@ -45,6 +51,13 @@
         }
         break;
     }
+  }
+
+  function handleAutoFill(e) {
+    if (Number.isNaN(e.target.value) || e.target.value.toString().length !== 6) return;
+    const val = e.target.value;
+    e.target.value = val.slice(0, 1);
+    waterfall({ target: e.target, arr: val });
   }
 
   function handleKey(e) {
@@ -101,6 +114,7 @@
           on:keydown={handleMoveAndBackspace}
           on:keypress|preventDefault={handleKey}
           on:paste|preventDefault={handlePaste}
+          on:input={handleAutoFill}
           bind:this={els[index + getTotalLength(idx, length)]}
           bind:value={values[index + getTotalLength(idx, length)]}
           index={index + getTotalLength(idx, length)}
@@ -115,6 +129,7 @@
         on:keydown={handleMoveAndBackspace}
         on:keypress|preventDefault={handleKey}
         on:paste|preventDefault={handlePaste}
+        on:input={handleAutoFill}
         bind:this={els[index]}
         bind:value={values[index]}
         {index}

@@ -1,5 +1,5 @@
 import "$css/apps/components/shareconngui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareConnGuiRuntime } from "./runtime";
 import ShareConnGui from "./ShareConnGui.svelte";
 
@@ -7,7 +7,7 @@ export const ShareConnGuiApp: App = {
   metadata: {
     name: "ShareConnGui",
     author: "Izaak Kuipers",
-    version: "1.0.0",
+    version: "1.0.1",
     icon: "ShareIcon",
     appGroup: "components",
   },

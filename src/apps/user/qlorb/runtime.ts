@@ -1,10 +1,11 @@
+import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { LogLevel } from "$types/logging";
+import type { AppProcessData } from "$types/apps/app";
+import { LogLevel } from "$types/shared/logging";
 import type { Box } from "./types";
 
-export class QlorbRuntime extends AppProcess {
+export class QlorbRuntime extends AppProcess implements IQlorbRuntime {
   public readonly random = (m: number) => Math.floor(Math.random() * m);
   public readonly Boxes = Store<Box[]>([]);
   public readonly BoxesOffset = Store<number>(0);
@@ -21,11 +22,13 @@ export class QlorbRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
     setInterval(() => {
       if (this.Boxes.get().length - this.Clicks.get() < 21 && this.CurrentPage.get() == "game") this.spawnBox();
     }, 300);
-
-    this.setSource(__SOURCE__);
   }
 
   async render() {

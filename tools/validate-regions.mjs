@@ -3,7 +3,6 @@ import path from "path";
 
 const SRC_DIR = "./src"; // adjust if your code lives elsewhere
 const PROCESS_CLASS_REGEX = /class\s+(\w*)\s+extends\s+(\w*Process\w*|KernelModule|BaseService)\s*{/g;
-const CONTROL_FLOW_REGEX = /#region LIFECYCLE/gm;
 
 /**
  * Recursively collect .ts and .svelte files
@@ -22,26 +21,29 @@ function collectFiles(dir) {
   return files;
 }
 
-const files = collectFiles(SRC_DIR);
-let violations = [];
+export function validateRegions() {
+  console.log("Validating regions...");
+  const files = collectFiles(SRC_DIR);
+  let violations = [];
 
-for (const file of files) {
-  const code = fs.readFileSync(file, "utf-8");
+  for (const file of files) {
+    const code = fs.readFileSync(file, "utf-8");
 
-  // Look for process classes
-  let match;
-  while ((match = PROCESS_CLASS_REGEX.exec(code)) !== null) {
-    if (!code.includes(`//#region LIFECYCLE`)) {
-      violations.push(`LIFECYCLE: not defined in ${match[1]} (${file})`);
+    // Look for process classes
+    let match;
+    while ((match = PROCESS_CLASS_REGEX.exec(code)) !== null) {
+      if (!code.includes(`//#region LIFECYCLE`)) {
+        violations.push(`LIFECYCLE: not defined in ${match[1]} (${file})`);
+      }
     }
   }
-}
 
-if (violations.length > 0) {
-  console.error("\nCode convention violations:");
-  for (const v of violations) console.error("  " + v);
-  console.error(`\nvalidate-regions failed with ${violations.length} violations.`);
-  process.exit(1);
-} else {
-  console.log("\nAll Process classes contain LIFECYCLE region.");
+  if (violations.length > 0) {
+    console.error("\nCode convention violations:");
+    for (const v of violations) console.error("  " + v);
+    console.error(`\nvalidate-regions failed with ${violations.length} violations.`);
+    process.exit(1);
+  } else {
+    console.log("\n✅ All Process classes contain LIFECYCLE region.\n");
+  }
 }

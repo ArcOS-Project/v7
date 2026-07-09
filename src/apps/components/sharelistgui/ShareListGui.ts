@@ -1,5 +1,5 @@
 import "$css/apps/components/sharelistgui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareListGuiRuntime } from "./runtime";
 import ShareListGui from "./ShareListGui.svelte";
 
@@ -7,7 +7,7 @@ export const ShareListGuiApp: App = {
   metadata: {
     name: "ShareListGui",
     author: "Izaak Kuipers",
-    version: "1.0.0",
+    version: "1.0.1",
     icon: "ShareIcon",
     appGroup: "components",
   },

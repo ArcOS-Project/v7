@@ -1,22 +1,35 @@
 <script lang="ts">
-  import { StoreItemIcon } from "$ts/distrib/util";
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Env, SysDispatch } from "$ts/env";
   import { Plural } from "$ts/util";
-  import type { StoreItem, UpdateInfo } from "$types/package";
+  import { StoreItemIcon } from "$ts/util/distrib";
+  import type { StoreItem, UpdateInfo } from "$types/tpa/package";
+  import { onDestroy } from "svelte";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
-  import type { AppStoreRuntime } from "../runtime";
 
-  const { process, updates, installed }: { process: AppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
+  const { process, updates, installed }: { process: IAppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
+
+  let subscriber = SysDispatch.subscribe(`store-item-update`, () => refresh());
+
+  onDestroy(() => {
+    SysDispatch.unsubscribeId(`store-item-update`, subscriber);
+  });
 
   function updateAll() {
-    process.spawnOverlayApp("MultiUpdateGui", +process.env.get("shell_pid") || process.pid, updates);
+    process.spawnOverlayApp("MultiUpdateGui", +Env.get("shell_pid") || process.pid, updates);
+  }
+
+  async function refresh() {
+    process.switchPage("installed", {}, true);
   }
 </script>
 
 {#if updates?.length || installed?.length}
   {#if updates.length}
     <div class="updates-banner">
-      <img src={StoreItemIcon(updates[0].pkg)} alt="" class="banner" />
+      <Icon icon={StoreItemIcon(updates[0].pkg)} className="banner" />
       <div class="cta">
         {#if updates.length > 1}
           <h1>There are updates available!</h1>
@@ -35,7 +48,7 @@
         {#each updates as update, i}
           {#if i < 4}
             <div class="icon">
-              <img src={StoreItemIcon(update.pkg)} alt={update.pkg.pkg.name} />
+              <Icon icon={StoreItemIcon(update.pkg)} title={update.pkg.pkg.name} />
             </div>
           {/if}
         {/each}
@@ -51,7 +64,7 @@
       <div class="app-listing">
         {#each updates as update (update.pkg._id)}
           <div class="app-row">
-            <img src={StoreItemIcon(update.pkg)} alt="" />
+            <Icon icon={StoreItemIcon(update.pkg)} title={update.pkg.pkg.name} />
             <p class="name">{update.pkg.pkg?.name || update.pkg.name}</p>
             <p class="author">{update.pkg.user?.displayName || update.pkg.user?.username || "Unknown"}</p>
             <div class="actions">
@@ -68,7 +81,6 @@
   {/if}
 
   <PackageGrid items={installed} name="Installed" {process} />
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

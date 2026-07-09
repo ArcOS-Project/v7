@@ -1,8 +1,10 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { LogoTranslations } from "$apps/admin/adminportal/store";
-  import type { ReadableStore } from "$ts/writable";
-  import type { BugReport } from "$types/bughunt";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { StoreItemIconPrimitive } from "$ts/util/distrib";
+  import type { BugReport } from "$types/server/bughunt";
+  import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
 
   const {
@@ -12,7 +14,7 @@
     quickView,
     selectionList,
   }: {
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     report: BugReport;
     idEntry: ReadableStore<string>;
     quickView: ReadableStore<string>;
@@ -48,8 +50,16 @@
   class:selected-multi={$selectionList.includes(report._id!) && $selectionList.length > 1}
   ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}
 >
-  <div class="segment mode-icon"><img src={LogoTranslations[report.mode] || process.getIconCached("QuestionIcon")} alt="" /></div>
+  <div class="segment mode-icon">
+    {#if report.isAppReport}
+      <Icon icon={report.reportAppPkgId ? StoreItemIconPrimitive(report.reportAppPkgId) : "WindowSettingsIcon"} />
+    {:else}
+      <Icon icon={LogoTranslations[report.mode] || "QuestionIcon"} />
+    {/if}
+  </div>
   <div class="segment timestamp">{timestamp}</div>
   <div class="segment title">{report.title}</div>
-  <div class="segment author" class:redacted={$redacted}>{report.userData?.username || "Stranger"}</div>
+  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>
+    {report.userData?.username || "Stranger"}
+  </div>
 </div>

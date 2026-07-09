@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
   import HighlightComponent from "$lib/HighlightComponent.svelte";
-  import { tryJsonStringify } from "$ts/json";
-  import type { SqeletonRuntime } from "../runtime";
+  import { tryJsonStringify } from "$ts/util/json";
 
-  const { process }: { process: SqeletonRuntime } = $props();
+  const { process }: { process: ISqeletonRuntime } = $props();
   const { result } = process;
 </script>
 

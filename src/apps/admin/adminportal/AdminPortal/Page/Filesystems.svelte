@@ -1,15 +1,15 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { sortByKey } from "$ts/util";
   import { formatBytes } from "$ts/util/fs";
   import { Store } from "$ts/writable";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { FilesystemsData, FilesystemsPageQuota } from "../../types";
   import FilesystemRow from "./Filesystems/FilesystemRow.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: FilesystemsData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: FilesystemsData } = $props();
   const { users } = data;
   const { admin } = process;
 
@@ -17,16 +17,20 @@
   let loading = $state<boolean>(true);
 
   onMount(async () => {
-    for (const user of users) {
-      const quota = await process.admin.getQuotaOf(user.username);
-      quotas.update((v) => {
-        v.push({
-          user,
-          ...quota!,
-        });
-        return v;
-      });
-    }
+    await Promise.all(
+      users.map((u) =>
+        process.admin.getQuotaOf(u.username).then((quota) =>
+          quotas.update((v) => {
+            v.push({
+              user: u,
+              ...quota!,
+            });
+            return v;
+          })
+        )
+      )
+    );
+
     loading = false;
   });
 </script>

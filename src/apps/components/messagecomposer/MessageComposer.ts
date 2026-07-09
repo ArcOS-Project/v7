@@ -1,5 +1,5 @@
 import "$css/apps/components/messagecomposer.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MessageComposer from "./MessageComposer.svelte";
 import { MessageComposerRuntime } from "./runtime";
 

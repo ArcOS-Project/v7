@@ -1,5 +1,5 @@
 import "$css/apps/components/sharecreategui.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ShareCreateGuiRuntime } from "./runtime";
 import ShareCreateGui from "./ShareCreateGui.svelte";
 

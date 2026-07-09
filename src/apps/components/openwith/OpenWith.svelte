@@ -1,19 +1,20 @@
 <script lang="ts">
+  import type { IOpenWithRuntime } from "$interfaces/runtimes/IOpenWithRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
   import Options from "./OpenWith/Options.svelte";
-  import type { OpenWithRuntime } from "./runtime";
 
-  const { process }: { process: OpenWithRuntime } = $props();
-  const { filename, viewMode, available, all, path, selectedId, userDaemon, apps } = process;
+  const { process }: { process: IOpenWithRuntime } = $props();
+  const { filename, viewMode, available, all, path, selectedId, apps } = process;
 </script>
 
 <div class="top">
   <div class="header">
     <h1>Select an app to open {$filename}</h1>
     <p class="location">
-      <img
-        src={process.userDaemon?.assoc?.getFileAssociation($path)?.icon || process.getIconCached("DefaultMimeIcon")}
-        alt=""
-      /><span>{$path}</span>
+      <Icon icon={Daemon?.assoc?.getFileAssociation($path)?.icon || "DefaultMimeIcon"} /><span>{$path}</span>
     </p>
   </div>
   <div class="options">
@@ -26,12 +27,15 @@
     {/if}
   </div>
 </div>
-<div class="bottom">
-  <div class="mode">
-    <button onclick={() => ($viewMode = "all")} class:suggested={$viewMode === "all"}> All </button>
-    <button onclick={() => ($viewMode = "apps")} class:suggested={$viewMode === "apps"}> Apps </button>
-    <button onclick={() => ($viewMode = "compatible")} class:suggested={$viewMode === "compatible"}> Compatible </button>
-  </div>
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!$selectedId} onclick={() => process.go()}> Open </button>
-</div>
+
+<ActionBar>
+  {#snippet leftContent()}
+    <ActionButton suggested={$viewMode === "all"} onclick={() => ($viewMode = "all")}>All</ActionButton>
+    <ActionButton suggested={$viewMode === "apps"} onclick={() => ($viewMode = "apps")}>Apps</ActionButton>
+    <ActionButton suggested={$viewMode === "compatible"} onclick={() => ($viewMode = "compatible")}>Compatible</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!$selectedId} onclick={() => process.go()}>Open</ActionButton>
+  {/snippet}
+</ActionBar>

@@ -1,12 +1,14 @@
 <script lang="ts">
-  import type { App } from "$types/app";
+  import type { IAppInfoRuntime } from "$interfaces/runtimes/IAppInfoRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
+  import type { App } from "$types/apps/app";
   import { onMount } from "svelte";
-  import type { AppInfoRuntime } from "../runtime";
 
   interface Props {
     target: App;
     id: string;
-    process: AppInfoRuntime;
+    process: IAppInfoRuntime;
   }
 
   const { target, id, process }: Props = $props();
@@ -29,12 +31,12 @@
   }
 
   function toggleDisabledState() {
-    if (disabled) process.userDaemon?.enableApp(id);
-    else process.userDaemon?.disableApp(id);
+    if (disabled) Daemon?.apps?.enableApp(id);
+    else Daemon?.apps?.disableApp(id);
   }
 
   async function deleteApp() {
-    const deleted = await process.userDaemon?.uninstallAppWithAck(target!);
+    const deleted = await Daemon?.appreg?.uninstallAppWithAck(target!);
 
     if (deleted) process.closeWindow();
   }
@@ -42,26 +44,16 @@
 
 <div class="header">
   <div class="left">
-    <img src={process.userDaemon?.getAppIcon(target) || process.getIconCached("QuestionIcon")} alt="" />
+    <Icon icon="@app::{target.id}" />
     <div class="base-info">
-      <p class="name">
-        <span>{target?.metadata?.name || "%general.unknown%"}</span>
-        {#if disabled}
-          <img
-            src={process.getIconCached("WarningIcon")}
-            alt=""
-            class="disabled"
-            title="%apps.AppInfo.header.isDisabled({target?.metadata?.name || 'Unknown'})%"
-          />
-        {/if}
-      </p>
+      <p class="name">{target?.metadata?.name || "%general.unknown%"}</p>
       <p class="author">{target?.metadata?.author || "%general.noAuthor%"}</p>
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={process.userDaemon?.isVital(target!)}>
-      {disabled ? "%general.enable%" : "%general.disable%"}
-    </button>
+    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={Daemon?.apps?.isVital(target!)}
+      >{disabled ? "%general.enable%" : "%general.disable%"}</button
+    >
     {#if (target?.entrypoint || target?.workingDirectory) && installed}
       <button
         class="lucide icon-trash-2"

@@ -1,8 +1,9 @@
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import { maxLength } from "$ts/util";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import { BRPURPLE, BRYELLOW, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRPURPLE, BRYELLOW, RESET, TerminalCommandStore } from "../store";
+import { TerminalCommandStore } from "../store";
 
 export class HelpCommand extends TerminalProcess {
   public static description: string = "Shows a list of built-in ArcTerm commands";
@@ -18,7 +19,7 @@ export class HelpCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
+  protected async main(_: IArcTerminal, flags: Arguments): Promise<number> {
     const showHidden = flags.a || flags.all;
     const maxLen = maxLength(
       TerminalCommandStore.map((c) => c.keyword),
@@ -26,7 +27,7 @@ export class HelpCommand extends TerminalProcess {
     );
     for (const command of TerminalCommandStore) {
       if (command.hidden && !showHidden) continue;
-      term.rl?.println(
+      this.rl?.println(
         `${command.hidden ? BRPURPLE : BRYELLOW}${command.keyword.padEnd(maxLen, " ")}${RESET}${command.description}`
       );
     }

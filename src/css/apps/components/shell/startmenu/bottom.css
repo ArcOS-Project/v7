@@ -48,7 +48,7 @@ div.shell div.startmenu div.bottom div.actions {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding-left: 10px;
+  padding-left: 15px;
   border-left: var(--button-glass-bg) 1px solid;
   height: 30px;
   min-width: fit-content;
@@ -58,11 +58,12 @@ div.shell div.startmenu div.bottom div.actions button {
   margin: 0;
   padding: 0;
   background-color: transparent !important;
-  height: 21px;
+  height: 16px;
 }
 div.shell div.startmenu div.bottom div.actions button span {
   color: inherit;
   transition: color 0.1s;
+  font-size: 16px;
 }
 
 div.shell div.startmenu div.bottom div.actions button:hover {

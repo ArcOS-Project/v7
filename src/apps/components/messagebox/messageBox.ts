@@ -1,5 +1,5 @@
 import "$css/apps/components/messagebox.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import MessageBox from "./MessageBox.svelte";
 import { MessageBoxRuntime } from "./runtime";
 

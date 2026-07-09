@@ -1,11 +1,13 @@
+import type { IExitRuntime } from "$interfaces/runtimes/IExitRuntime";
 import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { RenderArgs } from "$types/process";
 import { ExitActions } from "./store";
 import type { ExitAction } from "./types";
 
-export class ExitRuntime extends AppProcess {
+export class ExitRuntime extends AppProcess implements IExitRuntime {
   selected = Store<string>();
 
   //#region LIFECYCLE
@@ -21,6 +23,8 @@ export class ExitRuntime extends AppProcess {
   //#endregion
 
   async go(action: ExitAction | undefined, alternate = false) {
+    this.Log(`${action?.icon}: alternate=${alternate}`);
+
     const option = action || ExitActions[this.selected()];
 
     if (!option) return;
@@ -28,8 +32,8 @@ export class ExitRuntime extends AppProcess {
     await this.closeWindow();
 
     if (alternate && option.alternateAction)
-      option.alternateAction(this.userDaemon!); // Alternate: when shift key is pressed
-    else option.action(this.userDaemon!);
+      option.alternateAction(Daemon!); // Alternate: when shift key is pressed
+    else option.action(Daemon!);
   }
 
   render(args: RenderArgs) {

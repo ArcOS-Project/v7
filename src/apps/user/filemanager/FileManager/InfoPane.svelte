@@ -1,15 +1,17 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
+  import { Daemon, Fs } from "$ts/env";
+  import { Sleep } from "$ts/sleep";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
-  import type { ExpandedFileAssociationInfo } from "$types/assoc";
-  import type { ExtendedStat, SummarizedFsModifiers } from "$types/fs";
+  import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
+  import type { ExtendedStat, SummarizedFsModifiers } from "$types/system/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../runtime";
   import type { QuotedDrive } from "../types";
   import Drive from "./InfoPane/Drive.svelte";
   import MultiFile from "./InfoPane/MultiFile.svelte";
   import SingleFile from "./InfoPane/SingleFile.svelte";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { path, contents, selection, drives } = process;
 
   let currentDrive: QuotedDrive | undefined = $state(undefined);
@@ -22,17 +24,30 @@
   let variant: "singleSelection" | "multiSelection" | "drive" | "" = $state("");
 
   onMount(() => {
-    path.subscribe(update);
+    let lastPath = "";
+    let lastSelection: string[] = [];
+
+    path.subscribe((v) => {
+      if (lastPath === v) return;
+      lastPath = v;
+      update();
+    });
+    selection.subscribe((v) => {
+      if (JSON.stringify(lastSelection) === JSON.stringify(v)) return;
+      lastSelection = v;
+      update();
+    });
+
     contents.subscribe(update);
-    selection.subscribe(update);
     drives.subscribe(update);
   });
 
   async function update() {
     variant = "";
+    await Sleep(0);
 
     try {
-      const driveId = process.fs.getDriveIdByIdentifier(process.fs.getDriveIdentifier($path));
+      const driveId = Fs.getDriveIdByIdentifier(Fs.getDriveIdentifier($path));
       const isRoot = getParentDirectory($path) === $path;
 
       currentDrive = $drives[driveId] ?? undefined;
@@ -44,7 +59,7 @@
           singleSelectionFilename = getItemNameFromPath($selection[0]);
 
           try {
-            const stat = await process.fs.stat($selection[0]);
+            const stat = await Fs.stat($selection[0]);
 
             if (stat?.isDirectory) {
               singleSelectionThumbnail = "";
@@ -57,12 +72,12 @@
               singleSelectionModifiers = stat?.modifiers;
             } else {
               singleSelectionStat = stat;
-              singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+              singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
               singleSelectionModifiers = stat?.modifiers;
-              singleSelectionThumbnail = await process.userDaemon?.getThumbnailFor($selection[0]);
+              singleSelectionThumbnail = await Daemon?.files?.getThumbnailFor($selection[0]);
             }
           } catch {
-            singleSelectionAssoc = process.userDaemon?.assoc?.getFileAssociation($selection[0]);
+            singleSelectionAssoc = Daemon?.assoc?.getFileAssociation($selection[0]);
           }
         }
 

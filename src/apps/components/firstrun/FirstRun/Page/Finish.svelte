@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { FirstRunRuntime } from "../../runtime";
-  const { process }: { process: FirstRunRuntime } = $props();
+  import Icon from "$lib/Icon.svelte";
+  import { GoodStatusIcon } from "$ts/images/status";
 </script>
 
-<img src={process.getIconCached("GoodStatusIcon")} alt="" />
+<Icon icon="GoodStatusIcon" fallback={GoodStatusIcon} />
 <h1>%finish.title%</h1>
 <p>%finish.subtitle%</p>

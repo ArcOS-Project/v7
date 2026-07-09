@@ -1,6 +1,8 @@
 @import url("./adminportal/page/dashboard.css");
 @import url("./adminportal/page/bughunt.css");
 @import url("./adminportal/page/viewbugreport.css");
+@import url("./adminportal/page/viewbugreportsource.css");
+@import url("./adminportal/page/betafeedback.css");
 @import url("./adminportal/page/viewuser.css");
 @import url("./adminportal/page/users.css");
 @import url("./adminportal/page/store.css");
@@ -10,6 +12,7 @@
 @import url("./adminportal/page/filesystems.css");
 @import url("./adminportal/page/tokens.css");
 @import url("./adminportal/page/activities.css");
+@import url("./adminportal/page/versioning.css");
 @import url("./adminportal/page/scopes.css");
 @import url("./adminportal/page/viewscopes.css");
 @import url("./adminportal/page/auditlog.css");
@@ -58,6 +61,8 @@
   width: calc(100% - 150px);
   height: 100%;
   background-color: var(--win-bg);
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal > div.body > div.container > div.titlebar {
@@ -65,7 +70,8 @@
 }
 
 #AdminPortal > div.body > div.container div.page-content {
-  height: calc(100% - 40px - 31px);
+  height: 0;
+  flex-grow: 1;
   overflow: hidden;
 }
 

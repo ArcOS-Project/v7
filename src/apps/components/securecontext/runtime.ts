@@ -1,11 +1,13 @@
+import type { ISecureContextRuntime } from "$interfaces/runtimes/ISecureContextRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { LoginUser } from "$ts/server/user/auth";
+import { Daemon, Env, SoundBus, SysDispatch } from "$ts/env";
+import { LoginUser } from "$ts/user/auth";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { ElevationData } from "$types/elevation";
+import type { AppProcessData } from "$types/apps/app";
+import type { ElevationData } from "$types/system/elevation";
 
-export class SecureContextRuntime extends AppProcess {
+export class SecureContextRuntime extends AppProcess implements ISecureContextRuntime {
   private id: string;
   private key: string;
   public data: ElevationData;
@@ -31,7 +33,7 @@ export class SecureContextRuntime extends AppProcess {
   async render() {
     if (await this.closeIfSecondInstance()) return;
 
-    this.soundBus.playSound("arcos.dialog.info");
+    SoundBus.playSound("arcos.dialog.info");
   }
 
   //#endregion
@@ -45,16 +47,16 @@ export class SecureContextRuntime extends AppProcess {
     const security = this.userPreferences().security;
 
     if (security.noPassword) return true; // Password field is irrelevant if noPassword is set
-    if (security.disabled || !this.userDaemon?.username) return false; // 'Reject all elevation requests'
+    if (security.disabled || !Daemon?.username) return false; // 'Reject all elevation requests'
 
-    const token = await LoginUser(this.userDaemon.username, this.password()); // Try to create a token to validate
+    const tokenResult = await LoginUser(Daemon!.username, this.password()); // Try to create a token to validate
 
-    if (!token) {
+    if (!tokenResult.success) {
       await this.passwordIncorrect();
       return false;
     }
 
-    await this.userDaemon.discontinueToken(token); // Discontinue validated token
+    await Daemon?.account!.discontinueToken(tokenResult.result); // Discontinue validated token
 
     return true;
   }
@@ -67,7 +69,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    this.systemDispatch.dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
+    SysDispatch.dispatch("elevation-approve", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async deny() {
@@ -77,7 +79,7 @@ export class SecureContextRuntime extends AppProcess {
 
     await this.closeWindow(); // Close the window first
 
-    this.systemDispatch.dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
+    SysDispatch.dispatch("elevation-deny", [this.id, this.key], true); // Use dispatch to inform the invocator
   }
 
   async passwordIncorrect() {
@@ -121,7 +123,7 @@ export class SecureContextRuntime extends AppProcess {
             caption: "Continue",
             action: () => {
               this.deny();
-              this.spawnApp("systemSettings", +this.env.get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
+              this.spawnApp("systemSettings", +Env.get("shell_pid"), "securityCenter"); // Go to the 'securityCenter' page
             },
             suggested: true,
           },

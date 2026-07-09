@@ -1,11 +1,21 @@
-import type { Activity, AuditLog, ExpandedToken, ServerLogItem, ServerStatistics, User } from "$types/admin";
-import type { BugReport, ReportStatistics } from "$types/bughunt";
-import type { FsAccess } from "$types/fs";
-import type { StoreItem } from "$types/package";
-import type { SharedDriveType } from "$types/shares";
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+import type {
+  Activity,
+  AuditLog,
+  BugReportSourceInformation,
+  ExpandedToken,
+  ServerLogItem,
+  ServerStatistics,
+  User,
+} from "$types/server/admin";
+import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { SharedDriveType } from "$types/server/shares";
+import type { ReadableStore } from "$types/shared/writable";
+import type { FsAccess } from "$types/system/fs";
+import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
-import type { AdminPortalRuntime } from "./runtime";
 
 export interface AdminPortalPage {
   name: string;
@@ -17,7 +27,7 @@ export interface AdminPortalPage {
   // should go in here, rest is handled in the UI.
   scopes?: string[];
   parent?: string;
-  props?: (process: AdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
+  props?: (process: IAdminPortalRuntime) => Promise<Record<string, any>> | Record<string, any>; // = any data to be gathered before rendering ('Loading <page>...' spinner)
 }
 
 export type AdminPortalPages = Map<string, AdminPortalPage>;
@@ -32,6 +42,10 @@ export type DashboardData = {
   logs: ServerLogItem[];
 };
 
+export type QueryData = {
+  users: ExpandedUserInfo[];
+};
+
 export type BugHuntData = {
   users: User[];
   reports: BugReport[];
@@ -40,6 +54,16 @@ export type BugHuntData = {
 
 export type ViewBugReportData = {
   report: BugReport;
+  quickView?: ReadableStore<string>;
+};
+
+export type ViewBugReportSourceData = {
+  report: BugReport;
+  source: ICommandResult<BugReportSourceInformation>;
+};
+
+export type BetaFeedbackData = {
+  versions: Record<string, number>;
 };
 
 export type UsersData = {
@@ -49,6 +73,8 @@ export type UsersData = {
 export type ViewUserData = {
   user: ExpandedUserInfo;
   reports: BugReport[];
+  osVersion: string;
+  migrations: Record<string, number>;
 };
 
 export type SharesData = {
@@ -85,6 +111,10 @@ export type ActivitiesData = {
   users: ExpandedUserInfo[];
 };
 
+export type VersioningData = {
+  users: ExpandedUserInfo[];
+};
+
 export type ScopesData = {
   admins: ExpandedUserInfo[];
 };
@@ -103,7 +133,6 @@ export type AuditLogData = {
 // End props for individual pages
 //
 
-export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
 export type SharesPageFilters = "all" | "resized" | "locked";
 export type StorePageFilters = "all" | "official" | "deprecated";
 export interface SpecificAdminAction {
@@ -138,4 +167,9 @@ export interface BugReportTpaFile {
   filePath: string;
   filename: string;
   size: number;
+}
+
+export interface VersioningNode {
+  os: string;
+  migrations: Record<string, number>;
 }

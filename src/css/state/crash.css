@@ -21,12 +21,26 @@
   overflow: hidden;
 }
 
+.crash-screen #crashScreen > p {
+  max-width: 360px;
+  text-align: center;
+}
+
 .crash-screen p#crashText {
   white-space: pre-wrap;
   overflow-y: scroll;
   padding: 10px;
   font-size: 13px;
   font-family: "Source Code Pro";
+}
+
+.crash-screen p#crashTextBrief {
+  margin-top: 40px;
+  opacity: 0.5;
+  font-family: "Source Code Pro";
+  width: fit-content;
+  max-width: 80vw;
+  text-align: left;
 }
 
 .crash-screen #crashScreen {
@@ -52,11 +66,6 @@
   margin-bottom: 10px;
 }
 
-.crash-screen #crashScreen > p {
-  max-width: 360px;
-  text-align: center;
-}
-
 .crash-screen #crashScreen > div.shortcut-hint {
   position: absolute;
   bottom: 30px;
@@ -66,12 +75,23 @@
   gap: 10px;
   width: 100%;
   font-size: 14px;
-  opacity: 0.5;
 }
 
 .crash-screen #crashScreen > div.shortcut-hint span.lucide {
   font-size: 16px;
   height: 16px;
+}
+
+.crash-screen #crashScreen > div.shortcut-hint span.key {
+  padding: 2px 6px;
+  background-color: #fff3;
+  border-radius: 5px;
+}
+
+.crash-screen #crashScreen > div.shortcut-hint div.sep {
+  width: 1px;
+  height: 30px;
+  background-color: #fff3;
 }
 
 @keyframes crash-show {

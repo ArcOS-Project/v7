@@ -1,11 +1,11 @@
-// import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
-import { KernelStack } from "$ts/env";
-import { tryJsonParse } from "$ts/json";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { Stack, SysDispatch } from "$ts/env";
+import { KnownSystemDispatchers, SystemOnlyDispatches } from "$ts/kernel/mods/dispatch/store";
 import { tryParseInt } from "$ts/util";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import { BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLUE, RESET } from "../store";
 
 export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";
@@ -21,20 +21,20 @@ export class DispatchCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments): Promise<number> {
     const command = flags.cmd;
     const data = tryJsonParse(flags.data);
     const pid = tryParseInt(flags.pid, true);
     const list = flags.list;
 
     if (list) {
-      term.rl?.println("Global dispatches known to ArcOS:");
+      this.rl?.println("Global dispatches known to ArcOS:");
 
-      // for (const key of KnownSystemDispatchers) {
-      //   const keyStr = key.padEnd(25, " ");
+      for (const key of KnownSystemDispatchers) {
+        const keyStr = key.padEnd(25, " ");
 
-      //   term.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
-      // }
+        this.rl?.println(`${SystemOnlyDispatches.includes(key) ? "#" : " "} ${BRBLUE}${keyStr}${RESET}`);
+      }
 
       return 0;
     }
@@ -45,7 +45,7 @@ export class DispatchCommand extends TerminalProcess {
     }
 
     if (!pid) {
-      const result = term.systemDispatch.dispatch(command, data, false);
+      const result = SysDispatch.dispatch(command.toString(), data, false);
 
       if (result !== "success") {
         term.Error(`failed: ${command}: ${result}`);
@@ -57,7 +57,7 @@ export class DispatchCommand extends TerminalProcess {
 
       return 0;
     } else {
-      const dispatch = KernelStack().ConnectDispatch(+pid);
+      const dispatch = Stack.ConnectDispatch(+pid);
 
       if (!dispatch) {
         term.Error(`Failed to connect to dispatch of PID ${pid}`);
@@ -65,7 +65,7 @@ export class DispatchCommand extends TerminalProcess {
         return 1;
       }
 
-      const result = await dispatch.dispatch(command, ...(data || []));
+      const result = await dispatch.dispatch(command.toString(), ...(data || []));
 
       if (!result) {
         term.Error(`Failed to dispatch "${command}": not found.`);

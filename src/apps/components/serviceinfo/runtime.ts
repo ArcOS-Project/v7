@@ -1,33 +1,35 @@
+import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
+import type { IServiceInfoRuntime } from "$interfaces/runtimes/IServiceInfoRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { BaseService } from "$ts/services/base";
+import { Daemon, Stack } from "$ts/env";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { Service } from "$types/service";
+import type { AppProcessData } from "$types/apps/app";
+import type { Service } from "$types/services/service";
 import type { Unsubscriber } from "svelte/store";
 
-export class ServiceInfoRuntime extends AppProcess {
-  serviceId: string;
+export class ServiceInfoRuntime extends AppProcess implements IServiceInfoRuntime {
+  serviceId: ServiceIdentifier;
   service = Store<Service | undefined>();
-  serviceProcess = Store<BaseService | undefined>();
+  serviceProcess = Store<IBaseService | undefined>();
   serviceSubscriber?: Unsubscriber;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, serviceId: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, serviceId: ServiceIdentifier) {
     super(pid, parentPid, app);
 
     this.serviceId = serviceId;
-    this.service.set(this.userDaemon?.serviceHost?.Services.get().get(serviceId));
+    this.service.set(Daemon?.serviceHost?.Services.get().get(serviceId));
   }
 
   async start() {
     if (!this.service) return false;
 
-    this.serviceSubscriber = this.userDaemon?.serviceHost?.Services.subscribe((v) => {
+    this.serviceSubscriber = Daemon?.serviceHost?.Services.subscribe((v) => {
       this.service.set(v.get(this.serviceId));
       const pid = this.service()?.pid;
-      this.serviceProcess.set(pid ? this.handler.getProcess(pid) : undefined);
+      this.serviceProcess.set(pid ? Stack.getProcess(pid) : undefined);
     });
   }
 
@@ -38,6 +40,8 @@ export class ServiceInfoRuntime extends AppProcess {
   //#endregion
 
   async toggleRunningState() {
+    this.Log(`toggleRunningState`);
+
     if (this.service()?.pid) {
       MessageBox(
         {
@@ -51,7 +55,7 @@ export class ServiceInfoRuntime extends AppProcess {
             {
               caption: "Stop service",
               action: () => {
-                this.userDaemon?.serviceHost?.stopService(this.serviceId);
+                Daemon?.serviceHost?.stopService(this.serviceId);
               },
               suggested: true,
             },
@@ -63,7 +67,7 @@ export class ServiceInfoRuntime extends AppProcess {
         true
       );
     } else {
-      this.userDaemon?.serviceHost?.startService(this.serviceId);
+      Daemon?.serviceHost?.startService(this.serviceId);
     }
   }
 }

@@ -1,27 +1,33 @@
-import type { ShellRuntime } from "$apps/components/shell/runtime";
-import { ArcOSVersion, getKMod, Kernel, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
-import { ArcBuild } from "$ts/metadata/build";
-import { ArcMode } from "$ts/metadata/mode";
-import type { UserDaemon } from "$ts/server/user/daemon";
-import { DefaultUserPreferences } from "$ts/server/user/default";
-import type { AppKeyCombinations } from "$types/accelerator";
-import type { ElevationData } from "$types/elevation";
-import type { SystemDispatchType } from "$types/kernel";
-import { LogLevel } from "$types/logging";
-import type { RenderArgs } from "$types/process";
+import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { DefaultUserPreferences } from "$ts/user/default";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { MaybePromise } from "$types/shared/common";
+import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
+import { type ElevationData } from "$types/system/elevation";
+import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
-import { type App, type AppContextMenu, type AppProcessData, type ContextMenuItem } from "../../types/app";
-import { Process } from "../process/instance";
+import {
+  type App,
+  type AppContextMenu,
+  type AppProcessData,
+  type ContextMenuItem,
+  type ToastMessage,
+} from "../../types/apps/app";
 import { Sleep } from "../sleep";
-import { Store, type ReadableStore } from "../writable";
+import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import { ApplicationStorage } from "./storage";
 export const bannedKeys = ["tab", "pagedown", "pageup"];
 
-export class AppProcess extends Process {
+export class AppProcess extends Process implements IAppProcess {
   crashReason = "";
   windowTitle = Store("");
   windowIcon = Store("");
@@ -29,10 +35,9 @@ export class AppProcess extends Process {
   componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  systemDispatch: SystemDispatchType;
-  userDaemon: UserDaemon | undefined;
-  shell: ShellRuntime | undefined;
   overridePopulatable: boolean = false;
+  private toastTimeout?: NodeJS.Timeout;
+  public toastMessage = Store<ToastMessage | undefined>();
   public safeMode = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
@@ -41,12 +46,18 @@ export class AppProcess extends Process {
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);
+  public blinking = Store<boolean>(false);
+
+  get shell() {
+    return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
+  }
+
   draggable: Draggable | undefined;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
-    super(pid, parentPid);
+    super(pid, parentPid, app, ...args);
 
     this.app = {
       data: { ...app.data },
@@ -54,31 +65,27 @@ export class AppProcess extends Process {
       desktop: app.desktop,
     };
 
-    KernelStack().renderer!.lastInteract = this;
+    Stack.renderer!.lastInteract = this;
 
     this.windowTitle.set(app.data.metadata.name || "Application");
     this.name = app.data.id;
-    this.systemDispatch = getKMod<SystemDispatchType>("dispatch");
-    this.shell = KernelStack().getProcess(+this.env.get("shell_pid"));
 
-    const desktopProps = KernelStateHandler()?.stateProps["desktop"];
-    const daemon: UserDaemon | undefined = desktopProps?.userDaemon || KernelStack().getProcess(+this.env.get("userdaemon_pid"));
+    const desktopProps = State?.stateProps["desktop"];
+    const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
 
     if (daemon) {
       this.userPreferences = daemon.preferences;
       this.username = daemon.username;
-      this.userDaemon = daemon;
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(this.userDaemon?.getAppIconByProcess(this) || this.getIconCached("ComponentIcon"));
-    this.startAcceleratorListener();
+    this.windowIcon.set(`@app::${app.id}`);
 
-    this.systemDispatch.subscribe("window-unfullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(false);
     });
 
-    this.systemDispatch.subscribe("window-fullscreen", ([pid]) => {
+    SysDispatch.subscribe("window-fullscreen", ([pid]) => {
       if (this.pid === pid) this.windowFullscreen.set(true);
     });
 
@@ -91,27 +98,6 @@ export class AppProcess extends Process {
         return v;
       });
     }
-
-    // Global interceptor for the Recycle Bin
-    const userDaemon = this.userDaemon;
-
-    this.fs = new Proxy(this.fs, {
-      get: (target, prop, receiver) => {
-        if (prop === "deleteItem" && typeof target[prop] === "function") {
-          return async (path: string, dispatch?: boolean) => {
-            if (!path.startsWith("U:/")) {
-              return await target[prop].call(this.fs, path, dispatch);
-            }
-
-            const trash = userDaemon?.serviceHost?.getService("TrashSvc") as any;
-            if (!trash) return await target[prop].call(this.fs, path, dispatch);
-
-            return await trash.moveToTrash(path, dispatch);
-          };
-        }
-        return Reflect.get(target, prop, receiver);
-      },
-    });
   }
 
   // Conditional function that can prohibit closing if it returns false
@@ -119,10 +105,25 @@ export class AppProcess extends Process {
     return true;
   }
 
+  async ShowToast(toast: ToastMessage, durationMs: number = 3000) {
+    await this.HideToast();
+
+    this.toastMessage.set(toast);
+    this.toastTimeout = setTimeout(() => {
+      this.toastMessage.set(undefined);
+    }, durationMs);
+  }
+
+  async HideToast() {
+    this.toastMessage.set(undefined);
+    clearTimeout(this.toastTimeout);
+    await Sleep(200); // Delay to wait for the hide animation
+  }
+
   async closeWindow(kill = true) {
     this.Log(`Closing window ${this.pid}`);
 
-    this.handler.renderer?.focusedPid.set(this.pid);
+    // Stack.renderer?.focusedPid.set(this.pid);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -131,14 +132,14 @@ export class AppProcess extends Process {
       return false;
     }
 
-    this.shell?.trayHost?.disposeProcessTrayIcons?.(this.pid);
+    this.STATE = "stopping";
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      this.systemDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
 
     const elements = [
       ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(`div.overlay-wrapper[data-pid="${this.pid}"]`) || []),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-pid="${this.pid}"]`) || []),
       ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
     ];
 
@@ -148,7 +149,7 @@ export class AppProcess extends Process {
       return this.killSelf();
     }
 
-    this.systemDispatch.dispatch("window-closing", [this.pid]);
+    SysDispatch.dispatch("window-closing", [this.pid]);
 
     for (const element of elements) {
       element.classList.add("closing");
@@ -162,21 +163,24 @@ export class AppProcess extends Process {
     return true;
   }
 
-  render(args: RenderArgs): any {
+  render(args: RenderArgs): MaybePromise<any> {
     /** */
   }
 
   async __render__(body: HTMLDivElement) {
+    this.STATE = "rendering";
+    this.startAcceleratorListener();
+
     if (this.userPreferences().disabledApps.includes(this.app.id)) {
       if (this.safeMode) {
-        this.userDaemon?.sendNotification({
+        Daemon?.notifications?.sendNotification({
           title: "Running disabled app!",
           message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
               action: () => {
-                this.userDaemon?.spawnApp("systemSettings", +this.env.get("shell_pid"), "apps", "apps_manageApps");
+                this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps", "apps_manageApps");
               },
             },
           ],
@@ -199,14 +203,16 @@ export class AppProcess extends Process {
         props: {
           process: this,
           pid: this.pid,
-          kernel: Kernel(),
+          kernel: Kernel,
           app: this.app.data,
           windowTitle: this.windowTitle,
           windowIcon: this.windowIcon,
         },
       });
 
-    this.render(this.renderArgs);
+    await this.render(this.renderArgs);
+
+    if (!this._disposed) this.STATE = "running";
   }
 
   //#endregion
@@ -225,13 +231,18 @@ export class AppProcess extends Process {
     }
   }
 
-  getSingleton() {
-    const { renderer } = KernelStack();
+  getSingleton(): this[] {
+    const { renderer } = Stack;
 
-    return renderer?.getAppInstances(this.app.data.id, this.pid) || [];
+    return (renderer?.getAppInstances(this.app.data.id, this.pid) || []) as this[];
   }
 
-  async closeIfSecondInstance() {
+  async closeIfSecondInstance(): Promise<this | undefined> {
+    if (this.STATE !== "rendering") {
+      throw new AppRuntimeError(
+        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
+      );
+    }
     this.Log("Closing if second instance");
 
     const instances = this.getSingleton();
@@ -239,21 +250,29 @@ export class AppProcess extends Process {
     if (instances.length) {
       await this.killSelf();
 
-      if (!this.app.data.core) KernelStack().renderer?.focusPid(instances[0].pid);
+      if (!this.app.data.core) Stack.renderer?.focusPid(instances[0].pid);
 
-      if (instances[0].app.desktop) this.userDaemon?.switchToDesktopByUuid(instances[0].app.desktop);
+      if (instances[0].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
     }
 
     return instances.length ? instances[0] : undefined;
   }
 
   getWindow() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getWindow during process startup: there's no window at this point.");
+    }
+
     const window = document.querySelector(`div.window[data-pid="${this.pid}"]`);
 
     return (window as HTMLDivElement) || undefined;
   }
 
   getBody() {
+    if (this.STATE === "starting") {
+      throw new AppRuntimeError("Violation: Called getBody during process startup: there's no window body at this point.");
+    }
+
     const body = document.querySelector(`div.window[data-pid="${this.pid}"] > div.body`);
 
     return (body as HTMLDivElement) || undefined;
@@ -264,7 +283,7 @@ export class AppProcess extends Process {
 
     if (!window) return false;
 
-    return window.querySelectorAll("div.overlay-wrapper").length > 0;
+    return window.querySelectorAll("div.window-overlay-wrapper").length > 0;
   }
 
   public startAcceleratorListener() {
@@ -283,6 +302,8 @@ export class AppProcess extends Process {
     this.Log(`STOPPING PROCESS`);
 
     this.stopAcceleratorListener();
+    this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
+
     return await this.stop();
   }
 
@@ -297,7 +318,7 @@ export class AppProcess extends Process {
       if (document.activeElement === textarea) focusingTextArea = true;
     }
 
-    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && KernelStateHandler()?.currentState === "desktop") {
+    if (!focusingTextArea && bannedKeys.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
       e.preventDefault();
 
       return false;
@@ -305,7 +326,7 @@ export class AppProcess extends Process {
 
     this.unfocusActiveElement();
 
-    const state = KernelStateHandler()?.currentState;
+    const state = State?.currentState;
 
     if (state != "desktop" || this._disposed) return;
 
@@ -320,11 +341,11 @@ export class AppProcess extends Process {
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused = KernelStack().renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-      if (!this.userDaemon?._elevating) await combo.action(this, e);
+      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
 
       break;
     }
@@ -347,10 +368,10 @@ export class AppProcess extends Process {
       return false;
     }
 
-    const proc = await KernelStack().spawn<AppProcess>(
-      metadata.assets.runtime,
+    const proc = await Stack.spawn<IAppProcess>(
+      metadata.assets.runtime as IAppProcessConstructor,
       undefined,
-      this.userDaemon?.userInfo?._id,
+      Daemon?.userInfo?._id,
       this.pid,
       {
         data: { ...metadata, overlay: true },
@@ -359,53 +380,41 @@ export class AppProcess extends Process {
       ...args
     );
 
-    if (proc) KernelStack().renderer?.focusPid(proc?.pid);
+    if (proc) Stack.renderer?.focusPid(proc?.pid);
 
     return !!proc;
   }
 
-  async spawnApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawnApp<T>(id, parentPid ?? this.parentPid, ...args);
+  async spawnApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, {}, ...args);
   }
 
-  async spawnOverlayApp<T = AppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
-    return await this.userDaemon?.spawnOverlay<T>(id, parentPid ?? this.parentPid, ...args);
+  async spawnOverlayApp<T extends IProcess = IAppProcess>(id: string, parentPid?: number | undefined, ...args: any[]) {
+    return await Daemon?.spawn?.spawnApp<T>(id, parentPid ?? this.parentPid, { asOverlay: true }, ...args);
   }
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await this.userDaemon?.manuallyElevate(this.elevations[id]);
-  }
-
-  notImplemented(what?: string) {
-    this.Log(`Not implemented: ${what || "<unknown>"}`);
-    // Manually invoking spawnOverlay method on daemon to work around AppProcess <> MessageBox circular import
-    this.userDaemon?.spawnOverlay("messageBox", this.pid, {
-      title: "Not implemented",
-      message: `${
-        what || "This feature"
-      } isn't implemented yet ¯\\_(ツ)_/¯<br><br>Encountering this in a (recent) <b>release</b> build of ArcOS? Then I forgot to make something. Please let me know. Do that with this information:<br><code class='block'>ArcOS v${ArcOSVersion}-${ArcMode()} (${ArcBuild()}) - ${
-        location.hostname
-      }</code>`,
-      buttons: [{ caption: "Sad :(", action: () => {}, suggested: true }],
-      image: "BugReportIcon",
-      sound: "arcos.dialog.warning",
-    });
+    return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
   }
 
   appStore() {
-    return this.userDaemon?.serviceHost?.getService("AppStorage") as ApplicationStorage;
+    return Daemon?.serviceHost?.getService("AppStorage") as IApplicationStorage;
   }
 
   async getIcon(id: string): Promise<string> {
-    return this.userDaemon?.getIcon(id)!;
+    return Daemon?.icons?.getIcon(id)!;
   }
 
   getIconCached(id: string): string {
-    return this.userDaemon?.getIconCached(id)!;
+    return Daemon?.icons?.getIconCached(id)! || id;
   }
 
   getIconStore(id: string): ReadableStore<string> {
-    return this.userDaemon?.getIconStore(id)!;
+    return Daemon?.icons?.getIconStore(id)!;
+  }
+
+  blink() {
+    this.blinking.set(!this.blinking());
   }
 }

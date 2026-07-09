@@ -1,5 +1,6 @@
-import type { FirstRunRuntime } from "./runtime";
+import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 
+// !tpa
 export interface FirstRunPage {
   name: string;
   component: any;
@@ -14,7 +15,7 @@ export interface Action {
   caption: string;
   suggested?: boolean;
   disabled?: boolean;
-  action: (process: FirstRunRuntime) => void;
+  action: (process: IFirstRunRuntime) => void;
 }
 
 export interface FirstRunTheme {
@@ -27,3 +28,4 @@ export interface FirstRunTheme {
     accent: string;
   };
 }
+// !endtpa

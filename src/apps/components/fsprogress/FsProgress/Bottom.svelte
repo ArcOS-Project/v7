@@ -1,8 +1,11 @@
 <script lang="ts">
+  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { FsProgressRuntime } from "../runtime";
 
-  const { process }: { process: FsProgressRuntime } = $props();
+  const { process }: { process: IFsProgressRuntime } = $props();
   const { Progress } = process;
 
   let canceling = $state(false);
@@ -16,15 +19,15 @@
   }
 </script>
 
-<div class="bottom">
-  {#if $Progress.max > 0}
-    <p class="status">
-      {#if $Progress.type == "quantity"}
-        %apps.FsProgress.quantity({$Progress.done}::{$Progress.max})%
-      {:else if $Progress.type == "size"}
-        %apps.FsProgress.size({formatBytes($Progress.done)}::{formatBytes($Progress.max)})%
-      {/if}
-    </p>
-  {/if}
-  <button class="cancel" disabled={!$Progress.cancel || canceling} onclick={cancel}> %general.cancel% </button>
-</div>
+<ActionBar>
+  {#snippet leftContent()}
+    {#if $Progress.type == "quantity"}
+      <ActionSubtle text="%apps.FsProgress.quantity({$Progress.done}::{$Progress.max})%" />
+    {:else if $Progress.type == "size"}
+      <ActionSubtle text="%apps.FsProgress.size({formatBytes($Progress.done)}::{formatBytes($Progress.max)})%" />
+    {/if}
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton disabled={!$Progress.cancel || canceling} onclick={cancel}>%general.cancel%</ActionButton>
+  {/snippet}
+</ActionBar>

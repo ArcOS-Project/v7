@@ -1,5 +1,5 @@
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class OpenCommand extends TerminalProcess {
@@ -16,16 +16,16 @@ export class OpenCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const filename = argv.join(" ");
     const shortcuts = Object.entries(term.contents?.shortcuts || {});
     const translated = shortcuts.filter(([_, v]) => v.name === filename).map(([k, v]) => ({ ...v, filename: k }))[0];
 
     if (translated) {
-      await term.daemon?.openFile(term.join(translated.filename), translated);
+      await this.daemon?.files?.openFile(term.join(translated.filename), translated);
       return 0;
     } else if (term.contents?.files?.map((f) => f.name)?.includes(filename)) {
-      await term.daemon?.openFile(term.join(filename), term.contents?.shortcuts[filename]);
+      await this.daemon?.files?.openFile(term.join(filename), term.contents?.shortcuts[filename]);
       return 0;
     } else {
       return 1;

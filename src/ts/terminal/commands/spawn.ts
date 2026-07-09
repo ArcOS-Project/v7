@@ -1,6 +1,7 @@
-import { tryJsonParse } from "$ts/json";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IProcess } from "$interfaces/IProcess";
+import { tryJsonParse } from "$ts/util/json";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
 import { TerminalProcess } from "../process";
 
 export class SpawnCommand extends TerminalProcess {
@@ -17,8 +18,10 @@ export class SpawnCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, _: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     const id = argv.shift();
+    const noWorkspace = flags.nows;
+    const asOverlay = flags.overlay;
 
     argv = argv.map(tryJsonParse);
 
@@ -27,6 +30,17 @@ export class SpawnCommand extends TerminalProcess {
       return 1;
     }
 
-    return (await term.daemon?.spawnApp(id, term.daemon?.pid, ...argv)) ? 0 : 1;
+    const pid = this.daemon?.getShell()?.pid ?? this.daemon?.pid;
+    const proc = await this.daemon?.spawn?.spawnApp<IProcess>(
+      id,
+      pid,
+      {
+        noWorkspace: !!noWorkspace,
+        asOverlay: !!asOverlay,
+      },
+      ...argv
+    );
+
+    return proc ? 0 : 1;
   }
 }

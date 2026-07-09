@@ -1,6 +1,7 @@
-import type { ReadableStore } from "$ts/writable";
-import type { IntBool } from "$types/common";
+import type { IntBool } from "$types/shared/common";
+import type { ReadableStore } from "$types/shared/writable";
 
+// !tpa
 export interface SqlTable {
   uuid: string;
   name: string;
@@ -44,3 +45,4 @@ export interface SqeletonHistoryItem {
   result: Record<string, any>[][];
   system: boolean;
 }
+// !endtpa

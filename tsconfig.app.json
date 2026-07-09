@@ -23,7 +23,7 @@
       "$types/*": ["./src/types/*"],
       "$lib/*": ["./src/lib/*"],
       "$ts/*": ["./src/ts/*"],
-      "$lang/*": ["./src/lang/*"]
+      "$lang/*": ["./src/lang/*", "./src/interfaces/*"]
     },
     "esModuleInterop": true
   },

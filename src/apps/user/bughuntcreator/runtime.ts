@@ -1,20 +1,21 @@
+import type { IBugHuntCreatorRuntime } from "$interfaces/runtimes/IBugHuntCreatorRuntime";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import type { BugHuntProc } from "$types/bughunt";
+import type { AppProcessData } from "$types/apps/app";
+import type { BugHuntProc } from "$types/server/bughunt";
 import DataPrivacy from "./Creator/DataPrivacy.svelte";
 import type { BugHuntCreatorOptions } from "./types";
 
-export class BugHuntCreatorRuntime extends AppProcess {
+export class BugHuntCreatorRuntime extends AppProcess implements IBugHuntCreatorRuntime {
   parent: BugHuntProc | undefined;
   title = Store<string>();
   body = Store<string>();
   loading = Store<boolean>();
   overrideOptions: BugHuntCreatorOptions | undefined;
-  bughunt: BugHuntUserSpaceProcess;
+  bughunt: IBugHuntUserSpaceProcess;
 
   //#region LIFECYCLE
 
@@ -28,10 +29,13 @@ export class BugHuntCreatorRuntime extends AppProcess {
   ) {
     super(pid, parentPid, app);
 
-    const parent = KernelStack().getProcess(this.parentPid);
-    const bugHuntInstances = KernelStack()
-      .renderer?.getAppInstances("BugHunt")
-      .map((p) => p.pid);
+    const parent = Stack.getProcess(this.parentPid);
+    const bugHuntInstances = Stack.renderer?.getAppInstances("BugHunt").map((p) => p.pid);
+
+    this.userPreferences.update((v) => {
+      v.appPreferences.BugHunt ||= {};
+      return v;
+    });
 
     if (parent && bugHuntInstances?.includes(parent.pid)) this.parent = parent as any;
 
@@ -41,7 +45,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
     }
 
     if (options) this.overrideOptions = options;
-    this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<IBugHuntUserSpaceProcess>("BugHuntUsp")!;
 
     this.setSource(__SOURCE__);
   }
@@ -49,6 +53,7 @@ export class BugHuntCreatorRuntime extends AppProcess {
   //#endregion
 
   async Send() {
+    this.Log(`Sending report`);
     const options = this.overrideOptions || (this.userPreferences().appPreferences.BugHunt! as BugHuntCreatorOptions);
     const title = this.title();
     const body = this.body();
@@ -60,9 +65,9 @@ export class BugHuntCreatorRuntime extends AppProcess {
     await this.bughunt.sendBugReport({
       title,
       body,
-      anonymous: options.sendAnonymously,
-      noLogs: options.excludeLogs,
-      public: options.makePublic,
+      anonymous: !!options.sendAnonymously,
+      noLogs: !!options.excludeLogs,
+      public: !!options.makePublic,
     });
 
     await this.closeWindow();
@@ -72,12 +77,19 @@ export class BugHuntCreatorRuntime extends AppProcess {
   }
 
   async dataPrivacy() {
+    this.Log(`dataPrivacy`);
+
     MessageBox(
       {
         title: "Please keep in mind",
         content: DataPrivacy,
         buttons: [
-          { caption: "Decline", action: () => this.closeWindow() },
+          {
+            caption: "Decline",
+            action: () => {
+              this.closeWindow();
+            },
+          },
           { caption: "I Agree", action() {}, suggested: true },
         ],
         sound: "arcos.dialog.info",

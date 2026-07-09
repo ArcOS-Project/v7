@@ -1,56 +1,78 @@
 <script lang="ts">
-  import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import UserLink from "$lib/UserLink.svelte";
-  import { ProfilePictures } from "$ts/images/pfp";
-  import type { PublicUserInfo } from "$types/user";
+  import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
+  import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import { Daemon } from "$ts/env";
+  import type { ExpandedMessage, ExpandedMessageNode } from "$types/server/messaging";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
-  import type { MessagingAppRuntime } from "../../runtime";
+  import Header from "./MessageContent/Header.svelte";
+  import MessageThread from "./MessageThread.svelte";
 
-  const { process }: { process: MessagingAppRuntime } = $props();
-  const { message } = process;
-  const userId = process.userDaemon!.userInfo!._id;
-  const isSent = $message?.authorId === userId;
+  const { process }: { process: IMessagingAppRuntime } = $props();
+  const { message, buffer } = process;
 
-  let user = $state<PublicUserInfo>();
-  let date = $state<string>();
+  let expandThread = $state<boolean>(false);
+  let loadingThread = $state<boolean>(false);
+  let thread = $state<ExpandedMessageNode[]>();
+  let reply = $state<ExpandedMessage | undefined>();
 
-  onMount(async () => {
+  async function update() {
     if (!$message) return;
+    loadingThread = true;
+    thread = await process.service.getMessageThread($message?._id!);
+    reply = checkReplied(thread);
+    loadingThread = false;
+  }
 
-    user = (isSent ? await process.userInfo($message.recipient) : $message.author!) || {
-      username: "(deleted user)",
-      profilePicture: ProfilePictures.def,
-      admin: false,
-      dispatchClients: 0,
-    };
-    date = dayjs($message.createdAt).format("D MMMM YYYY, hh:mm A");
-  });
+  function checkReplied(thread: ExpandedMessageNode[]) {
+    let reply: ExpandedMessage | undefined;
+
+    for (const msg of thread) {
+      const r = checkReplied(msg.replies);
+
+      if (r) reply = r;
+      else if (msg.repliesTo === $message?._id && msg.authorId === Daemon.userInfo._id) reply = msg;
+    }
+
+    return reply;
+  }
+
+  message.subscribe(update);
+  onMount(update);
 </script>
 
 <div class="message-content">
-  {#if $message && user}
-    <div class="header">
-      <ProfilePicture
-        fallback={$message.author!.profilePicture}
-        height={40}
-        showOnline
-        online={$message.author!.dispatchClients > 0}
-      />
-      <div>
-        <h1>{$message.title}</h1>
-        <p>
-          {#if isSent}
-            To <UserLink {user} /> on {date}
-          {:else}
-            From <UserLink {user} /> on {date}
-          {/if}
-        </p>
+  {#if $message}
+    <Header {process} message={$message} />
+    {#if reply}
+      <div class="has-reply">
+        <span class="lucide icon-info"></span>
+        <span>You replied to this message on {dayjs(reply.createdAt).format("D MMMM YYYY, hh:mm A")}</span>
+        <button class="link" onclick={() => process.readMessage(reply!._id, true)}>View</button>
       </div>
-    </div>
-    <p class="message-body markdown-body">
+    {/if}
+    <div class="message-body markdown-body">
       <SvelteMarkdown source={$message.body} />
-    </p>
+    </div>
+    {#if loadingThread}
+      <div class="loading-thread">
+        <HtmlSpinner height={16} thickness={2} />
+        <p>Loading thread information...</p>
+      </div>
+    {:else if $message.repliesTo && thread?.length}
+      <hr />
+      <div class="thread-wrapper" class:expand={expandThread}>
+        <div class="notice">
+          <p>This message is part of a thread.</p>
+          <button onclick={() => (expandThread = !expandThread)} class="link">{expandThread ? "Hide" : "Show"}</button>
+        </div>
+        {#if expandThread}
+          {#each thread as threadMessage (threadMessage._id)}
+            <MessageThread message={threadMessage} {process} originalMessageId={$message._id} />
+          {/each}
+        {/if}
+      </div>
+    {/if}
   {/if}
 </div>

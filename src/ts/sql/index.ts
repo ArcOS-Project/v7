@@ -1,8 +1,10 @@
-import { Process } from "$ts/process/instance";
+import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import { Daemon, Fs, Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import initSqlJs from "sql.js";
-import { sqljsResultToJSON } from "./util";
+import { sqljsResultToJSON } from "../util/sql";
 
-export class SqlInterfaceProcess extends Process {
+export class SqlInterfaceProcess extends Process implements ISqlInterfaceProcess {
   private filePath: string;
   private sql?: initSqlJs.SqlJsStatic;
   public db?: initSqlJs.Database;
@@ -50,7 +52,7 @@ export class SqlInterfaceProcess extends Process {
   async readFile() {
     if (this._disposed) return;
 
-    const ab = await this.fs.readFile(this.filePath);
+    const ab = await Fs.readFile(this.filePath);
 
     if (!ab) throw new Error("Failed to read SQL: file not found");
 
@@ -66,7 +68,7 @@ export class SqlInterfaceProcess extends Process {
 
     if (!ab) return;
 
-    await this.fs.writeFile(this.filePath, new Blob([ab]));
+    await Fs.writeFile(this.filePath, new Blob([ab]));
   }
 
   async stop() {
@@ -86,5 +88,9 @@ export class SqlInterfaceProcess extends Process {
     } catch (e) {
       return `${e}`;
     }
+  }
+
+  static async Create(parentPid: number, path: string): Promise<ISqlInterfaceProcess | undefined> {
+    return await Stack.spawn<ISqlInterfaceProcess>(this, undefined, Daemon?.userInfo?._id, parentPid, path);
   }
 }

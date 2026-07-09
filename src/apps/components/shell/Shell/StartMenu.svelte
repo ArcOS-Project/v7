@@ -1,10 +1,12 @@
 <script lang="ts">
-  import type { BooleanStore } from "$ts/writable";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { IArcFindService } from "$interfaces/services/IArcFindService";
+  import ServiceGate from "$lib/ServiceGate.svelte";
+  import type { BooleanStore, StringStore } from "$types/shared/writable";
   import type { UserPreferencesStore } from "$types/user";
-  import type { ShellRuntime } from "../runtime";
-  import AppList from "./StartMenu/AppList.svelte";
   import Bottom from "./StartMenu/Bottom.svelte";
-  import Folders from "./StartMenu/Folders.svelte";
+  import LeftPane from "./StartMenu/LeftPane.svelte";
+  import RightPane from "./StartMenu/RightPane.svelte";
 
   const {
     process,
@@ -14,22 +16,30 @@
   }: {
     userPreferences: UserPreferencesStore;
     startMenuOpened: BooleanStore;
-    process: ShellRuntime;
+    process: IShellRuntime;
     username: string;
   } = $props();
 
-  const { searchQuery } = process;
+  let searchQuery = $state<StringStore | undefined>();
 </script>
 
 <div
   class="startmenu shell-colored"
   class:colored={$userPreferences.shell.taskbar.colored}
   class:opened={$startMenuOpened}
-  class:searching={$searchQuery}
+  class:searching={searchQuery && $searchQuery}
 >
   <div class="top">
-    <AppList {process} />
-    <Folders {process} {userPreferences} {username} />
+    <ServiceGate id="ArcFindSvc">
+      {#snippet ifActive(service: IArcFindService)}
+        <LeftPane {process} {service} bind:searchQuery />
+      {/snippet}
+      {#snippet ifInactive()}
+        <!-- Same component but no service passed -->
+        <LeftPane {process} bind:searchQuery />
+      {/snippet}
+    </ServiceGate>
+    <RightPane {process} {userPreferences} {username} />
   </div>
   <Bottom {process} />
 </div>

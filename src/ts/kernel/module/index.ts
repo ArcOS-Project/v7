@@ -1,14 +1,15 @@
-import type { StateHandler } from "$ts/state";
-import type { ConstructedWaveKernel } from "$types/kernel";
-import { LogLevel } from "../../../types/logging";
+import type { IStateHandler } from "$interfaces/IStateHandler";
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IKernelModule } from "$interfaces/modules/IKernelModule";
+import { LogLevel } from "$types/shared/logging";
 import { Log } from "../../logging";
 
-export class KernelModule {
+export class KernelModule implements IKernelModule {
   protected readonly IS_KMOD = true;
   public id: string;
-  protected state?: StateHandler;
+  protected state?: IStateHandler;
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     this.id = id;
 
     this.Log(`Constructing`);

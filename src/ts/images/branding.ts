@@ -1,3 +1,6 @@
+export { default as BetaBranchLogo } from "$assets/branding/betabranch.svg";
+export { default as ChristmasLogo } from "$assets/branding/christmas.png";
+export { default as DevBranchLogo } from "$assets/branding/devbranch.svg";
 export { default as DevelopmentLogo } from "$assets/branding/development.svg";
 export { default as EsrLogo } from "$assets/branding/esr.svg";
 export { default as Glow } from "$assets/branding/glow.png";

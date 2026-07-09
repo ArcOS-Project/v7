@@ -1,21 +1,24 @@
 <script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
-  import { MessageBox } from "$ts/dialog";
+  import { Daemon } from "$ts/env";
   import { sortByKey } from "$ts/util";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
-  import type { BugReport } from "$types/bughunt";
+  import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
-  import type { AdminPortalRuntime } from "../../runtime";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
   import Row from "./BugHunt/Row.svelte";
 
-  const { process, data }: { process: AdminPortalRuntime; data: BugHuntData } = $props();
+  const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
-  const pages: ("all" | "opened" | "closed")[] = ["all", "opened", "closed"];
+  const pages = ["all", "sys", "apps", "closed"] as const;
+  type PagesType = (typeof pages)[number];
 
   let store = Store<BugReport[]>([]);
-  let sortState = Store<"all" | "opened" | "closed">("opened");
+  let sortState = Store<PagesType>("sys");
   let filterId = Store<string>("");
   let idEntry = Store("");
   let quickView = Store<string>("");
@@ -28,8 +31,10 @@
           return true;
         case "closed":
           return report.closed;
-        case "opened":
-          return !report.closed;
+        case "sys":
+          return !report.closed && !report.isAppReport;
+        case "apps":
+          return report.isAppReport;
       }
     });
   }
@@ -47,7 +52,7 @@
         {
           title: "Report ID not found",
           message: "Sorry, the report ID you entered doesn't match any records. Check it, and then try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -61,7 +66,7 @@
   }
 
   async function closeSelected() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await Daemon!.helpers?.Confirm(
       "Confirm Close?",
       "Are you sure you want to close this report?",
       "Abort!",
@@ -76,7 +81,7 @@
   }
 
   async function deleteSelected() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await Daemon!.helpers?.Confirm(
       "Confirm Delete?",
       "Are you sure you want to delete this report?",
       "Abort!",
@@ -92,7 +97,7 @@
   }
 
   async function deleteSelectedMulti() {
-    const go = await process.userDaemon!.Confirm(
+    const go = await Daemon!.helpers?.Confirm(
       "Confirm Delete?",
       `Are you sure you want to delete ${$selectionList.length} reports? This is a potentially destructive action!`,
       "Abort!",
@@ -102,23 +107,16 @@
 
     if (!go) return;
 
+    const { stop, incrementProgress } = await Daemon.helpers!.GlobalLoadIndicator("Deleting reports...", process.pid, {
+      max: $selectionList.length,
+    });
+
     for (const report of $selectionList) {
       await process.admin.deleteBugReport(report);
+      incrementProgress?.();
     }
 
-    process.switchPage("bughunt", {}, true);
-  }
-  async function closeSelectedMulti() {
-    const go = await process.userDaemon!.Confirm(
-      "Confirm Close?",
-      `Are you sure you want to close ${$selectionList.length} reports? This is a potentially destructive action!`,
-      "Abort!",
-      "Continue"
-    );
-
-    if (!go) return;
-
-    await process.admin.closeBugReport($idEntry);
+    await stop();
 
     process.switchPage("bughunt", {}, true);
   }
@@ -128,7 +126,7 @@
   <div class="tabs">
     <p>{$sortState} ({$store.length})</p>
     <select name="" id="" bind:value={$filterId}>
-      <option value="">None</option>
+      <option value="">Any user</option>
       {#each users as user (user._id)}
         <option value={user._id}>{user.username}</option>
       {/each}
@@ -139,7 +137,7 @@
   </div>
   <div class="listing">
     <div class="row head">
-      <div class="segment mode-icon"><img src={Logo()} alt="" /></div>
+      <div class="segment mode-icon"><Icon icon={Logo()} /></div>
       <div class="segment timestamp">Timestamp</div>
       <div class="segment title">Title</div>
       <div class="segment author">Author</div>

@@ -1,17 +1,16 @@
-import { MessageBox } from "$ts/dialog";
-import { getKMod, KernelStack } from "$ts/env";
-import { KernelStateHandler } from "$ts/getters";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
+import { AppProcess } from "$ts/apps/process";
+import { getKMod, Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
-import { SecurityMediumIcon } from "$ts/images/general";
+import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
-import { LoginUser, RegisterUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
 import { Sleep } from "$ts/sleep";
+import { LoginUser, RegisterUser } from "$ts/user/auth";
 import { htmlspecialchars } from "$ts/util";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { ServerManagerType } from "$types/kernel";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/apps/app";
 import CheckInbox from "./InitialSetup/Page/CheckInbox.svelte";
 import Finish from "./InitialSetup/Page/Finish.svelte";
 import FreshDeployment from "./InitialSetup/Page/FreshDeployment.svelte";
@@ -20,7 +19,7 @@ import License from "./InitialSetup/Page/License.svelte";
 import Welcome from "./InitialSetup/Page/Welcome.svelte";
 import type { PageButtons } from "./types";
 
-export class InitialSetupRuntime extends AppProcess {
+export class InitialSetupRuntime extends AppProcess implements IInitialSetupRuntime {
   //#region VARIABLES
 
   public pageNumber = Store<number>();
@@ -31,8 +30,7 @@ export class InitialSetupRuntime extends AppProcess {
   public email = Store<string>();
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
-  public displayName = Store<string>();
-  public server: ServerManagerType;
+  public server: IServerManager;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -41,7 +39,7 @@ export class InitialSetupRuntime extends AppProcess {
       left: {
         caption: "%general.cancel%",
         action: async () => {
-          KernelStateHandler()?.loadState("login");
+          State?.loadState("login");
         },
         disabled: () => !!this.server?.serverInfo?.freshBackend,
       },
@@ -131,22 +129,19 @@ export class InitialSetupRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     const update = () => {
-      this.identityInfoValid.set(
-        !!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email() && !!this.displayName()
-      );
+      this.identityInfoValid.set(!!this.newUsername() && !!this.password() && !!this.confirm() && !!this.email());
     };
 
     this.newUsername.subscribe(update);
     this.password.subscribe(update);
     this.confirm.subscribe(update);
     this.email.subscribe(update);
-    this.displayName.subscribe(update);
 
     this.pageNumber.subscribe(() => {
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<ServerManagerType>("server");
+    this.server = getKMod<IServerManager>("server");
 
     this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 
@@ -155,10 +150,11 @@ export class InitialSetupRuntime extends AppProcess {
 
   async render() {
     if (this.server.serverInfo?.disableRegistration) {
-      throw new Error("InitialSetupWizardRender: Registration is disabled on this server");
+      throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 
-    // TODO: some kind of intro animation
+    Stack.renderer?.target.classList.add("theme-light");
+
     await Sleep(1000);
 
     this.showMainContent.set(true);
@@ -218,7 +214,7 @@ export class InitialSetupRuntime extends AppProcess {
           {
             caption: "%general.decline%",
             action: () => {
-              KernelStateHandler()?.loadState("licenseDeclined");
+              State?.loadState("licenseDeclined");
             },
           },
           {
@@ -252,6 +248,7 @@ export class InitialSetupRuntime extends AppProcess {
           image: WarningIcon,
           title: "%apps.initialSetupWizard.createAccount.passwordMismatch.title%",
           message: "%apps.initialSetupWizard.createAccount.passwordMismatch.message%",
+          sound: "arcos.dialog.warning",
           buttons: [
             {
               caption: "%general.okay%",
@@ -266,6 +263,48 @@ export class InitialSetupRuntime extends AppProcess {
         true
       );
 
+      return;
+    }
+
+    const confirmed = await new Promise<boolean>((r) => {
+      const emailNotice = !Server.serverInfo?.noEmailVerify
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account. Deactivated accounts will be manually deleted by an ArcOS administrator after 24 hours.`
+        : ``;
+
+      MessageBox(
+        {
+          title: "Confirm details",
+          message: `Are you sure that the following information is correct?${emailNotice}<br>
+<br>
+<ul>
+  <li><b>Username:</b> ${htmlspecialchars(username)}</li>
+  <li><b>Email:</b> ${htmlspecialchars(email)}</li>
+</ul>`,
+          sound: "arcos.dialog.warning",
+          buttons: [
+            {
+              caption: "Go back",
+              action: () => {
+                r(false);
+              },
+            },
+            {
+              caption: "Confirm",
+              suggested: true,
+              action: () => {
+                r(true);
+              },
+            },
+          ],
+          image: AccountIcon,
+        },
+        this.pid,
+        true
+      );
+    });
+
+    if (!confirmed) {
+      this.actionsDisabled.set(false);
       return;
     }
 
@@ -294,15 +333,15 @@ export class InitialSetupRuntime extends AppProcess {
       return;
     }
 
-    this.pageNumber.set(this.pageNumber() + 1);
+    this.pageNumber.set(this.pageNumber() + (Server.serverInfo?.noEmailVerify ? 2 : 1));
   }
 
   async checkAccountActivation() {
     this.Log(`Checking account activation of '${this.newUsername()}'`);
 
-    const token = await LoginUser(this.newUsername(), this.password());
+    const tokenResult = await LoginUser(this.newUsername(), this.password());
 
-    if (!token) {
+    if (!tokenResult.success) {
       MessageBox(
         {
           title: "%apps.initialSetupWizard.checkAccountActivationError.title%",
@@ -316,31 +355,14 @@ export class InitialSetupRuntime extends AppProcess {
               suggested: true,
             },
           ],
-          image: WarningIcon,
+          sound: "arcos.dialog.error",
+          image: ErrorIcon,
         },
         this.pid,
         true
       );
       return;
     }
-
-    this.userDaemon = await KernelStack().spawn(
-      UserDaemon,
-      undefined,
-      this.userDaemon?.userInfo?._id,
-      this.pid,
-      token,
-      this.newUsername()
-    );
-
-    await this.userDaemon?.getUserInfo();
-    await this.userDaemon?.startPreferencesSync();
-    await this.userDaemon?.startFilesystemSupplier();
-    this.userDaemon?.preferences.update((v) => {
-      v.account.displayName = this.displayName();
-
-      return v;
-    });
 
     this.pageNumber.set(this.pageNumber() + 1);
   }

@@ -1,21 +1,22 @@
 <script lang="ts">
-  import { BuiltinThemes, VisualStyles } from "$ts/server/user/store";
-  import type { Wallpaper } from "$types/wallpaper";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import { Daemon } from "$ts/env";
+  import { BuiltinThemes, VisualStyles } from "$ts/user/store";
+  import type { Wallpaper } from "$types/user/wallpaper";
   import { onMount } from "svelte";
-  import type { SettingsRuntime } from "../../runtime";
   import ThemesHeader from "../ThemesHeader.svelte";
   import Setting from "../ThemesHeader/Setting.svelte";
   import AccentColor from "./Themes/AccentColor.svelte";
   import Theme from "./Themes/Theme.svelte";
 
-  const { process }: { process: SettingsRuntime } = $props();
-  const { userInfo, preferences: userPreferences } = process.userDaemon || {}!;
+  const { process }: { process: ISettingsRuntime } = $props();
+  const { userInfo, preferences: userPreferences } = Daemon || {}!;
 
   let currentWallpaper: Wallpaper | undefined = $state();
 
   onMount(() => {
     const sub = userPreferences?.subscribe(async (v) => {
-      currentWallpaper = await process.userDaemon!.getWallpaper(v.desktop.wallpaper);
+      currentWallpaper = await Daemon!.wallpaper?.getWallpaper(v.desktop.wallpaper);
     });
 
     return () => sub?.();
@@ -26,11 +27,11 @@
   }
 </script>
 
-{#if userInfo && userPreferences}
+{#if userInfo && $userPreferences}
   <ThemesHeader
     {userInfo}
     {userPreferences}
-    userDaemon={process.userDaemon!}
+    userDaemon={Daemon!}
     background={currentWallpaper?.thumb || currentWallpaper?.url}
     desktop
   >
@@ -62,7 +63,7 @@
     <p class="name">Built-in themes</p>
     <div class="themes">
       {#each Object.entries(BuiltinThemes) as [id, theme]}
-        <Theme {theme} {id} userDaemon={process.userDaemon!} {process} />
+        <Theme {theme} {id} userDaemon={Daemon!} {process} />
       {/each}
     </div>
   </div>
@@ -72,7 +73,7 @@
     <div class="themes" class:empty={!$userPreferences?.userThemes || !Object.values($userPreferences?.userThemes).length}>
       {#if $userPreferences?.userThemes && Object.values($userPreferences.userThemes).length}
         {#each Object.entries($userPreferences.userThemes) as [id, theme] (id)}
-          <Theme {theme} {id} userDaemon={process.userDaemon!} {process} isUser />
+          <Theme {theme} {id} userDaemon={Daemon!} {process} isUser />
         {/each}
       {:else}
         <p class="none">You have no saved themes!</p>

@@ -1,10 +1,10 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { ArcTermRuntime } from "./process";
 
 export const ArcTermApp: App = {
   metadata: {
     name: "ArcTerm",
-    version: "4.0.0",
+    version: "4.0.4",
     author: "Izaak Kuipers",
     icon: "ArcTermIcon",
     appGroup: "utilities",

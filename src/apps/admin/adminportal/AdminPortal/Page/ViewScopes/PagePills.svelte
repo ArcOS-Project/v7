@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
-  import { MessageBox } from "$ts/dialog";
-  import { AdminScopeCaptions } from "$ts/server/admin/store";
-  import { scopeToScopeCaption } from "$ts/server/admin/util";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { AdminScopeCaptions } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { scopeToScopeCaption } from "$ts/util/admin";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
   const {
     append,
@@ -13,7 +13,7 @@
   }: {
     append: (scopes: string[]) => void;
     canAccess: (...scopes: string[]) => boolean;
-    process: AdminPortalRuntime;
+    process: IAdminPortalRuntime;
     scopeList: string[];
   } = $props();
 
@@ -22,7 +22,7 @@
       {
         title: `${name} (${key})`,
         message: `<p>With this page, this admin can:</p><ul>${scopes.map((s) => `<li>${scopeToScopeCaption(s)}</li>`).join("")}</ul>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "InfoIcon",
         sound: "arcos.dialog.info",
       },

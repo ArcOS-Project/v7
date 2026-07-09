@@ -1,0 +1,17 @@
+import type { IBaseService } from "$interfaces/IServiceHost";
+import type { ArcProtocol, ProtocolHandler } from "$types/services/proto";
+
+// !tpa
+export interface IProtocolServiceProcess extends IBaseService {
+  lockObserver: boolean;
+  observer?: MutationObserver;
+  store: Record<string, ProtocolHandler>;
+  start(): Promise<void>;
+  parseProtoParam(): void;
+  processMutations(mutations: MutationRecord[]): void;
+  parseAnchor(anchor: HTMLAnchorElement): void;
+  parseUrl(str: string): ArcProtocol | undefined;
+  executeUrl(url: string): Promise<boolean | undefined>;
+  registerHandler(command: string, handler: ProtocolHandler): boolean;
+  unregisterHandler(command: string): boolean;
+}

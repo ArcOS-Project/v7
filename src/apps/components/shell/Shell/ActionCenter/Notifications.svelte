@@ -1,13 +1,15 @@
 <script lang="ts">
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Spinner from "$lib/Spinner.svelte";
+  import { Daemon, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import type { Notification } from "$types/notification";
+  import type { Notification } from "$types/system/notification";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../lib/Spinner.svelte";
-  import type { ShellRuntime } from "../../runtime";
   import NotificationItem from "./Notifications/NotificationItem.svelte";
 
-  const { process }: { process: ShellRuntime } = $props();
-  const { userDaemon, userPreferences } = process;
+  const { process }: { process: IShellRuntime } = $props();
+  const { userPreferences } = process;
+  const userDaemon = Daemon;
 
   let loading = $state(true);
   let noDaemon = $state(false);
@@ -22,7 +24,7 @@
       return;
     }
 
-    userDaemon.systemDispatch.subscribe("update-notifications", async ([notifications]) => {
+    SysDispatch.subscribe("update-notifications", async ([notifications]) => {
       store = [...notifications];
 
       isEmpty = false;
@@ -30,13 +32,13 @@
       isEmpty = ![...notifications].filter(([_, n]) => !n.deleted).length;
     });
 
-    store = [...userDaemon.notifications];
+    store = [...userDaemon.notifications!.notifications];
     isEmpty = true;
     loading = false;
   });
 
   function clear() {
-    userDaemon?.clearNotifications();
+    userDaemon?.notifications?.clearNotifications();
   }
 </script>
 

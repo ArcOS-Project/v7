@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
+  import { Server } from "$ts/env";
   import { Sleep } from "$ts/sleep";
   import { checkPasswordStrength, validateEmail, validateUsername } from "$ts/util";
-  import { type PasswordStrength } from "$types/user";
-  import type { InitialSetupRuntime } from "../../runtime";
+  import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
 
-  const { process }: { process: InitialSetupRuntime } = $props();
-  const { newUsername, password, confirm, email, displayName } = process;
+  const { process }: { process: IInitialSetupRuntime } = $props();
+  const { newUsername, password, confirm, email } = process;
 
   let enteredUsername = $state("");
   let enteredEmail = $state("");
@@ -113,7 +114,7 @@
     }
 
     passwordStrength = checkPasswordStrength(enteredPassword).value as PasswordStrength;
-    passwordInvalid = passwordStrength === "tooWeak" || passwordStrength === "weak";
+    passwordInvalid = passwordStrength === "tooWeak";
 
     if (!passwordInvalid) $password = enteredPassword;
   }
@@ -128,7 +129,13 @@
       <input type="text" placeholder="John Doe" bind:value={$displayName} />
     </div>
     <div class="field username">
-      <p class="name">%identity.fields.username%</p>
+      <p class="name">Username</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Username Info"
+        title="Must be within 3 and 32 characters of length and only contain numbers and letters"
+        tabindex="-1"
+      ></button>
       <input
         type="text"
         placeholder="johndoe"
@@ -140,7 +147,13 @@
       <HtmlSpinner height={16} stopped={!checkingUsernameAvailability} thickness={2} />
     </div>
     <div class="field email">
-      <p class="name">%identity.fields.emailAddress%</p>
+      <p class="name">Email address *</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Email Info"
+        title="Must be an unused email and one you can access."
+        tabindex="-1"
+      ></button>
       <input
         type="email"
         placeholder="john.doe@gmail.com"
@@ -152,7 +165,13 @@
       <HtmlSpinner height={16} stopped={!checkingEmailAvailability} thickness={2} />
     </div>
     <div class="field">
-      <p class="name">%identity.fields.password%</p>
+      <p class="name">Password</p>
+      <button
+        class="lucide icon-circle-question-mark info-button"
+        aria-label="Password Info"
+        title="Must contain a mix of at least 8 regular, special, and numeric characters."
+        tabindex="-1"
+      ></button>
       <div class="duo">
         <input
           type="password"
@@ -187,5 +206,11 @@
       <p class="error">%identity.errors.password{passwordStrength}%</p>
     {/if}
   </div>
-  <p class="disclaimer">%identity.disclaimer%</p>
+  <p class="disclaimer">
+    * You will receive an email with a link to activate your account. Your username and password can be changed later on. To
+    change your email later on, contact an administrator.
+    {#if !Server.serverInfo?.noEmailVerify}
+      You need a valid email address to create an account.
+    {/if}
+  </p>
 </div>

@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { isPopulatable } from "$ts/apps/util";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import { Daemon } from "$ts/env";
+  import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
-  import type { AppStorage } from "$types/app";
-  import Fuse from "fuse.js";
+  import type { App, AppStorage } from "$types/apps/app";
+  import Fuse, { type IFuseOptions } from "fuse.js";
   import { onMount } from "svelte";
-  import type { SettingsRuntime } from "../../runtime";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
   const { buffer } = process?.appStore() || {};
 
@@ -16,9 +19,10 @@
   let view = $state<string>("grid-small");
 
   function update() {
-    const options = {
+    const options: IFuseOptions<App> = {
       includeScore: true,
       keys: ["metadata.name", "id"],
+      threshold: 0.4,
     };
 
     const fuse = new Fuse($buffer, options);
@@ -94,12 +98,24 @@
       <button
         class="app"
         onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}
-        class:disabled={process.userDaemon?.checkDisabled(app.id, app.noSafeMode)}
+        class:disabled={Daemon?.apps?.checkDisabled(app.id, app.noSafeMode)}
       >
-        <img src={process.userDaemon?.getAppIcon(app)} alt="" />
+        <Icon icon="@app::{app.id}" />
         <h1>{app.metadata.name}</h1>
         <p class="author">{app.metadata.author} - v{app.metadata.version}</p>
       </button>
     {/each}
   {/if}
 </div>
+
+<ActionBar>
+  {#snippet leftContent()}
+    <span>{$buffer.length} loaded applications ({$store.length} shown)</span>
+  {/snippet}
+  {#snippet rightContent()}
+    <div class="checkbox-wrapper">
+      <input type="checkbox" bind:checked={$userPreferences.shell.visuals.showHiddenApps} />
+      <span>Show hidden apps</span>
+    </div>
+  {/snippet}
+</ActionBar>

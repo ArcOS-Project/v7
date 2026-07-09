@@ -1,19 +1,21 @@
 <script lang="ts">
-  import { AppProcess } from "$ts/apps/process";
-  import type { AppRenderer } from "$ts/apps/renderer";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { BETA, KernelStack } from "$ts/env";
+  import type { IAppProcess } from "$interfaces/IAppProcess";
+  import type { IAppRenderer } from "$interfaces/IAppRenderer";
+  import { BETA, Stack } from "$ts/env";
+  import { BlankIcon } from "$ts/images/general";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
+  import Icon from "./Icon.svelte";
 
-  const { process, children, className = "" }: { process: AppProcess; children?: Snippet; className?: string } = $props();
+  const { process, children, className = "" }: { process: IAppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;
   const { data } = process.app;
 
-  let renderer: AppRenderer | undefined;
+  let renderer: IAppRenderer | undefined;
 
   onMount(() => {
-    renderer = KernelStack().renderer;
+    renderer = Stack.renderer;
   });
 
   function maximize() {
@@ -42,7 +44,7 @@
     {#if children}
       {@render children()}
     {:else}
-      <img src={process.getIconCached($windowIcon) || $windowIcon || process.getIconCached("ComponentIcon")} alt="" />
+      <Icon icon={$windowIcon} fallback={BlankIcon} />
       <span>{$windowTitle}</span>
     {/if}
     {#if BETA && !process.app.data.entrypoint && !process.app.data.workingDirectory && !process.app.data.thirdParty}
@@ -50,9 +52,6 @@
     {/if}
     <AltMenu {process} />
   </div>
-  {#if BETA}
-    <button class="link feedback" onclick={() => process.userDaemon?.iHaveFeedback(process)}>Feedback?</button>
-  {/if}
   <div class="controls">
     {#if data.controls.minimize && !data.overlay}
       <button class="minimize icon-chevron-down" aria-label="minimize" onclick={minimize}></button>

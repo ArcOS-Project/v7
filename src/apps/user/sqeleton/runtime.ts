@@ -1,19 +1,23 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
+import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon, Fs, SoundBus } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
+import { UserPaths } from "$ts/user/store";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
-import { UUID } from "$ts/uuid";
+import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
-export class SqeletonRuntime extends AppProcess {
+export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   openedFile = Store<string>("");
   openedFileName = Store<string>("");
-  _intf = Store<SqlInterfaceProcess | undefined>();
+  _intf = Store<ISqlInterfaceProcess | undefined>();
   queries = Store<string[]>([""]);
   queryIndex = Store<number>(0);
   errors = Store<SqeletonError[]>([]);
@@ -21,12 +25,12 @@ export class SqeletonRuntime extends AppProcess {
   working = Store<boolean>(false);
   errored = Store<boolean>(false);
   result = Store<Record<string, any>[][] | undefined>();
-  tables = Store<SqlTable[]>(); // TODO: dedicated type
+  tables = Store<SqlTable[]>();
   busy = false;
   currentTab = Store<string>("result");
   syntaxError = Store<boolean>(false);
   tempDbPath = `T:/${UUID()}.db.tmp`;
-  tempDb?: SqlInterfaceProcess;
+  tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs = {
     result: {
       name: "Result",
@@ -41,11 +45,11 @@ export class SqeletonRuntime extends AppProcess {
     },
   };
 
-  get Interface(): SqlInterfaceProcess | undefined {
+  get Interface(): ISqlInterfaceProcess | undefined {
     return this._intf();
   }
 
-  set Interface(value: SqlInterfaceProcess | undefined) {
+  set Interface(value: ISqlInterfaceProcess | undefined) {
     if (this.Interface && value) {
       this.ExistingConnectionError();
       return;
@@ -65,17 +69,11 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async start() {
-    this.tempDb = await KernelStack().spawn(
-      SqlInterfaceProcess,
-      undefined,
-      this.userDaemon?.userInfo?._id,
-      this.pid,
-      this.tempDbPath
-    );
+    this.tempDb = await SqlInterfaceProcess.Create(this.pid, this.tempDbPath);
   }
 
   async stop() {
-    await this.fs.deleteItem(this.tempDbPath);
+    await Fs.deleteItem(this.tempDbPath);
   }
 
   async render({ path }: { path?: string }) {
@@ -95,7 +93,7 @@ export class SqeletonRuntime extends AppProcess {
     }
 
     try {
-      this.Interface = await KernelStack().spawn(SqlInterfaceProcess, undefined, this.userDaemon?.userInfo?._id, this.pid, path);
+      this.Interface = await SqlInterfaceProcess.Create(this.pid, path);
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
@@ -108,7 +106,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async openFile() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a database to open",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
@@ -121,7 +119,7 @@ export class SqeletonRuntime extends AppProcess {
   }
 
   async newFile() {
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the new database",
       icon: "SqeletonIcon",
       startDir: UserPaths.Documents,
@@ -132,13 +130,7 @@ export class SqeletonRuntime extends AppProcess {
 
     if (!path) return;
 
-    const db = await KernelStack().spawn<SqlInterfaceProcess>(
-      SqlInterfaceProcess,
-      undefined,
-      this.userDaemon?.userInfo?._id,
-      this.pid,
-      path
-    );
+    const db = await SqlInterfaceProcess.Create(this.pid, path);
     await db?.writeFile();
     await db?.killSelf();
 
@@ -166,7 +158,7 @@ export class SqeletonRuntime extends AppProcess {
       });
       if (!simple) {
         this.errored.set(true);
-        this.soundBus.playSound("arcos.dialog.error");
+        SoundBus.playSound("arcos.dialog.error");
         this.currentTab.set("errors");
       }
     } else {
@@ -248,9 +240,10 @@ export class SqeletonRuntime extends AppProcess {
     });
   }
 
-  async tableToSql(table: SqlTable, pretty = true, dropFirst = false) {
+  async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<ICommandResult<string>> {
     const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
-    if (!items) return undefined;
+
+    if (!items) return CommandResult.Error("Didn't find any items");
 
     let result = ``;
     const delimiter = pretty ? ", " : ",";
@@ -282,7 +275,7 @@ export class SqeletonRuntime extends AppProcess {
       result += `${columns.join(delimiter)})${items.length - 1 <= i ? ";" : ","}${nl}`;
     }
 
-    return result;
+    return CommandResult.Ok(result);
   }
 
   async hasSyntaxError(input: string) {
@@ -330,7 +323,7 @@ export class SqeletonRuntime extends AppProcess {
       {
         title: "Existing connection",
         message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "SqeletonIcon",
         sound: "arcos.dialog.warning",
       },
@@ -344,7 +337,7 @@ export class SqeletonRuntime extends AppProcess {
       {
         title: "Failed to open database",
         message: `Sqeleton was unable to open this database. ${e}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },

@@ -1,9 +1,11 @@
+import type { INewFileRuntime } from "$interfaces/runtimes/INewFileRuntime";
 import { AppProcess } from "$ts/apps/process";
+import { Fs } from "$ts/env";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class NewFileRuntime extends AppProcess {
+export class NewFileRuntime extends AppProcess implements INewFileRuntime {
   newFile = Store<string>();
   path: string;
 
@@ -26,7 +28,7 @@ export class NewFileRuntime extends AppProcess {
   async createFile() {
     const blob = new Blob(); // Empty blob === empty file contents
     try {
-      await this.fs.writeFile(join(this.path, this.newFile()), blob);
+      await Fs.writeFile(join(this.path, this.newFile()), blob);
     } catch {
       // silently error
     }

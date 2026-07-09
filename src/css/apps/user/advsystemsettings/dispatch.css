@@ -4,52 +4,6 @@
   gap: 10px;
 }
 
-#AdvSystemSettings > div.body div.dispatch-clients div.list {
-  border: var(--win-border);
-  flex-grow: 1;
-  overflow-y: auto;
-  border-radius: 4px;
-  background-color: var(--win-bg);
-}
-
-#AdvSystemSettings > div.body div.dispatch-clients div.list::-webkit-scrollbar {
-  display: none;
-}
-
-#AdvSystemSettings > div.body div.dispatch-clients div.list div.row {
-  display: flex;
-  align-items: center;
-  border-bottom: var(--win-border);
-  height: 31px;
-  padding: 0 10px;
-  padding-right: 0;
-}
-
-#AdvSystemSettings > div.body div.dispatch-clients div.list div.row div.segment.ip {
-  flex-grow: 1;
-}
-
-#AdvSystemSettings > div.body div.dispatch-clients div.list div.row div.segment.authorized {
-  width: 105px;
-  border-left: var(--win-border);
-  height: 30px;
-  line-height: 30px;
-  padding: 0 10px;
-}
-#AdvSystemSettings > div.body div.dispatch-clients div.list div.row.head {
-  font-weight: bold;
-}
-
-#AdvSystemSettings > div.body div.dispatch-clients div.list div.row button.lucide {
-  width: 31px;
-  height: 30px;
-  border-left: var(--win-border);
-  padding: 0;
-  height: 30px;
-  border-radius: 0;
-  outline: none;
-}
-
 #AdvSystemSettings > div.body div.dispatch-clients div.loading {
   width: 100%;
   height: 100%;

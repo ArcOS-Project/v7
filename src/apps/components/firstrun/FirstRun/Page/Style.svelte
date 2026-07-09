@@ -1,9 +1,11 @@
 <script lang="ts">
-  import type { FirstRunRuntime } from "../../runtime";
+  import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
+  import { Daemon } from "$ts/env";
+
   import { FirstRunThemes } from "../../store";
   import type { FirstRunTheme } from "../../types";
 
-  const { process }: { process: FirstRunRuntime } = $props();
+  const { process }: { process: IFirstRunRuntime } = $props();
 
   let selection = $state<string>("dark");
 
@@ -17,7 +19,7 @@
       return v;
     });
 
-    process.userDaemon!.setAppRendererClasses(process.userPreferences());
+    Daemon!.renderer!.setAppRendererClasses(process.userPreferences());
 
     selection = key;
   }

@@ -1,13 +1,14 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { UserPaths } from "$ts/server/user/store";
-  import { arrayToBlob } from "$ts/util/convert";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Spinner from "$lib/Spinner.svelte";
+  import { Daemon, Fs } from "$ts/env";
+  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { UserPaths } from "$ts/user/store";
+  import { arrayBufferToBlob } from "$ts/util/convert";
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
-  import Spinner from "../../../../../../../lib/Spinner.svelte";
 
-  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: ShellRuntime } = $props();
+  const { userPreferences, process }: { userPreferences: UserPreferencesStore; process: IShellRuntime } = $props();
 
   let url = $state("");
   let errored = $state(false);
@@ -32,7 +33,7 @@
         errored = false;
         loading = true;
 
-        const contents = await process.fs.readFile(v.shell.actionCenter.galleryImage);
+        const contents = await Fs.readFile(v.shell.actionCenter.galleryImage);
 
         loading = false;
 
@@ -43,7 +44,7 @@
           return;
         }
 
-        const blob = arrayToBlob(contents);
+        const blob = arrayBufferToBlob(contents);
         url = URL.createObjectURL(blob);
       } catch {
         errored = true;
@@ -55,7 +56,7 @@
   });
 
   async function chooseImage() {
-    const [path] = await process.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose an image for the gallery",
       icon: "DesktopIcon",
       startDir: UserPaths.Pictures,
@@ -74,8 +75,21 @@
   class:no-image={noImage}
   class:errored
   class:loading
-  data-contextmenu="actioncenter-gallery-card"
-  use:contextProps={[chooseImage]}
+  use:contextMenu={[
+    [
+      {
+        caption: "Change image...",
+        action: () => chooseImage(),
+        icon: "pencil",
+      },
+      {
+        caption: "Remove image",
+        action: () => ($userPreferences.shell.actionCenter.galleryImage = ""),
+        icon: "x",
+      },
+    ],
+    process,
+  ]}
 >
   {#if !loading}
     {#if noImage}

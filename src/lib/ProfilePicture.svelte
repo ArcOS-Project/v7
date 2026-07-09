@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { KernelServerUrl } from "$ts/env";
-  import type { UserDaemon } from "$ts/server/user/daemon";
+  import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+  import { Daemon, SysDispatch } from "$ts/env";
   import { Sleep } from "$ts/sleep";
-  import { authcode } from "$ts/util";
+  import { DefaultUserPreferences } from "$ts/user/default";
   import type { UserPreferences } from "$types/user";
   import { onMount } from "svelte";
 
   interface Props {
-    userDaemon?: UserDaemon | undefined;
     fallback?: string;
     pfp?: string | number;
     height: number;
     className?: string;
     showOnline?: boolean;
     online?: boolean;
+    userId?: string;
   }
-  const { userDaemon, fallback = "", pfp = "", height, className = "", showOnline = false, online = false }: Props = $props();
-  const { preferences } = userDaemon || {}!;
 
+  const { fallback = "", pfp = "", height, className = "", showOnline = false, online = false, userId = "" }: Props = $props();
+  const { preferences } = Daemon || {}!;
   let url = $state<string | undefined>("");
   let currentPfp = $state<string | number>();
   let loading = $state<boolean>(false);
@@ -26,17 +26,14 @@
     url = fallback;
 
     preferences?.subscribe(update);
-    userDaemon?.systemDispatch.subscribe("pfp-changed", () => update(preferences?.()!));
+    SysDispatch.subscribe("pfp-changed", () => update(preferences?.() || DefaultUserPreferences));
   });
 
   async function update(v: UserPreferences) {
     if (!fallback && currentPfp === (pfp || v.account.profilePicture!)) return;
-
     if (url) await Sleep(100);
 
-    const code = authcode();
-    url = fallback || `${KernelServerUrl()}/user/pfp/${userDaemon?.userInfo._id}${code}${code ? "&" : "?"}${Date.now()}`;
-
+    url = fallback || Daemon!.GetConnector<IUserConnector>("UserConnector").PictureUrl(userId || Daemon!.userInfo!._id);
     currentPfp = pfp || v.account.profilePicture!;
   }
 </script>

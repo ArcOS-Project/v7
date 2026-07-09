@@ -1,10 +1,11 @@
-import { KernelStateHandler } from "$ts/getters";
+import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
+import { AppProcess } from "$ts/apps/process";
+import { State } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import { AppProcess } from "../../../ts/apps/process";
-import type { AppProcessData } from "../../../types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class BootScreenRuntime extends AppProcess {
+export class BootScreenRuntime extends AppProcess implements IBootScreenRuntime {
   public progress = Store<boolean>(false);
   public status = Store<string>("");
 
@@ -44,13 +45,16 @@ export class BootScreenRuntime extends AppProcess {
     if (e?.key === "F8") {
       this.status.set("%apps.bootScreen.safeMode%");
       await Sleep(2000);
-      KernelStateHandler()?.loadState("login", { safeMode: true });
+      State?.loadState("login", { safeMode: true });
+    } else if (e?.key === "F4") {
+      this.status.set("Opening server selector");
+      State?.loadState("switchServer", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
       this.status.set("%apps.bootScreen.arcTerm%");
-      KernelStateHandler()?.loadState("arcterm");
+      State?.loadState("arcterm");
     } else {
       this.status.set("&nbsp;");
-      KernelStateHandler()?.loadState("login");
+      State?.loadState("login");
     }
   }
 }

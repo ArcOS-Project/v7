@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import type { SettingsRuntime } from "../../runtime";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import { Daemon } from "$ts/env";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
-  const { process }: { process: SettingsRuntime } = $props();
+  const { process }: { process: ISettingsRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");
@@ -13,7 +17,7 @@
         {
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -24,7 +28,7 @@
       return;
     }
 
-    const result = await process.userDaemon?.changePassword(newPassword);
+    const result = await Daemon?.account?.changePassword(newPassword);
 
     process.closeWindow();
 
@@ -34,7 +38,7 @@
           title: "Change password",
           message:
             "Failed to change your password! Either the password is invalid or you didn't approve the elevation request. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -46,7 +50,7 @@
         {
           title: "Change password",
           message: "Your password has been changed successfully! You'll have to use this password when logging in in the future",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },
@@ -59,7 +63,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("PasswordIcon")} alt="" />
+    <Icon icon="PasswordIcon" />
   </div>
   <div class="right">
     <h1>Change your password</h1>
@@ -68,7 +72,10 @@
     <input type="password" placeholder="Confirm new password" bind:value={confirmNewPassword} />
   </div>
 </div>
-<div class="bottom">
-  <button onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested" disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</button>
-</div>
+
+<ActionBar>
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton suggested disabled={!newPassword || !confirmNewPassword} onclick={changeIt}>Confirm</ActionButton>
+  {/snippet}
+</ActionBar>

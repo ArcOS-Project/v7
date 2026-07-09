@@ -1,14 +1,23 @@
-import { Process } from "$ts/process/instance";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import { __Console__ } from "$ts/console";
+import { SysDispatch } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from ".";
+import type { Readline } from "./readline/readline";
 
 export class TerminalProcess extends Process {
   public static keyword: string;
   public static description: string;
   public static hidden = false;
-  protected term?: ArcTerminal;
+  public static allowInterrupt = false;
+  protected term?: IArcTerminal;
   protected flags?: Arguments;
   protected argv?: string[];
+  protected daemon?: IUserDaemon;
+  protected serviceHost?: IServiceHost;
+  protected rl?: Readline;
   private exitCode: number = 0;
 
   //#region LIFECYCLE
@@ -22,15 +31,36 @@ export class TerminalProcess extends Process {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
     return 0;
   }
 
-  public async _main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<any> {
+  public async _main(term: IArcTerminal, flags: Arguments, argv: string[]): Promise<any> {
     this.term = term;
     this.flags = flags;
     this.argv = argv;
-    const result = await this.main(term, flags, argv);
+    this.daemon = term.daemon;
+    this.serviceHost = this.daemon?.serviceHost;
+    this.rl = term.rl;
+
+    const result = await new Promise(async (r) => {
+      try {
+        const result = await this.main(term, flags, argv);
+        r(result);
+      } catch (e) {
+        term.handleCommandError(e as Error, this.constructor as any);
+        term.lastCommandErrored = true;
+        __Console__.warn(e);
+        r(0);
+      }
+
+      const eventId = SysDispatch.subscribe<[number]>("proc-kill", ([pid]) => {
+        if (pid === this.pid) {
+          SysDispatch.unsubscribeId("proc-kill", eventId);
+          r(0);
+        }
+      });
+    });
 
     await this.killSelf();
 

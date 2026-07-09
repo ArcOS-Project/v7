@@ -1,7 +1,9 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import { AppProcess } from "$ts/apps/process";
-import type { AppProcessData } from "$types/app";
+import { Daemon } from "$ts/env";
+import type { AppProcessData } from "$types/apps/app";
 
-export class UpdateNotifierRuntime extends AppProcess {
+export class UpdateNotifierRuntime extends AppProcess implements IAppProcess {
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
@@ -10,22 +12,19 @@ export class UpdateNotifierRuntime extends AppProcess {
   }
 
   async start() {
-    if (this.userDaemon?.autoLoadComplete) return false;
+    if (Daemon?.autoLoadComplete) return false;
   }
 
   async onClose() {
-    const { stop } = await this.userDaemon!.GlobalLoadIndicator("Just a moment...", this.pid);
+    const { stop } = await Daemon!.helpers!.GlobalLoadIndicator("Just a moment...", this.pid);
 
-    await this.userDaemon?.updateRegisteredVersion();
-    await this.updateFileDefinitions();
+    await Daemon?.version?.updateRegisteredVersion();
+
     stop();
 
+    await Daemon?.appreg?.updateStartMenuFolder();
     return true;
   }
 
   //#endregion
-
-  async updateFileDefinitions() {
-    this.userDaemon?.updateFileAssociations();
-  }
 }

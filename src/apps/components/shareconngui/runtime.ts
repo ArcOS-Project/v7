@@ -1,22 +1,23 @@
+import type { IShareConnGuiRuntime } from "$interfaces/runtimes/IShareConnGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import type { ShareManager } from "$ts/shares";
-import { SharedDrive } from "$ts/shares/drive";
+import { Daemon, Env, Stack } from "$ts/env";
+import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 
-export class ShareConnGuiRuntime extends AppProcess {
+export class ShareConnGuiRuntime extends AppProcess implements IShareConnGuiRuntime {
   shareUsername = Store<string>();
   shareName = Store<string>();
   sharePassword = Store<string>();
-  shares: ShareManager;
+  shares: IShareManager;
 
   //#region LIFECYCLE
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!; // Get the share management service
 
     this.setSource(__SOURCE__);
   }
@@ -25,6 +26,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   //#region MASTER
 
   async go() {
+    this.Log(`GO!`);
+
     // Join the share
     const result = await this.shares.joinShare(this.shareUsername(), this.shareName(), this.sharePassword(), true);
 
@@ -48,15 +51,15 @@ export class ShareConnGuiRuntime extends AppProcess {
 
     if (result instanceof SharedDrive) {
       const path = `${result.uuid}:/`;
-      const parent = KernelStack().getProcess(this.parentPid);
+      const parent = Stack.getProcess(this.parentPid);
 
-      if (parent && this.userDaemon?.ParentIs(this, "fileManager")) {
+      if (parent && Daemon?.helpers?.ParentIs(this, "fileManager")) {
         // Is the parent a file manager? Then navigate it instead of spawning one
-        const dispatch = KernelStack().ConnectDispatch(this.parentPid);
+        const dispatch = Stack.ConnectDispatch(this.parentPid);
         dispatch?.dispatch("navigate", path);
       } else {
         // Spawn a file manager instead
-        this.spawnApp("fileManager", +this.env.get("shell_pid"), path);
+        this.spawnApp("fileManager", +Env.get("shell_pid"), path);
       }
 
       this.userPreferences.update((v) => {
@@ -70,6 +73,8 @@ export class ShareConnGuiRuntime extends AppProcess {
   }
 
   async myShares() {
+    this.Log(`myShares`);
+
     await this.closeWindow(); // Close the conngui
     this.spawnOverlayApp("ShareListGui", this.parentPid); // Spawn the listgui
   }

@@ -1,30 +1,31 @@
-import { ArcOSVersion, KernelStack } from "$ts/env";
-import { toForm } from "$ts/form";
+import type { IArcTerminal, ITerminalMode } from "$interfaces/IArcTerminal";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import { UserDaemon } from "$ts/daemon";
+import { ArcOSVersion, GetConnector, Server, Stack } from "$ts/env";
+import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
-import { Process } from "$ts/process/instance";
-import { Backend } from "$ts/server/axios";
-import { LoginUser } from "$ts/server/user/auth";
-import { UserDaemon } from "$ts/server/user/daemon";
-import { Sleep } from "$ts/sleep";
-import type { UserInfo } from "$types/user";
+import { LoginUser } from "$ts/user/auth";
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { ImageAddon } from "@xterm/addon-image";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { WebLinksAddon } from "@xterm/addon-web-links";
+import "@xterm/xterm/css/xterm.css";
 import Cookies from "js-cookie";
 import { Terminal } from "xterm";
-import { ArcTerminal } from "..";
+import { BRRED, CLRROW, CURUP, DefaultColors, RESET } from "../colors";
 import { Readline } from "../readline/readline";
-import { BRRED, CLRROW, CURUP, RESET } from "../store";
+import { ArcTermModeUserDaemonStartOptions } from "./store";
 
-export class TerminalMode extends Process {
-  userDaemon?: UserDaemon;
+export class TerminalMode extends Process implements ITerminalMode {
+  userDaemon?: IUserDaemon;
   target: HTMLDivElement;
   term?: Terminal;
   rl?: Readline;
-  arcTerm?: ArcTerminal;
+  arcTerm?: IArcTerminal;
 
   //#region LIFECYCLE
 
@@ -39,10 +40,9 @@ export class TerminalMode extends Process {
 
   async start() {
     await this.initializeTerminal();
-
     if (await this.loadToken()) return;
 
-    return await this.loginPrompt();
+    return await this.serverPrompt();
   }
 
   //#endregion
@@ -54,18 +54,18 @@ export class TerminalMode extends Process {
       cursorStyle: "bar",
       fontSize: 14,
       theme: {
-        brightRed: "#ff7e7e",
-        red: "#ff7e7e",
-        brightGreen: "#82ff80",
-        green: "#82ff80",
-        brightYellow: "#ffe073",
-        yellow: "#ffe073",
-        brightBlue: "#96d3ff",
-        blue: "#96d3ff",
-        brightCyan: "#79ffd0",
-        cyan: "#79ffd0",
-        brightMagenta: "#d597ff",
-        magenta: "#d597ff",
+        brightRed: DefaultColors.red,
+        red: DefaultColors.red,
+        brightGreen: DefaultColors.green,
+        green: DefaultColors.green,
+        brightYellow: DefaultColors.yellow,
+        yellow: DefaultColors.yellow,
+        brightBlue: DefaultColors.blue,
+        blue: DefaultColors.blue,
+        brightCyan: DefaultColors.cyan,
+        cyan: DefaultColors.cyan,
+        brightMagenta: DefaultColors.magenta,
+        magenta: DefaultColors.magenta,
       },
       scrollback: 999999,
     });
@@ -88,7 +88,7 @@ export class TerminalMode extends Process {
 
     new ResizeObserver(() => fitAddon.fit()).observe(this.target);
 
-    const rl = await KernelStack().spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
+    const rl = await Stack.spawn<Readline>(Readline, undefined, this.userDaemon?.userInfo?._id, this.pid, this);
     this.term.loadAddon(rl!);
     this.rl = rl;
   }
@@ -96,112 +96,38 @@ export class TerminalMode extends Process {
   async proceed(username: string, password: string) {
     this.Log(`Trying login of '${username}'`);
 
-    const token = await LoginUser(username, password);
-    if (!token) return false;
+    const tokenResult = await LoginUser(username, password);
+    if (!tokenResult.success) return false;
 
-    return await this.startDaemon(token, username);
+    return await this.startDaemon(tokenResult.result!, username);
   }
 
   async startDaemon(token: string, username: string): Promise<boolean> {
     try {
-      const userDaemon = await KernelStack().spawn<UserDaemon>(UserDaemon, undefined, "SYSTEM", 1, token, username);
-
       this.rl?.println(`Starting daemon`);
 
-      if (!userDaemon) {
-        this.rl?.println(`Failed to start user daemon`);
-        return false;
+      const { success, result: userDaemon, errorMessage } = await UserDaemon.Hello(token, username);
+      if (!success) throw new Error(errorMessage);
+
+      const broadcast = (m: string) => {
+        this.rl?.println(`${CURUP}${CLRROW}${m}`);
+      };
+
+      this.saveToken(userDaemon!);
+
+      const result = await userDaemon!.startUserDaemon(ArcTermModeUserDaemonStartOptions(this), broadcast);
+      if (!result.success) {
+        throw new Error(result.errorMessage ?? "Unknown error");
       }
-
-      this.saveToken(userDaemon);
-
-      const userInfo = await userDaemon.getUserInfo();
-
-      if (!userInfo) {
-        this.rl?.println(`Failed to request user info`);
-        return false;
-      }
-
-      if (userInfo.hasTotp && userInfo.restricted) {
-        const unlocked = await this.askForTotp(token);
-
-        if (!unlocked) {
-          this.rl?.println(`2FA code invalid!`);
-          await userDaemon.discontinueToken();
-          await userDaemon.killSelf();
-          return false;
-        }
-      }
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting filesystem`);
-      await userDaemon.startFilesystemSupplier();
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting synchronization`);
-      await userDaemon.startPreferencesSync();
-
-      this.rl?.println(`${CURUP}${CLRROW}Notifying login activity`);
-      await userDaemon.logActivity(`login`);
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting service host`);
-      await userDaemon.startServiceHost(async (serviceStep) => {
-        if (serviceStep.id === "AppStorage") {
-          this.rl?.println(`${CURUP}${CLRROW}Loading apps...`);
-          await userDaemon.initAppStorage(userDaemon.appStorage()!, (app) => {
-            this.rl?.println(`${CURUP}${CLRROW}Loading apps... ${app.id}`);
-          });
-        } else {
-          this.rl?.println(`${CURUP}${CLRROW}Started ${serviceStep.id}`);
-        }
-      });
-
-      this.rl?.println(`${CURUP}${CLRROW}Connecting global dispatch`);
-      await userDaemon.activateGlobalDispatch();
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting drive notifier watcher`);
-      userDaemon.startDriveNotifierWatcher();
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting share management`);
-      await userDaemon.startShareManager();
-
-      userDaemon.appStorage();
-
-      if (userDaemon.userInfo.admin) {
-        this.rl?.println(`${CURUP}${CLRROW}Activating admin bootstrapper`);
-        await userDaemon.activateAdminBootstrapper();
-      }
-
-      this.rl?.println(`${CURUP}${CLRROW}Starting status refresh`);
-      await userDaemon.startSystemStatusRefresh();
-
-      this.rl?.println(`${CURUP}${CLRROW}Refreshing app storage`);
-
-      this.systemDispatch.dispatch(`app-store-refresh`);
-
-      this.env.set("currentuser", username);
-      this.env.set("shell_pid", undefined);
-
-      await Sleep(10);
-
-      this.term?.clear();
-
-      this.arcTerm = await KernelStack().spawn<ArcTerminal>(
-        ArcTerminal,
-        undefined,
-        userDaemon.userInfo?._id,
-        this.pid,
-        this.term
-      );
-
-      this.term?.focus();
 
       return true;
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
 
-      this.rl?.println(`\n${BRRED}Failed to start User Daemon:\n\n${stack}${RESET}`);
+      this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
       this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
 
-      return false;
+      return true;
     }
   }
 
@@ -210,18 +136,21 @@ export class TerminalMode extends Process {
 
     const token = Cookies.get(`arcToken`);
     const username = Cookies.get(`arcUsername`);
-
     if (!token || !username) return false;
 
     const userInfo = await this.validateUserToken(token);
-
     if (!userInfo) {
       this.resetCookies();
 
       return false;
     }
 
-    await this.startDaemon(token, username);
+    const result = await this.startDaemon(token, username);
+    if (!result) {
+      this.rl?.println("");
+      await this.rl?.read("Press Enter to continue...");
+      return await this.loginPrompt();
+    }
 
     return true;
   }
@@ -229,15 +158,10 @@ export class TerminalMode extends Process {
   private async validateUserToken(token: string) {
     this.Log(`Validating user token for token login`);
 
-    try {
-      const response = await Backend.get(`/user/self`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const result = await GetConnector<IUserConnector>("UserConnector", token).Self();
+    if (!result.success) return false;
 
-      return response.status === 200 ? (response.data as UserInfo) : false;
-    } catch {
-      return false;
-    }
+    return result.result!;
   }
 
   resetCookies() {
@@ -247,27 +171,57 @@ export class TerminalMode extends Process {
     Cookies.remove(`arcUsername`);
   }
 
-  async loginPrompt(): Promise<boolean> {
+  async serverPrompt(): Promise<boolean> {
+    this.term?.clear();
     this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
-    const username = await this.rl?.read(`arcapi.nl login: `);
-    const password = await this.rl?.read(`Password:`);
+
+    const hostname = await this.rl?.read(`Hostname: `);
+    const server = Server.servers.find((s) => s.url.includes(hostname!));
+
+    if (!server) {
+      this.rl?.println(`Not configured: ${hostname}\n`);
+      await this.rl?.read("Press Enter to continue...");
+      return await this.serverPrompt();
+    }
+
+    this.rl?.println(`Connecting...`);
+    const switchResult = await Server.switchServer(server.url);
+
+    if (!switchResult) {
+      this.rl?.println(`\nFailed to connect to server.`);
+      return await this.serverPrompt();
+    }
+
+    return await this.loginPrompt();
+  }
+
+  async loginPrompt(clear = true): Promise<boolean> {
+    if (clear) {
+      this.term?.clear();
+      this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()} ${Server.hostname ?? "unknown"}\n`);
+    }
+
+    const username = await this.rl?.read(`${Server.hostname ?? "ArcOS"} login: `);
+    const password = await this.rl?.read(`Password: `, true);
 
     if (!username || !password) {
-      this.rl?.println(`\nLogin incorrect`);
-      return await this.loginPrompt();
+      this.rl?.println(`Login incorrect`);
+      return await this.loginPrompt(false);
     }
+
+    this.rl?.println(``);
 
     const valid = await this.proceed(username, password);
 
     if (!valid) {
-      this.rl?.println(`\nLogin incorrect`);
-      return await this.loginPrompt();
+      this.rl?.println(`Login incorrect`);
+      return await this.loginPrompt(false);
     }
 
     return true;
   }
 
-  private saveToken(daemon: UserDaemon) {
+  private saveToken(daemon: IUserDaemon) {
     const token = daemon.token;
     const username = daemon.username;
 
@@ -283,22 +237,15 @@ export class TerminalMode extends Process {
   }
 
   async askForTotp(token: string): Promise<boolean> {
+    this.rl?.println(`${CURUP}${CLRROW}${CURUP}`);
     const code = await this.rl?.read(`Enter 2FA code: `);
 
     if (!Number(code) || code?.length !== 6) {
       return await this.askForTotp(token);
     }
 
-    try {
-      const response = await Backend.post("/totp/unlock", toForm({ code }), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const result = await GetConnector<ITotpConnector>("TotpConnector", token).Unlock(code);
 
-      if (response.status !== 200) return false;
-
-      return true;
-    } catch {
-      return false;
-    }
+    return !!result.success;
   }
 }

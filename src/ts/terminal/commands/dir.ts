@@ -1,16 +1,17 @@
-import type { FilesystemDrive } from "$ts/drives/drive";
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
+import { Fs } from "$ts/env";
 import { FormatLargeNumber, Gap, maxLength, Plural, Truncate } from "$ts/util";
 import { formatBytes, join } from "$ts/util/fs";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import type { ArcTerminal } from "..";
+import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, BRGREEN, RESET } from "../store";
 
 export class DirCommand extends TerminalProcess {
   public static keyword = "dir";
   public static description = "List the contents of the current or specified directory";
-
+  public static allowInterrupt: boolean = true;
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number) {
@@ -21,19 +22,21 @@ export class DirCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal, _: Arguments, argv: string[]): Promise<number> {
     const dir = argv.join(" ") || "";
 
     try {
-      let drive: FilesystemDrive | undefined;
+      let drive: IFilesystemDrive | undefined;
       try {
-        drive = dir ? this.fs.getDriveByPath(dir) : term.drive;
+        drive = dir ? Fs.getDriveByPath(dir) : term.drive;
       } catch {
         drive = term.drive;
       }
 
       const contents = await term.readDir(dir);
       const quota = await drive?.quota();
+
+      if (this._disposed) return 0;
 
       if (!contents || !quota) {
         throw "";

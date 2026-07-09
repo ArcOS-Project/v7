@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
-  import { MessageBox } from "$ts/dialog";
-  import { AdminScopes } from "$ts/server/admin/store";
-  import type { UserTotp } from "$types/admin";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+  import type { UserTotp } from "$types/server/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
 
-  const { process, user }: { process: AdminPortalRuntime; user: ExpandedUserInfo } = $props();
+  const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
 
   let loading = $state<boolean>(true);
   let totp = $state<UserTotp>();
@@ -76,7 +76,7 @@
         buttons: [
           { caption: "Copy secret", action: () => navigator.clipboard.writeText(totp?.secret!) },
           { caption: "Copy URL", action: () => navigator.clipboard.writeText(totp?.url!) },
-          { caption: "Okay", action: () => {}, suggested: true },
+          BTN_OKAY_SUG,
         ],
       },
       process.pid,

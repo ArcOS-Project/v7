@@ -1,6 +1,8 @@
 <script lang="ts">
+  import ActionBar from "$lib/Window/ActionBar.svelte";
   import { Sleep } from "$ts/sleep";
-  import { Store, type ReadableStore } from "$ts/writable";
+  import { Store } from "$ts/writable";
+  import type { ReadableStore } from "$types/shared/writable";
   import type { PageButtonPage, PageButtons } from "../types";
   import Button from "./Actions/Button.svelte";
 
@@ -35,16 +37,18 @@
   });
 </script>
 
-<div class="actions" class:hide>
-  {#if $buttons && $buttons.left}
-    <div class="left">
+<ActionBar className="{hide ? 'hide' : ''} actions">
+  {#snippet leftContent()}
+    {#if $buttons?.left}
       <Button {pageNumber} button={$buttons.left} {identityInfoValid} {actionsDisabled} />
-    </div>
-  {/if}
-  {#if $buttons && $buttons.previous}
-    <Button {pageNumber} button={$buttons.previous} {identityInfoValid} {actionsDisabled} />
-  {/if}
-  {#if $buttons && $buttons.next}
-    <Button {pageNumber} button={$buttons.next} {identityInfoValid} {actionsDisabled} />
-  {/if}
-</div>
+    {/if}
+  {/snippet}
+  {#snippet rightContent()}
+    {#if $buttons && $buttons.previous}
+      <Button {pageNumber} button={$buttons.previous} {identityInfoValid} {actionsDisabled} />
+    {/if}
+    {#if $buttons && $buttons.next}
+      <Button {pageNumber} button={$buttons.next} {identityInfoValid} {actionsDisabled} />
+    {/if}
+  {/snippet}
+</ActionBar>

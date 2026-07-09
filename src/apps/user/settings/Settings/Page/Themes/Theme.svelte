@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import { MessageBox } from "$ts/dialog";
-  import type { UserDaemon } from "$ts/server/user/daemon";
-  import type { UserTheme } from "$types/theme";
+  import type { IUserDaemon } from "$interfaces/IUserDaemon";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import { MessageBox } from "$ts/util/dialog";
+  import type { UserTheme } from "$types/user/theme";
   import { onMount } from "svelte";
 
   interface Props {
     id: string;
     theme: UserTheme;
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
     isUser?: boolean;
-    process: SettingsRuntime;
+    process: ISettingsRuntime;
   }
 
   const { id, theme, userDaemon, isUser = false, process }: Props = $props();
@@ -22,15 +22,15 @@
 
   onMount(() => {
     getWall();
-    css = userDaemon?.getAppRendererStyle(theme.desktopAccent);
+    css = userDaemon?.renderer!.getAppRendererStyle(theme.desktopAccent);
   });
 
   async function getWall() {
-    wallpaper = (await userDaemon?.getWallpaper(theme?.desktopWallpaper))?.thumb;
+    wallpaper = (await userDaemon?.wallpaper!.getWallpaper(theme?.desktopWallpaper))?.thumb;
   }
 
   function apply() {
-    userDaemon?.applyThemeData(theme, id);
+    userDaemon?.themes?.applyThemeData(theme, id);
   }
 
   function deleteTheme() {
@@ -43,7 +43,7 @@
           {
             caption: "Delete it",
             action: () => {
-              userDaemon.deleteUserTheme(id);
+              userDaemon.themes?.deleteUserTheme(id);
             },
             suggested: true,
           },

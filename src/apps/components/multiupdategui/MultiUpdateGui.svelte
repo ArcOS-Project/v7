@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { IMultiUpdateGuiRuntime } from "$interfaces/runtimes/IMultiUpdateGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
-  import { StoreItemIcon } from "$ts/distrib/util";
   import { Sleep } from "$ts/sleep";
   import { Plural } from "$ts/util";
-  import type { MultiUpdateGuiRuntime } from "./runtime";
+  import { StoreItemIcon } from "$ts/util/distrib";
   import { StateIconTranslations } from "./types";
 
-  const { process }: { process: MultiUpdateGuiRuntime } = $props();
+  const { process }: { process: IMultiUpdateGuiRuntime } = $props();
   const { status, working, done, errored, currentPackage, logs, focused, showLog, unified } = process;
 
   focused.subscribe(async (v) => {
@@ -19,14 +20,7 @@
 </script>
 
 <div class="header">
-  <img
-    src={$working && $currentPackage
-      ? StoreItemIcon($currentPackage)
-      : $done
-        ? process.getIconCached("GoodStatusIcon")
-        : process.getIconCached("UpdateIcon")}
-    alt=""
-  />
+  <Icon icon={$working && $currentPackage ? StoreItemIcon($currentPackage) : $done ? "GoodStatusIcon" : "UpdateIcon"} />
   <div class="info">
     <h1>
       {#if $working}
@@ -98,12 +92,7 @@
           {/if}
         </p>
         <p class="content">{item.content}</p>
-        <img
-          src={process.getIconCached(
-            item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"
-          )}
-          alt=""
-        />
+        <Icon icon={item.status === "done" ? "GoodStatusIcon" : item.status === "failed" ? "BadStatusIcon" : "SpinnerIcon"} />
       </div>
     {/each}
   {/each}

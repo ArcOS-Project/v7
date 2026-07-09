@@ -1,15 +1,18 @@
 <script lang="ts">
+  import type { IShareConnGuiRuntime } from "$interfaces/runtimes/IShareConnGuiRuntime";
+  import Icon from "$lib/Icon.svelte";
   import InfoBlock from "$lib/InfoBlock.svelte";
   import InfoRow from "$lib/InfoBlock/InfoRow.svelte";
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
-  import type { ShareConnGuiRuntime } from "./runtime";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
 
-  const { process }: { process: ShareConnGuiRuntime } = $props();
+  const { process }: { process: IShareConnGuiRuntime } = $props();
   const { shareUsername, shareName, sharePassword } = process;
 </script>
 
 <div class="header">
-  <img src={process.getIconCached("ShareIcon")} alt="" />
+  <Icon icon="ShareIcon" />
   <h1>Join a share</h1>
   <p>Enter the information to join a share or click 'Joined' to view the shares you've joined already.</p>
 </div>
@@ -32,10 +35,14 @@
     </InfoRow>
   </InfoBlock>
 </div>
-<div class="actions">
-  <button class="joined" onclick={() => process.myShares()}>My shares</button>
-  <button class="cancel" onclick={() => process.closeWindow()}>Cancel</button>
-  <button class="suggested connect" disabled={!$shareUsername || !$shareName || !$sharePassword} onclick={() => process.go()}>
-    Connect
-  </button>
-</div>
+<ActionBar floating>
+  {#snippet leftContent()}
+    <ActionButton onclick={() => process.myShares()}>My shares</ActionButton>
+  {/snippet}
+  {#snippet rightContent()}
+    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
+    <ActionButton onclick={() => process.go()} disabled={!$shareUsername || !$shareName || !$sharePassword} suggested>
+      Connect
+    </ActionButton>
+  {/snippet}
+</ActionBar>

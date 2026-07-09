@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { AdminPortalRuntime } from "$apps/admin/adminportal/runtime";
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Logo } from "$ts/branding";
-  import type { SharedDriveType } from "$types/shares";
+  import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import MemberRow from "./Members/MemberRow.svelte";
 
-  const { process, share, members }: { process: AdminPortalRuntime; share: SharedDriveType; members: ExpandedUserInfo[] } =
+  const { process, share, members }: { process: IAdminPortalRuntime; share: SharedDriveType; members: ExpandedUserInfo[] } =
     $props();
 </script>
 
@@ -14,9 +15,7 @@
   <div class="member-list">
     {#if members.length}
       <div class="member-row header">
-        <div class="segment pfp">
-          <img src={Logo()} alt="" />
-        </div>
+        <div class="segment pfp"><Icon icon={Logo()} /></div>
         <div class="segment username">Username</div>
         <div class="segment created">Created</div>
         <div class="segment approved">APP</div>

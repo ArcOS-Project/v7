@@ -1,11 +1,10 @@
-import type { AppKeyCombinations } from "$types/accelerator";
+import type { AppKeyCombinations } from "$types/apps/accelerator";
 
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
   "$apps/components/appinfo/AppInfo",
   "$apps/components/appinstaller/AppInstaller",
   "$apps/components/apppreinstall/AppPreInstall",
-  "$apps/components/arcfind/ArcFindProc",
   "$apps/components/contextmenu/contextMenu",
   "$apps/components/driveinfo/DriveInfo",
   "$apps/components/exit/ExitApp",
@@ -28,9 +27,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/sharelistgui/ShareListGui",
   "$apps/components/sharemgmtgui/ShareMgmtGui",
   "$apps/components/shell/arcShell",
-  "$apps/components/shellhost/shellHost",
   "$apps/components/shortcutproperties/ShortcutProperties",
-  "$apps/components/systemshortcuts/SystemShortcutsProc",
   "$apps/components/totpauthgui/TotpAuthGui",
   "$apps/components/totpsetupgui/TotpSetupGui",
   "$apps/components/trayhost/TrayHostProc",
@@ -42,6 +39,9 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/processinfo/ProcessInfoApp",
   "$apps/components/serviceinfo/ServiceInfo",
   "$apps/components/iconeditdialog/IconEditDialog",
+  "$apps/components/arctermcolors/ArcTermColors",
+  "$apps/components/masteroptions/MasterOptions",
+  "$apps/components/sendbetafeedback/SendBetaFeedbackApp",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",
@@ -50,7 +50,6 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/calculator/calculator",
   "$apps/user/cod/cod",
   "$apps/user/filemanager/fileManager",
-  "$apps/user/hexedit/HexEdit",
   "$apps/user/imageviewer/ImageViewer",
   "$apps/user/lightsoff/LightsOff",
   "$apps/user/logging/logging",
@@ -63,6 +62,14 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/writer/writer",
   "$apps/user/iconeditor/IconEditorApp",
   "$apps/user/donut/DonutApp",
+  "$apps/user/feedback/feedback",
+  "$apps/user/sqeleton/Sqeleton",
+  "$apps/user/minesweeper/MinesweeperApp",
+]);
+
+export const AdminAppImportPathAbsolutes = import.meta.glob([
+  "$apps/admin/adminportal/AdminPortal",
+  "$apps/admin/executequery/ExecuteQueryApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

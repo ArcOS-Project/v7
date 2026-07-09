@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { Wallpapers } from "$ts/wallpaper/store";
-  import type { AppComponentProps } from "$types/app";
-  import type { WallpaperRuntime } from "./runtime";
+  import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
+  import { Daemon } from "$ts/env";
+  import { Wallpapers } from "$ts/user/wallpaper/store";
+  import type { AppComponentProps } from "$types/apps/app";
   import File from "./Wallpaper/DesktopIcon/File.svelte";
   import Folder from "./Wallpaper/DesktopIcon/Folder.svelte";
 
-  const { process }: AppComponentProps<WallpaperRuntime> = $props();
-  const { Wallpaper } = process.userDaemon || {};
+  const { process }: AppComponentProps<IWallpaperRuntime> = $props();
+  const { Wallpaper } = Daemon?.wallpaper || {};
   const { contents, iconsElement, userPreferences } = process;
 </script>
 

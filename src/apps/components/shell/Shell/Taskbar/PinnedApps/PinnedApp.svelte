@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
-  import { contextProps } from "$ts/context/actions.svelte";
-  import type { App } from "$types/app";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
+  import type { App } from "$types/apps/app";
   import { onMount } from "svelte";
 
-  const { appId, process }: { appId: string; process: ShellRuntime } = $props();
+  const { appId, process }: { appId: string; process: IShellRuntime } = $props();
 
   let app: App | undefined = $state();
 
@@ -23,6 +24,6 @@
 
 {#if app && app.metadata}
   <button class="pinned-app" title={app.metadata.name} onclick={spawn} data-contextmenu="startmenu-app" use:contextProps={[app]}>
-    <img src={process.userDaemon?.getAppIcon(app) || process.getIconCached("ComponentIcon")} alt="" />
+    <Icon icon="@app::{app.id}" />
   </button>
 {/if}

@@ -1,10 +1,12 @@
+import type { IIconPickerRuntime } from "$interfaces/runtimes/IIconPickerRuntime";
+import type { IIconService } from "$interfaces/services/IIconService";
 import { AppProcess } from "$ts/apps/process";
-import { IconService } from "$ts/icon";
+import { Daemon, SysDispatch } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { IconPickerData } from "./types";
 
-export class IconPickerRuntime extends AppProcess {
+export class IconPickerRuntime extends AppProcess implements IIconPickerRuntime {
   forWhat?: string;
   defaultIcon?: string;
   selected = Store<string>();
@@ -32,10 +34,10 @@ export class IconPickerRuntime extends AppProcess {
   async start() {
     if (!this.forWhat) return false;
 
-    const iconService = this.userDaemon?.serviceHost?.getService<IconService>("IconService");
+    const iconService = Daemon?.serviceHost?.getService<IIconService>("IconService");
 
     if (!iconService) return false;
-    this.store = iconService.Configuration();
+    this.store = iconService.Icons();
     this.groups = iconService.getGroupedIcons();
   }
 
@@ -46,13 +48,17 @@ export class IconPickerRuntime extends AppProcess {
   //#endregion
 
   async confirm() {
-    this.systemDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
+    this.Log(`Confirm: dispatching selection to ${this.returnId}`);
+
+    SysDispatch.dispatch("ip-confirm", [this.returnId, this.selected()]); // Return selection to invocator
 
     await this.closeWindow();
   }
 
   async cancel() {
-    this.systemDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
+    this.Log(`Cancel: dispatching cancel to ${this.returnId}`);
+
+    SysDispatch.dispatch("ip-cancel", [this.returnId]); // Broadcast cancel to invocator
 
     await this.closeWindow();
   }

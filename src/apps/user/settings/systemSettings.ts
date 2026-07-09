@@ -1,5 +1,5 @@
 import "$css/apps/user/settings.css";
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import { SettingsRuntime } from "./runtime";
 import Settings from "./Settings.svelte";
 
@@ -7,13 +7,13 @@ export const SystemSettings: App = {
   metadata: {
     name: "System Settings",
     author: "Izaak Kuipers",
-    version: "6.0.0",
+    version: "6.0.4",
     icon: "SettingsIcon",
     appGroup: "systemTools",
   },
   size: { w: 730, h: 560 },
   minSize: { w: 730, h: 560 },
-  maxSize: { w: 860, h: 650 },
+  maxSize: { w: 1000, h: 800 },
   position: { centered: true },
   state: {
     minimized: false,

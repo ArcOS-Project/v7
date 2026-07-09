@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { SettingsRuntime } from "$apps/user/settings/runtime";
+  import type { IUserDaemon } from "$interfaces/IUserDaemon";
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { UserDaemon } from "$ts/server/user/daemon";
   import type { UserInfo } from "$types/user";
   import AccountName from "./Header/AccountName.svelte";
 
@@ -10,15 +10,15 @@
     userDaemon,
     process,
   }: {
-    process: SettingsRuntime;
+    process: ISettingsRuntime;
     userInfo: UserInfo;
-    userDaemon: UserDaemon;
+    userDaemon: IUserDaemon;
   } = $props();
 </script>
 
 <div class="header">
   <div class="profile-picture">
-    <ProfilePicture {userDaemon} height={128} />
+    <ProfilePicture height={128} />
     {#if !process.safeMode}
       <div class="change-menu">
         <div class="inner">
@@ -26,7 +26,7 @@
             class="lucide icon-upload"
             aria-label="Upload profile picture"
             title="Upload profile picture"
-            onclick={() => userDaemon?.uploadProfilePicture()}
+            onclick={() => userDaemon?.preferencesCtx?.uploadProfilePicture()}
           ></button>
           <button
             class="lucide icon-folder-open"

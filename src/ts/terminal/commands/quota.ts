@@ -1,8 +1,8 @@
+import type { IArcTerminal } from "$interfaces/IArcTerminal";
+import { Fs } from "$ts/env";
 import { formatBytes } from "$ts/util/fs";
-import type { Arguments } from "$types/terminal";
-import type { ArcTerminal } from "..";
+import { BRBLACK, BRBLUE, RESET } from "../colors";
 import { TerminalProcess } from "../process";
-import { BRBLACK, BRBLUE, RESET } from "../store";
 
 export class QuotaCommand extends TerminalProcess {
   public static keyword = "quota";
@@ -18,9 +18,9 @@ export class QuotaCommand extends TerminalProcess {
 
   //#endregion
 
-  protected async main(term: ArcTerminal, flags: Arguments, argv: string[]): Promise<number> {
+  protected async main(term: IArcTerminal): Promise<number> {
     const BAR_LENGTH = 50;
-    const quota = await term.fs.drives.userfs?.quota();
+    const quota = await Fs.drives.userfs?.quota();
 
     if (!quota) {
       term.Error("failed to get UserFS quota!");
@@ -34,8 +34,8 @@ export class QuotaCommand extends TerminalProcess {
     const max = formatBytes(quota.max);
     const sub = `${BRBLACK}${used.padEnd(BAR_LENGTH + 2 - max.length, " ") + max}${RESET}`;
 
-    term.rl?.println(`(${BRBLUE}${filler}${RESET})`);
-    term.rl?.println(sub);
+    this.rl?.println(`(${BRBLUE}${filler}${RESET})`);
+    this.rl?.println(sub);
 
     return 0;
   }

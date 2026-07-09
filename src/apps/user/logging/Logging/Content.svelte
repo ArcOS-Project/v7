@@ -1,10 +1,10 @@
 <script lang="ts">
+  import type { ILoggingRuntime } from "$interfaces/runtimes/ILoggingRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
-  import type { LoggingRuntime } from "../runtime";
   import List from "./Content/List.svelte";
   import Options from "./Content/Options.svelte";
 
-  const { process }: { process: LoggingRuntime } = $props();
+  const { process }: { process: ILoggingRuntime } = $props();
 </script>
 
 <div class="container">

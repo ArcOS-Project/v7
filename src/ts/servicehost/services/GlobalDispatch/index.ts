@@ -1,0 +1,131 @@
+import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IServerManager } from "$interfaces/modules/IServerManager";
+import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
+import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+import { Daemon, Env, getKMod, Stack } from "$ts/env";
+import { BaseService } from "$ts/servicehost/base";
+import { Sleep } from "$ts/sleep";
+import type { Service } from "$types/services/service";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
+import type { UserPreferences } from "$types/user";
+import io, { Socket } from "socket.io-client";
+
+export class GlobalDispatch extends BaseService implements IGlobalDispatch {
+  client: Socket | undefined;
+  server: IServerManager;
+  authorized = false;
+
+  //#region LIFECYCLE
+
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost) {
+    super(pid, parentPid, name, host);
+
+    this.server = getKMod<IServerManager>("server");
+
+    window.addEventListener("beforeunload", () => {
+      this.stop();
+    });
+
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
+    this.initBroadcast?.("Connecting global dispatch");
+    return new Promise<void>((resolve) => {
+      this.client = io(this.server.url, { transports: ["websocket"] });
+      this.client.on("connect", async () => {
+        await this.connected();
+        resolve();
+      });
+
+      this.client.on("kicked", () => {
+        const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid"));
+        daemon?.power?.logoff();
+      });
+    });
+  }
+
+  async stop(broadcast?: (m: string) => void) {
+    broadcast?.("Stopping development environment");
+    this.client?.disconnect();
+  }
+
+  //#endregion
+
+  async connected() {
+    this.Log(`Connected, authorizing using token`);
+    this.client?.emit("authorize", Daemon!.token);
+
+    await new Promise<void>((resolve, reject) => {
+      this.client?.once("authorized", () => {
+        this.Log(`Global Dispatch is good to go :D`);
+
+        Env.set("dispatch_sock_id", this.client?.id);
+        this.authorized = true;
+        this.enableListener();
+        resolve();
+      });
+
+      this.client?.once("auth-failed", () => {
+        this.Log(`The server rejected our token :(`);
+
+        reject();
+      });
+    });
+  }
+
+  sendUpdate() {
+    this.emit("update", {
+      lastActive: Date.now(),
+      processCount: Stack.store().size,
+      lastApp: Stack.renderer?.lastInteract?.app?.data,
+    });
+  }
+
+  subscribe<T extends Array<any> = any[]>(event: string, callback: (...data: T) => void) {
+    this.Log(`Subscribing to event ${event}`);
+    this.client?.on(event, (...data: T) => callback(...data));
+  }
+
+  emit(event: string, ...data: any[]) {
+    this.Log(`Emitting event ${event} to all other user clients`);
+    this.client?.emit("user-dispatch", event, ...data);
+  }
+
+  async getClients(): Promise<GlobalDispatchClient[]> {
+    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchGet();
+    return result?.result ?? [];
+  }
+
+  async disconnectClient(clientId: string) {
+    return (await Daemon.GetConnector<IUserConnector>("UserConnector").DispatchKick(clientId)).success;
+  }
+
+  enableListener() {
+    this?.subscribe("update-preferences", async (preferences: UserPreferences) => {
+      Daemon.preferencesCtx!.syncLock = true;
+      await Sleep(0);
+      Daemon.preferencesCtx!.preferences.set(preferences);
+      await Sleep(0);
+      Daemon.preferencesCtx!.syncLock = false;
+    });
+
+    // TODO - IzKuipers #229
+
+    // this?.subscribe("fs-flush-folder", (path) => {
+    //   SysDispatch.dispatch("fs-flush-folder", path);
+    // });
+
+    // this?.subscribe("fs-flush-file", (path) => {
+    //   SysDispatch.dispatch("fs-flush-file", path);
+    // });
+  }
+}
+
+export const globalDispatchService: Service = {
+  name: "Global Dispatch",
+  description: "Host process for realtime server communication",
+  process: GlobalDispatch,
+  initialState: "started",
+};

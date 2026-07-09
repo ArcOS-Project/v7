@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { MessageBox } from "$ts/dialog";
-  import { ShareManager } from "$ts/shares";
-  import type { OverlayRuntime } from "../../overlay";
+  import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
+  import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
-  const { process }: { process: OverlayRuntime } = $props();
+  const { process }: { process: IShareMgmtOverlayRuntime } = $props();
 
   let newPassword = $state("");
   let confirmNewPassword = $state("");
@@ -14,7 +16,7 @@
         {
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -25,7 +27,7 @@
       return;
     }
 
-    const shares = process.userDaemon?.serviceHost?.getService<ShareManager>("ShareMgmt")!;
+    const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
     const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();
@@ -35,7 +37,7 @@
         {
           title: "Change password",
           message: "Failed to change your password! Something might have gone wrong on our end. Please try again later.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -48,7 +50,7 @@
           title: "Change password",
           message:
             "Your password has been changed successfully! New share members will have to use this password to access the share.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },
@@ -61,7 +63,7 @@
 
 <div class="top">
   <div class="left">
-    <img src={process.getIconCached("PasswordIcon")} alt="" />
+    <Icon icon="PasswordIcon" />
   </div>
   <div class="right">
     <h1>Change share password</h1>

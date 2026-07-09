@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { ShellRuntime } from "$apps/components/shell/runtime";
+  import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import { Daemon } from "$ts/env";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
   import { onMount } from "svelte";
   import Calendar from "./Calendar.svelte";
 
-  const { process, userPreferences }: { process: ShellRuntime; userPreferences: UserPreferencesStore } = $props();
+  const { process, userPreferences }: { process: IShellRuntime; userPreferences: UserPreferencesStore } = $props();
   const { calendarOpened } = process;
 
   let text = $state("");
@@ -27,7 +28,8 @@
   <Calendar {process} />
   <button
     class="clock-button"
-    class:active={$calendarOpened}
+    class:active={$calendarOpened && !Daemon.safeMode}
+    disabled={Daemon.safeMode}
     data-contextmenu="taskbar-clock"
     onclick={() => ($calendarOpened = true)}
   >

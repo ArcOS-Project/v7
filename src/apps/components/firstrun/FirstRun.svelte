@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
   import Spinner from "$lib/Spinner.svelte";
   import { onMount, type Snippet } from "svelte";
-  import type { FirstRunRuntime } from "./runtime";
 
-  const { process }: { process: FirstRunRuntime } = $props();
+  const { process }: { process: IFirstRunRuntime } = $props();
   const { currentPage } = process;
 
   let Component = $state<Snippet | undefined>();

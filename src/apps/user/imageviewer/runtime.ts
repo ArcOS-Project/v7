@@ -1,14 +1,21 @@
+import type { IImageViewerRuntime } from "$interfaces/runtimes/IImageViewerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
+import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
-import { arrayToBlob } from "$ts/util/convert";
-import { getItemNameFromPath } from "$ts/util/fs";
+import { arrayBufferToBlob } from "$ts/util/convert";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
+import type { AppProcessData } from "$types/apps/app";
+import { ImageViewer } from "svelte-image-viewer";
+import { ImageViewerAccelerators } from "./accelerators";
+import { ImageViewerAltMenu } from "./altmenu";
 
-export class ImageViewerRuntime extends AppProcess {
+export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntime {
   openedFile = Store<string>();
   imageUrl = Store<string>();
+  viewer = Store<ImageViewer>();
+  scale = Store<number>(1);
   indirect = Store<boolean>(false);
   overridePopulatable: boolean = true;
 
@@ -20,6 +27,17 @@ export class ImageViewerRuntime extends AppProcess {
     this.renderArgs.path = path;
 
     this.setSource(__SOURCE__);
+    this.altMenu.set(ImageViewerAltMenu(this));
+    this.acceleratorStore.push(...ImageViewerAccelerators(this));
+  }
+
+  async start() {
+    this.viewer.subscribe(async (v) => {
+      if (!v) return;
+
+      await Sleep(100);
+      v.scaleImageToFit();
+    });
   }
 
   async render({ path }: { path: string }) {
@@ -30,9 +48,24 @@ export class ImageViewerRuntime extends AppProcess {
 
   //#endregion
 
+  async readFileDialog() {
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose an image to view",
+      extensions: this.app.data.opens?.extensions ?? [],
+      icon: this.app.data.metadata.icon,
+      startDir: getParentDirectory(this.openedFile()),
+      targetPid: this.pid,
+    });
+
+    if (!path) return;
+
+    return await this.readFile(path);
+  }
+
   async readFile(path: string) {
+    this.Log(`readFile: ${path}`);
     try {
-      const url = await this.fs.direct(path);
+      const url = await Fs.direct(path);
 
       if (!url) {
         return await this.readFileIndirectFallback(path);
@@ -48,7 +81,9 @@ export class ImageViewerRuntime extends AppProcess {
   }
 
   async readFileIndirectFallback(path: string) {
-    const prog = await this.userDaemon!.FileProgress(
+    this.Log(`Reading file in full using readFile because accessing using DFA failed: ${path}`);
+
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         caption: `Reading image`,
@@ -58,7 +93,7 @@ export class ImageViewerRuntime extends AppProcess {
       this.pid
     );
 
-    const contents = await this.fs.readFile(path, (progress) => {
+    const contents = await Fs.readFile(path, (progress) => {
       prog.show();
       prog.setMax(progress.max);
       prog.setDone(progress.value);
@@ -74,7 +109,7 @@ export class ImageViewerRuntime extends AppProcess {
           message: "The image you tried to open could not be read.",
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
         },
         this.parentPid,
         true
@@ -84,7 +119,7 @@ export class ImageViewerRuntime extends AppProcess {
       return;
     }
 
-    const blob = arrayToBlob(contents);
+    const blob = arrayBufferToBlob(contents);
     const url = URL.createObjectURL(blob);
 
     this.indirect.set(true);

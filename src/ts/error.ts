@@ -1,4 +1,4 @@
-import type { ProcessHandlerType } from "$types/kernel";
+import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
@@ -8,6 +8,7 @@ import { Log } from "./logging";
 export function handleGlobalErrors() {
   let LOCKED = false;
   function DoError(e: ErrorEvent | PromiseRejectionEvent) {
+    __Console__.log(e);
     if (LOCKED) {
       e.preventDefault();
       return false;
@@ -55,19 +56,18 @@ export function handleGlobalErrors() {
 }
 
 export function interceptTpaErrors(stack: string, e: Error): boolean {
-  const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-f0-9A-F\-_]+\.js/gm;
+  const FPA_TEST_REGEXP = /http(s|):\/\/[a-zA-Z.0-9\/]+\/assets\/(?<appId>[a-zA-Z]+)-[a-z0-9A-Z\-_]+\.js/gm;
   let parsed = stackTraceParser.parse(stack);
   parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
-  const handler = Kernel()!.getModule<ProcessHandlerType>?.("stack", true);
+  const handler = Kernel!.getModule<IProcessHandler>?.("stack", true);
   const renderer = handler?.renderer;
 
   if (renderer?.lastInteract) {
     if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
       Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
-      handler.BUSY = false;
-      handler.dispatch.dispatch("stack-not-busy");
+      handler.BUSY = "";
       renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
       handler.kill(renderer.lastInteract.pid);
       renderer.lastInteract = undefined;
@@ -75,8 +75,7 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
       const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
 
       if (parsedAppId) {
-        handler.BUSY = false;
-        handler.dispatch.dispatch("stack-not-busy");
+        handler.BUSY = "";
         renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
         handler.kill(renderer.lastInteract.pid);
         renderer.lastInteract = undefined;

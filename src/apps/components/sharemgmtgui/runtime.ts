@@ -1,16 +1,18 @@
+import type { IShareMgmtGuiRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+import type { IShareManager } from "$interfaces/services/IShareManager";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import type { ShareManager } from "$ts/shares";
+import { Daemon, Fs } from "$ts/env";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { SharedDriveType } from "$types/shares";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { SharedDriveType } from "$types/server/shares";
 import { ChangePasswordApp } from "./overlays/changepassword";
 import { RenameShareApp } from "./overlays/renameShare";
 
-export class ShareMgmtGuiRuntime extends AppProcess {
+export class ShareMgmtGuiRuntime extends AppProcess implements IShareMgmtGuiRuntime {
   members = Store<Record<string, string>>({});
-  info: SharedDriveType | undefined;
-  shares: ShareManager;
+  info?: SharedDriveType;
+  shares: IShareManager;
   shareId: string;
   selectedMember = Store<string>("");
   myShare = false;
@@ -26,28 +28,38 @@ export class ShareMgmtGuiRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.shareId = shareId;
-    this.shares = this.userDaemon?.serviceHost?.getService("ShareMgmt")!;
+    this.shares = Daemon?.serviceHost?.getService("ShareMgmt")!;
 
     this.setSource(__SOURCE__);
   }
 
   async start(): Promise<any> {
+    const { stop } = await Daemon.helpers?.GlobalLoadIndicator("Probing share information...")!;
+
     this.info = await this.shares.getShareInfoById(this.shareId);
 
-    if (!this.info) return false;
-    this.myShare = this.userDaemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
+    if (!this.info) {
+      stop();
+      return false;
+    }
+
+    this.myShare = Daemon?.userInfo._id === this.info.userId; // Compare user IDs to see if the share is own
 
     await this.updateMembers();
+    stop();
   }
 
   //#endregion
   //#region ACTIONS
 
   async updateMembers() {
+    this.Log(`updateMembers`);
+
     this.members.set(await this.shares.getShareMembers(this.shareId));
   }
 
   async kickUser(id: string, username: string) {
+    this.Log(`kickUser: ${id} (${username})`);
     MessageBox(
       {
         title: `Kick '${username}'?`,
@@ -73,6 +85,8 @@ export class ShareMgmtGuiRuntime extends AppProcess {
   }
 
   async deleteShare() {
+    this.Log(`deleteShare`);
+
     MessageBox(
       {
         title: "Delete share?",
@@ -84,7 +98,7 @@ export class ShareMgmtGuiRuntime extends AppProcess {
             caption: "Delete share",
             action: async () => {
               this.closeWindow(); // First close the mgmtgui
-              await this.fs.umountDrive(this.shareId); // Then unmount the share
+              await Fs.umountDrive(this.shareId); // Then unmount the share
               await this.shares.deleteShare(this.shareId); // And finally delete the share
             },
             suggested: true,

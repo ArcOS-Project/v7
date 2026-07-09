@@ -1,5 +1,8 @@
 #IconPicker > div.body {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /** TEMP */
@@ -16,7 +19,8 @@
   padding: 15px;
   border: var(--win-border);
   border-radius: 10px;
-  height: calc(100% - 30px - 55px - 51px);
+  height: 0;
+  flex-grow: 1;
   overflow-y: auto;
   margin-bottom: 15px;
 }
@@ -65,20 +69,4 @@
 }
 #IconPicker > div.body div.header div.what > span {
   opacity: 0.5;
-}
-
-#IconPicker > div.body div.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: var(--button-glass-bg);
-  height: 51px;
-}
-
-#IconPicker > div.body div.actions > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }

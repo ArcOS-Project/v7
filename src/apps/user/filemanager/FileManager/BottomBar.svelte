@@ -1,11 +1,16 @@
 <script lang="ts">
+  import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
   import Spinner from "$lib/Spinner.svelte";
+  import ActionBar from "$lib/Window/ActionBar.svelte";
+  import ActionGroup from "$lib/Window/ActionBar/ActionGroup.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
+  import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
+  import { Fs } from "$ts/env";
   import { Plural } from "$ts/util";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
   import { onMount } from "svelte";
-  import type { FileManagerRuntime } from "../runtime";
 
-  const { process }: { process: FileManagerRuntime } = $props();
+  const { process }: { process: IFileManagerRuntime } = $props();
   const { contents, path, userPreferences, notice, showNotice, virtual } = process;
 
   let dirName = $state("");
@@ -21,86 +26,61 @@
 
       if (driveIdentifier) {
         try {
-          const drive = process.fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
+          const drive = Fs.getDriveByLetter(driveIdentifier.slice(0, -1), false);
 
           driveLabel = drive?.label || "";
         } catch {}
       }
     });
   });
-
-  function thumbnails() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
-      v.appPreferences.fileManager.thumbnails = true;
-      return v;
-    });
-  }
-
-  function grid() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = true;
-      v.appPreferences.fileManager.compact = false;
-      v.appPreferences.fileManager.thumbnails = false;
-      return v;
-    });
-  }
-
-  function list() {
-    process.userPreferences.update((v) => {
-      v.appPreferences.fileManager.grid = false;
-      v.appPreferences.fileManager.compact = false;
-      v.appPreferences.fileManager.thumbnails = false;
-      return v;
-    });
-  }
 </script>
 
-<div class="bottom">
-  <div class="stat">
+<ActionBar>
+  {#snippet leftContent()}
     {#if $contents || $virtual}
       {#if !$virtual}
-        {$contents!.dirs.length + $contents!.files.length}
-        {Plural("item", $contents!.dirs.length + $contents!.files.length)} in {dirName || driveLetter || driveLabel}
+        <ActionSubtle
+          text="{$contents!.dirs.length + $contents!.files.length} {Plural(
+            'item',
+            $contents!.dirs.length + $contents!.files.length
+          )} in {dirName || driveLetter || driveLabel}"
+        />
       {:else}
-        in {$virtual.name}
+        <ActionSubtle text="in {$virtual.name}" />
       {/if}
     {:else}
       <Spinner height={16} />
     {/if}
-  </div>
-  {#if $showNotice && $notice}
-    <div class="notice {$notice.className || ''}" title={$notice.text}>
-      <span class="lucide icon-{$notice.icon}"></span>
-      <span>{$notice.text}</span>
-    </div>
-  {/if}
-  <div class="view-toggle">
-    <button
-      class="lucide icon-file-image"
-      aria-label="Thumbnail view"
-      class:suggested={$userPreferences.appPreferences.fileManager!.thumbnails}
-      onclick={thumbnails}
-      disabled={!!$virtual}
-      title="Thumbnail view"
-    ></button>
-    <button
-      class="lucide icon-columns-3"
-      aria-label="Grid view"
-      class:suggested={$userPreferences.appPreferences.fileManager!.grid}
-      onclick={grid}
-      disabled={!!$virtual}
-      title="Compact view"
-    ></button>
-    <button
-      class="lucide icon-list"
-      aria-label="List view"
-      class:suggested={!$userPreferences.appPreferences.fileManager!.grid &&
-        !$userPreferences.appPreferences.fileManager!.thumbnails}
-      onclick={list}
-      disabled={!!$virtual}
-      title="List view"
-    ></button>
-  </div>
-</div>
+  {/snippet}
+  {#snippet rightContent()}
+    {#if $showNotice && $notice}
+      <div class="notice {$notice.className || ''}" title={$notice.text}>
+        <span class="lucide icon-{$notice.icon}"></span>
+        <span>{$notice.text}</span>
+      </div>
+    {/if}
+    <ActionGroup>
+      <ActionIconButton
+        icon="file-image"
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "thumbnail"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "thumbnail")}
+        disabled={!!$virtual}
+        title="Thumbnail view"
+      ></ActionIconButton>
+      <ActionIconButton
+        icon="columns-3"
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "grid"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "grid")}
+        disabled={!!$virtual}
+        title="Grid view"
+      ></ActionIconButton>
+      <ActionIconButton
+        icon="list"
+        suggested={$userPreferences.appPreferences.fileManager.viewMode === "list"}
+        onclick={() => ($userPreferences.appPreferences.fileManager.viewMode = "list")}
+        disabled={!!$virtual}
+        title="List view"
+      ></ActionIconButton>
+    </ActionGroup>
+  {/snippet}
+</ActionBar>

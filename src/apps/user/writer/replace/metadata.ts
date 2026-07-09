@@ -1,6 +1,6 @@
-import type { App } from "$types/app";
+import type { App } from "$types/apps/app";
 import Replace from "./Replace.svelte";
-import { ReplaceRuntime } from "./runtime";
+import { WriterReplaceRuntime } from "./runtime";
 
 export const ReplaceOverlay: App = {
   metadata: {
@@ -35,7 +35,7 @@ export const ReplaceOverlay: App = {
     close: true,
   },
   assets: {
-    runtime: ReplaceRuntime,
+    runtime: WriterReplaceRuntime,
     component: Replace as any,
   },
   glass: true,

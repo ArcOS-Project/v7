@@ -1,14 +1,15 @@
 <script lang="ts">
+  import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import Spinner from "$lib/Spinner.svelte";
+  import { Daemon, Env } from "$ts/env";
   import { Store } from "$ts/writable";
-  import type { StoreItem, UpdateInfo } from "$types/package";
+  import type { StoreItem, UpdateInfo } from "$types/tpa/package";
   import { onMount } from "svelte";
-  import type { AppStoreRuntime } from "../runtime";
   import InstallButton from "./PackageInstallAction/InstallButton.svelte";
   import UninstallButton from "./PackageInstallAction/UninstallButton.svelte";
   import UpdateButton from "./PackageInstallAction/UpdateButton.svelte";
 
-  const { process, pkg, compact = false }: { process: AppStoreRuntime; pkg: StoreItem; compact?: boolean } = $props();
+  const { process, pkg, compact = false }: { process: IAppStoreRuntime; pkg: StoreItem; compact?: boolean } = $props();
   let loading = $state<boolean>(true);
   let installed = Store<StoreItem | undefined>();
   let update = Store<UpdateInfo | false>();
@@ -26,7 +27,7 @@
     <Spinner height={24} />
   {:else if $installed}
     {#if !compact}
-      {#if pkg.userId === process.userDaemon?.userInfo._id}
+      {#if pkg.userId === Daemon?.userInfo._id}
         <button
           class="lucide icon-cog"
           aria-label="Manage"
@@ -38,7 +39,7 @@
           class="lucide icon-rocket"
           aria-label="Launch"
           title="Launch"
-          onclick={() => process.userDaemon!.spawnApp($store.pkg.appId, +process.env.get("shell_pid"))}
+          onclick={() => process.spawnApp($store.pkg.appId, +Env.get("shell_pid"))}
         ></button>
       {/if}
     {/if}

@@ -1,6 +1,6 @@
-import { AdminScopes } from "$ts/server/admin/store";
-import type { AdminCommandType } from "$ts/terminal/commands/admin";
-import { AuditSeverity } from "$types/admin";
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+import { AuditSeverity } from "$types/server/admin";
+import type { AdminCommandType } from "$types/terminal";
 import dayjs from "dayjs";
 
 export const AdminServerAuditlog: AdminCommandType = async (term, admin) => {

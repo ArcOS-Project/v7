@@ -1,18 +1,21 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IProcess } from "$interfaces/IProcess";
+import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
+import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { MessageBox } from "$ts/dialog";
-import { KernelStack } from "$ts/env";
-import type { Process } from "$ts/process/instance";
-import { ProcessKillResultCaptions } from "$ts/process/store";
-import type { ServiceHost } from "$ts/services";
+import { Daemon, Env, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
+import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
+import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/app";
-import { ElevationLevel } from "$types/elevation";
-import type { ProcessKillResult } from "$types/process";
+import type { AppProcessData } from "$types/apps/app";
+import { ElevationLevel } from "$types/system/elevation";
+import type { ProcessKillResult } from "$types/system/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
 
-export class ProcessManagerRuntime extends AppProcess {
+export class ProcessManagerRuntime extends AppProcess implements IProcessManagerRuntime {
   public selected = Store<string>();
   public running = Store<number>(0);
   public currentTab = Store<string>("Processes");
@@ -20,7 +23,7 @@ export class ProcessManagerRuntime extends AppProcess {
     Processes: Processes as any,
     Services: Services as any,
   };
-  host: ServiceHost;
+  host: IServiceHost;
 
   //#region LIFECYCLE
 
@@ -28,20 +31,31 @@ export class ProcessManagerRuntime extends AppProcess {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-    this.host = this.userDaemon?.serviceHost!;
+    this.host = Daemon?.serviceHost!;
     if (page && this.tabs[page]) this.currentTab.set(page);
+  }
+
+  async render() {
+    const existingInstance = await this.closeIfSecondInstance();
+
+    if (existingInstance) {
+      existingInstance.currentTab.set(this.currentTab());
+      return false;
+    }
   }
 
   //#endregion
 
-  async kill(proc: Process) {
-    const name = proc instanceof AppProcess ? proc.app.data.metadata.name : proc.name;
+  async kill(proc: IProcess) {
+    this.Log(`kill: ${proc.pid}`);
 
-    const elevated = await this.userDaemon?.manuallyElevate({
+    const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
+
+    const elevated = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
-      image: proc instanceof AppProcess ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
+      image: ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: name,
-      description: proc instanceof AppProcess ? "Application" : "Process",
+      description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
       level: ElevationLevel.high,
     });
 
@@ -59,7 +73,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "End process",
             action: async () => {
-              const result = await KernelStack().kill(proc.pid, true);
+              const result = await Stack.kill(proc.pid, true);
 
               if (result !== "success") {
                 this.killError(name, result);
@@ -77,6 +91,8 @@ export class ProcessManagerRuntime extends AppProcess {
   }
 
   killError(name: string, result: ProcessKillResult) {
+    this.Log(`killError: ${name}, ${result}`);
+
     const caption = ProcessKillResultCaptions[result];
 
     MessageBox(
@@ -92,7 +108,9 @@ export class ProcessManagerRuntime extends AppProcess {
     );
   }
 
-  async stopService(id: string) {
+  async stopService(id: ServiceIdentifier) {
+    this.Log(`stopService: ${id}`);
+
     if (!this.host.getService(id)) return;
     MessageBox(
       {
@@ -106,7 +124,7 @@ export class ProcessManagerRuntime extends AppProcess {
           {
             caption: "Stop service",
             action: () => {
-              this.userDaemon?.serviceHost?.stopService(id);
+              Daemon?.serviceHost?.stopService(id);
             },
             suggested: true,
           },
@@ -119,7 +137,7 @@ export class ProcessManagerRuntime extends AppProcess {
     );
   }
 
-  async restartService(id: string) {
+  async restartService(id: ServiceIdentifier) {
     this.Log("Restarting selected service");
 
     MessageBox(
@@ -144,22 +162,27 @@ export class ProcessManagerRuntime extends AppProcess {
     );
   }
 
-  async startService(id: string) {
+  async startService(id: ServiceIdentifier) {
+    this.Log(`startService: ${id}`);
+
     if (this.host.getService(id)) return;
-    this.userDaemon?.serviceHost?.startService(id);
+    Daemon?.serviceHost?.startService(id);
   }
 
-  serviceInfoFor(id: string) {
+  serviceInfoFor(id: ServiceIdentifier) {
+    this.Log(`serviceInfoFor: ${id}`);
+
     if (!this.host.hasService(id)) return;
-
-    this.spawnOverlayApp("ServiceInfo", +this.env.get("shell_pid"), id);
+    this.spawnOverlayApp("ServiceInfo", +Env.get("shell_pid"), id);
   }
 
-  appInfoFor(proc: AppProcess) {
-    this.spawnOverlayApp("AppInfo", +this.env.get("shell_pid"), proc.app.id);
+  appInfoFor(proc: IAppProcess) {
+    this.Log(`appInfoFor: ${proc.pid}`);
+    this.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc.app.id);
   }
 
-  processInfoFor(proc: Process) {
-    this.spawnOverlayApp("ProcessInfoApp", +this.env.get("shell_pid"), proc);
+  processInfoFor(proc: IProcess) {
+    this.Log(`processInfoFor: ${proc.pid}`);
+    this.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
   }
 }

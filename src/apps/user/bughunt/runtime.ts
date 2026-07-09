@@ -1,21 +1,23 @@
+import type { IBugHuntRuntime } from "$interfaces/runtimes/IBugHuntRuntime";
+import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
 import { AppProcess } from "$ts/apps/process";
-import type { BugHuntUserSpaceProcess } from "$ts/bughunt/process";
-import { UserPaths } from "$ts/server/user/store";
+import { Daemon, Fs } from "$ts/env";
+import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { App, AppProcessData } from "$types/app";
-import type { BugReport } from "$types/bughunt";
+import type { App, AppProcessData } from "$types/apps/app";
+import type { BugReport } from "$types/server/bughunt";
 import { BugReportsCreatorApp } from "../bughuntcreator/BugHuntCreator";
 import { BugHuntAltMenu } from "./context";
 import { BugHuntUserDataApp } from "./userdata/metadata";
 
-export class BugHuntRuntime extends AppProcess {
+export class BugHuntRuntime extends AppProcess implements IBugHuntRuntime {
   loading = Store<boolean>(true);
   currentTab = Store<string>();
   store = Store<BugReport[]>([]);
   selectedReport = Store<string>();
-  bughunt: BugHuntUserSpaceProcess;
+  bughunt: IBugHuntUserSpaceProcess;
 
   protected overlayStore: Record<string, App> = {
     creator: BugReportsCreatorApp,
@@ -27,7 +29,7 @@ export class BugHuntRuntime extends AppProcess {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.bughunt = this.userDaemon?.serviceHost?.getService<BugHuntUserSpaceProcess>("BugHuntUsp")!;
+    this.bughunt = Daemon?.serviceHost?.getService<IBugHuntUserSpaceProcess>("BugHuntUsp")!;
     this.altMenu.set(BugHuntAltMenu(this));
 
     this.setSource(__SOURCE__);
@@ -40,6 +42,8 @@ export class BugHuntRuntime extends AppProcess {
   //#endregion
 
   async changeTab(tab: string) {
+    this.Log(`changeTab: ${tab}`);
+
     if (this.currentTab() === tab) return;
 
     this.loading.set(true);
@@ -50,10 +54,14 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   async refresh(tab = this.currentTab()) {
+    this.Log(`Refreshing!`);
+
     this.store.set(tab === "private" ? await this.bughunt.getPrivateReports() : await this.bughunt.getPublicReports());
   }
 
   async invalidateCaches(restoreSelected = false) {
+    this.Log(`Invalidating caches`);
+
     const selected = this.selectedReport();
     this.loading.set(true);
     await this.bughunt.refreshAllCaches();
@@ -63,10 +71,14 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   newReport() {
+    this.Log(`newReport`);
+
     this.spawnOverlay("creator");
   }
 
   viewLogs() {
+    this.Log(`viewLogs`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 
@@ -76,6 +88,8 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   userData() {
+    this.Log(`userData`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 
@@ -85,12 +99,14 @@ export class BugHuntRuntime extends AppProcess {
   }
 
   async exportReport() {
+    this.Log(`exportReport`);
+
     const selected = this.selectedReport();
     const report = this.store().filter((r) => r._id === selected)[0];
 
     if (!report) return;
 
-    const [path] = await this.userDaemon!.LoadSaveDialog({
+    const [path] = await Daemon!.files!.LoadSaveDialog({
       isSave: true,
       title: "Choose where to export the report to",
       icon: "SaveIcon",
@@ -101,7 +117,7 @@ export class BugHuntRuntime extends AppProcess {
 
     if (!path) return;
 
-    const prog = await this.userDaemon!.FileProgress(
+    const prog = await Daemon!.files!.FileProgress(
       {
         type: "size",
         icon: "SaveIcon",
@@ -111,7 +127,7 @@ export class BugHuntRuntime extends AppProcess {
       this.pid
     );
     try {
-      await this.fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
+      await Fs.writeFile(path, textToBlob(JSON.stringify(report, null, 2)), (progress) => {
         prog.show();
         prog.setMax(progress.max);
         prog.setDone(progress.value);
