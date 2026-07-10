@@ -1,6 +1,6 @@
 import "dseg/css/dseg.css";
 import "./css/main.css";
-import { handleElectronInit } from "$types/electron";
+import { handleElectronInit } from "$ts/electron";
 
 // CODE EXECUTION STARTS HERE
 async function Main() {
