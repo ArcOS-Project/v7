@@ -95,8 +95,6 @@ export async function handleElectronInit() {
             const subProcesses = Stack.getSubProcesses(parentPid);
             for (const [key, val] of subProcesses) {
               if (val.name === "loginApp") {
-                console.log(val);
-                console.log((val as LoginAppRuntime).loadingStatus());
                 if ((val as LoginAppRuntime).loadingStatus().length === 0) {
                   (val as LoginAppRuntime).shutdown();
                 }
@@ -110,7 +108,7 @@ export async function handleElectronInit() {
           getSubProcessess(Kernel.initPid);
           break;
         default:
-          console.log(`Couldn't handle state "${Kernel.state?.currentState}"`);
+          Kernel.Log("v7-electron", `Couldn't handle state "${Kernel.state?.currentState}"`);
           break;
       }
     });
