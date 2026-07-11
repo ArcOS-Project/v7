@@ -11,4 +11,6 @@ export interface ElectronIPC {
   getSystem(): Promise<NodeJS.Platform>;
   handleMaximize(callback: (isMaximized: boolean) => void): void;
   handleFullscreen(callback: (isFullscreen: boolean) => void): void;
+  supportIntegration(): void;
+  isNative(): Promise<boolean>;
 }

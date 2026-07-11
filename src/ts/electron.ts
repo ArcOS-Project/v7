@@ -7,7 +7,7 @@ import { mount } from "svelte";
 export const IsElectron = () => !!(window as any)["electron"] && navigator.userAgent.includes("Electron");
 
 function disableRoundedWindow(platform: NodeJS.Platform, disableRounding: boolean) {
-  if (platform === "win32" || platform === "darwin") {
+  if (platform === "win32") {
     if (disableRounding) {
       document.body.classList.remove("rounded");
     } else {
@@ -26,12 +26,23 @@ function hideTitleBar(titlebar: HTMLDivElement, hide: boolean) {
 
 export async function handleElectronInit() {
   if (IsElectron()) {
-    mount(ElectronTitleBar, { target: document.body });
+    // inform the electron process that native functions are available.
+    electron!.supportIntegration();
 
+    const platform = await electron!.getSystem();
+    const isNative = await electron!.isNative();
+
+    mount(ElectronTitleBar, { target: document.body });
     const titleBar = document.getElementById("electron-titlebar")! as HTMLDivElement;
+    if (isNative) {
+      hideTitleBar(titleBar, true);
+    }
 
     document.body.classList.add("electron-app");
-    const platform = await electron!.getSystem();
+    if (platform === "win32") {
+      document.body.classList.add("transparent");
+    }
+
     disableRoundedWindow(platform, false);
 
     electron!.handleMaximize(async (isMaximized) => {
@@ -40,7 +51,9 @@ export async function handleElectronInit() {
 
     electron!.handleFullscreen((isFullscreen) => {
       disableRoundedWindow(platform, isFullscreen);
-      hideTitleBar(titleBar, isFullscreen);
+      if (!isNative) {
+        hideTitleBar(titleBar, isFullscreen);
+      }
     });
 
     electron!.onPowerOff(async () => {

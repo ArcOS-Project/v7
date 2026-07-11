@@ -29,7 +29,7 @@ html,
 body {
   width: 100%;
   height: 100%;
-  background-color: transparent;
+  background-color: #000;
   color: var(--fg, #fff);
   margin: 0;
   overflow: hidden;

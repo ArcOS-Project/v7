@@ -7,17 +7,20 @@
 }
 
 :root {
-  --electron-titlebar-height: 2.5rem;
+  --electron-titlebar-height: 40px;
 }
 
 body.electron-app {
-  background-color: transparent;
   overflow: hidden;
   transform: translateZ(0);
   border-radius: 0px;
 
   @media (prefers-reduced-motion: no-preference) {
     transition: border-radius .2s;
+  }
+
+  &.transparent {
+    background-color: transparent;
   }
 
 }
