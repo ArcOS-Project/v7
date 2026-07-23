@@ -1,14 +1,15 @@
+import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import EnglishLanguage from "$lang/en.json";
 import DutchLanguage from "$lang/nl.json";
 import { getKMod } from "$ts/env";
-import { getJsonHierarchy } from "$ts/hierarchy";
 import { KernelModule } from "$ts/kernel/module";
-import type { ConstructedWaveKernel, SystemDispatchType } from "$types/kernel";
+import { getJsonHierarchy } from "$ts/util/hierarchy";
 
 export class I18n extends KernelModule {
   REGEX = /%(?<id>[\w.=\-]+)(?:\((?<inlays>(.*?))\)|)%/gm;
-  language: string = "en";
-  dispatch: SystemDispatchType;
+  language: string = "nl";
+  dispatch: ISystemDispatch;
   observer: MutationObserver | null = null;
   TARGET?: HTMLDivElement;
 
@@ -20,9 +21,9 @@ export class I18n extends KernelModule {
     nl: DutchLanguage,
   };
 
-  constructor(kernel: ConstructedWaveKernel, id: string) {
+  constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
-    this.dispatch = getKMod<SystemDispatchType>("dispatch");
+    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init(): Promise<void> {
