@@ -1,17 +1,21 @@
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import type { ITabHandler, IBaseTab } from "$interfaces/ITabHandler";
 import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs, SoundBus } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
+import { TabHandler } from "$ts/ui/tabs/handler";
 import { UserPaths } from "$ts/user/store";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import { SqeletonQueryTab } from "./QueryTab";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
 export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
@@ -45,6 +49,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       count: this.queryHistory,
     },
   };
+  tabHandler: ITabHandler<ISqeletonRuntime, IBaseTab<ISqeletonRuntime>>;
 
   get Interface(): ISqlInterfaceProcess | undefined {
     return this._intf();
@@ -67,6 +72,10 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     if (path) this.filePath = path;
 
     this.setSource(__SOURCE__);
+
+    this.tabHandler = new TabHandler<ISqeletonRuntime, IBaseTab<ISqeletonRuntime>>(this, {
+      newTab: async () => this.tabHandler.openTab(SqeletonQueryTab),
+    });
   }
 
   async start() {

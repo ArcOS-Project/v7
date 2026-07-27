@@ -2,6 +2,7 @@ import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable } from 
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
+import type { IBaseTab, ITabHandler } from "$interfaces/ITabHandler";
 import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
@@ -24,6 +25,7 @@ export interface ISqeletonRuntime extends IAppProcess {
   tempDb?: ISqlInterfaceProcess;
   tabs: SqeletonTabs;
   filePath?: string;
+  tabHandler: ITabHandler<ISqeletonRuntime, IBaseTab<ISqeletonRuntime>>;
   get Interface(): ISqlInterfaceProcess | undefined;
   set Interface(value: ISqlInterfaceProcess | undefined);
 

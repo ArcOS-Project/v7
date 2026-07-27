@@ -1,6 +1,8 @@
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
+import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ITabHandler } from "$interfaces/ITabHandler";
+import type { IAppPreInstallRuntime } from "$interfaces/runtimes/IAppPreinstallRuntime";
 import { Daemon, Fs } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { UserPaths } from "$ts/user/store";
@@ -9,7 +11,7 @@ import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import { BaseTab } from "./base";
 
-export class PlainTextFileTab extends BaseTab {
+export class PlainTextFileTab<Proc extends IAppProcess = IAppProcess> extends BaseTab<Proc> {
   protected override allowSaveWhenNotModified: boolean = true;
   public fileContent = Store<string>();
   public notFound = Store<boolean>(true);
@@ -21,7 +23,7 @@ export class PlainTextFileTab extends BaseTab {
     startDir: UserPaths.Documents,
   };
 
-  constructor(parent: ITabHandler, identifier: string, filePath?: string) {
+  constructor(parent: ITabHandler<Proc>, identifier: string, filePath?: string) {
     super(parent, identifier);
 
     if (filePath) this.filePath.set(filePath);
@@ -32,7 +34,7 @@ export class PlainTextFileTab extends BaseTab {
 
     let initialLoad = false;
 
-    this.fileContent.subscribe((v) => {
+    this.fileContent.subscribe(() => {
       if (!initialLoad) return (initialLoad = true);
       this.modified.set(true);
     });

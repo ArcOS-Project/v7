@@ -7,9 +7,9 @@ import { CommandResult } from "$ts/result";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import { LogLevel } from "$types/shared/logging";
-import { TabState } from "$types/shared/tabs";
+import { TabState, type TabHandlerConstructorOptions } from "$types/shared/tabs";
 
-export class TabHandler<Proc extends IAppProcess = IAppProcess, TabType extends IBaseTab = IBaseTab<Proc>>
+export class TabHandler<Proc extends IAppProcess = IAppProcess, TabType extends IBaseTab<Proc> = IBaseTab<Proc>>
   implements ITabHandler<Proc, TabType>
 {
   parent: Proc;
@@ -18,9 +18,14 @@ export class TabHandler<Proc extends IAppProcess = IAppProcess, TabType extends 
   hasNormal = Store<boolean>(false);
   hasPinned = Store<boolean>(false);
   hasTemporary = Store<boolean>(false);
+  newTab?(): Promise<ICommandResult<TabType>>;
 
-  constructor(parent: Proc) {
+  constructor(parent: Proc, options?: TabHandlerConstructorOptions<Proc, TabType>) {
     this.parent = parent;
+
+    if (options) {
+      this.newTab = options.newTab;
+    }
 
     this.tabs.subscribe((v) => {
       this.hasNormal.set(!!v.find((t) => t.state === TabState.Normal));
