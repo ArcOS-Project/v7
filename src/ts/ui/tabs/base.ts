@@ -6,23 +6,23 @@ import { CommandResult } from "$ts/result";
 import { Store } from "$ts/writable";
 import type { MaybePromise } from "$types/shared/common";
 import { LogLevel } from "$types/shared/logging";
+import { TabState } from "$types/shared/tabs";
 import type { Component } from "svelte";
 
-export class BaseTab<T extends IAppProcess = IAppProcess> implements IBaseTab<T> {
+export class BaseTab<Proc extends IAppProcess = IAppProcess> implements IBaseTab<Proc> {
   public title = Store<string>("BaseTab");
   public icon = Store<string>("");
   public modified = Store<boolean>(false);
   public readOnly = Store<boolean>(false);
   public loading = Store<boolean>(false);
-  public pinned = Store<boolean>(false);
-  public temporary = Store<boolean>(true);
+  public state = TabState.Normal;
   public className?: string;
-  protected allowSaveWhenNotModified = false;
   public component?: Component<any>;
   public identifier: string;
-  public tabHandler: ITabHandler<T>;
+  public tabHandler: ITabHandler<Proc>;
+  protected allowSaveWhenNotModified = false;
 
-  constructor(parent: ITabHandler<T>, identifier: string, ...args: any[]) {
+  constructor(parent: ITabHandler<Proc>, identifier: string, ...args: any[]) {
     this.Log(`${this.constructor.name} constructing`);
 
     this.identifier = identifier;
@@ -50,14 +50,6 @@ export class BaseTab<T extends IAppProcess = IAppProcess> implements IBaseTab<T>
 
   public async __onLoad(): Promise<ICommandResult> {
     this.Log(`OnLoad`);
-
-    this.pinned.subscribe((v) => {
-      if (v && this.temporary()) this.temporary.set(false);
-    });
-
-    this.temporary.subscribe((v) => {
-      if (v && this.pinned()) throw new Error("Can't make a pinned tab temporary");
-    });
 
     return await this.onLoad();
   }

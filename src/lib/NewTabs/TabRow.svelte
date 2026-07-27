@@ -1,29 +1,22 @@
 <script
   lang="ts"
-  generics="A extends IAppProcess = IAppProcess, R extends IBaseTab<A> = IBaseTab<A>, T extends ITabHandler<A, R> = ITabHandler<A, R>"
+  generics="Proc extends IAppProcess = IAppProcess, TabType extends IBaseTab<Proc> = IBaseTab<Proc>, HandlerType extends ITabHandler<Proc, TabType> = ITabHandler<Proc, TabType>"
 >
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IBaseTab, ITabHandler } from "$interfaces/ITabHandler";
-  import type { Unsubscriber } from "$types/shared/writable";
-  import { onMount } from "svelte";
+  import Tab from "./Tab.svelte";
+  import { TabState } from "$types/shared/tabs";
 
-  export let handler: T;
-  export let pinned = false;
-  export let temporary = false;
+  export let handler: HandlerType;
+  export let stateFilter: TabState = TabState.Normal;
 
-  let unsub: Unsubscriber;
-
-  let tabs: R[] = [];
-
-  onMount(() => {
-    handler.dispatch.subscribe("changed", () => {
-      tabs = handler.tabs;
-    });
-  });
+  const { tabs } = handler;
 </script>
 
 <div class="window-tab-row">
-  {#each tabs as tab (tab.identifier)}
-    <Tab {handler} {tab} {pinned} {temporary} />
+  {#each $tabs as tab (tab.identifier)}
+    {#if tab.state === stateFilter}
+      <Tab {handler} {tab} />
+    {/if}
   {/each}
 </div>

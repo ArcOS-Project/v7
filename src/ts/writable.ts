@@ -1,4 +1,5 @@
-import type { ReadableStore } from "$types/shared/writable";
+import type { MaybePromise } from "$types/shared/common";
+import type { ReadableStore, Unsubscriber } from "$types/shared/writable";
 import { get, writable } from "svelte/store";
 
 export function Store<T>(initial?: T): ReadableStore<T> {
