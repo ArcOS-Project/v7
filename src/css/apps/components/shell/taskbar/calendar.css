@@ -28,9 +28,9 @@
   pointer-events: none !important;
 }
 
-#arcShell div.taskbar div.calendar-popup > div {
+#arcShell div.taskbar div.calendar-popup>div {
   border-radius: 10px;
-  box-shadow: 0 2px 5px 2px #0002;
+  box-shadow: var(--secondary-box-shadow);
   outline: var(--shell-component-outline) 1px solid;
   outline-offset: -1px;
   background-color: var(--shell-component-bg);
@@ -119,6 +119,7 @@
 #arcShell div.taskbar div.calendar-popup div.calendar div.day p.day-number:hover {
   background-color: var(--button-glass-bg);
 }
+
 #arcShell div.taskbar div.calendar-popup div.calendar div.day.today p.day-number {
   background-color: var(--accent-light);
   color: var(--win-bg) !important;
@@ -186,6 +187,7 @@
 #arcShell div.taskbar div.calendar-popup div.buttons button.today:hover {
   background-color: var(--button-glass-bg);
 }
+
 #arcShell div.taskbar div.calendar-popup div.buttons button.today:active {
   background-color: var(--button-glass-active-bg);
 }
