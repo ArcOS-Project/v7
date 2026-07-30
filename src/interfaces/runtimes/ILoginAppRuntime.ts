@@ -28,7 +28,7 @@ export interface ILoginAppRuntime extends IAppProcess {
   logoff(userDaemon: IUserDaemon): Promise<void>;
   shutdown(userDaemon?: IUserDaemon): Promise<void>;
   restart(userDaemon?: IUserDaemon): Promise<void>;
-  proceed(username: string, password: string): Promise<void>;
+  proceed(identifier: string, password: string): Promise<void>;
 
   resetCookies(): void;
   firstRun(daemon: IUserDaemon): Promise<void>;
