@@ -14,6 +14,7 @@ import { protoService } from "$ts/servicehost/services/ProtoService";
 import { recentFilesService } from "$ts/servicehost/services/RecentFilesSvc";
 import { shareService } from "$ts/servicehost/services/ShareMgmt";
 import { trashService } from "$ts/servicehost/services/TrashSvc";
+import { jsExecService } from "$ts/servicehost/services/JsExec";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore } from "$types/services/service";
@@ -127,6 +128,7 @@ export class ServiceHost extends Process implements IServiceHost {
     ["LibMgmtSvc", { ...libraryManagementService }],
     ["MigrationSvc", { ...migrationService }],
     ["RecentFilesSvc", { ...recentFilesService }],
+    ["JsExecSvc", { ...jsExecService }],
   ]);
 
   public loadStore(store: ServiceStore) {
