@@ -34,6 +34,8 @@ div.window:not(.core) {
   outline: var(--secondary-border) !important;
   display: flex;
   flex-direction: column;
+  scrollbar-color: var(--button-glass-bg) transparent;
+  scrollbar-width: thin;
 }
 
 div.window:not(.core).shell-colored.colored::before {
