@@ -36,7 +36,7 @@ export class JsExecService extends BaseService implements IJsExecService {
   }
 
   async start() {
-    return Daemon?.preferences().security.enableThirdParty === true;
+    this.initBroadcast?.("Starting TPA service");
   }
 
   //#endregion
@@ -197,8 +197,11 @@ export class JsExecError extends Error {
 }
 
 export const jsExecService: Service = {
-  name: "TPA Host",
+  name: "TPA Service",
   description: "Provides the interface to spawn TPAs.",
   process: JsExecService,
   initialState: "started",
+  startCondition(daemon) {
+    return daemon.preferences().security.enableThirdParty;
+  },
 };
