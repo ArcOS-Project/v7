@@ -21,7 +21,7 @@ import type { App } from "$types/apps/app";
 import type { Service } from "$types/services/service";
 import type { ParsedImportStatement } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
-import type { JsExecEngineData } from "./engine";
+import type { JsExecEngineData } from "$types/tpa/engine";
 import type { IJsExecService } from "$interfaces/services/IJsExec";
 
 export class JsExecService extends BaseService implements IJsExecService {

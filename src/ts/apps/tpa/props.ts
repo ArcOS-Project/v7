@@ -33,7 +33,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
-import type { JsExecEngineData } from "$ts/servicehost/services/JsExec/engine";
+import type { JsExecEngineData } from "$types/tpa/engine";
 
 export function ThirdPartyProps(engine: JsExecEngineData): ThirdPartyPropMap {
   const props = {

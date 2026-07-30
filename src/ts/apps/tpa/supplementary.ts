@@ -6,7 +6,7 @@ import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
-import type { JsExecEngineData } from "$ts/servicehost/services/JsExec/engine";
+import type { JsExecEngineData } from "$types/tpa/engine";
 import type { IJsExecService } from "$interfaces/services/IJsExec";
 
 export function SupplementaryThirdPartyPropFunctions(engine: JsExecEngineData) {
