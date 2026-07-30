@@ -34,6 +34,9 @@ div.window:not(.core) {
   outline: var(--secondary-border) !important;
   display: flex;
   flex-direction: column;
+}
+
+div.window {
   scrollbar-color: var(--button-glass-bg) transparent;
   scrollbar-width: thin;
 }
@@ -86,7 +89,7 @@ div.window:not(.core).fullscreen div.titlebar {
   display: none !important;
 }
 
-div.window:not(.core).fullscreen>div.body {
+div.window:not(.core).fullscreen > div.body {
   height: 100vh !important;
   border-top: none !important;
   border-radius: 0 !important;
@@ -96,11 +99,11 @@ div.window:not(.core):not(.glass).focused {
   background-color: var(--glass-bg);
 }
 
-div.window:not(.core):not(.glass).focused>div.titlebar {
+div.window:not(.core):not(.glass).focused > div.titlebar {
   backdrop-filter: blur(var(--blur));
 }
 
-div.window:not(.core):not(.glass)>div.body {
+div.window:not(.core):not(.glass) > div.body {
   background-color: var(--win-bg);
 }
 
