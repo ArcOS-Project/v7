@@ -1,5 +1,5 @@
 /**
- * ArcOS JavaScript Execution Engine
+ * ArcOS JavaScript Execution Engine Service
  *
  * This file executes JS files in ArcOS under a relatively controlled environment.
  * It is part of the ArcOS TPA framework: a system for running third-party apps.
@@ -11,15 +11,15 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
-import { ThirdPartyProps } from "./props";
-import { Daemon, Env, Fs, Stack } from "$ts/env";
+import { ThirdPartyProps } from "$ts/apps/tpa/props";
+import { Daemon, Fs } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/apps/app";
 import type { Service } from "$types/services/service";
-import type { ParsedImportStatement, ThirdPartyPropMap } from "$types/tpa/thirdparty";
+import type { ParsedImportStatement } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
 import type { JsExecEngineData } from "./engine";
 import type { IJsExecService } from "$interfaces/services/IJsExec";
@@ -85,8 +85,6 @@ export class JsExecService extends BaseService implements IJsExecService {
       return result;
     } catch (e) {
       throw e;
-    } finally {
-      await this.killSelf();
     }
   }
 

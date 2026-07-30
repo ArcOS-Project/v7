@@ -1,14 +1,15 @@
 import type { Constructs } from "$interfaces/common";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import { Daemon, Fs, Stack } from "$ts/env";
-import { JsExec } from "$ts/jsexec";
 import { detectJavaScript } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import { ThirdPartyProcess } from "./process";
+import { ThirdPartyProcess } from "$ts/apps/tpa/process";
+import type { JsExecEngineData } from "$ts/servicehost/services/JsExec/engine";
+import type { IJsExecService } from "$interfaces/services/IJsExec";
 
-export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
+export function SupplementaryThirdPartyPropFunctions(engine: JsExecEngineData) {
   return {
     load: async (path: string) => {
       if (path.startsWith("http")) {
@@ -20,19 +21,12 @@ export function SupplementaryThirdPartyPropFunctions(engine: JsExec) {
       }
 
       try {
-        const subEngine = await Stack.spawn<JsExec>(
-          JsExec,
-          undefined,
-          Daemon?.userInfo?._id,
-          engine.pid,
-          join(engine.workingDirectory, path)
-        );
+        const jsExecService = Daemon.serviceHost?.getService<IJsExecService>("JsExecSvc");
+        if (!jsExecService) throw new Error("JsExecSvc is not started. Are TPAs enabled?");
 
-        if (engine.app && engine.metaPath) {
-          subEngine?.setApp(engine.app, engine.metaPath);
-        }
+        const subEngine = await jsExecService.setupEngine(join(engine.workingDirectory, path), engine.app, engine.metaPath);
 
-        return await subEngine?.getContents();
+        return await jsExecService.getContents(subEngine);
       } catch (e) {
         throw e;
       }

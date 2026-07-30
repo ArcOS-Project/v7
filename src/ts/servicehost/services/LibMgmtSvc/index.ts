@@ -1,7 +1,7 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IJsExecService } from "$interfaces/services/IJsExec";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
 import { Daemon, Fs, Stack } from "$ts/env";
-import { JsExec } from "$ts/jsexec";
 import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
@@ -83,9 +83,11 @@ export class LibraryManagement extends BaseService implements ILibraryManagement
 
     try {
       const filePath = join(UserPaths.Libraries, id, library.entrypoint);
-      const engine = await Stack.spawn<JsExec>(JsExec, undefined, Daemon?.userInfo._id, Daemon?.pid, filePath);
 
-      return (await engine?.getContents()) as T;
+      const jsExecService = Daemon.serviceHost?.getService<IJsExecService>("JsExecSvc");
+      if (!jsExecService) throw new Error("JsExecSvc is not started. Are TPAs enabled?");
+
+      return (await jsExecService.Invoke(filePath)) as T;
     } catch {
       return defaultReturnValue as T; // TODO: determine
     }
