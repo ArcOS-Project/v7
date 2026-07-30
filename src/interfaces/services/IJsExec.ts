@@ -1,5 +1,5 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { JsExecEngineData } from "$ts/servicehost/services/JsExec/engine";
+import type { JsExecEngineData } from "$types/tpa/engine";
 import type { App } from "$types/apps/app";
 
 // !tpa
