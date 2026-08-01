@@ -345,8 +345,6 @@ export class AppProcess extends Process implements IAppProcess {
 
     if (!combo) return;
 
-    console.log("found accelerator matche:", combo);
-
     if (!Daemon?.elevation!._elevating) await combo.action(this, e);
   }
 
