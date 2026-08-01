@@ -343,7 +343,9 @@ export class AppProcess extends Process implements IAppProcess {
       return true;
     });
 
-    if (!combo) return;
+    const isFocused = Stack.renderer?.focusedPid() == this.pid || combo?.global;
+
+    if (!combo || !isFocused) return;
 
     if (!Daemon?.elevation!._elevating) await combo.action(this, e);
   }
