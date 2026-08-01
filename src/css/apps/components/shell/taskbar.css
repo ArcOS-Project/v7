@@ -1,5 +1,7 @@
 @import url("./taskbar/openedapps.css");
 @import url("./taskbar/calendar.css");
+@import url("./taskbar/weatherapplet.css");
+
 div.shell div.taskbar {
   display: flex;
   align-items: center;
@@ -287,7 +289,7 @@ div.shell div.shell div.taskbar button.clock-button.active,
 div.shell div.shell div.taskbar button.clock-button.active span,
 #arcShell div.shell div.taskbar button.workspace-manager-button.active span,
 #arcShell div.shell div.taskbar button.action-center-button.active span {
-  color: var(--win-bg) !important;
+  color: var(--accent-textual-fg) !important;
 }
 
 .theme-light div.shell div.taskbar::before {

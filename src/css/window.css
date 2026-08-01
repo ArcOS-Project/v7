@@ -37,8 +37,15 @@ div.window:not(.core) {
 }
 
 div.window {
+  --accent-textual: var(--accent-light) !important;
+  --accent-textual-fg: var(--accent-suggested-fg) !important;
   scrollbar-color: var(--button-glass-bg) transparent;
   scrollbar-width: thin;
+}
+
+.theme-light div.window {
+  --accent-textual: var(--accent-dark-medium) !important;
+  --accent-textual-fg: var(--accent-dark-medium-fg) !important;
 }
 
 div.window:not(.core).shell-colored.colored::before {

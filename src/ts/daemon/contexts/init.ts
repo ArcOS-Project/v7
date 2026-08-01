@@ -134,6 +134,8 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     await Daemon.spawn?.spawnApp("contextMenu", this.pid, { noWorkspace: true });
 
+    Daemon.InitComplete.set(true);
+
     for (const payload in startup) {
       if (payload === "contextMenu") continue;
 
