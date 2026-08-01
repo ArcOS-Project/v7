@@ -30,28 +30,18 @@ div.window div.body button:not(.reset):hover {
 }
 
 button:not(.reset):not(:disabled):active {
-  /* scale: 0.95; */
   opacity: 0.8;
 }
 
 div.window div.body button:not(.reset).link {
   margin: 0;
   padding: 0;
-  color: var(--accent-light);
+  color: var(--accent-textual);
   background-color: transparent !important;
   text-decoration: underline;
   text-underline-offset: 2px;
   width: fit-content;
   border-radius: 0;
-
-  .theme-light & {
-    /*
-     * Uses the calculated result if available,
-     * otherwise, uses uglier dark accent color.
-     */
-    color: var(--accent-suggested-end, var(--accent-dark));
-  }
-
 }
 
 div.window div.body button:not(.reset):disabled {

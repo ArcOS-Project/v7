@@ -274,14 +274,14 @@ div.shell div.taskbar button.clock-button:active {
 }
 
 div.shell div.taskbar button.clock-button.active {
-  background-color: var(--accent-light) !important;
+  background-color: var(--accent-textual) !important;
   color: var(--win-bg) !important;
 }
 
 div.shell div.shell div.taskbar button.clock-button.active,
 #arcShell div.shell div.taskbar button.workspace-manager-button.active,
 #arcShell div.shell div.taskbar button.action-center-button.active {
-  background-color: var(--accent-light) !important;
+  background-color: var(--accent-textual) !important;
 }
 
 div.shell div.shell div.taskbar button.clock-button.active span,

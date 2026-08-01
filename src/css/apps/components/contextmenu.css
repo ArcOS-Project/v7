@@ -111,8 +111,9 @@
 }
 
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
-  background-color: var(--accent-transparent);
-  color: var(--accent-light);
+  background-color: var(--accent-textual);
+  opacity: 1;
+  color: var(--win-bg);
   box-shadow: none;
 }
 

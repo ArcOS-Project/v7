@@ -98,7 +98,7 @@
 }
 
 #ShareMgmtGui > div.body div.user-list div.user.selected span.lucide {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #ShareMgmtGui > div.body div.user-list div.user.selected > button {

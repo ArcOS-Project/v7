@@ -21,19 +21,34 @@ export class AppRendererUserContext extends UserContext implements IAppRendererU
   }
 
   getAppRendererStyle(accent: string) {
+    const accentTransparent = `${hex3to6(accent)}44`;
+    const accentLight = lightenColor(accent);
+    const accentLighter = lightenColor(accent, 7.5);
+    const accentDarkMedium = darkenColor(accent, 20);
+    const accentDark = darkenColor(accent, 75);
+    const accentDarkest = darkenColor(accent, 85);
+    const accentLightTransparent = `${lightenColor(accent)}77`;
+    const accentLightInvert = invertColor(lightenColor(accent));
+    const accentSuggestedStart = `#${accent}`
+    const accentSuggestedEnd = darkenColor(accent, 10);
+    const accentSuggestedFg = bestForeground(accent); 
+    const accentDarkMediumFg = bestForeground(accentDarkMedium);
+
     return `
       --blur: ${Daemon!.preferences().shell.visuals.blurRadius}px;
       --accent: ${hex3to6(accent)} !important;
-      --accent-transparent: ${hex3to6(accent)}44 !important;
-      --accent-light: ${lightenColor(accent)} !important;
-      --accent-lighter: ${lightenColor(accent, 7.5)} !important;
-      --accent-dark: ${darkenColor(accent, 75)} !important;
-      --accent-darkest: ${darkenColor(accent, 85)} !important;
-      --accent-light-transparent: ${lightenColor(accent)}77 !important;
-      --accent-light-invert: ${invertColor(lightenColor(accent))} !important;
-      --accent-suggested-start: #${accent} !important;
-      --accent-suggested-end: ${darkenColor(accent, 10)} !important;
-      --accent-suggested-fg: ${bestForeground(accent)} !important;
+      --accent-transparent: ${accentTransparent} !important;
+      --accent-light: ${accentLight} !important;
+      --accent-lighter: ${accentLighter} !important;
+      --accent-dark-medium: ${accentDarkMedium} !important;
+      --accent-dark-medium-fg: ${accentDarkMediumFg} !important;
+      --accent-dark: ${accentDark} !important;
+      --accent-darkest: ${accentDarkest} !important;
+      --accent-light-transparent: ${accentLightTransparent} !important;
+      --accent-light-invert: ${accentLightInvert} !important;
+      --accent-suggested-start: ${accentSuggestedStart} !important;
+      --accent-suggested-end: ${accentSuggestedEnd} !important;
+      --accent-suggested-fg: ${accentSuggestedFg} !important;
       --wallpaper: url('${Daemon!.wallpaper?.Wallpaper()?.url || Wallpapers.img0.url}');
       --user-font: "${Daemon!.preferences().shell.visuals.userFont || ""}";`;
   }

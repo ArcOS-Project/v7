@@ -24,3 +24,4 @@ export { default as MinesweeperIcon } from "$assets/apps/minesweeper.svg";
 export { default as MinesweeperHappyIcon } from "$assets/apps/minesweeper/sweeper-happy.svg";
 export { default as MinesweeperOohIcon } from "$assets/apps/minesweeper/sweeper-ooh.svg";
 export { default as MinesweeperDeadIcon } from "$assets/apps/minesweeper/sweeper-dead.svg";
+ 

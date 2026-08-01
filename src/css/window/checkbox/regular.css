@@ -48,7 +48,7 @@ div.window > div.body input[type="checkbox"]:not(.switch):checked::after {
 }
 
 div.window > div.body input[type="checkbox"]:not(.switch):checked:hover {
-  background-color: var(--accent-light);
+  background-color: var(--accent-textual);
 }
 
 div.window > div.body input[type="checkbox"]:not(.switch):disabled {

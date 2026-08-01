@@ -94,7 +94,7 @@
 
 #systemSettings section div.content div.option div.name span.lucide {
   font-size: 16px;
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #systemSettings section div.content div.option div.name img {

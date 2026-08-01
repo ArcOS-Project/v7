@@ -30,14 +30,11 @@
     <Option caption="Show window titles">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.labels} />
     </Option>
-    <Option caption="Show battery percentage">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.taskbar.batteryPercentage}
-        disabled={!battery || !$battery}
-      />
-    </Option>
+    {#if $battery}
+      <Option caption="Show battery percentage">
+        <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.batteryPercentage} />
+      </Option>
+    {/if}
     <Option caption="Show clock...">
       <button
         class:suggested={$userPreferences.shell.taskbar.clock12hr}

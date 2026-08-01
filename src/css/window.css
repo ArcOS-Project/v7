@@ -148,16 +148,8 @@ div.window.overlay.glass {
 }
 
 div.window:not(.core) a {
-  color: var(--accent-light);
+  color: var(--accent-textual);
   text-underline-offset: 2px;
-
-  .theme-light & {
-    /*
-       * Uses the calculated result if available,
-       * otherwise, uses uglier dark accent color.
-       */
-    color: var(--accent-suggested-end, var(--accent-dark));
-  }
 }
 
 div.window:not(.core) div.resizer {

@@ -77,7 +77,7 @@
 
 #logging div.options div.current-source div.pill span.lucide {
   font-size: 16px;
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #logging div.options.archive div.current-source div.pill,
