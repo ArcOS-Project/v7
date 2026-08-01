@@ -330,25 +330,24 @@ export class AppProcess extends Process implements IAppProcess {
 
     if (state != "desktop" || this._disposed) return;
 
-    for (const combo of this.acceleratorStore) {
-      const alt = combo.alt ? e.altKey : true;
-      const ctrl = combo.ctrl ? e.ctrlKey : true;
-      const shift = combo.shift ? e.shiftKey : true;
-      /** */
-      const modifiers = alt && ctrl && shift;
-      /** */
-      const pK = e.key.toLowerCase().trim();
-      const key = combo.key?.trim().toLowerCase();
-      const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
-      /** */
-      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
+    const combo = this.acceleratorStore.find((combo) => {
+      const ctrl = combo.ctrl ? e.ctrlKey : e.ctrlKey === false;
+      const shift = combo.shift ? e.shiftKey : e.shiftKey === false;
+      const alt = combo.alt ? e.altKey : e.altKey === false;
 
-      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
+      const comboKey = combo.key?.trim().toLowerCase();
+      const pressedKey = e.key.toLowerCase().trim();
+      const codedKey = e.code.toLowerCase();
 
-      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
+      if (!ctrl || !shift || !alt || (pressedKey != comboKey && codedKey != comboKey)) return false;
+      return true;
+    });
 
-      break;
-    }
+    if (!combo) return;
+
+    console.log("found accelerator matche:", combo);
+
+    if (!Daemon?.elevation!._elevating) await combo.action(this, e);
   }
 
   public unfocusActiveElement() {
