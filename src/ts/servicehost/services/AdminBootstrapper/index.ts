@@ -19,7 +19,6 @@ import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/conve
 import { toForm } from "$ts/util/form";
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
-import type { App, InstalledApp } from "$types/apps/app";
 import type {
   Activity,
   AdminTemporaryPassword,
@@ -37,11 +36,11 @@ import type {
   UserTotp,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { Mailbroker } from "$types/server/mailbroker";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
 import type { Service } from "$types/services/service";
 import type { BetaFeedback } from "$types/system/beta";
-import type { Mailbroker } from "$types/server/mailbroker";
 import type { FilesystemProgressCallback, UserQuota } from "$types/system/fs";
 import type { ArcPackage, StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
@@ -208,25 +207,6 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   async revokeAdmin(username: string) {
     if (this._disposed) return false;
-
-    try {
-      const response = await this.adminClient.post("/revoke", toForm({ target: username }));
-      return response.status === 200;
-    } catch {
-      return false;
-    }
-  }
-
-  async setSystemFor(userId: string, value: boolean) {
-    if (this._disposed) return false;
-    try {
-      const response = await Backend.post(
-        `/admin/users/system/set/${userId}/${value}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-        }
-      );
 
     try {
       const response = await this.adminClient.post("/revoke", toForm({ target: username }));
