@@ -1,9 +1,11 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon, Env, getKMod, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
 import type { Service } from "$types/services/service";
@@ -32,16 +34,20 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   async start() {
     this.initBroadcast?.("Connecting global dispatch");
-    return new Promise<void>((resolve) => {
+    return new Promise<boolean>((resolve) => {
       this.client = io(this.server.url, { transports: ["websocket"] });
       this.client.on("connect", async () => {
-        await this.connected();
-        resolve();
+        const result = await this.connected();
+        resolve(result.success);
       });
 
       this.client.on("kicked", () => {
         const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid"));
         daemon?.power?.logoff();
+      });
+
+      this.client.on("scu-shutdown", () => {
+        Daemon.power?.shutdown(true);
       });
     });
   }
@@ -53,24 +59,24 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   //#endregion
 
-  async connected() {
+  async connected(): Promise<ICommandResult> {
     this.Log(`Connected, authorizing using token`);
     this.client?.emit("authorize", Daemon!.token);
 
-    await new Promise<void>((resolve, reject) => {
+    return await new Promise<ICommandResult>((resolve, reject) => {
       this.client?.once("authorized", () => {
         this.Log(`Global Dispatch is good to go :D`);
 
         Env.set("dispatch_sock_id", this.client?.id);
         this.authorized = true;
         this.enableListener();
-        resolve();
+        resolve(CommandResult.Ok());
       });
 
       this.client?.once("auth-failed", () => {
         this.Log(`The server rejected our token :(`);
 
-        reject();
+        resolve(CommandResult.Error("Failed to log in to the Global Dispatch."));
       });
     });
   }

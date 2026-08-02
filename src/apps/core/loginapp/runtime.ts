@@ -20,11 +20,12 @@ import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 import type { ServerInfo } from "$types/server";
+import type { MessageBoxButton } from "$types/shared/messagebox";
 import type { UserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import { LoginUserDaemonStartOptions } from "./store";
-import type { LoginAppProps, PersistenceInfo } from "./types";
+import type { LoginAppProps, LoginQuestionPrompt, PersistenceInfo } from "./types";
 
 export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public DEFAULT_WALLPAPER = Store<string>("");
@@ -35,6 +36,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   public loginBackground = Store<string>(this.DEFAULT_WALLPAPER());
   public hideProfileImage = Store<boolean>(false);
   public persistence = Store<PersistenceInfo | undefined>();
+  public questionPrompt = Store<LoginQuestionPrompt | undefined>(undefined);
   public serverInfo = Store<ServerInfo>();
   public server: IServerManager;
   public safeMode = false;
@@ -130,7 +132,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   }
 
   async setUserDisplayStuff(userDaemon: IUserDaemon, applyBackground = true) {
-    const userConnector = GetConnector<IUserConnector>("UserConnector");
+    const userConnector = userDaemon.GetConnector<IUserConnector>("UserConnector");
 
     this.profileName.set(userDaemon.preferences().account.displayName || userDaemon.username);
     this.profileImage.set(userConnector.PictureUrl(userDaemon.userInfo._id));
@@ -154,6 +156,13 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       this.errorMessage.set(errorMessage ?? "Unknown error");
 
       return;
+    }
+
+    if (userDaemon?.userInfo?.scuAlreadyConnected || info?.scuAlreadyConnected) {
+      this.profileName.set(username);
+      // single-client account is trying to open a second instance
+      const proceed = await this.handleScuAlreadyConnected(userDaemon!);
+      if (!proceed) return;
     }
 
     const broadcast = (message: string) => {
@@ -316,7 +325,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
 
     this.loadingStatus.set(`Hi, ${userInfo.username}!`);
 
-    await this.startDaemon(tokenResult.result!, userInfo.username);
+    await this.startDaemon(tokenResult.result!, userInfo.username, userInfo);
   }
 
   private saveToken(userDaemon: IUserDaemon) {
@@ -424,7 +433,45 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   }
 
   //#endregion
+  //#region SCU
 
+  private async handleScuAlreadyConnected(userDaemon: IUserDaemon): Promise<boolean> {
+    const result = await new Promise<boolean>(async (resolve) => {
+      await this.AskQuestion(
+        "Your account is already logged in at another location.<br/>Do you want to shut down the other ArcOS instance?",
+        [
+          {
+            caption: "Cancel",
+            action: () => resolve(false),
+          },
+          {
+            caption: "Continue",
+            action: () => resolve(true),
+            suggested: true,
+          },
+        ]
+      );
+    });
+
+    if (!result) {
+      this.loadingStatus.set("");
+      this.errorMessage.set("You're already logged in at another location.");
+      return false;
+    } else {
+      this.loadingStatus.set("Shutting down the other client.");
+      const result = await userDaemon.account!.performScuShutdown();
+
+      if (!result.success) {
+        this.loadingStatus.set("");
+        this.errorMessage.set(`ScuShutdown failed: ${result.errorMessage ?? "<unknown error>"}`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  //#endregion
   //#region PERSISTENCE
 
   async loadPersistence() {
@@ -454,6 +501,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
     this.profileImage.set(ProfilePictures.def);
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
     this.profileName.set("");
+    this.resetCookies();
   }
 
   updateServerStuff() {
@@ -462,6 +510,25 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       this.serverInfo()?.loginWallpaper ? `${this.server.url}/loginbg${authcode()}` : Wallpapers.img18.url
     );
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
+  }
+
+  //#endregion
+  //#region UTILS
+
+  async AskQuestion(message: string, buttons: MessageBoxButton[]): Promise<void> {
+    await new Promise<void>((resolve) => {
+      this.questionPrompt.set({
+        message,
+        buttons,
+      });
+
+      const unsubscriber = this.questionPrompt.subscribe((v) => {
+        if (!v) {
+          unsubscriber();
+          resolve();
+        }
+      });
+    });
   }
 
   //#endregion

@@ -1,4 +1,4 @@
-import type { LoginAppProps, PersistenceInfo } from "$apps/core/loginapp/types";
+import type { LoginAppProps, LoginQuestionPrompt, PersistenceInfo } from "$apps/core/loginapp/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
@@ -16,6 +16,7 @@ export interface ILoginAppRuntime extends IAppProcess {
   hideProfileImage: ReadableStore<boolean>;
   persistence: ReadableStore<PersistenceInfo | undefined>;
   serverInfo: ReadableStore<ServerInfo>;
+  questionPrompt: ReadableStore<LoginQuestionPrompt | undefined>;
   server: IServerManager;
   safeMode: boolean;
   loginProps?: LoginAppProps;

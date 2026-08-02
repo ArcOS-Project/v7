@@ -10,5 +10,6 @@ export interface IAccountUserContext extends IUserContext {
   changePassword(newPassword: string): Promise<boolean>;
   getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined>;
   deleteAccount(): Promise<void>;
+  performScuShutdown(): Promise<ICommandResult>;
 }
 // !endtpa

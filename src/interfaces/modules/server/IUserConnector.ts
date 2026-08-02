@@ -16,4 +16,5 @@ export declare class IUserConnector extends IServerConnector {
   DispatchKick(clientId: string): Promise<ICommandResult>;
   PictureUrl(userId: string): string;
   LoginBgUrl(userId: string): string;
+  ScuShutdown(): Promise<ICommandResult>;
 }

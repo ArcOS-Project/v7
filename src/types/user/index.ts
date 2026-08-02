@@ -18,6 +18,7 @@ export interface UserInfo {
   isSystem: boolean;
   restricted: boolean;
   storageSize: number;
+  scuAlreadyConnected: boolean;
 }
 
 export type UserPreferencesStore = ReadableStore<UserPreferences>;

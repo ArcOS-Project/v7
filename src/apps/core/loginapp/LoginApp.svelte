@@ -6,6 +6,7 @@
   import ErrorMessage from "./ErrorMessage.svelte";
   import Loading from "./Loading.svelte";
   import LoginForm from "./LoginForm.svelte";
+  import LoginQuestionPrompt from "./LoginQuestionPrompt.svelte";
 
   const { process }: AppComponentProps<ILoginAppRuntime> = $props();
   const {
@@ -17,6 +18,7 @@
     loginBackground,
     serverInfo,
     DEFAULT_WALLPAPER,
+    questionPrompt
   } = process;
 </script>
 
@@ -34,7 +36,9 @@
     {/if}
   {/if}
 
-  {#if $loadingStatus}
+  {#if $questionPrompt}
+    <LoginQuestionPrompt {process}/>
+  {:else if $loadingStatus}
     <Loading {loadingStatus} />
   {:else if $errorMessage}
     <ErrorMessage {errorMessage} />

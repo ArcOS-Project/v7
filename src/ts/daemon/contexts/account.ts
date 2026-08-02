@@ -148,4 +148,8 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       true
     );
   }
+
+  async performScuShutdown() {
+    return await Daemon.GetConnector<IUserConnector>("UserConnector").ScuShutdown();
+  }
 }

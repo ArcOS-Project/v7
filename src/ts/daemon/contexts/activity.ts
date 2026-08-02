@@ -4,6 +4,7 @@ import { Daemon } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { toForm } from "$ts/util/form";
 import type { LoginActivity } from "$types/user/activity";
+import { AxiosError } from "axios";
 import { UserContext } from "../context";
 
 export class LoginActivityUserContext extends UserContext implements ILoginActivityUserContext {
@@ -42,7 +43,11 @@ export class LoginActivityUserContext extends UserContext implements ILoginActiv
       );
 
       return response.status === 200;
-    } catch {
+    } catch (e) {
+      if (e instanceof AxiosError && `${e.response?.data?.e}` === "Multiple instances aren't allowed on this account.") {
+        throw new Error("Multiple instances aren't allowed on this account.");
+      }
+
       return false;
     }
   }

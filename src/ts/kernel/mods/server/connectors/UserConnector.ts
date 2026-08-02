@@ -99,6 +99,14 @@ export class UserConnector extends ServerConnector implements IUserConnector {
     }
   }
 
+  async ScuShutdown() {
+    try {
+      return CommandResult.FromResponse(await this.server.post("/scu-shutdown"));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
   PictureUrl(userId: string) {
     const code = authcode();
     return `${Server.url}/user/pfp/${userId}${code}${code ? "&" : "?"}${Date.now()}`;

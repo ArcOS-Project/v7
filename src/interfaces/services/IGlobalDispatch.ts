@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { GlobalDispatchClient } from "$types/system/dispatch";
@@ -8,9 +9,7 @@ export interface IGlobalDispatch extends IBaseService {
   client: Socket | undefined;
   server: IServerManager;
   authorized: boolean;
-  start(): Promise<void>;
-  stop(): Promise<void>;
-  connected(): Promise<void>;
+  connected(): Promise<ICommandResult>;
   sendUpdate(): void;
   subscribe<T extends Array<any> = any[]>(event: string, callback: (...data: T) => void): void;
   emit(event: string, ...data: any[]): void;
