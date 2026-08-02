@@ -7,9 +7,10 @@
   import Sidebar from "./Mailbroker/Sidebar.svelte";
   import { mailbrokerPages } from "./store";
   import type { MailbrokerPage } from "./types";
+  import Spinner from "$lib/Spinner.svelte";
 
   let { process }: { process: IMailbrokerRuntime } = $props();
-  const { currentPage } = process;
+  const { currentPage, pageProps } = process;
   let Page: Component | undefined = $state();
   let pageData = $state<MailbrokerPage>();
   let loading = $state<boolean>(false);
@@ -19,7 +20,11 @@
     const sub = currentPage.subscribe(async (v) => {
       loading = true;
       pageData = mailbrokerPages.get(v);
-      data = (await pageData?.data?.(process)) ?? CommandResult.Ok();
+      const canAccess = !pageData?.scopes || process.admin.canAccess(...pageData?.scopes);
+      data = canAccess
+        ? ((await pageData?.data?.(process, pageProps())) ?? CommandResult.Ok())
+        : CommandResult.Error("You're missing the required scopes to access this resource.");
+
       Page = pageData?.content;
       loading = false;
     });
@@ -31,14 +36,22 @@
 <Sidebar {process} />
 <div class="container page-{$currentPage}">
   <CustomTitlebar {process} />
-  <div class="page-content">
+  <div class="page-content page-{pageData?.name.toLowerCase().replaceAll(' ', '-')}">
     {#if loading}
-      loading
+      <Spinner height={32} />
     {:else if Page && data?.success}
       {@const result = data.result!}
-      <Page {process} data={result} />
+      <Page {process} data={result} pageProps={pageProps()} {pageData} />
     {:else}
-      error: {data?.errorMessage ?? "Unknown error"}
+      <div class="page-load-error">
+        <div class="error">
+          <span class="lucide icon-circle-x"></span>
+          <div>
+            <h1>The page failed to load</h1>
+            <p>{data?.errorMessage ?? "An unknown error occurred."}</p>
+          </div>
+        </div>
+      </div>
     {/if}
   </div>
 </div>

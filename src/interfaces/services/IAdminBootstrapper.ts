@@ -129,7 +129,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>>;
   getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>>;
   getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>>;
-  getMailbrokerTemplates(): Promise<ICommandResult<Mailbroker.MailTemplate[]>>;
+  getMailbrokerTemplates(filter?: (template: Mailbroker.MailTemplate) => boolean): Promise<ICommandResult<Mailbroker.MailTemplate[]>>;
   getMailbrokerSentRecord(id: string): Promise<ICommandResult<Mailbroker.SentMail>>;
   getMailbrokerSentRecords(): Promise<ICommandResult<Mailbroker.SentMail[]>>;
   deleteMailbrokerKey(id: string): Promise<ICommandResult>;

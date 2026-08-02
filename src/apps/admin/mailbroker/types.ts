@@ -9,7 +9,8 @@ export interface MailbrokerPage {
   content: Component<any>;
   hidden?: boolean;
   separator?: boolean;
-  data?: (process: IMailbrokerRuntime) => MaybePromise<ICommandResult<Record<string, any>>>;
+  data?: (process: IMailbrokerRuntime, pageProps: any) => MaybePromise<ICommandResult<Record<string, any>>>;
+  scopes?: string[];
 }
 
 export type MailbrokerPages = Map<string, MailbrokerPage>;

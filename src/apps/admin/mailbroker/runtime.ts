@@ -8,6 +8,8 @@ import { mailbrokerPages } from "./store";
 
 export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime {
   currentPage = Store<string>("");
+  pageProps = Store<Record<string, any>>({});
+
   get admin() {
     return Daemon.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper")!;
   }
@@ -17,18 +19,21 @@ export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime 
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
-    this.switchPage("templates");
+    this.switchPage("activeTemplates");
 
     this.setSource(__SOURCE__);
   }
 
-  switchPage(pageId: string) {
+  switchPage(pageId: string, props?: Record<string, any>) {
     this.Log(`Loading page '${pageId}'`);
 
     if (!mailbrokerPages.has(pageId)) return;
 
+    this.pageProps.set({});
+
     const page = mailbrokerPages.get(pageId);
 
+    this.pageProps.set(props ?? {});
     this.currentPage.set(pageId);
     this.windowTitle.set(`${page?.name}`);
   }

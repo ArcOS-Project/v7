@@ -1,16 +1,40 @@
+import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+import GenericList from "./Pages/GenericList.svelte";
 import Logs from "./Pages/Logs.svelte";
 import Sent from "./Pages/Sent.svelte";
-import Templates from "./Pages/Templates.svelte";
+import ViewTemplate from "./Pages/ViewTemplate.svelte";
 import type { MailbrokerPage, MailbrokerPages } from "./types";
 
 export const mailbrokerPages: MailbrokerPages = new Map<string, MailbrokerPage>([
   [
-    "templates",
+    "activeTemplates",
     {
-      name: "Templates",
+      name: "Active templates",
       icon: "mails",
-      content: Templates,
-      data: async (process) => await process.admin.getMailbrokerTemplates(),
+      content: GenericList,
+      data: async (process) => await process.admin.getMailbrokerTemplates((template) => !template.deprecated),
+      scopes: [AdminScopes.adminMailbrokerTemplatesRead],
+    },
+  ],
+  [
+    "deprecatedTemplates",
+    {
+      name: "Deprecated templates",
+      icon: "mails",
+      content: GenericList,
+      data: async (process) => await process.admin.getMailbrokerTemplates((template) => template.deprecated),
+      scopes: [AdminScopes.adminMailbrokerTemplatesRead],
+    },
+  ],
+  [
+    "viewTemplate",
+    {
+      name: "View template",
+      icon: "eye",
+      hidden: true,
+      content: ViewTemplate,
+      data: async (process, props: { templateId: string }) => await process.admin.getMailbrokerTemplate(props.templateId),
+      scopes: [AdminScopes.adminMailbrokerTemplatesRead],
     },
   ],
   [
@@ -21,6 +45,7 @@ export const mailbrokerPages: MailbrokerPages = new Map<string, MailbrokerPage>(
       content: Sent,
       separator: true,
       data: async (process) => await process.admin.getMailbrokerSentRecords(),
+      scopes: [AdminScopes.adminMailbrokerSentRead],
     },
   ],
   [
@@ -30,6 +55,7 @@ export const mailbrokerPages: MailbrokerPages = new Map<string, MailbrokerPage>(
       icon: "list",
       content: Logs,
       data: async (process) => await process.admin.getMailbrokerLogs(),
+      scopes: [AdminScopes.adminMailbrokerLogsRead],
     },
   ],
 ]);

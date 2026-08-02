@@ -1,0 +1,42 @@
+#MailbrokerApp > div.body {
+  div.page-view-template {
+    div.template-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      gap: 10px;
+      border-bottom: var(--win-border);
+
+      h1 {
+        font-size: 18px;
+      }
+
+      p.subject {
+        opacity: 0.5;
+        margin-bottom: 8px;
+      }
+
+      > span.lucide {
+        font-size: 32px;
+        color: var(--accent-light);
+        margin-right: 10px;
+      }
+
+      > div.dates {
+        margin-left: auto;
+       
+        > div.date {
+          margin-bottom: 8px;
+
+          > h2 {
+            opacity: 0.5;
+          }
+
+          > p {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -459,7 +459,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return false;
 
     try {
-      const response = await this.adminClient.put(`/admin/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }));
+      const response = await this.adminClient.put(`/scopes`, toForm({ target: username, scopes: JSON.stringify(scopes) }));
       return response.status === 200;
     } catch {
       return false;
@@ -1268,12 +1268,18 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
-  async getMailbrokerTemplates(): Promise<ICommandResult<Mailbroker.MailTemplate[]>> {
+  async getMailbrokerTemplates(
+    filter?: (template: Mailbroker.MailTemplate) => boolean
+  ): Promise<ICommandResult<Mailbroker.MailTemplate[]>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
       const response = await this.adminClient.get(`/mailbroker/templates`);
-      return CommandResult.Ok(response.data);
+      let data = response.data as Mailbroker.MailTemplate[];
+
+      if (filter) data = data.filter(filter);
+
+      return CommandResult.Ok(data);
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

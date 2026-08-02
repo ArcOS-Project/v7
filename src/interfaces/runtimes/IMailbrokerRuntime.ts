@@ -5,5 +5,6 @@ import type { ReadableStore } from "$types/shared/writable";
 export interface IMailbrokerRuntime extends IAppProcess {
   get admin(): IAdminBootstrapper;
   currentPage: ReadableStore<string>;
-  switchPage(pageId: string): void;
+  pageProps: ReadableStore<Record<string, any>>;
+  switchPage(pageId: string, props?: Record<string, any>): void;
 }

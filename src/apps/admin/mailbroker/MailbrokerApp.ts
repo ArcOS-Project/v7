@@ -1,3 +1,4 @@
+import "$css/apps/admin/mailbroker.css";
 import type { App } from "$types/apps/app";
 import Mailbroker from "./Mailbroker.svelte";
 import { MailbrokerRuntime } from "./runtime";
@@ -8,12 +9,12 @@ const MailbrokerApp: App = {
     version: "1.0.0",
     author: "Izaak Kuipers",
     appGroup: "adminTools",
-    icon: "ComponentIcon",
+    icon: "MailbrokerAdminIcon",
   },
   position: { centered: true },
-  size: { w: 640, h: 480 },
-  minSize: { w: 640, h: 480 },
-  maxSize: { w: 640, h: 480 },
+  size: { w: 800, h: 480 },
+  minSize: { w: 800, h: 480 },
+  maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,
     minimized: false,
@@ -37,7 +38,7 @@ const MailbrokerApp: App = {
   overlay: false,
   noSafeMode: false,
   vital: true,
-  id: "Mailbroker",
+  id: "MailbrokerApp",
 };
 
 export default MailbrokerApp;
