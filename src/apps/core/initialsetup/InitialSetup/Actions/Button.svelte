@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
   import type { PageButton } from "../../types";
@@ -59,7 +60,7 @@
 </script>
 
 {#if button}
-  <button onclick={action} class:suggested={button.suggested} disabled={disabled || $actionsDisabled}>
+  <ActionButton onclick={action} suggested={button.suggested} disabled={disabled || $actionsDisabled}>
     {button.caption}
-  </button>
+  </ActionButton>
 {/if}

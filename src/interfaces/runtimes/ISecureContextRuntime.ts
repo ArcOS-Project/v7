@@ -1,6 +1,6 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ElevationData } from "$types/system/elevation";
 import type { ReadableStore } from "$types/shared/writable";
+import type { ElevationData } from "$types/system/elevation";
 
 // !tpa
 export interface ISecureContextRuntime extends IAppProcess {

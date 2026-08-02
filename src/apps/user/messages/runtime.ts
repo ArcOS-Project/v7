@@ -6,9 +6,10 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
+import { UserPaths } from "$ts/user/store";
 import { sortByKey } from "$ts/util";
 import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
@@ -17,6 +18,7 @@ import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
 import Fuse from "fuse.js";
+import { MessagesAltMenu } from "./altmenu";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
@@ -37,17 +39,20 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
   searchResults = Store<string[]>([]);
   messageWindow = false;
   messageFromFile = false;
+  public readonly THREAD_DEPTH_MAX = 5;
 
   override contextMenu: AppContextMenu = MessagesContextMenu(this);
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "inbox", messageId?: string) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, pageOrMessagePath = "unread", messageId?: string) {
     super(pid, parentPid, app);
 
     this.service = Daemon?.serviceHost?.getService<IMessagingInterface>("MessagingService")!;
 
     const path = pageOrMessagePath.includes(":/") && pageOrMessagePath.endsWith(".msg") ? pageOrMessagePath : undefined;
+
+    this.renderArgs.page = pageOrMessagePath;
 
     if (messageId || path) {
       this.messageWindow = true;
@@ -57,10 +62,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
       this.app.data.size.w = this.app.data.minSize.w;
       this.app.data.size.h = this.app.data.minSize.h;
     } else {
-      this.renderArgs.page = pageOrMessagePath;
-      this.app.data.minSize.w = 700;
-      this.app.data.size.w = 850;
-      this.app.data.size.h = 500;
+      this.altMenu.set(MessagesAltMenu(this));
     }
 
     this.setSource(__SOURCE__);
@@ -171,6 +173,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
       {
         title: "Delete message?",
         message: "Are you sure you want to delete this message? This cannot be undone.",
+        image: "WarningIcon",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -404,7 +407,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
       {
         title: "Failed to get messages",
         message: `ArcOS failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
@@ -499,7 +502,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
           message:
             "The attachment you tried to open could not be found, it may have been deleted. Please ask the sender of the message to send the attachment again.",
           image: info?.icon || "DefaultMimeIcon",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
         },
         this.pid,
@@ -514,6 +517,19 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
     } catch {}
 
     await Daemon?.files?.openFile(path);
+  }
+
+  async downloadAttachments() {
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Choose where to save the attachment",
+      startDir: UserPaths.Downloads,
+      icon: "MessagingIcon",
+      folder: true,
+    });
+
+    if (!path) return;
+
+    this.service.downloadAttachments(this.message()!, this.message()?.attachmentData!, path);
   }
 
   //#endregion

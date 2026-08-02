@@ -47,9 +47,10 @@ export class MessageBoxRuntime extends AppProcess implements IMessageBoxRuntime 
     if (this.acted()) return true;
 
     // Gross way to determine the primary action of the dialog
+    // Suggested buttons with a hide callback won't be picked.
     await this.data?.buttons
       .reverse()
-      .filter((b) => b.suggested)[0]
+      .filter((b) => b.suggested && !b.hide)[0]
       ?.action();
 
     return true;

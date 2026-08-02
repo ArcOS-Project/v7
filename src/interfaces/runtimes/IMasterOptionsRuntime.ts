@@ -7,4 +7,5 @@ export interface IMasterOptionsRuntime extends IAppProcess {
 
   killGhosts(): Promise<void>;
   killUserApps(): Promise<void>;
+  clearProcessCache(): Promise<void>;
 }

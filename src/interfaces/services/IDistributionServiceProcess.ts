@@ -2,8 +2,8 @@ import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IInstallerProcessBase } from "$interfaces/IInstallerProcessBase";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { UpdateWriteOpResult } from "$types/external/mongo";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { ArcPackage, PartialStoreItem, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import type JSZip from "jszip";
@@ -22,7 +22,7 @@ export interface IDistributionServiceProcess extends IBaseService {
   loadInstalledStoreItemList(noCache?: boolean): Promise<StoreItem[]>;
   writeInstalledStoreItemList(list: StoreItem[]): Promise<boolean>;
   getInstalledStoreItemById(id: string): Promise<StoreItem | undefined>;
-  addPackageToInstalled(item: ArcPackage): Promise<boolean | undefined>;
+  addPackageToInstalled(item: ArcPackage, force?: boolean): Promise<boolean | undefined>;
   removePackageFromInstalled(id: string): Promise<boolean | undefined>;
   loadInstalledPackageList(): Promise<ArcPackage[]>;
   writeInstalledPackageList(list: ArcPackage[]): Promise<boolean>;
@@ -32,10 +32,16 @@ export interface IDistributionServiceProcess extends IBaseService {
   packageInstallerFromPath<T = IInstallerProcessBase>(
     path: string,
     progress?: FilesystemProgressCallback,
-    item?: StoreItem
+    item?: StoreItem,
+    isUpdate?: boolean
   ): Promise<T | undefined>;
   getInstallerProcess(metadata: ArcPackage): Constructs<IInstallerProcessBase>;
-  packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<T | undefined>;
+  packageInstaller<T = IInstallerProcessBase>(
+    zip: JSZip,
+    metadata: ArcPackage,
+    item?: StoreItem,
+    isUpdate?: boolean
+  ): Promise<T | undefined>;
   validatePackage(path: string, progress?: FilesystemProgressCallback): Promise<boolean>;
   getAllStoreItems(): Promise<StoreItem[]>;
   getStoreItemsByAuthor(userId: string): Promise<StoreItem[]>;
@@ -52,7 +58,11 @@ export interface IDistributionServiceProcess extends IBaseService {
   getStoreItem(id: string): Promise<StoreItem | undefined>;
   getStoreItemByName(name: string): Promise<StoreItem | undefined>;
   downloadStoreItem(id: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined>;
-  storeItemInstaller(id: string, onProgress?: FilesystemProgressCallback): Promise<false | IInstallerProcessBase | undefined>;
+  storeItemInstaller(
+    id: string,
+    onProgress?: FilesystemProgressCallback,
+    isUpdate?: boolean
+  ): Promise<false | IInstallerProcessBase | undefined>;
   publishing_publishPackage(data: Blob, onProgress?: FilesystemProgressCallback): Promise<boolean>;
   publishing_publishPackageFromPath(path: string, onProgress?: FilesystemProgressCallback): Promise<boolean>;
   publishing_getPublishedPackages(): Promise<StoreItem[]>;

@@ -4,7 +4,7 @@
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Daemon } from "$ts/env";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
   const { process }: { process: ISettingsRuntime } = $props();
 
@@ -17,7 +17,7 @@
         {
           title: "Change password",
           message: "The passwords you entered don't match. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -38,7 +38,7 @@
           title: "Change password",
           message:
             "Failed to change your password! Either the password is invalid or you didn't approve the elevation request. Please try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -50,7 +50,7 @@
         {
           title: "Change password",
           message: "Your password has been changed successfully! You'll have to use this password when logging in in the future",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },

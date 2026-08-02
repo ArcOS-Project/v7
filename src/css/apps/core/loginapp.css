@@ -194,6 +194,7 @@ div.window#loginApp > div.body div.power-options {
   display: flex;
   align-items: center;
   gap: 20px;
+  z-index: 10000;
 }
 
 div.window#loginApp > div.body div.power-options button {

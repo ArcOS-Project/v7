@@ -7,11 +7,11 @@ import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IShareManager } from "$interfaces/services/IShareManager";
 import type { ITrayHostService } from "$interfaces/services/ITrayHostService";
-import { Daemon, Env, Stack, State } from "$ts/env";
+import { Daemon, Env, Fs, Stack, State, SysDispatch } from "$ts/env";
 import { ErrorIcon } from "$ts/images/dialog";
+import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import { ServiceHost } from "$ts/servicehost";
-import { Sleep } from "$ts/sleep";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { UserContext } from "../context";
 
 export class InitUserContext extends UserContext implements IInitUserContext {
@@ -53,28 +53,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
           if (currentState !== "desktop") return;
 
-          MessageBox(
-            {
-              title: "Open this page?",
-              message: `You're about to leave ArcOS to navigate to <code>${anchor.href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
-              buttons: [
-                {
-                  caption: "Stay here",
-                  action() {},
-                },
-                {
-                  caption: "Proceed",
-                  action() {
-                    window.open(anchor.href, "_blank");
-                  },
-                  suggested: true,
-                },
-              ],
-              image: "GlobeIcon",
-            },
-            +Env.get("shell_pid"),
-            true
-          );
+          Daemon.helpers?.openWebpage(anchor.href);
         });
       }
     };
@@ -146,10 +125,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     const trayHost = this.serviceHost?.getService<ITrayHostService>("TrayHostSvc");
     const shares = this.serviceHost?.getService<IShareManager>("ShareMgmt");
 
-    // Create the shellHost loading icon
-    await trayHost?.createTrayIcon(this.pid, this.TRAY_AUTOLOAD, {
-      icon: "SpinnerIcon",
-    });
+    trayHost?.loading.set(true);
 
     this.Log(`Spawning autoload applications`);
 
@@ -185,10 +161,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
 
     if (this.safeMode) Daemon!.helpers?.safeModeNotice();
 
-    trayHost?.changeIcon(this.pid, this.TRAY_AUTOLOAD, "GoodStatusIcon");
-
-    await Sleep(1000); // Wait a second...
-    await trayHost?.disposeTrayIcon(this.pid, this.TRAY_AUTOLOAD); // ...then dispose the tray iconF
+    trayHost?.loading.set(false);
 
     if (navigator.userAgent.toLowerCase().includes("firefox")) {
       await MessageBox(
@@ -196,7 +169,7 @@ export class InitUserContext extends UserContext implements IInitUserContext {
           title: "Firefox support",
           message:
             "Beware! ArcOS doesn't work correctly on Firefox. It's unsure when and if support for Firefox will improve. Please be sure to give feedback to me about anything that doesn't work quite right on Firefox, okay?",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "FirefoxIcon",
         },
         +Env.get("shell_pid"),
@@ -208,5 +181,54 @@ export class InitUserContext extends UserContext implements IInitUserContext {
     Daemon!.autoLoadComplete = true;
     await proc.refreshStartMenu();
     await proc.arcFind?.refresh();
+  }
+
+  async startFilesystemSupplier() {
+    if (this._disposed) return;
+
+    this.Log(`Starting filesystem supplier`);
+
+    try {
+      await Fs.mountDrive("userfs", UserDrive, "U", undefined);
+    } catch {
+      throw new Error("UserDaemon: Failed to start filesystem supplier");
+    }
+  }
+
+  startDriveNotifierWatcher() {
+    if (this._disposed) return;
+
+    this.Log("Starting drive notifier watcher");
+
+    SysDispatch.subscribe<string>("fs-mount-drive", (id) => {
+      if (this._disposed) return;
+
+      try {
+        const drive = Fs.getDriveById(id);
+        if (!drive) return;
+
+        Daemon!.files?.mountedDrives.push(id);
+        if (!drive.REMOVABLE) return;
+
+        const notificationId = Daemon!.notifications?.sendNotification({
+          title: drive.driveLetter ? `${drive.label} (${drive.driveLetter}:)` : drive.label,
+          message: "This drive just got mounted! Click the button to view it in the file manager",
+          buttons: [
+            {
+              caption: "Open Drive",
+              action: () => {
+                Daemon!.spawn?.spawnApp("fileManager", undefined, {}, `${drive.driveLetter || drive.uuid}:/`);
+
+                if (notificationId) Daemon!.notifications?.deleteNotification(notificationId);
+              },
+            },
+          ],
+          image: "DriveIcon",
+          timeout: 3000,
+        });
+      } catch {
+        return;
+      }
+    });
   }
 }

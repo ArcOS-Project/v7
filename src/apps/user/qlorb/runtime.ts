@@ -22,11 +22,13 @@ export class QlorbRuntime extends AppProcess implements IQlorbRuntime {
   constructor(pid: number, parentPid: number, app: AppProcessData) {
     super(pid, parentPid, app);
 
+    this.setSource(__SOURCE__);
+  }
+
+  async start() {
     setInterval(() => {
       if (this.Boxes.get().length - this.Clicks.get() < 21 && this.CurrentPage.get() == "game") this.spawnBox();
     }, 300);
-
-    this.setSource(__SOURCE__);
   }
 
   async render() {

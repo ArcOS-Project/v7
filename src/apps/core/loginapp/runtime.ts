@@ -290,23 +290,33 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   //#endregion
   //#region CREDENTIALS
 
-  async proceed(username: string, password: string) {
-    this.Log(`Trying login of '${username}'`);
+  async proceed(identifier: string, password: string) {
+    this.Log(`Trying login of '${identifier}'`);
 
-    this.loadingStatus.set(`Hi, ${username}!`);
-
-    const tokenResult = await LoginUser(username, password);
+    const tokenResult = await LoginUser(identifier, password);
 
     if (!tokenResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set(tokenResult.errorMessage ?? "Username or password incorrect");
+      this.errorMessage.set(tokenResult.errorMessage ?? "Username/Email or password incorrect");
 
       this.updateServerStuff();
 
       return;
     }
 
-    await this.startDaemon(tokenResult.result!, username);
+    const userInfo = await this.validateUserToken(tokenResult.result!);
+    if (!userInfo) {
+      this.resetCookies();
+
+      this.loadingStatus.set("");
+      this.errorMessage.set("Session token is invalid.");
+
+      return;
+    }
+
+    this.loadingStatus.set(`Hi, ${userInfo.username}!`);
+
+    await this.startDaemon(tokenResult.result!, userInfo.username);
   }
 
   private saveToken(userDaemon: IUserDaemon) {
@@ -315,9 +325,11 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
 
     this.Log(`Saving token of '${userDaemon.username}' to cookies`);
 
-    const cookieOptions = {
-      expires: 14, // lmao
-      domain: import.meta.env.DEV ? "localhost" : location.hostname,
+    const cookieOptions: Cookies.CookieAttributes = {
+      path: "/",
+      secure: false,
+      expires: 30,
+      domain: location.hostname,
     };
 
     Cookies.set("arcToken", token, cookieOptions);

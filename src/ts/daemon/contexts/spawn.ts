@@ -5,12 +5,13 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
-import { Daemon, Env, Stack } from "$ts/env";
+import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
+import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
 import type { App, AppProcessData, AppProcessSpawnOptions, InstalledApp, TpaSpawnEntrypointResult } from "$types/apps/app";
 import { LogLevel } from "$types/shared/logging";
@@ -20,6 +21,7 @@ import { UserContext } from "../context";
 //
 export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   private tpaEntrypointCache: Record<string, Constructs<IProcess>> = {};
+
   constructor(id: string, daemon: IUserDaemon) {
     super(id, daemon);
   }
@@ -33,7 +35,6 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     ...args: any[]
   ): Promise<T | undefined> {
     this.Log(`newSpawnApp: spawning ${app.id} against parent PID ${parentPid}`);
-    const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
 
     app = cloneAppMeta(app);
 
@@ -45,11 +46,38 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
       const shellDispatch = Stack.ConnectDispatch(+Env.get("shell_pid"));
 
-      if (shellDispatch) {
-        shellDispatch?.dispatch("close-start-menu");
-        shellDispatch?.dispatch("close-action-center");
+      shellDispatch?.dispatch("close-start-menu");
+      shellDispatch?.dispatch("close-action-center");
+
+      let runtime = app?.assets?.runtime;
+      let isTpaProc = false;
+
+      if (app.thirdParty && app.workingDirectory) {
+        const tpaRuntimeResult = await this.tpaEntrypoint(app as InstalledApp, ...args);
+
+        if (tpaRuntimeResult.success) {
+          const value = tpaRuntimeResult.result;
+
+          if (value?.runtime) {
+            runtime = value?.runtime;
+            isTpaProc = true;
+          } else return value?.returnValue;
+        }
       }
 
+      if (!runtime) throw new Error("Did not find a suitable runtime for execution");
+
+      const spawnOptions: AppProcessSpawnOptions | undefined = (runtime as any).spawnOptions;
+      if (spawnOptions) {
+        if (options) {
+          // Overload the spawn options onto the incoming options to replace PROPERTIES, not the entire object
+          options = applyDefaults<AppProcessSpawnOptions>(options, spawnOptions);
+        } else {
+          options = spawnOptions;
+        }
+      }
+
+      const renderTarget = options?.noWorkspace ? undefined : (options?.renderTarget ?? Daemon.workspaces?.getCurrentDesktop());
       const pid = parentPid || +Env.get("shell_pid");
 
       if (options?.asOverlay) {
@@ -64,23 +92,6 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         }
       }
 
-      let runtime = app?.assets?.runtime;
-      let isTpaProc = false;
-
-      if (app.thirdParty && app.workingDirectory) {
-        const tpaRuntimeResult = await this.tpaEntrypoint(app as InstalledApp, ...args);
-        if (tpaRuntimeResult.success) {
-          const value = tpaRuntimeResult.result;
-
-          if (value?.runtime) {
-            runtime = value?.runtime;
-            isTpaProc = true;
-          } else return value?.returnValue;
-        }
-      }
-
-      if (!runtime) throw new Error("Did not find a suitable runtime for execution");
-
       const argv = isTpaProc ? [UUID(), app.workingDirectory, ...args] : args;
       const proc = await Stack.spawn<T>(
         runtime as Constructs<T>,
@@ -90,6 +101,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         this.generateAppProcessData(app, renderTarget),
         ...argv
       );
+
+      if (proc instanceof ThirdPartyProcess) {
+        await proc.onStarted();
+      }
 
       return proc;
     } catch (e) {
@@ -124,17 +139,16 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    this.Log(`Invoking TPA Entrypoint for ${app.id}`);
-    if (this.tpaEntrypointCache[app.id]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[app.id] });
-
-    const appData = this.appStorage()?.getAppSynchronous(app.id) ?? cloneAppMeta(app);
-    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
-      if (app) this.tpaError_malformedMetadata(app);
+    if (!Daemon.preferences().security.enableThirdParty) {
+      this.tpaError_noEnableThirdParty();
       return CommandResult.Ok({ returnValue: undefined });
     }
 
-    if (!Daemon.preferences().security.enableThirdParty) {
-      this.tpaError_noEnableThirdParty();
+    this.Log(`Invoking TPA Entrypoint for ${app.id}`);
+    if (this.tpaEntrypointCache[app.id]) return CommandResult.Ok({ runtime: this.tpaEntrypointCache[app.id] });
+
+    if (!app || !app.thirdParty || !app.workingDirectory || !app.entrypoint) {
+      if (app) this.tpaError_malformedMetadata(app);
       return CommandResult.Ok({ returnValue: undefined });
     }
 
@@ -159,8 +173,28 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         this.tpaEntrypointCache[app.id] = result;
 
       return CommandResult.Ok({ runtime: result });
-    } catch (e) {
-      Stack.renderer?.notifyCrash(app, e);
+    } catch (e: any) {
+      if (`${e?.message || e}`.includes("expects a newer version")) {
+        MessageBox(
+          {
+            title: `${app.metadata.name} - TPA revision error`,
+            message: `This application expects a newer version of the ArcOS TPA framework. Please contact the developer for a version compatible with ArcOS version ${ArcOSVersion}.`,
+            buttons: [
+              {
+                caption: "Okay",
+                action: () => {},
+                suggested: true,
+              },
+            ],
+            image: "ErrorIcon",
+            sound: "arcos.dialog.error",
+          },
+          Daemon.getShell()?.pid ?? Daemon.pid,
+          true
+        );
+      } else {
+        Stack.renderer?.notifyCrash(app, e);
+      }
       gli?.stop?.();
 
       return CommandResult.Ok({ returnValue: undefined });
@@ -206,7 +240,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       {
         title: "Third-party application error",
         message: `ArcOS tried to launch ${app.metadata.name} by ${app.metadata.author} as a third-party application, but the app does not contain sufficient information to run as a TPA. Please try to reinstall the application to fix this problem.`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },
@@ -222,7 +256,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
           title: "Safe Mode",
           message:
             "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running ArcOS normally.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
         },
         +Env.get("shell_pid"),
@@ -261,7 +295,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       {
         title: "Application error",
         message: `An error occurred whilst spawning an application with ID <b>${appId}</b>.<br><br>Details: ${message}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         sound: "arcos.dialog.error",
         image: "ErrorIcon",
       },
@@ -279,6 +313,10 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
       data: app,
       desktop: renderTarget?.id,
     };
+  }
+
+  clearEntrypointCache() {
+    this.tpaEntrypointCache = {};
   }
 
   //#endregion

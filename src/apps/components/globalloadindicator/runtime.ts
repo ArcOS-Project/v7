@@ -17,7 +17,9 @@ export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoa
     if (progress) this.progress.set(progress);
 
     this.setSource(__SOURCE__);
+  }
 
+  async render() {
     this.progress.subscribe((v) => {
       this.getWindow()?.classList.toggle("extended", !!v);
     });

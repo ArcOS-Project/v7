@@ -52,7 +52,7 @@
 
 {#if $serverInfo?.loginBottomText}
   <p class="bottom-text">
-    {`${$serverInfo?.loginBottomText} ${import.meta.env.DW_PREVIEW_DEP_BRANCH ? `-- ${import.meta.env.DW_PREVIEW_DEP_BRANCH}` : ""}`.trim()}
+    {[$serverInfo?.loginBottomText, import.meta.env.DW_PREVIEW_DEP_BRANCH].filter(Boolean).join(" -- ")}
   </p>
 {/if}
 <p>{Server.url} -- {Server.authCode}</p>

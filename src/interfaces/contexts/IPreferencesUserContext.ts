@@ -1,6 +1,6 @@
 import type { IUserContext } from "$interfaces/IUserDaemon";
-import type { UserPreferences } from "$types/user";
 import type { ReadableStore, Unsubscriber } from "$types/shared/writable";
+import type { UserPreferences } from "$types/user";
 
 // !tpa
 export interface IPreferencesUserContext extends IUserContext {

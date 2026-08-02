@@ -76,6 +76,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     SysDispatch.subscribe("window-unfullscreen", () => this.updateFullscreenCount());
     SysDispatch.subscribe("window-minimize", () => this.updateFullscreenCount());
     SysDispatch.subscribe("window-unminimize", () => this.updateFullscreenCount());
+    SysDispatch.subscribe("tray-icon-dispose", () => this.openedTrayPopup.set(""));
 
     SysDispatch.subscribe("startmenu-refresh", () => {
       this.refreshStartMenu();

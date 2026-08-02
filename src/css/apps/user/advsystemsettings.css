@@ -86,3 +86,56 @@
   padding: 0 15px;
   height: 30px;
 }
+
+#AdvSystemSettings > div.body div.table-wrapper {
+  border: var(--win-border);
+  height: 0;
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 4px;
+  background-color: var(--win-bg);
+}
+
+#AdvSystemSettings > div.body div.table-wrapper table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+#AdvSystemSettings > div.body div.table-wrapper thead {
+  position: sticky;
+  top: 0;
+}
+
+#AdvSystemSettings > div.body div.table-wrapper td,
+#AdvSystemSettings > div.body div.table-wrapper th {
+  height: 30px;
+  border: var(--win-border);
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#AdvSystemSettings > div.body div.table-wrapper th {
+  text-align: left;
+  background-color: var(--button-bg);
+}
+
+#AdvSystemSettings > div.body div.table-wrapper .action {
+  padding: 0;
+  width: 0;
+}
+
+#AdvSystemSettings > div.body div.table-wrapper button.lucide {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
+  outline: none;
+  font-size: 16px;
+}

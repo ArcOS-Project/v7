@@ -7,7 +7,7 @@
   import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
 
   const { process }: { process: IInitialSetupRuntime } = $props();
-  const { newUsername, password, confirm, email, displayName } = process;
+  const { newUsername, password, confirm, email } = process;
 
   let enteredUsername = $state("");
   let enteredEmail = $state("");
@@ -124,16 +124,13 @@
   <h1>Your ArcOS Identity</h1>
   <p class="subtitle">We'll use this information to create your ArcOS account.</p>
   <div class="fields">
-    <div class="field">
-      <p class="name">Display Name</p>
-      <input type="text" placeholder="John Doe" bind:value={$displayName} />
-    </div>
     <div class="field username">
       <p class="name">Username</p>
       <button
         class="lucide icon-circle-question-mark info-button"
         aria-label="Username Info"
         title="Must be within 3 and 32 characters of length and only contain numbers and letters"
+        tabindex="-1"
       ></button>
       <input
         type="text"
@@ -151,6 +148,7 @@
         class="lucide icon-circle-question-mark info-button"
         aria-label="Email Info"
         title="Must be an unused email and one you can access."
+        tabindex="-1"
       ></button>
       <input
         type="email"
@@ -168,6 +166,7 @@
         class="lucide icon-circle-question-mark info-button"
         aria-label="Password Info"
         title="Must contain a mix of at least 8 regular, special, and numeric characters."
+        tabindex="-1"
       ></button>
       <div class="duo">
         <input
@@ -201,8 +200,8 @@
     {/if}
   </div>
   <p class="disclaimer">
-    * You will receive an email with a link to activate your account. Your display name, username and password can be changed
-    later on. To change your email later on, contact an administrator.
+    * You will receive an email with a link to activate your account. Your username and password can be changed later on. To
+    change your email later on, contact an administrator.
     {#if !Server.serverInfo?.noEmailVerify}
       You need a valid email address to create an account.
     {/if}

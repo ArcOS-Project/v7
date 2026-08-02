@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { DriveIconsMulticolor } from "$apps/user/filemanager/store";
   import type { IDriveInfoRuntime } from "$interfaces/runtimes/IDriveInfoRuntime";
   import CircularProgress from "$lib/CircularProgress.svelte";
   import Spinner from "$lib/Spinner.svelte";
@@ -16,11 +17,15 @@
 
 {#if quota && drive}
   <div class="header">
-    <CircularProgress max={quota.max} value={quota.used} size={84} strokeWidth={8} />
+    {#if quota.max > 0}
+      <CircularProgress max={quota.max} value={quota.used} size={84} strokeWidth={8} />
+    {:else}
+      <img src={process.getIconCached(DriveIconsMulticolor[drive.IDENTIFIES_AS])} alt="" class="no-quota" />
+    {/if}
     <h1>{drive.label}</h1>
     <p>{drive.FILESYSTEM_LONG} ({drive.FILESYSTEM_SHORT})</p>
   </div>
-  <Quota {quota} />
+  <Quota {quota} {process} />
   {#if advanced}
     <AdvancedInfo {drive} />
   {:else if usage}

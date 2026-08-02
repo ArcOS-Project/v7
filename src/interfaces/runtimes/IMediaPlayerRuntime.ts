@@ -54,6 +54,7 @@ export interface IMediaPlayerRuntime extends IAppProcess {
   failedToPlay(e?: any): Promise<void>;
   normalizeMetadata(meta: IAudioMetadata): Promise<AudioFileMetadata>;
   parseMetadata(path: string, apply?: boolean): Promise<ICommandResult<AudioFileMetadata>>;
+  setMediaSessionMetadata(metadata?: AudioFileMetadata): Promise<void>;
   parseEntireQueue(): Promise<void>;
   formatTime(seconds: number): string;
   openFileLocation(): void;

@@ -3,8 +3,8 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { ServerInfo } from "$types/server";
-import type { UserInfo } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { UserInfo } from "$types/user";
 
 export interface ILoginAppRuntime extends IAppProcess {
   DEFAULT_WALLPAPER: ReadableStore<string>;
@@ -28,7 +28,7 @@ export interface ILoginAppRuntime extends IAppProcess {
   logoff(userDaemon: IUserDaemon): Promise<void>;
   shutdown(userDaemon?: IUserDaemon): Promise<void>;
   restart(userDaemon?: IUserDaemon): Promise<void>;
-  proceed(username: string, password: string): Promise<void>;
+  proceed(identifier: string, password: string): Promise<void>;
 
   resetCookies(): void;
   firstRun(daemon: IUserDaemon): Promise<void>;

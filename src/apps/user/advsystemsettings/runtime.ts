@@ -1,3 +1,4 @@
+import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
@@ -10,7 +11,6 @@ import Main from "./AdvancedSystemSettings/Main.svelte";
 import Migrations from "./AdvancedSystemSettings/Migrations.svelte";
 import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
-import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
 
 export class AdvSysSetRuntime extends AppProcess implements IAdvSysSetRuntime {
   public currentTab = Store<string>("Main");

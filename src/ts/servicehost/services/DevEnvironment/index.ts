@@ -5,6 +5,7 @@ import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { DevDrive } from "$ts/kernel/mods/fs/drives/devenv";
 import { ArcBuild } from "$ts/metadata/build";
+import { ArcMode } from "$ts/metadata/mode";
 import { BaseService } from "$ts/servicehost/base";
 import { MessageBox } from "$ts/util/dialog";
 import type { DevEnvActivationResult, ProjectMetadata } from "$types/services/devenv";
@@ -99,7 +100,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
 
     if (!this.meta) return abort("ping_failed");
     if ((this.meta.devPort || 3128) !== this.port) return abort("port_mismatch");
-    if (this.meta.buildHash !== ArcBuild()) return abort("build_mismatch");
+    if (this.meta.buildHash !== ArcBuild() && ArcMode() !== "betabranch") return abort("build_mismatch");
 
     const drive = await this.mountDevDrive();
 

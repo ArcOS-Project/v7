@@ -86,10 +86,11 @@
   outline: none;
   border-radius: 4px;
   width: 140px;
+  height: 40px;
 }
 
 #systemSettings div.apps_manageApps div.apps.grid-large button.app {
-  width: 200px
+  width: 200px;
 }
 
 #systemSettings div.apps_manageApps div.apps button.app h1 {

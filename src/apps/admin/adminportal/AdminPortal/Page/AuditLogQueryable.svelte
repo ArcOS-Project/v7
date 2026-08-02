@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import Spinner from "$lib/Spinner.svelte";
   import { Store } from "$ts/writable";
-  import { type AuditLogQueryOptions, type AuditLog, AuditSeverity } from "$types/server/admin";
+  import { type AuditLog, type AuditLogQueryOptions, AuditSeverity } from "$types/server/admin";
   import type { QueryResult } from "$types/server/query";
   import { onMount } from "svelte";
   import type { AuditLogData } from "../../types";
   import Pagination from "../Pagination.svelte";
   import AuditLogItem from "./AuditLog/AuditLogItem.svelte";
-  import Spinner from "$lib/Spinner.svelte";
 
   let totalItems = $state(0);
   let audits = $state<QueryResult<AuditLog>>();

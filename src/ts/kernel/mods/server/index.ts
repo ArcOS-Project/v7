@@ -9,12 +9,12 @@ import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
 import { KernelModule } from "../../module";
 import { Backend } from "./axios";
+import { MessagingConnector } from "./connectors/MessagingConnector";
+import { ShareConnector } from "./connectors/ShareConnector";
 import { StoreConnector } from "./connectors/StoreConnector";
 import { TotpConnector } from "./connectors/TotpConnector";
 import { TpaConnector } from "./connectors/TpaConnector";
 import { UserConnector } from "./connectors/UserConnector";
-import { ShareConnector } from "./connectors/ShareConnector";
-import { MessagingConnector } from "./connectors/MessagingConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
@@ -34,6 +34,10 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector, MessagingConnector];
   private _store: Record<"" | string, IServerConnector[]> = {};
+
+  public get ConnectorNames() {
+    return this.STORE.map((s) => s.name);
+  }
 
   public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {
     this._store[token] ??= [];

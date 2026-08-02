@@ -4,8 +4,8 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
-import type { PublicUserInfo } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { PublicUserInfo } from "$types/user";
 
 // !tpa
 export interface IMessagingAppRuntime extends IAppProcess {
@@ -24,6 +24,7 @@ export interface IMessagingAppRuntime extends IAppProcess {
   searchResults: ReadableStore<string[]>;
   messageWindow: boolean;
   messageFromFile: boolean;
+  readonly THREAD_DEPTH_MAX: number;
 
   getInbox(): Promise<ExpandedMessage[]>;
   getSent(): Promise<ExpandedMessage[]>;
@@ -50,4 +51,5 @@ export interface IMessagingAppRuntime extends IAppProcess {
   popoutMessage(messageId: string): void;
   readAttachment(attachment: MessageAttachment, messageId: string, prog: FileProgressMutator): Promise<ArrayBuffer | undefined>;
   openAttachment(attachment: MessageAttachment, messageId: string): Promise<void>;
+  downloadAttachments(): Promise<void>;
 }

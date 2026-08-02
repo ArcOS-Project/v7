@@ -190,3 +190,12 @@ export interface BugReportSourceInformation {
   fileUrl?: string;
   filename?: string;
 }
+
+export interface AdminTemporaryPassword {
+  _id: string;
+  adminId: string;
+  userId: string;
+  passwordValue: string;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -54,6 +54,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     }
 
     this.checkDesktopIcon();
+    this.installing.set(false);
 
     return true;
   }
@@ -67,7 +68,7 @@ export class AppInstallerProcess extends InstallerProcessBase {
     const appStore = Daemon?.serviceHost?.getService<IApplicationStorage>("AppStorage");
     const app = appStore?.getAppSynchronous(this.metadata?.appId!)!;
 
-    if (existing) return;
+    if (existing || this.isUpdate) return;
 
     if (app.hidden || app.core) {
       Daemon?.notifications?.sendNotification({
@@ -109,6 +110,8 @@ export class AppInstallerProcess extends InstallerProcessBase {
       const result = await Daemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
       if (!result) {
         this.setCurrentStatus("done");
+        this.parent.BUSY = "";
+        await this.parent.addPackageToInstalled(this.metadata!);
         return true;
       }
 

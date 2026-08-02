@@ -32,6 +32,8 @@ div.window:not(.core) {
   visibility: hidden;
   scale: 0.95;
   outline: var(--secondary-border) !important;
+  display: flex;
+  flex-direction: column;
 }
 
 div.window:not(.core).shell-colored.colored::before {
@@ -82,7 +84,7 @@ div.window:not(.core).fullscreen div.titlebar {
   display: none !important;
 }
 
-div.window:not(.core).fullscreen > div.body {
+div.window:not(.core).fullscreen>div.body {
   height: 100vh !important;
   border-top: none !important;
   border-radius: 0 !important;
@@ -92,11 +94,11 @@ div.window:not(.core):not(.glass).focused {
   background-color: var(--glass-bg);
 }
 
-div.window:not(.core):not(.glass).focused > div.titlebar {
+div.window:not(.core):not(.glass).focused>div.titlebar {
   backdrop-filter: blur(var(--blur));
 }
 
-div.window:not(.core):not(.glass) > div.body {
+div.window:not(.core):not(.glass)>div.body {
   background-color: var(--win-bg);
 }
 
@@ -129,6 +131,7 @@ div.window:not(.core).visible:not(.closing) {
   scale: 1;
   margin-top: 0;
 }
+
 /* 
 div.window:not(.core).resizable {
   resize: both;
@@ -142,6 +145,14 @@ div.window.overlay.glass {
 div.window:not(.core) a {
   color: var(--accent-light);
   text-underline-offset: 2px;
+
+  .theme-light & {
+    /*
+       * Uses the calculated result if available,
+       * otherwise, uses uglier dark accent color.
+       */
+    color: var(--accent-suggested-end, var(--accent-dark));
+  }
 }
 
 div.window:not(.core) div.resizer {

@@ -3,14 +3,19 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
-import { getItemNameFromPath } from "$ts/util/fs";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import { ImageViewer } from "svelte-image-viewer";
+import { ImageViewerAccelerators } from "./accelerators";
+import { ImageViewerAltMenu } from "./altmenu";
 
 export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntime {
   openedFile = Store<string>();
   imageUrl = Store<string>();
+  viewer = Store<ImageViewer>();
+  scale = Store<number>(1);
   indirect = Store<boolean>(false);
   overridePopulatable: boolean = true;
 
@@ -22,6 +27,17 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
     this.renderArgs.path = path;
 
     this.setSource(__SOURCE__);
+    this.altMenu.set(ImageViewerAltMenu(this));
+    this.acceleratorStore.push(...ImageViewerAccelerators(this));
+  }
+
+  async start() {
+    this.viewer.subscribe(async (v) => {
+      if (!v) return;
+
+      await Sleep(100);
+      v.scaleImageToFit();
+    });
   }
 
   async render({ path }: { path: string }) {
@@ -31,6 +47,20 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
   }
 
   //#endregion
+
+  async readFileDialog() {
+    const [path] = await Daemon.files!.LoadSaveDialog({
+      title: "Choose an image to view",
+      extensions: this.app.data.opens?.extensions ?? [],
+      icon: this.app.data.metadata.icon,
+      startDir: getParentDirectory(this.openedFile()),
+      targetPid: this.pid,
+    });
+
+    if (!path) return;
+
+    return await this.readFile(path);
+  }
 
   async readFile(path: string) {
     this.Log(`readFile: ${path}`);
@@ -79,7 +109,7 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
           message: "The image you tried to open could not be read.",
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
         },
         this.parentPid,
         true

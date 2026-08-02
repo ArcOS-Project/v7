@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { Daemon } from "$ts/env";
   import { DefaultUserInfo } from "$ts/user/default";
-  import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences, currentPage } = process;

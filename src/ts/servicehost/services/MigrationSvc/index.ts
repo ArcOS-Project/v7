@@ -6,9 +6,9 @@ import { BaseService } from "$ts/servicehost/base";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import { LogLevel } from "$types/shared/logging";
 import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
 import type { Service } from "$types/services/service";
+import { LogLevel } from "$types/shared/logging";
 import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
@@ -76,6 +76,8 @@ export class MigrationService extends BaseService implements IMigrationService {
       const installedVersion = config[migration.name] ?? 0;
 
       if (currentVersion > installedVersion) {
+        cb?.(`Running migration ${migration.name} ${installedVersion}`);
+
         const result = await this.runMigration(migration, cb);
 
         results[migration.name] = result;

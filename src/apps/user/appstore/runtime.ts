@@ -7,7 +7,7 @@ import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -36,16 +36,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     super(pid, parentPid, app);
 
     this.distrib = Daemon!.serviceHost!.getService<IDistributionServiceProcess>("DistribSvc")!;
-
-    this.searchQuery.subscribe((v) => {
-      if (!v) {
-        this.searching.set(false);
-        if (this.currentPage() === "search") this.switchPage("home");
-      }
-    });
-
     this.renderArgs = { page, props };
-
     this.setSource(__SOURCE__);
   }
 
@@ -56,7 +47,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
           title: "App store unavailable",
           message:
             "The Distribution Service isn't running anymore. Please restart ArcOS, and then try again. If this keeps happening, contact an ArcOS Administrator.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
         },
@@ -66,6 +57,13 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
 
       return false;
     }
+
+    this.searchQuery.subscribe((v) => {
+      if (!v) {
+        this.searching.set(false);
+        if (this.currentPage() === "search") this.switchPage("home");
+      }
+    });
 
     SysDispatch.subscribe("mugui-done", () => {
       this.switchPage(this.currentPage(), this.pageProps(), true);
@@ -130,7 +128,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
         {
           title: "Can't install package",
           message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
         },
@@ -188,7 +186,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
         {
           title: "Can't update package",
           message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
         },
@@ -298,7 +296,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
           title: "Failed to publish package",
           message:
             "The server didn't accept your package. Maybe its format is incorrect or another package with the same name already exists.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -349,7 +347,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
         {
           title: "Failed to update store item",
           message: `The server didn't accept your update package. Maybe its format is incorrect, the app ID differs, or the version isn't increased. Please check the package and try again.<br><br>Details: ${updateResult.errorMessage ?? "Unknown error"}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },
@@ -396,7 +394,7 @@ The author hasn't provided a readme file themselves, so this one has been automa
         content: TakenDown as any,
         image: "InfoIcon",
         sound: "arcos.dialog.info",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.pid,
       true

@@ -1,7 +1,7 @@
 import type { App } from "../apps/app";
+import type { ReadableStore } from "../shared/writable";
 import type { ThemeStore } from "./theme";
 import type { Wallpaper } from "./wallpaper";
-import type { ReadableStore } from "../shared/writable";
 
 // !tpa
 export interface UserInfo {
@@ -15,6 +15,7 @@ export interface UserInfo {
   updatedAt: string;
   createdAt: string;
   hasTotp: boolean;
+  isSystem: boolean;
   restricted: boolean;
   storageSize: number;
 }

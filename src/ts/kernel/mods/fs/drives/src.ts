@@ -1,11 +1,11 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/system/fs";
 import type { GitFolder } from "$types/external/git";
+import type { DirectoryReadReturn, DriveCapabilities, FilesystemProgressCallback } from "$types/system/fs";
 import axios from "axios";
 import { fromExtension } from "human-filetypes";
 import { FilesystemDrive } from "./generic";
-import type { ICommandResult } from "$interfaces/ICommandResult";
 
 export class SourceFilesystemDrive extends FilesystemDrive {
   override IDENTIFIES_AS: string = "src";

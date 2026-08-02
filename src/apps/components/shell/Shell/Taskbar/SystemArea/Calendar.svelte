@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import Spinner from "$lib/Spinner.svelte";
+  import { CalendarHelper } from "$ts/helpers/calendar";
+  import type { CalendarMonth } from "$types/shared/calendar";
   import dayjs, { Dayjs } from "dayjs";
   import weekOfYear from "dayjs/plugin/weekOfYear";
+  import { onMount } from "svelte";
   import Controls from "./Calendar/Controls.svelte";
   import Day from "./Calendar/Day.svelte";
   import Header from "./Calendar/Header.svelte";
   import Top from "./Calendar/Top.svelte";
-  import { CalendarHelper } from "$ts/helpers/calendar";
-  import type { CalendarMonth } from "$types/shared/calendar";
-  import { onMount } from "svelte";
 
   const { process }: { process: IShellRuntime } = $props();
   const { calendarOpened, userPreferences } = process;

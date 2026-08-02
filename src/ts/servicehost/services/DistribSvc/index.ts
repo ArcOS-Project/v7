@@ -11,10 +11,10 @@ import { arrayBufferToBlob, arrayBufferToText, textToBlob } from "$ts/util/conve
 import { join } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
-import type { FilesystemProgressCallback } from "$types/system/fs";
 import type { UpdateWriteOpResult } from "$types/external/mongo";
-import type { ArcPackage, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { Service } from "$types/services/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
+import type { ArcPackage, StoreItem, UpdateInfo } from "$types/tpa/package";
 import type { UserPreferencesStore } from "$types/user";
 import JSZip from "jszip";
 import { AppInstallerProcess } from "./installer/appinstaller";
@@ -167,10 +167,10 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   //#endregion
   //#region PACKAGE CONFIG
 
-  async addPackageToInstalled(item: ArcPackage) {
+  async addPackageToInstalled(item: ArcPackage, force = false) {
     this.Log(`addPackageToInstalled: '${item.appId}'`);
 
-    if (this.checkBusy("addPackageToInstalled")) return undefined;
+    if (this.checkBusy("addPackageToInstalled") && !force) return undefined;
 
     const list = await this.loadInstalledPackageList();
 
@@ -283,7 +283,8 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async packageInstallerFromPath<T = IInstallerProcessBase>(
     path: string,
     progress?: FilesystemProgressCallback,
-    item?: StoreItem
+    item?: StoreItem,
+    isUpdate = false
   ): Promise<T | undefined> {
     this.Log(`packageInstallerFromPath: ${path}, ${item?._id || "no store item"}`);
 
@@ -303,7 +304,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
     this.BUSY = "";
 
-    return await this.packageInstaller<T>(zip, metadata, item);
+    return await this.packageInstaller<T>(zip, metadata, item, isUpdate);
   }
 
   getInstallerProcess(metadata: ArcPackage): IInstallerProcessBaseConstructor {
@@ -316,14 +317,14 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     }
   }
 
-  async packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem): Promise<T | undefined> {
+  async packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem, isUpdate = false): Promise<T | undefined> {
     this.Log(`packageInstaller: ${metadata.appId}, ${item?._id || "no store item"}`);
 
     if (this.checkBusy("packageInstaller")) return undefined;
 
     let designatedProcess = this.getInstallerProcess(metadata);
 
-    const proc = await Stack.spawn(designatedProcess, undefined, Daemon!.userInfo?._id, this.pid, zip, metadata, item);
+    const proc = await Stack.spawn(designatedProcess, undefined, Daemon!.userInfo?._id, this.pid, zip, metadata, item, isUpdate);
 
     return proc as T;
   }
@@ -426,7 +427,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
       return false;
     }
 
-    const installer = await this.storeItemInstaller(id, progress);
+    const installer = await this.storeItemInstaller(id, progress, true);
     if (!installer) {
       this.BUSY = "";
       return false;
@@ -466,7 +467,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     return result;
   }
 
-  async storeItemInstaller(id: string, onProgress?: FilesystemProgressCallback) {
+  async storeItemInstaller(id: string, onProgress?: FilesystemProgressCallback, isUpdate = false) {
     this.Log(`storeItemInstaller: '${id}'`);
 
     if (this.checkBusy("storeItemInstaller")) return undefined;
@@ -491,7 +492,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
       return false;
     }
 
-    return await this.packageInstallerFromPath(path, undefined, item);
+    return await this.packageInstallerFromPath(path, undefined, item, isUpdate);
   }
 
   //#endregion

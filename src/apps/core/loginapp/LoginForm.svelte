@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
   import { Store } from "$ts/writable";
   import Field from "./LoginForm/Field.svelte";
-  import type { ILoginAppRuntime } from "$interfaces/runtimes/ILoginAppRuntime";
 
   let username = Store("");
   let password = Store("");
@@ -17,7 +17,7 @@
 <div class="login-form">
   <div class="left">
     {#if !$persistence}
-      <Field bind:value={$username} placeholder="Username" icon="user" />
+      <Field bind:value={$username} placeholder="Username/Email" icon="user" />
     {/if}
     <Field bind:value={$password} placeholder="Password" icon="key-round" password onsubmit={go} />
   </div>

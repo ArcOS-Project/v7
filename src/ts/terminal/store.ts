@@ -4,6 +4,7 @@ import { AppListCommand } from "./commands/applist";
 import { ArcFetchCommand } from "./commands/arcfetch";
 import { AtConfCommand } from "./commands/atconf";
 import { Base64Command } from "./commands/base64";
+import { BasicCommand } from "./commands/basic";
 import { CdCommand } from "./commands/cd";
 import { ClearCommand } from "./commands/clear";
 import { ConfigCommand } from "./commands/config";
@@ -83,4 +84,5 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   ServiceCommand,
   MigrationsCommand,
   LoadCommand,
+  BasicCommand,
 ];

@@ -20,6 +20,8 @@
       if (show) {
         show = false;
         await Sleep(300);
+        data = incoming;
+        await Sleep(100);
       }
 
       data = incoming;

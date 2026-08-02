@@ -2,6 +2,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
+import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { SvelteComponent } from "svelte";
 import type { MaybePromise } from "../shared/common";
 import type { ReadableStore } from "../shared/writable";
@@ -42,6 +43,7 @@ export interface App {
   _internalMinVer?: string;
   _internalSysVer?: string;
   _internalLoadTime?: number;
+  loadCondition?: (daemon: IUserDaemon) => MaybePromise<boolean>;
 }
 
 export type RegisteredProcess = {
@@ -157,4 +159,5 @@ export interface TpaSpawnEntrypointResult<T = any> {
   runtime?: Constructs<IProcess>;
   returnValue?: T;
 }
+
 // !endtpa

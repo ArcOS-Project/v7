@@ -6,8 +6,8 @@ import { ArcMode } from "$ts/metadata/mode";
 import { authcode } from "$ts/util";
 import { formatBytes } from "$ts/util/fs";
 import { getDeviceInfo } from "../../kernel/device";
-import { TerminalProcess } from "../process";
 import { BRBLACK, BRBLUE, BRCYAN, BRGREEN, BRPURPLE, BRRED, BRYELLOW, RESET } from "../colors";
+import { TerminalProcess } from "../process";
 
 export class ArcFetchCommand extends TerminalProcess {
   static keyword: string = "arcfetch";

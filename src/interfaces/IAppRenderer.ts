@@ -31,5 +31,6 @@ export interface IAppRenderer extends IProcess {
   toggleFullscreen(pid: number): void;
   getAppInstances(id: string, originPid?: number): IAppProcess[];
   notifyCrash(data: App, reason: any, process?: IAppProcess): Promise<void>;
+  centerWindow(proc: IAppProcess): Promise<void>;
 }
 // !endtpa

@@ -10,11 +10,11 @@ import type {
   User,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { SharedDriveType } from "$types/server/shares";
+import type { ReadableStore } from "$types/shared/writable";
 import type { FsAccess } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
-import type { SharedDriveType } from "$types/server/shares";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
-import type { ReadableStore } from "$types/shared/writable";
 import type { Component } from "svelte";
 import type { Mailbroker } from "$types/server/mailbroker";
 
@@ -61,6 +61,10 @@ export type ViewBugReportData = {
 export type ViewBugReportSourceData = {
   report: BugReport;
   source: ICommandResult<BugReportSourceInformation>;
+};
+
+export type BetaFeedbackData = {
+  versions: Record<string, number>;
 };
 
 export type UsersData = {
@@ -134,7 +138,6 @@ export type AuditLogData = {
 // End props for individual pages
 //
 
-export type UsersPageFilters = "all" | "regular" | "admins" | "disapproved" | "online";
 export type SharesPageFilters = "all" | "resized" | "locked";
 export type StorePageFilters = "all" | "official" | "deprecated";
 export interface SpecificAdminAction {

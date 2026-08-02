@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IShareManager } from "$interfaces/services/IShareManager";
-  import { Daemon } from "$ts/env";
-  import { MessageBox } from "$ts/util/dialog";
   import type { IShareMgmtOverlayRuntime } from "$interfaces/runtimes/IShareMgmtGuiRuntime";
+  import type { IShareManager } from "$interfaces/services/IShareManager";
   import Icon from "$lib/Icon.svelte";
+  import { Daemon } from "$ts/env";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 
   const { process }: { process: IShareMgmtOverlayRuntime } = $props();
   let newName = $state<string>();
@@ -20,7 +20,7 @@
           title: "Rename failed",
           message:
             "ArcOS failed to change the name of your share. You might already have a share with that name. Please try something else.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",
         },
@@ -33,7 +33,7 @@
           title: "Renamed!",
           message:
             "Your share has been renamed successfully! You and the members of the share will have to restart for the changes to take effect.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",
         },

@@ -20,33 +20,6 @@
   class:colored={$userPreferences.shell.taskbar.colored}
   class:docked={$userPreferences.shell.taskbar.docked}
   data-contextmenu="shell-taskbar"
-  use:contextMenu={[
-    [
-      {
-        caption: "Processes",
-        icon: "activity",
-        action: () => {
-          process.spawnApp("processManager", process.pid, "Processes");
-        },
-      },
-      {
-        caption: "Services",
-        icon: "hand-helping",
-        action: () => {
-          process.spawnApp("processManager", process.pid, "Services");
-        },
-      },
-      { sep: true },
-      {
-        caption: "Settings",
-        icon: "settings",
-        action: () => {
-          process.spawnApp("systemSettings", process.pid, "shell");
-        },
-      },
-    ],
-    process,
-  ]}
 >
   <StartButton {process} />
   <WorkspaceManagerButton {process} />

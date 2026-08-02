@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import type { UserTotp } from "$types/server/admin";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
@@ -76,7 +76,7 @@
         buttons: [
           { caption: "Copy secret", action: () => navigator.clipboard.writeText(totp?.secret!) },
           { caption: "Copy URL", action: () => navigator.clipboard.writeText(totp?.url!) },
-          { caption: "Okay", action: () => {}, suggested: true },
+          BTN_OKAY_SUG,
         ],
       },
       process.pid,

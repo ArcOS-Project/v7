@@ -42,6 +42,7 @@ import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { UserDaemonInitStage, UserDaemonStartOptions } from "$types/daemon";
 import type { UserInfo } from "$types/user";
+import axios from "axios";
 import { UserContexts } from "./store";
 
 //#endregion
@@ -60,6 +61,16 @@ export class UserDaemon extends Process implements IUserDaemon {
   public cutList = Store<string[]>([]);
   public serviceHost?: ServiceHost;
 
+  public get betaClient() {
+    return axios.create({
+      baseURL: import.meta.env.DW_BETA_URL,
+      responseType: "json",
+      params: {
+        token: this.token,
+      },
+    });
+  }
+
   public get globalDispatch() {
     return this.serviceHost?.getService<IGlobalDispatch>("GlobalDispatch");
   }
@@ -70,6 +81,10 @@ export class UserDaemon extends Process implements IUserDaemon {
 
   public get libraries() {
     return this.serviceHost?.getService<ILibraryManagement>("LibMgmtSvc");
+  }
+
+  public get canPaste() {
+    return this.cutList().length > 0 || this.copyList().length > 0;
   }
 
   // CONTEXTS
@@ -248,7 +263,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     }
 
     await performStartStage("filesystem", "Starting filesystem", async () => {
-      await this.files!.startFilesystemSupplier();
+      await this.init!.startFilesystemSupplier();
       await this.version!.mountSourceDrive();
     });
 
@@ -273,6 +288,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("statusRefresh", "Starting status refresh", async () => {
+      await this.init!.startDriveNotifierWatcher();
       await this.init!.startSystemStatusRefresh();
     });
 

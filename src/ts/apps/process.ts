@@ -1,5 +1,4 @@
-import type { Constructs } from "$interfaces/common";
-import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
@@ -9,11 +8,11 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
 import type { MaybePromise } from "$types/shared/common";
-import { type ElevationData } from "$types/system/elevation";
 import { LogLevel } from "$types/shared/logging";
+import type { ReadableStore } from "$types/shared/writable";
+import { type ElevationData } from "$types/system/elevation";
 import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
-import type { ReadableStore } from "$types/shared/writable";
 import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import {
@@ -134,8 +133,6 @@ export class AppProcess extends Process implements IAppProcess {
     }
 
     this.STATE = "stopping";
-
-    Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"))?.trayHost?.disposeProcessTrayIcons(this.pid);
 
     if (this.getWindow()?.classList.contains("fullscreen"))
       SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
@@ -305,6 +302,8 @@ export class AppProcess extends Process implements IAppProcess {
     this.Log(`STOPPING PROCESS`);
 
     this.stopAcceleratorListener();
+    this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
+
     return await this.stop();
   }
 
@@ -331,25 +330,24 @@ export class AppProcess extends Process implements IAppProcess {
 
     if (state != "desktop" || this._disposed) return;
 
-    for (const combo of this.acceleratorStore) {
-      const alt = combo.alt ? e.altKey : true;
-      const ctrl = combo.ctrl ? e.ctrlKey : true;
-      const shift = combo.shift ? e.shiftKey : true;
-      /** */
-      const modifiers = alt && ctrl && shift;
-      /** */
-      const pK = e.key.toLowerCase().trim();
-      const key = combo.key?.trim().toLowerCase();
-      const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
-      /** */
-      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
+    const combo = this.acceleratorStore.find((combo) => {
+      const ctrl = combo.ctrl ? e.ctrlKey : e.ctrlKey === false;
+      const shift = combo.shift ? e.shiftKey : e.shiftKey === false;
+      const alt = combo.alt ? e.altKey : e.altKey === false;
 
-      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
+      const comboKey = combo.key?.trim().toLowerCase();
+      const pressedKey = e.key.toLowerCase().trim();
+      const codedKey = e.code.toLowerCase();
 
-      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
+      if (!ctrl || !shift || !alt || (pressedKey != comboKey && codedKey != comboKey)) return false;
+      return true;
+    });
 
-      break;
-    }
+    const isFocused = Stack.renderer?.focusedPid() == this.pid || combo?.global;
+
+    if (!combo || !isFocused) return;
+
+    if (!Daemon?.elevation!._elevating) await combo.action(this, e);
   }
 
   public unfocusActiveElement() {
@@ -370,7 +368,7 @@ export class AppProcess extends Process implements IAppProcess {
     }
 
     const proc = await Stack.spawn<IAppProcess>(
-      metadata.assets.runtime as Constructs<IAppProcess>,
+      metadata.assets.runtime as IAppProcessConstructor,
       undefined,
       Daemon?.userInfo?._id,
       this.pid,

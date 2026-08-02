@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import type { Box } from "$apps/user/qlorb/types";
+  import type { IQlorbRuntime } from "$interfaces/runtimes/IQlorbRuntime";
   import { onMount } from "svelte";
 
   const { process, box }: { process: IQlorbRuntime; box: Box } = $props();

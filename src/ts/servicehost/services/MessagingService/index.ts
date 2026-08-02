@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
@@ -6,13 +7,14 @@ import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import { Daemon, Env, Fs, getKMod, Server, Stack } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { Plural } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
-import type { FilesystemProgressCallback } from "$types/system/fs";
-import type { ExpandedMessage, ExpandedMessageNode, MessageAttachment } from "$types/server/messaging";
+import type { ExpandedMessage, ExpandedMessageNode, Message, MessageAttachment } from "$types/server/messaging";
 import type { Service } from "$types/services/service";
+import type { FilesystemProgressCallback } from "$types/system/fs";
 
 export class MessagingInterface extends BaseService implements IMessagingInterface {
   get serverUrl() {
@@ -62,6 +64,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
       }
 
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
+
       return message;
     });
   }
@@ -73,6 +79,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     return messages.map((message) => {
       if (message.author) {
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+      }
+
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
       }
 
       return message;
@@ -89,6 +99,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
         message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
       }
 
+      if (message.recipientData) {
+        message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
+      }
+
       return message;
     });
   }
@@ -100,18 +114,17 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
     attachments: File[],
     repliesTo?: string,
     onProgress?: FilesystemProgressCallback
-  ): Promise<boolean> {
-    if (this._disposed) return false;
-    return (
-      await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Create(
-        subject,
-        recipients,
-        body,
-        attachments,
-        repliesTo,
-        onProgress
-      )
-    ).success;
+  ): Promise<ICommandResult<Message[]>> {
+    if (this._disposed) return CommandResult.Error("MessagingSvc is not running");
+
+    return await Daemon.GetConnector<IMessagingConnector>("MessagingConnector").Create(
+      subject,
+      recipients,
+      body,
+      attachments,
+      repliesTo,
+      onProgress
+    );
   }
 
   async deleteMessage(messageId: string): Promise<boolean> {
@@ -125,6 +138,10 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
     if (message && message.author) {
       message.author.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.authorId);
+    }
+
+    if (message?.recipientData) {
+      message.recipientData.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(message.recipient);
     }
 
     return message;

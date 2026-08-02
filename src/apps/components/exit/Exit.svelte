@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IExitRuntime } from "$interfaces/runtimes/IExitRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { onDestroy, onMount } from "svelte";
   import { ExitActions } from "./store";
-  import Icon from "$lib/Icon.svelte";
 
   const { process }: { process: IExitRuntime } = $props();
   const { selected } = process;
@@ -20,11 +20,11 @@
   });
 
   function keydown(e: KeyboardEvent) {
-    if (e.key.toLowerCase().includes("shift")) shiftKey = true;
+    if (e?.key?.toLowerCase().includes("shift")) shiftKey = true;
   }
 
   function keyup(e: KeyboardEvent) {
-    if (e.key.toLowerCase().includes("shift")) shiftKey = false;
+    if (e?.key?.toLowerCase().includes("shift")) shiftKey = false;
   }
 </script>
 

@@ -1,9 +1,9 @@
 <script lang="ts">
+  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
   import { formatBytes } from "$ts/util/fs";
-  import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 
   const { process }: { process: IFsProgressRuntime } = $props();
   const { Progress } = process;

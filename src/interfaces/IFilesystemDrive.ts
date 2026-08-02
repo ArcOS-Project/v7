@@ -1,3 +1,4 @@
+import type { LogLevel } from "$types/shared/logging";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
@@ -6,7 +7,6 @@ import type {
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
-import type { LogLevel } from "$types/shared/logging";
 import type { Constructs } from "./common";
 import type { IServerManager } from "./modules/IServerManager";
 

@@ -3,6 +3,7 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type {
   Activity,
+  AdminTemporaryPassword,
   AuditLog,
   AuditLogQueryOptions,
   BugReportSourceInformation,
@@ -16,9 +17,10 @@ import type {
   UserTotp,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
-import type { Mailbroker } from "$types/server/mailbroker";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
+import type { BetaFeedback } from "$types/system/beta";
+import type { Mailbroker } from "$types/server/mailbroker";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
@@ -39,6 +41,7 @@ export interface IAdminBootstrapper extends IBaseService {
   queryAuditLog(query: AuditLogQueryOptions): Promise<ICommandResult<QueryResult<AuditLog>>>;
   grantAdmin(username: string): Promise<boolean>;
   revokeAdmin(username: string): Promise<boolean>;
+  approveUser(username: string): Promise<boolean>;
   getPreferencesOf(username: string): Promise<UserPreferences | undefined>;
   setPreferencesOf(username: string, preferences: UserPreferences): Promise<boolean>;
   deleteUser(username: string): Promise<boolean>;
@@ -53,7 +56,7 @@ export interface IAdminBootstrapper extends IBaseService {
   getAllBugReports(): Promise<BugReport[]>;
   getBugReport(id: string): Promise<BugReport | undefined>;
   getBugHuntStatistics(): Promise<ReportStatistics | undefined>;
-  approveUser(username: string): Promise<boolean>;
+  setSystemFor(username: string, value: boolean): Promise<boolean>;
   disapproveUser(username: string): Promise<boolean>;
   changeEmailOf(username: string, newEmail: string): Promise<boolean>;
   changePasswordOf(username: string, newPassword: string): Promise<boolean>;
@@ -119,6 +122,10 @@ export interface IAdminBootstrapper extends IBaseService {
   getMigrationIndexFor(userId: string): Promise<Record<string, number>>;
   GetIpAddresses(): Promise<IpAddress[]>;
   getReportSourceFile(report: BugReport): Promise<ICommandResult<BugReportSourceInformation>>;
+  getBetaFeedbackVersions(): Promise<ICommandResult<Record<string, number>>>;
+  getBetaFeedbackFor(version: string): Promise<ICommandResult<BetaFeedback[]>>;
+  markBetaFeedbackAsRead(id: string): Promise<ICommandResult>;
+  createTemporaryLogin(userId: string): Promise<ICommandResult<AdminTemporaryPassword>>;
   getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>>;
   getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>>;
   getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>>;

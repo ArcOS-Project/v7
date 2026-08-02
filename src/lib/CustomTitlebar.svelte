@@ -2,11 +2,11 @@
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import type { IAppRenderer } from "$interfaces/IAppRenderer";
   import { BETA, Stack } from "$ts/env";
+  import { BlankIcon } from "$ts/images/general";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount, type Snippet } from "svelte";
   import AltMenu from "./CustomTitlebar/AltMenu.svelte";
   import Icon from "./Icon.svelte";
-  import { BlankIcon } from "$ts/images/general";
 
   const { process, children, className = "" }: { process: IAppProcess; children?: Snippet; className?: string } = $props();
   const { windowTitle, windowIcon } = process;

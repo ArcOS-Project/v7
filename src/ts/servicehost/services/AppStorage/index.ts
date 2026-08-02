@@ -10,7 +10,7 @@ import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
 import { BaseService } from "$ts/servicehost/base";
 import { DefaultAppData } from "$ts/user/store";
-import { deepCopyWithBlobs, sortByHierarchy } from "$ts/util";
+import { sortByHierarchy } from "$ts/util";
 import { cloneAppMeta } from "$ts/util/apps";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
@@ -44,60 +44,8 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   protected async start(): Promise<any> {
     this.initBroadcast?.("Loading applications...");
 
-    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
-
     if (State.currentState !== "arcterm") {
-      const builtins: InstalledApp[] = await Promise.all(
-        Object.keys(BuiltinAppImportPathAbsolutes).map(async (path) => {
-          if (!Daemon.safeMode && blocklist.includes(path)) return null;
-          const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
-
-          try {
-            const start = performance.now();
-            const fn = BuiltinAppImportPathAbsolutes[path];
-            const mod = await BuiltinAppImportPathAbsolutes[path]();
-            const app = (mod as any).default as App;
-            const originalPathRegexp = regex.exec(fn.toString());
-            const originalPath = originalPathRegexp?.groups?.path;
-
-            if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher")
-              throw `Not loading ${app.metadata.name} because this app requires a newer version of ArcOS`;
-
-            if (app._internalSysVer || app._internalOriginalPath)
-              throw `Can't load dubious built-in app '${app.id}' because it contains runtime-level properties set before runtime`;
-
-            const end = performance.now() - start;
-            const appCopy = await deepCopyWithBlobs<App>(app);
-
-            appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
-            appCopy._internalOriginalPath = path;
-            appCopy._internalLoadTime = end;
-            if (originalPath) appCopy._internalResolvedPath = originalPath;
-
-            this.initBroadcast?.(`Loaded ${app.metadata.name}`);
-            this.Log(
-              `Loaded app: ${path}: ${appCopy.metadata.name} by ${appCopy.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
-            );
-
-            return appCopy;
-          } catch (e) {
-            await new Promise<void>((r) => {
-              MessageBox(
-                {
-                  title: "App load error",
-                  message: `ArcOS failed to load a built-in app because of an error. ${e}.`,
-                  buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
-                  image: "WarningIcon",
-                },
-                +Env.get("loginapp_pid"),
-                true
-              );
-            });
-            this.Log(`Failed to load app ${path}: ${e}`);
-            return null;
-          }
-        })
-      ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
+      const builtins = await this.loadAppsFromViteModules(BuiltinAppImportPathAbsolutes);
 
       this.loadOrigin("builtin", () => builtins);
       this.loadOrigin("userApps", async () => await Daemon.appreg!.getUserApps());
@@ -106,6 +54,22 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
   }
 
   //#endregion
+
+  error_appLoadError(result: ICommandResult<App>) {
+    return new Promise<void>((r) => {
+      this.Log(result.errorMessage!);
+      MessageBox(
+        {
+          title: "App load error",
+          message: `ArcOS failed to load a first-party application because of an error. ${result.errorMessage ?? "Unknown error"}.`,
+          buttons: [{ caption: "Okay", action: () => r(), suggested: true }],
+          image: "WarningIcon",
+        },
+        +Env.get("loginapp_pid"),
+        true
+      );
+    });
+  }
 
   loadOrigin(id: string, store: AppStoreCb) {
     if (this._disposed) return false;
@@ -144,7 +108,70 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
     return app;
   }
 
-  async loadAppModuleFile(path: string, noVerify?: boolean): Promise<CommandResult<App>> {
+  async loadAppsFromViteModules(modules: Record<string, () => Promise<unknown>>) {
+    const apps: AppStorage = await Promise.all(
+      Object.keys(modules).map(async (path) => {
+        const result = await this.loadAppFromViteModule(modules[path], path);
+        const app = result.result!;
+
+        if (!result.success && result.errorMessage !== "LOAD_CONDITION") {
+          await this.error_appLoadError(result);
+          return null;
+        }
+
+        if (!app) return null;
+
+        this.initBroadcast?.(`Loaded ${app.metadata.name}`);
+        this.Log(result.successMessage!);
+
+        return app;
+      })
+    ).then((apps) => apps.filter((a): a is InstalledApp => a !== null));
+
+    return apps;
+  }
+
+  async loadAppFromViteModule(fn: () => Promise<unknown>, path?: string): Promise<ICommandResult<App>> {
+    const blocklist = Daemon!.preferences()._internalImportBlocklist || [];
+
+    if (path && !Daemon.safeMode && blocklist.includes(path)) return CommandResult.Error(`Vite module '${path}' is blocked.`);
+
+    const regex = new RegExp(/import\(\"(?<path>.*?)\"\)/gm);
+
+    try {
+      const start = performance.now();
+      const mod = (await fn()) as any;
+      const app = mod.default as App;
+      const originalPath = regex.exec(fn.toString())?.groups?.path;
+
+      if (app.loadCondition && !(await app.loadCondition(Daemon))) return CommandResult.Error(`LOAD_CONDITION`);
+
+      if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher") {
+        return CommandResult.Error(`This application expects a newer version of ArcOS`);
+      }
+
+      if (app._internalSysVer || app._internalOriginalPath) {
+        return CommandResult.Error(`Application '${app.id}' contains runtime-level properties, set before runtime.`);
+      }
+
+      const end = performance.now() - start;
+      const appCopy = cloneAppMeta(app);
+
+      appCopy._internalSysVer = `v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+      appCopy._internalOriginalPath = path;
+      appCopy._internalLoadTime = end;
+      if (originalPath) appCopy._internalResolvedPath = originalPath;
+
+      return CommandResult.Ok(
+        appCopy,
+        `Loaded app: ${path}: ${app.metadata.name} by ${app.metadata.author}, version ${app.metadata.version} (${end.toFixed(2)}ms)`
+      );
+    } catch (e: any) {
+      return CommandResult.Error(`Failed to load app ${path}: ${e?.message ?? e ?? "<idk>"}`);
+    }
+  }
+
+  async loadAppModuleFile(path: string, noVerify?: boolean): Promise<ICommandResult<App>> {
     try {
       const module = await import(/* @vite-ignore */ path);
       const app = module?.default as InstalledApp;

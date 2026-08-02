@@ -7,12 +7,12 @@ import { SharedDrive } from "$ts/kernel/mods/fs/drives/share";
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import { SystemFolders, UserPathCaptions, UserPaths } from "$ts/user/store";
 import { Plural, sortByKey } from "$ts/util";
-import { ConditionalButton, GetConfirmation, MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, ConditionalButton, GetConfirmation, MessageBox } from "$ts/util/dialog";
 import { DownloadFile, getDriveLetter, getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
-import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/system/fs";
 import { LogLevel } from "$types/shared/logging";
+import { DefaultUserQuota, type DirectoryReadReturn, type FolderEntry } from "$types/system/fs";
 import type { RenderArgs } from "$types/system/process";
 import type { ShortcutStore } from "$types/system/shortcut";
 import { FileManagerAccelerators } from "./accelerators";
@@ -61,11 +61,6 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
 
     this.renderArgs.path = path;
     this.loadSave = loadSave;
-    this.setupLoadSave();
-
-    this.dispatch.subscribe("navigate", (path) => {
-      this.navigate(path);
-    });
 
     this.setSource(__SOURCE__);
   }
@@ -95,6 +90,12 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   }
 
   async start() {
+    this.setupLoadSave();
+
+    this.dispatch.subscribe("navigate", (path) => {
+      this.navigate(path);
+    });
+
     // Convert the three viewMode booleans into one
     if (!this.userPreferences().appPreferences.fileManager?.viewMode) {
       this.userPreferences.update((pref) => {
@@ -229,8 +230,18 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
 
     const result: Record<string, QuotedDrive> = {};
 
+    let errorCount = 0;
+
     for (const [id, drive] of Object.entries(Fs.drives)) {
       result[id] = { data: drive, quota: await drive.quota() };
+
+      if (result[id].quota.max === 0) {
+        errorCount++;
+      }
+    }
+
+    if (errorCount) {
+      this.Log(`Failed to get quota for one or more drives`, LogLevel.error);
     }
 
     this.drives.set(result);
@@ -377,30 +388,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   async uploadItems() {
     if (this._disposed) return;
 
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        type: "size",
-        icon: "UploadIcon",
-        caption: "Uploading your files...",
-        subtitle: `To ${getItemNameFromPath(this.path())}`,
-      },
-      this.pid
-    );
-
-    try {
-      await Fs.uploadFiles(this.path(), "*/*", true, async (progress) => {
-        prog.show();
-        prog.setDone(0);
-        prog.setMax(progress.max + 1);
-        prog.setDone(progress.value);
-        if (progress.what) prog.updSub(progress.what);
-      });
-    } catch (e) {
-      const err = `${e}`.split(": ")[1];
-      prog.mutErr(err);
-    }
-
-    prog.mutDone(+1);
+    await Daemon.files?.uploadItems(this.path());
   }
 
   async openFile(path: string) {
@@ -442,95 +430,8 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
   async deleteSelected() {
     if (this._disposed) return;
     const items = this.selection();
-    if (!items.length) return;
 
-    for (const item of items) {
-      const entries = Object.entries(UserPaths);
-
-      for (let i = 0; i < entries.length; i++) {
-        const [key, path] = entries[i];
-
-        if (
-          this.userPreferences().security.restrictSystemFolders &&
-          (SystemFolders.includes(path) ? item === path || getParentDirectory(item) === path : item === path)
-        ) {
-          return this.SystemFolderDeletionRestricted(key);
-        }
-      }
-    }
-
-    const isUserFs =
-      this.path().startsWith(UserPaths.Root) &&
-      Daemon?.serviceHost?.getService("TrashSvc") &&
-      !this.userPreferences().globalSettings.disableTrashCan;
-
-    MessageBox(
-      {
-        title: `Delete ${items.length} ${Plural("item", items.length)}?`,
-        message: isUserFs
-          ? `Are you sure you want to move the selected ${items.length} ${Plural("item", items.length)} to the Recycle Bin?`
-          : `Are you sure you want to <b>permanently</b> delete the selected ${Plural(
-              "item",
-              items.length
-            )}? This cannot be undone.`,
-        buttons: [
-          { caption: "Cancel", action: () => {} },
-          ...ConditionalButton(
-            {
-              caption: "Delete permanently",
-              action: () => {
-                this.confirmDeleteSelected(false);
-              },
-            },
-            isUserFs
-          ),
-          {
-            caption: "Delete",
-            action: () => this.confirmDeleteSelected(isUserFs),
-            suggested: true,
-          },
-        ],
-        sound: "arcos.dialog.warning",
-        image: "WarningIcon",
-      },
-      this.pid,
-      true
-    );
-  }
-
-  async confirmDeleteSelected(isUserFs = false) {
-    if (this._disposed) return;
-
-    const items = this.selection();
-    const prog = await Daemon!.files!.FileProgress(
-      {
-        max: items.length,
-        type: "quantity",
-        icon: "TrashIcon",
-        caption: isUserFs
-          ? `Moving ${items.length} ${Plural("item", items.length)} to the Recycle Bin...`
-          : `Deleting ${items.length} ${Plural("item", items.length)}...`,
-        subtitle: "Working...",
-      },
-      this.pid
-    );
-
-    prog.show();
-
-    for (const item of items) {
-      prog.updSub(item);
-
-      try {
-        if (isUserFs) await Daemon.files?.moveToTrashOrDeleteItem(item, false);
-        else await Fs.deleteItem(item, false);
-      } catch (e) {
-        prog.mutErr(`Failed to delete ${item}: ${e}`);
-      }
-
-      prog.mutDone(+1);
-    }
-
-    SysDispatch.dispatch("fs-flush-folder", this.path());
+    await Daemon.files?.moveToTrashOrDeleteItemAck(this.path(), items);
   }
 
   async downloadSelected() {
@@ -764,7 +665,9 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
         buttons: [
           {
             caption: "Okay",
-            action: () => {},
+            action: () => {
+              this.navigate(UserPaths.Home);
+            },
             suggested: true,
           },
         ],
@@ -774,8 +677,6 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       this.pid,
       true
     );
-
-    this.navigate(UserPaths.Home);
   }
 
   SystemFolderDeletionRestricted(userPathKey: string) {
@@ -786,7 +687,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
       {
         title: `${name}`,
         message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         sound: "arcos.dialog.warning",
         image: "InfoIcon",
       },

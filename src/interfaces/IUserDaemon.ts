@@ -1,6 +1,7 @@
 import type { UserDaemonStartOptions } from "$types/daemon";
-import type { UserInfo, UserPreferences } from "$types/user";
 import type { ReadableStore } from "$types/shared/writable";
+import type { UserInfo, UserPreferences } from "$types/user";
+import type { AxiosInstance } from "axios";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
 import type { IApplicationsUserContext } from "./contexts/IApplicationsUserContext";
 import type { IAppRegistrationUserContext } from "./contexts/IAppRegistrationUserContext";
@@ -44,6 +45,7 @@ export interface IUserDaemon extends IProcess {
   _criticalProcess: boolean;
   copyList: ReadableStore<string[]>;
   cutList: ReadableStore<string[]>;
+  get betaClient(): AxiosInstance;
   get globalDispatch(): IGlobalDispatch | undefined;
   get assoc(): IFileAssocService | undefined;
   serviceHost?: IServiceHost;
@@ -69,6 +71,7 @@ export interface IUserDaemon extends IProcess {
   workspaces?: IWorkspaceUserContext;
   shortcuts?: IShortcutsUserContext;
   get preferences(): ReadableStore<UserPreferences>;
+  get canPaste(): boolean;
   start(): Promise<false | undefined>;
   stop(): Promise<false | undefined>;
   startUserContexts(): Promise<void>;

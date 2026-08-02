@@ -115,3 +115,28 @@ export function DownloadFile(file: ArrayBuffer, filename: string, mimetype?: str
   anchor.click();
   anchor.remove();
 }
+
+export function normalizePath(path: string) {
+  const driveMatch = /^[A-Za-z]:/.exec(path);
+  const guidMatch = /^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}/.exec(path);
+  const prefix = driveMatch ? driveMatch[0] : guidMatch ? guidMatch[0] : "";
+
+  let rest = path.slice(prefix.length);
+
+  const hasLeading = rest.startsWith("/");
+
+  const parts = rest.split("/").filter(Boolean);
+  const stack = [];
+
+  for (const p of parts) {
+    if (p === ".") continue;
+    if (p === "..") {
+      if (stack.length) stack.pop();
+      continue;
+    }
+    stack.push(p);
+  }
+
+  const result = prefix + (hasLeading ? "/" : "") + stack.join("/");
+  return result || prefix || ".";
+}

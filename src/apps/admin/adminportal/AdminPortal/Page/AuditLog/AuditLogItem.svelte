@@ -27,16 +27,18 @@
       admin: true,
       dispatchClients: 0,
     },
+    isSystem: false,
   };
 
   const author: ExpandedUserInfo | undefined =
     audit.authorId === "SERVER" ? DEFAULT : users.filter((u) => u._id === audit.authorId)[0];
   const target: ExpandedUserInfo | undefined =
     audit.targetUserId === "SERVER" ? DEFAULT : users.filter((u) => u._id === audit.targetUserId)[0];
+  let open = $state<boolean>(false);
 </script>
 
 {#if audit && author}
-  <details class="audit-log {AuditSeverity[audit.severity]}" class:has-data={!!audit.data}>
+  <details class="audit-log {AuditSeverity[audit.severity]}" class:has-data={!!audit.data} bind:open>
     <summary>
       <ProfilePicture fallback={author.profile.profilePicture} height={32} />
       <div>
@@ -51,7 +53,7 @@
       </div>
       <span class="severity lucide icon-{AuditSeverityIcons[audit.severity]}" title={AuditSeverity[audit.severity]}> </span>
     </summary>
-    {#if audit.data}
+    {#if audit.data && open}
       <div class="context">
         <table class="object">
           <tbody>

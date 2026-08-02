@@ -41,6 +41,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/iconeditdialog/IconEditDialog",
   "$apps/components/arctermcolors/ArcTermColors",
   "$apps/components/masteroptions/MasterOptions",
+  "$apps/components/sendbetafeedback/SendBetaFeedbackApp",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",
@@ -63,6 +64,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/donut/DonutApp",
   "$apps/user/feedback/feedback",
   "$apps/user/sqeleton/Sqeleton",
+  "$apps/user/minesweeper/MinesweeperApp",
 ]);
 
 export const AdminAppImportPathAbsolutes = import.meta.glob([

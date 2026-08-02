@@ -6,12 +6,14 @@ import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon, Env, getKMod, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
-import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { Service } from "$types/services/service";
+import type { Unsubscriber } from "$types/shared/writable";
+import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { UserPreferences } from "$types/user";
 import io, { Socket } from "socket.io-client";
 
 export class GlobalDispatch extends BaseService implements IGlobalDispatch {
+  stackUnsubscribe?: Unsubscriber;
   client: Socket | undefined;
   server: IServerManager;
   authorized = false;
@@ -49,6 +51,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   async stop(broadcast?: (m: string) => void) {
     broadcast?.("Stopping development environment");
     this.client?.disconnect();
+    this.stackUnsubscribe?.();
   }
 
   //#endregion
@@ -109,6 +112,10 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
       Daemon.preferencesCtx!.preferences.set(preferences);
       await Sleep(0);
       Daemon.preferencesCtx!.syncLock = false;
+    });
+
+    this.stackUnsubscribe = Stack.store.subscribe(() => {
+      this.sendUpdate();
     });
 
     // TODO - IzKuipers #229

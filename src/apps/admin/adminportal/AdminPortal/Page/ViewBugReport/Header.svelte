@@ -3,7 +3,6 @@
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Icon from "$lib/Icon.svelte";
   import { getReportIcon } from "$ts/util/admin";
-  import { StoreItemIcon } from "$ts/util/distrib";
   import Close from "./Header/Close.svelte";
   import Copy from "./Header/Copy.svelte";
   import Delete from "./Header/Delete.svelte";

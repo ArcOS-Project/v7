@@ -2,12 +2,12 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
 import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon, Fs, SoundBus, Stack } from "$ts/env";
+import { Daemon, Fs, SoundBus } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
 import { UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
@@ -69,7 +69,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   }
 
   async start() {
-    this.tempDb = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, this.tempDbPath);
+    this.tempDb = await SqlInterfaceProcess.Create(this.pid, this.tempDbPath);
   }
 
   async stop() {
@@ -93,7 +93,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     }
 
     try {
-      this.Interface = await Stack.spawn(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
+      this.Interface = await SqlInterfaceProcess.Create(this.pid, path);
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
@@ -130,7 +130,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
     if (!path) return;
 
-    const db = await Stack.spawn<ISqlInterfaceProcess>(SqlInterfaceProcess, undefined, Daemon?.userInfo?._id, this.pid, path);
+    const db = await SqlInterfaceProcess.Create(this.pid, path);
     await db?.writeFile();
     await db?.killSelf();
 
@@ -323,7 +323,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       {
         title: "Existing connection",
         message: "Sqeleton is already connected to a file. To open another file, close the existing connection first.",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "SqeletonIcon",
         sound: "arcos.dialog.warning",
       },
@@ -337,7 +337,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       {
         title: "Failed to open database",
         message: `Sqeleton was unable to open this database. ${e}`,
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
       },

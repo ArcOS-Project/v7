@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import { MessageBox } from "$ts/util/dialog";
-  import type { StoreItem } from "$types/tpa/package";
   import type { ReadableStore } from "$types/shared/writable";
+  import type { StoreItem } from "$types/tpa/package";
   import { onMount } from "svelte";
 
   const {

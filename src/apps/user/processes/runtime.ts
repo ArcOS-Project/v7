@@ -4,6 +4,7 @@ import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
+import { ProcessesHelper } from "$ts/helpers/processes";
 import { ProcessKillResultCaptions } from "$ts/kernel/mods/stack/process/store";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
@@ -13,7 +14,6 @@ import type { ProcessKillResult } from "$types/system/process";
 import type { Component } from "svelte";
 import Processes from "./ProcessManager/Page/Processes.svelte";
 import Services from "./ProcessManager/Page/Services.svelte";
-import { ProcessesHelper } from "$ts/helpers/processes";
 
 export class ProcessManagerRuntime extends AppProcess implements IProcessManagerRuntime {
   public selected = Store<string>();

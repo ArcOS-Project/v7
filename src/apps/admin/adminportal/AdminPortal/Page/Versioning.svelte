@@ -17,27 +17,24 @@
   let loading = $state<boolean>(false);
 
   async function populate() {
-    const { incrementProgress, caption, stop } = await Daemon.helpers!.GlobalLoadIndicator("Just a moment...", process.pid, {
-      max: data.users.length,
-      value: 0,
-      useHtml: true,
-    });
+    const { caption, stop } = await Daemon.helpers!.GlobalLoadIndicator("Just a moment...", process.pid);
     loading = true;
     versions = {};
 
-    for (const user of data.users) {
-      caption.set(
-        `Reading configuration for ${user.preferences?.account?.displayName ?? user.username} (${user.username})<br>ID: ${user._id}`
-      );
+    await Promise.all(
+      data.users.map((user) => {
+        new Promise<void>(async (r) => {
+          versions[user._id] = {
+            os: await process.admin.getRegisteredVersionFor(user.username),
+            migrations: await process.admin.getMigrationIndexFor(user.username),
+          };
 
-      versions[user._id] = {
-        os: await process.admin.getRegisteredVersionFor(user.username),
-        migrations: await process.admin.getMigrationIndexFor(user.username),
-      };
+          caption.set(`Read configuration for ${user.preferences?.account?.displayName ?? user.username} (${user.username})`);
 
-      incrementProgress?.(1);
-      versions = versions;
-    }
+          r();
+        });
+      })
+    );
 
     stop?.();
     loading = false;

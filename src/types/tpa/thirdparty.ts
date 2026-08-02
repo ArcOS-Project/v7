@@ -1,5 +1,5 @@
 import type { Constructs } from "$interfaces/common";
-import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { ICustomTitlebar } from "$interfaces/ICustomTitlebar";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IProcess } from "$interfaces/IProcess";
@@ -50,7 +50,7 @@ export interface ThirdPartyPropMap {
   };
   workingDirectory: string;
   Process: Constructs<IProcess>;
-  AppProcess: Constructs<IAppProcess>;
+  AppProcess: IAppProcessConstructor;
   ThirdPartyAppProcess: Constructs<IThirdPartyAppProcess>;
   ThirdPartyProcess: Constructs<IThirdPartyProcess>;
   FilesystemDrive: Constructs<IFilesystemDrive>;
@@ -64,13 +64,13 @@ export interface ThirdPartyPropMap {
   OPERATION_ID: string;
   load: (path: string) => Promise<any>;
   runApp: (
-    process: Constructs<IAppProcess>,
+    process: IAppProcessConstructor,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
   ) => Promise<IThirdPartyAppProcess | undefined>;
   runAppDirect: (
-    process: Constructs<IAppProcess>,
+    process: IAppProcessConstructor,
     metadataPath: string,
     parentPid?: number,
     ...args: any[]
@@ -96,4 +96,13 @@ export interface ThirdPartyPropMap {
   SystemFolders: string[];
   HiddenUserPaths: string[];
   [key: string]: any;
+}
+
+export interface ParsedImportStatement {
+  destructured?: string;
+  default?: string;
+  wildcard?: string;
+  filename?: string;
+  quote?: '"' | "'";
+  original: string;
 }

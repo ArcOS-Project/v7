@@ -1,7 +1,7 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
 import { arrayBufferToText } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
 import type { FileHandler } from "$types/system/fs";
 import type { UserTheme } from "$types/user/theme";
@@ -20,7 +20,7 @@ const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
         {
           title: "Can't apply theme",
           message: `ArcOS was unable to load the theme file you're trying to apply. ${reason}. Please check the file, and then try again.`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ThemesIcon",
         },
