@@ -29,7 +29,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
 
   async ChangePassword(newPassword: string): Promise<ICommandResult> {
     try {
-      return CommandResult.FromResponse(await this.server.patch("/changepswd", toForm({ newPassword })));
+      return CommandResult.FromResponse(await this.server.post("/changepswd", toForm({ newPassword })));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
