@@ -2,7 +2,7 @@
   import { formatBytes } from "$ts/util/fs";
   import type { Mailbroker } from "$types/server/mailbroker";
 
-  let { template }: { template: Mailbroker.MailTemplate } = $props();
+  let { template, deprecated }: { template: Mailbroker.MailTemplate; deprecated: boolean; } = $props();
 </script>
 
 <div class="template-pills">
@@ -14,7 +14,7 @@
     <span class="lucide icon-text-align-start"></span>
     <span>{formatBytes(template.textContent.length)}</span>
   </div>
-  {#if template.deprecated}
+  {#if deprecated}
     <div class="pill clr-orange">Deprecated</div>
   {/if}
 </div>

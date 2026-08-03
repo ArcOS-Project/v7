@@ -9,10 +9,12 @@
     process,
     template,
     updateData,
+    deprecated,
   }: {
     process: IMailbrokerRuntime;
     template: Mailbroker.MailTemplate;
     updateData: ReadableStore<Mailbroker.MailTemplateUpdate>;
+    deprecated: boolean;
   } = $props();
 </script>
 
@@ -21,7 +23,7 @@
   <div class="info">
     <h1>{$updateData.name} - ArcOS {$updateData.fromSuffix}</h1>
     <p class="subject">{$updateData.subjectContent}</p>
-    <TemplatePills {template}/>
+    <TemplatePills {template} {deprecated}/>
   </div>
   <div class="dates">
     <!-- {#if template.createdAt} -->

@@ -6,5 +6,5 @@ export interface IMailbrokerRuntime extends IAppProcess {
   get admin(): IAdminBootstrapper;
   currentPage: ReadableStore<string>;
   pageProps: ReadableStore<Record<string, any>>;
-  switchPage(pageId: string, props?: Record<string, any>): void;
+  switchPage(pageId: string, props?: Record<string, any>, force?: boolean): void;
 }

@@ -24,10 +24,14 @@ export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime 
     this.setSource(__SOURCE__);
   }
 
-  switchPage(pageId: string, props?: Record<string, any>) {
+  switchPage(pageId: string, props?: Record<string, any>, force = false) {
     this.Log(`Loading page '${pageId}'`);
 
     if (!mailbrokerPages.has(pageId)) return;
+
+    if (force) {
+      this.currentPage.set("");
+    }
 
     this.pageProps.set({});
 

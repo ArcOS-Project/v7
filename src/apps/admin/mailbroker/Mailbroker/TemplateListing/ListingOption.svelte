@@ -15,6 +15,6 @@
   <div class="info">
     <h2>{template.name} - ArcOS {template.fromSuffix}</h2>
     <p class="subject">Subject: {template.subjectContent}</p>
-    <TemplatePills {template} />
+    <TemplatePills {template} deprecated={template.deprecated} />
   </div>
 </button>

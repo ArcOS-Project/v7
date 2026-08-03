@@ -1413,7 +1413,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
-      const response = await this.adminClient.post(`/mailbroker/templates/deprecate/${id}`);
+      const response = await this.adminClient.post(`/mailbroker/templates/${id}/deprecate`);
       return CommandResult.Ok(response.data);
     } catch (e) {
       return CommandResult.AxiosError(e);
@@ -1424,7 +1424,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
-      const response = await this.adminClient.post(`/mailbroker/templates/undeprecate/${id}`);
+      const response = await this.adminClient.post(`/mailbroker/templates/${id}/undeprecate`);
       return CommandResult.Ok(response.data);
     } catch (e) {
       return CommandResult.AxiosError(e);
