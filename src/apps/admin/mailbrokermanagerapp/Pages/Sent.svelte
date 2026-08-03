@@ -43,7 +43,7 @@
   <h1>{data.length} {Plural("sent email", data.length)}</h1>
   <div class="search-bar">
     <span class="lucide icon-search"> </span>
-    <input type="text" bind:value={$searchValue} placeholder="Search templates" />
+    <input type="text" bind:value={$searchValue} placeholder="Search sent records" />
   </div>
 </div>
 
