@@ -55,7 +55,7 @@
       <input type="text" bind:value={$searchValue} placeholder="Search templates" />
     </div>
     {#if !hideNewButton && process.admin.canAccess(AdminScopes.adminMailbrokerTemplatesWrite)}
-      <button class="suggested new-template">
+      <button class="suggested new-template" onclick={() => process.switchPage("newTemplate")}>
         <span>New...</span>
       </button>
     {/if}

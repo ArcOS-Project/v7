@@ -1,4 +1,4 @@
-#MailbrokerApp > div.body div.page-view-template {
+#MailbrokerManagerApp > div.body {
   div.template-editor {
     height: 0;
     flex-grow: 1;

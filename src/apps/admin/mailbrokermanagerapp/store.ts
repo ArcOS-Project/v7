@@ -1,6 +1,7 @@
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import GenericList from "./Pages/GenericList.svelte";
 import Logs from "./Pages/Logs.svelte";
+import NewTemplate from "./Pages/NewTemplate.svelte";
 import Sent from "./Pages/Sent.svelte";
 import ViewTemplate from "./Pages/ViewTemplate.svelte";
 import type { MailbrokerPage, MailbrokerPages } from "./types";
@@ -35,6 +36,16 @@ export const mailbrokerPages: MailbrokerPages = new Map<string, MailbrokerPage>(
       content: ViewTemplate,
       data: async (process, props: { templateId: string }) => await process.admin.getMailbrokerTemplate(props.templateId),
       scopes: [AdminScopes.adminMailbrokerTemplatesRead],
+    },
+  ],
+  [
+    "newTemplate",
+    {
+      name: "Create template",
+      icon: "plus",
+      hidden: true,
+      content: NewTemplate,
+      scopes: [AdminScopes.adminMailbrokerTemplatesWrite],
     },
   ],
   [

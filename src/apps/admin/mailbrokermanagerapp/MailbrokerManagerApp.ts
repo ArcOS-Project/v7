@@ -1,6 +1,6 @@
 import "$css/apps/admin/mailbroker.css";
 import type { App } from "$types/apps/app";
-import Mailbroker from "./Mailbroker.svelte";
+import MailbrokerManager from "./MailbrokerManager.svelte";
 import { MailbrokerRuntime } from "./runtime";
 
 const MailbrokerManagerApp: App = {
@@ -29,7 +29,7 @@ const MailbrokerManagerApp: App = {
   },
   assets: {
     runtime: MailbrokerRuntime,
-    component: Mailbroker as any,
+    component: MailbrokerManager as any,
   },
   glass: true,
   elevated: true,

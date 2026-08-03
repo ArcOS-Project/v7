@@ -1,6 +1,6 @@
 @import url("./viewtemplate/editor.css");
 
-#MailbrokerApp > div.body div.page-view-template {
+#MailbrokerManagerApp > div.body div.page-view-template {
   display: flex;
   flex-direction: column;
 

@@ -1366,7 +1366,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     id: string,
     userId: string,
     props: Record<string, string>
-  ): Promise<ICommandResult<Mailbroker.MailKey>> {
+  ): Promise<ICommandResult<Mailbroker.SentMail>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
@@ -1374,7 +1374,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
         `/mailbroker/send/byid/${id}`,
         toForm({ userId, props: JSON.stringify(props) })
       );
-      return CommandResult.Ok(response.data);
+      return CommandResult.Ok(response.data.result);
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -1384,7 +1384,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     name: string,
     userId: string,
     props: Record<string, string>
-  ): Promise<ICommandResult<Mailbroker.MailKey>> {
+  ): Promise<ICommandResult<Mailbroker.SentMail>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
@@ -1392,7 +1392,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
         `/mailbroker/send/byname/${name}`,
         toForm({ userId, props: JSON.stringify(props) })
       );
-      return CommandResult.Ok(response.data);
+      return CommandResult.Ok(response.data.result);
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -1457,7 +1457,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (this._disposed) return CommandResult.Error("Disposed");
 
     try {
-      const response = await this.adminClient.patch(`/mailbroker/templates`, toForm(data));
+      const response = await this.adminClient.post(`/mailbroker/templates`, toForm(data));
       return CommandResult.Ok(response.data);
     } catch (e) {
       return CommandResult.AxiosError(e);

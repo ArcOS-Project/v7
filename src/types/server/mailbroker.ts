@@ -34,14 +34,6 @@ export namespace Mailbroker {
     username?: string;
   }
 
-  export interface SentMailCreate {
-    subject: string;
-    keyId: string;
-    textContent?: string;
-    htmlContent: string;
-    to: SentMailRecipient;
-  }
-
   export interface MailTemplate {
     _id: string;
     name: string;

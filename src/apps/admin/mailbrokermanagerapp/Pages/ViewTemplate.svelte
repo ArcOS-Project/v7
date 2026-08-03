@@ -88,7 +88,10 @@
     </ActionButton>
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton disabled={!process.admin.canAccess(AdminScopes.adminMailbrokerSend)}>Send...</ActionButton>
+    <ActionButton
+      disabled={!process.admin.canAccess(AdminScopes.adminMailbrokerSend)}
+      onclick={() => process.spawnOverlay("SendOverlay", pageProps.templateId)}>Send...</ActionButton
+    >
     <ActionButton disabled={!modified} onclick={discard}>Discard</ActionButton>
     <ActionButton suggested disabled={!modified} onclick={save}>Save</ActionButton>
   {/snippet}

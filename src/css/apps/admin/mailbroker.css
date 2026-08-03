@@ -1,8 +1,10 @@
 @import url("./mailbroker/sidebar.css");
 @import url("./mailbroker/templatelisting.css");
 @import url("./mailbroker/pages/viewtemplate.css");
+@import url("./mailbroker/pages/newtemplate.css");
+@import url("./mailbroker/overiays/sendoverlay.css");
 
-#MailbrokerApp > div.body {
+#MailbrokerManagerApp > div.body {
   padding: 0;
   display: flex;
   align-items: center;
@@ -23,6 +25,12 @@
       padding: 0;
       height: 0;
       flex-grow: 1;
+
+      &.loading {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+      }
 
       div.page-load-error {
         padding: 10px;

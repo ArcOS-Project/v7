@@ -3,7 +3,7 @@
   import type { Mailbroker } from "$types/server/mailbroker";
   import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
-  import TemplatePills from "../../Mailbroker/TemplatePills.svelte";
+  import TemplatePills from "../../MailbrokerManager/TemplatePills.svelte";
 
   const {
     process,

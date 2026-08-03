@@ -4,7 +4,7 @@
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import { CommandResult } from "$ts/result";
   import { onMount, type Component } from "svelte";
-  import Sidebar from "./Mailbroker/Sidebar.svelte";
+  import Sidebar from "./MailbrokerManager/Sidebar.svelte";
   import { mailbrokerPages } from "./store";
   import type { MailbrokerPage } from "./types";
   import Spinner from "$lib/Spinner.svelte";
@@ -36,7 +36,7 @@
 <Sidebar {process} />
 <div class="container page-{$currentPage}">
   <CustomTitlebar {process} />
-  <div class="page-content page-{pageData?.name.toLowerCase().replaceAll(' ', '-')}">
+  <div class="page-content page-{pageData?.name.toLowerCase().replaceAll(' ', '-')}" class:loading>
     {#if loading}
       <Spinner height={32} />
     {:else if Page && data?.success}

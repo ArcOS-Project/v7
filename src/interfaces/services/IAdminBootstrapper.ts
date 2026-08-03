@@ -129,19 +129,21 @@ export interface IAdminBootstrapper extends IBaseService {
   getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>>;
   getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>>;
   getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>>;
-  getMailbrokerTemplates(filter?: (template: Mailbroker.MailTemplate) => boolean): Promise<ICommandResult<Mailbroker.MailTemplate[]>>;
+  getMailbrokerTemplates(
+    filter?: (template: Mailbroker.MailTemplate) => boolean
+  ): Promise<ICommandResult<Mailbroker.MailTemplate[]>>;
   getMailbrokerSentRecord(id: string): Promise<ICommandResult<Mailbroker.SentMail>>;
   getMailbrokerSentRecords(): Promise<ICommandResult<Mailbroker.SentMail[]>>;
   deleteMailbrokerKey(id: string): Promise<ICommandResult>;
   disableMailbrokerKey(id: string): Promise<ICommandResult>;
   enableMailbrokerKey(id: string): Promise<ICommandResult>;
   createMailbrokerKey(serverName: string): Promise<ICommandResult<Mailbroker.MailKey>>;
-  sendMailTemplateById(id: string, userId: string, props: Record<string, string>): Promise<ICommandResult<Mailbroker.MailKey>>;
+  sendMailTemplateById(id: string, userId: string, props: Record<string, string>): Promise<ICommandResult<Mailbroker.SentMail>>;
   sendMailTemplateByName(
     name: string,
     userId: string,
     props: Record<string, string>
-  ): Promise<ICommandResult<Mailbroker.MailKey>>;
+  ): Promise<ICommandResult<Mailbroker.SentMail>>;
   deleteMailbrokerSentRecord(id: string): Promise<ICommandResult>;
   deprecateMailbrokerTemplate(id: string): Promise<ICommandResult>;
   undeprecateMailbrokerTemplate(id: string): Promise<ICommandResult>;

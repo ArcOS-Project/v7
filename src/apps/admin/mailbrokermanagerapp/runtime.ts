@@ -3,7 +3,8 @@ import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
-import type { AppProcessData } from "$types/apps/app";
+import type { App, AppProcessData } from "$types/apps/app";
+import SendOverlay from "./Overlays/SendOverlay/SendOverlay";
 import { mailbrokerPages } from "./store";
 
 export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime {
@@ -13,6 +14,10 @@ export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime 
   get admin() {
     return Daemon.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper")!;
   }
+
+  protected overlayStore: Record<string, App> = {
+    SendOverlay,
+  };
 
   //#region LIFECYCLE
 

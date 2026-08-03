@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import type { Mailbroker } from "$types/server/mailbroker";
-  import TemplateListing from "../Mailbroker/TemplateListing.svelte";
+  import TemplateListing from "../MailbrokerManager/TemplateListing.svelte";
   import type { MailbrokerPage } from "../types";
 
   let {
