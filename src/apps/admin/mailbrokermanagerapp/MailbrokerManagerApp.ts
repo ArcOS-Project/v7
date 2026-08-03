@@ -3,7 +3,7 @@ import type { App } from "$types/apps/app";
 import Mailbroker from "./Mailbroker.svelte";
 import { MailbrokerRuntime } from "./runtime";
 
-const MailbrokerApp: App = {
+const MailbrokerManagerApp: App = {
   metadata: {
     name: "Mailbroker Manager",
     version: "1.0.0",
@@ -38,7 +38,7 @@ const MailbrokerApp: App = {
   overlay: false,
   noSafeMode: false,
   vital: true,
-  id: "MailbrokerApp",
+  id: "MailbrokerManagerApp",
 };
 
-export default MailbrokerApp;
+export default MailbrokerManagerApp;
