@@ -9,6 +9,7 @@
   import { onDestroy, onMount, tick } from "svelte";
   import TemplateEditor from "./ViewTemplate/TemplateEditor.svelte";
   import TemplateHeader from "./ViewTemplate/TemplateHeader.svelte";
+  import { BTN_CANCEL, BTN_OKAY_SUG, GetConfirmation, MessageBox } from "$ts/util/dialog";
 
   interface PageProps {
     templateId: string;
@@ -60,6 +61,43 @@
     }
   }
 
+  async function deleteTemplate() {
+    if (!deprecated) return;
+
+    const proceed = await GetConfirmation(
+      {
+        title: "Delete template?",
+        message:
+          "Are you absolutely sure that you want to delete this deprecated mailbroker template? This cannot be reverted, and may have unforseen consequences if the template is still used by ArcOS systems.",
+        image: "WarningIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+
+    if (!proceed) return;
+
+    const result = await process.admin.deleteMailbrokerTemplate(data._id);
+
+    if (!result.success) {
+      MessageBox(
+        {
+          title: "Failed to delete",
+          message: `An error occurred while attempting to delete the mailbroker template. ${result.errorMessage ?? "Unknown failure"}`,
+          buttons: [BTN_OKAY_SUG],
+          image: "ErrorIcon",
+          sound: "arcos.dialog.error",
+        },
+        process.pid,
+        true
+      );
+      return;
+    }
+
+    process.switchPage("activeTemplates");
+  }
+
   onMount(() => {
     discard();
     let firstCall = false;
@@ -86,6 +124,10 @@
         Deprecate
       {/if}
     </ActionButton>
+    <ActionButton
+      disabled={!process.admin.canAccess(AdminScopes.adminMailbrokerTemplatesWrite) || !deprecated}
+      onclick={deleteTemplate}>Delete</ActionButton
+    >
   {/snippet}
   {#snippet rightContent()}
     <ActionButton

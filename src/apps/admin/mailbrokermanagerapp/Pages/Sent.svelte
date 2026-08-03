@@ -1,7 +1,60 @@
 <script lang="ts">
+  import { Plural } from "$ts/util";
+  import { Store } from "$ts/writable";
   import type { Mailbroker } from "$types/server/mailbroker";
+  import type { Unsubscriber } from "$types/shared/writable";
+  import { onDestroy, onMount } from "svelte";
+  import SentListingOption from "./Sent/SentListingOption.svelte";
+  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
 
-  let { data }: { data: Mailbroker.SentMail[] } = $props();
+  let { data, process }: { data: Mailbroker.SentMail[]; process: IMailbrokerRuntime } = $props();
+
+  const searchValue = Store<string>("");
+
+  let filteredSent = $state<Mailbroker.SentMail[]>(data);
+  let unsubscribe: Unsubscriber;
+
+  onMount(() => {
+    unsubscribe = searchValue.subscribe((v) => {
+      const query = v.toLowerCase().trim();
+
+      if (!query) {
+        filteredSent = data;
+        return;
+      }
+
+      filteredSent = data.filter((template) => {
+        if (template.to.email.toLowerCase().includes(query)) return true;
+        if (template.to.serverName?.toLowerCase().includes(query)) return true;
+        if (template.to.username?.toLowerCase().includes(query)) return true;
+        if (template.subject.toLowerCase().includes(query)) return true;
+
+        return false;
+      });
+    });
+  });
+
+  onDestroy(() => {
+    unsubscribe?.();
+  });
 </script>
 
-{data.length}
+<div class="listing-header">
+  <h1>{data.length} {Plural("sent email", data.length)}</h1>
+  <div class="search-bar">
+    <span class="lucide icon-search"> </span>
+    <input type="text" bind:value={$searchValue} placeholder="Search templates" />
+  </div>
+</div>
+
+<div class="sent-emails">
+  {#each filteredSent as sentRecord (sentRecord._id)}
+    <SentListingOption {process} {sentRecord} />
+  {/each}
+
+  {#if !filteredSent.length}
+    <p class="empty-notice">
+      <span>There are no sent records that match the criteria.</span>
+    </p>
+  {/if}
+</div>

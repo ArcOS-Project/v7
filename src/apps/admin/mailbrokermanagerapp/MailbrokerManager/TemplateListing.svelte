@@ -48,7 +48,7 @@
 </script>
 
 <div class="template-listing">
-  <div class="header">
+  <div class="listing-header">
     <h1>{filteredTemplates.length} {Plural("template", filteredTemplates.length)}</h1>
     <div class="search-bar">
       <span class="lucide icon-search"> </span>

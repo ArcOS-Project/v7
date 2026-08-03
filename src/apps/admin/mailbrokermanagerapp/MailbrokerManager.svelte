@@ -34,7 +34,7 @@
 </script>
 
 <Sidebar {process} />
-<div class="container page-{$currentPage}">
+<div class="container">
   <CustomTitlebar {process} />
   <div class="page-content page-{pageData?.name.toLowerCase().replaceAll(' ', '-')}" class:loading>
     {#if loading}

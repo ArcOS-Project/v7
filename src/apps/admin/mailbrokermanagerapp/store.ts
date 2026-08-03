@@ -3,6 +3,7 @@ import GenericList from "./Pages/GenericList.svelte";
 import Logs from "./Pages/Logs.svelte";
 import NewTemplate from "./Pages/NewTemplate.svelte";
 import Sent from "./Pages/Sent.svelte";
+import ViewSentRecord from "./Pages/ViewSentRecord.svelte";
 import ViewTemplate from "./Pages/ViewTemplate.svelte";
 import type { MailbrokerPage, MailbrokerPages } from "./types";
 
@@ -56,6 +57,17 @@ export const mailbrokerPages: MailbrokerPages = new Map<string, MailbrokerPage>(
       content: Sent,
       separator: true,
       data: async (process) => await process.admin.getMailbrokerSentRecords(),
+      scopes: [AdminScopes.adminMailbrokerSentRead],
+    },
+  ],
+  [
+    "viewSentRecord",
+    {
+      name: "View sent record",
+      icon: "eye",
+      hidden: true,
+      content: ViewSentRecord,
+      data: async (process, props: { sentRecordId: string }) => await process.admin.getMailbrokerSentRecord(props.sentRecordId),
       scopes: [AdminScopes.adminMailbrokerSentRead],
     },
   ],

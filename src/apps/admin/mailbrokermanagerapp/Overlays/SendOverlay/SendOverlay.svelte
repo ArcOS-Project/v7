@@ -2,6 +2,7 @@
   import type { IMailbrokerSendOverlayRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionPill from "$lib/Window/ActionBar/ActionPill.svelte";
   import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import type { ExpandedUserInfo } from "$types/user";
   import { MailbrokerSendOverlay } from "./types";
@@ -90,6 +91,11 @@
 </div>
 
 <ActionBar>
+  {#snippet leftContent()}
+    {#if process.template?.deprecated}
+      <ActionPill key="W01" className="clr-orange">Deprecated template</ActionPill>
+    {/if}
+  {/snippet}
   {#snippet rightContent()}
     <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
     <ActionButton suggested onclick={send} disabled={!selectedUser}>Send</ActionButton>

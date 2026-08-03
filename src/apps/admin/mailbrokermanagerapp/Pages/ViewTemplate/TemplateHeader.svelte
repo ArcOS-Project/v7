@@ -23,20 +23,20 @@
   <div class="info">
     <h1>{$updateData.name} - ArcOS {$updateData.fromSuffix}</h1>
     <p class="subject">{$updateData.subjectContent}</p>
-    <TemplatePills {template} {deprecated}/>
+    <TemplatePills {template} {deprecated} />
   </div>
   <div class="dates">
-    <!-- {#if template.createdAt} -->
-    <div class="date">
-      <h2>Created at:</h2>
-      <p>{dayjs(template.createdAt).format("D MMMM YYYY, HH:mm:ss")}</p>
-    </div>
-    <!-- {/if}
-    {#if template.updatedAt} -->
-    <div class="date">
-      <h2>Updated at:</h2>
-      <p>{dayjs(template.updatedAt).format("D MMMM YYYY, HH:mm:ss")}</p>
-    </div>
-    <!-- {/if} -->
+    {#if template.createdAt}
+      <div class="date">
+        <h2>Created at:</h2>
+        <p>{dayjs(template.createdAt).format("D MMMM YYYY, HH:mm:ss")}</p>
+      </div>
+    {/if}
+    {#if template.updatedAt}
+      <div class="date">
+        <h2>Updated at:</h2>
+        <p>{dayjs(template.updatedAt).format("D MMMM YYYY, HH:mm:ss")}</p>
+      </div>
+    {/if}
   </div>
 </div>

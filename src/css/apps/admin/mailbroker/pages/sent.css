@@ -1,0 +1,49 @@
+#MailbrokerManagerApp > div.body > div.container > div.page-content.page-sent-emails {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  > div.sent-emails {
+    height: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+
+    > p.empty-notice {
+      padding: 10px;
+      border: var(--button-glass-bg) 1px solid;
+      border-radius: 10px;
+      text-align: center;
+
+      > span {
+        opacity: 0.5;
+      }
+    }
+
+    > button.sent-listing-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      background-color: transparent;
+      padding: 10px;
+      margin-bottom: 10px;
+
+      &:hover {
+        background-color: var(--button-glass-bg);
+      }
+
+      > span.lucide {
+        font-size: 24px;
+        color: var(--accent-light);
+        margin: 0 5px;
+      }
+
+      div.info p.recipient {
+        opacity: 0.5;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+    }
+  }
+}
