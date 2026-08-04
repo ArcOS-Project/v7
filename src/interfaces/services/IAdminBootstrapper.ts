@@ -127,6 +127,7 @@ export interface IAdminBootstrapper extends IBaseService {
   markBetaFeedbackAsRead(id: string): Promise<ICommandResult>;
   createTemporaryLogin(userId: string): Promise<ICommandResult<AdminTemporaryPassword>>;
   getMailbrokerKey(id: string): Promise<ICommandResult<Mailbroker.MailKey>>;
+  getAllMailbrokerKeys(): Promise<ICommandResult<Mailbroker.MailKey[]>>;
   getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>>;
   getMailbrokerTemplate(id: string): Promise<ICommandResult<Mailbroker.MailTemplate>>;
   getMailbrokerTemplates(

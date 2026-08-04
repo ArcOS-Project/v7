@@ -5,7 +5,7 @@
   let { template, deprecated }: { template: Mailbroker.MailTemplate; deprecated: boolean; } = $props();
 </script>
 
-<div class="template-pills">
+<div class="pills">
   <div class="pill size">
     <span class="lucide icon-code"></span>
     <span>{formatBytes(template.htmlContent.length)}</span>

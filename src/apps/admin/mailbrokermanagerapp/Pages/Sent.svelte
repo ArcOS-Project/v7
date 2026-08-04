@@ -23,11 +23,12 @@
         return;
       }
 
-      filteredSent = data.filter((template) => {
-        if (template.to.email.toLowerCase().includes(query)) return true;
-        if (template.to.serverName?.toLowerCase().includes(query)) return true;
-        if (template.to.username?.toLowerCase().includes(query)) return true;
-        if (template.subject.toLowerCase().includes(query)) return true;
+      filteredSent = data.filter((sent) => {
+        if (sent.to.email.toLowerCase().includes(query)) return true;
+        if (sent.to.serverName?.toLowerCase().includes(query)) return true;
+        if (sent.to.username?.toLowerCase().includes(query)) return true;
+        if (sent.subject.toLowerCase().includes(query)) return true;
+        if (sent._id.toLowerCase().includes(query)) return true;
 
         return false;
       });

@@ -1257,6 +1257,17 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
+  async getAllMailbrokerKeys(): Promise<ICommandResult<Mailbroker.MailKey[]>> {
+    if (this._disposed) return CommandResult.Error("Disposed");
+
+    try {
+      const response = await this.adminClient.get(`/mailbroker/keys`);
+      return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
   async getMailbrokerLogs(): Promise<ICommandResult<Mailbroker.MailLog[]>> {
     if (this._disposed) return CommandResult.Error("Disposed");
 

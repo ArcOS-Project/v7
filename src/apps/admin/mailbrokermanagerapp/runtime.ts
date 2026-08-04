@@ -4,7 +4,9 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
+import NewKeyOverlay from "./Overlays/NewKeyOverlay/NewKeyOverlay";
 import SendOverlay from "./Overlays/SendOverlay/SendOverlay";
+import KeyOverlay from "./Overlays/ViewKeyOverlay/KeyOverlay";
 import { mailbrokerPages } from "./store";
 
 export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime {
@@ -17,6 +19,8 @@ export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime 
 
   protected overlayStore: Record<string, App> = {
     SendOverlay,
+    KeyOverlay,
+    NewKeyOverlay,
   };
 
   //#region LIFECYCLE

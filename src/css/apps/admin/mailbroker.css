@@ -4,9 +4,12 @@
 @import url("./mailbroker/pages/viewsent.css");
 @import url("./mailbroker/pages/viewtemplate.css");
 @import url("./mailbroker/pages/newtemplate.css");
-@import url("./mailbroker/listingheader.css");
+@import url("./mailbroker/pages/keys.css");
 @import url("./mailbroker/pages/logs.css");
-@import url("./mailbroker/overiays/sendoverlay.css");
+@import url("./mailbroker/listingheader.css");
+@import url("./mailbroker/overlays/sendoverlay.css");
+@import url("./mailbroker/overlays/keyoverlay.css");
+@import url("./mailbroker/overlays/newkeyoverlay.css");
 
 #MailbrokerManagerApp > div.body {
   padding: 0;
@@ -62,7 +65,7 @@
         }
       }
 
-      div.template-pills {
+      div.pills {
         display: flex;
         align-items: center;
         gap: 5px;

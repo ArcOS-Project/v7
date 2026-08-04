@@ -19,3 +19,16 @@ export interface IMailbrokerSendOverlayRuntime extends IAppProcess {
   templateId: string;
   users: ExpandedUserInfo[];
 }
+
+export interface IMailbrokerViewKeyOverlayRuntime extends IAppProcess {
+  get admin(): IAdminBootstrapper;
+
+  key?: Mailbroker.MailKey;
+  keyId: string;
+  sentRecords: Mailbroker.SentMail[];
+}
+
+export interface IMailbrokerNewKeyOverlayRuntime extends IAppProcess {
+  get admin(): IAdminBootstrapper;
+  get parent(): IMailbrokerRuntime;
+}

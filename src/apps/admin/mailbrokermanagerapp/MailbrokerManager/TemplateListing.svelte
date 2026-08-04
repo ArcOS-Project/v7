@@ -36,6 +36,7 @@
         if (template.fromSuffix.toLowerCase().includes(query)) return true;
         if (template.subjectContent.toLowerCase().includes(query)) return true;
         if (template.textContent.toLowerCase().includes(query)) return true;
+        if (template._id.toLowerCase().includes(query)) return true;
 
         return false;
       });
