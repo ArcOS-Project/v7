@@ -16,7 +16,6 @@ import type { FsAccess } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
-import type { Mailbroker } from "$types/server/mailbroker";
 
 export interface AdminPortalPage {
   name: string;
@@ -114,10 +113,6 @@ export type ActivitiesData = {
 
 export type VersioningData = {
   users: ExpandedUserInfo[];
-};
-
-export type MailbrokerTemplatesData = {
-  templates: ICommandResult<Mailbroker.MailTemplate[]>;
 };
 
 export type ScopesData = {
