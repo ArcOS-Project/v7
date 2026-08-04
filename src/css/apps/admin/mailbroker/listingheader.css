@@ -1,0 +1,49 @@
+#MailbrokerManagerApp > div.body div.page-content div.listing-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+
+  > h1 {
+    font-size: 14px;
+    padding: 0 10px;
+    margin-right: auto;
+  }
+
+  > div.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 8px;
+    border: var(--button-glass-bg) 1px solid;
+    border-radius: 8px;
+    background-color: var(--button-glass-bg);
+
+    > input {
+      height: 100%;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      background-color: transparent;
+    }
+
+    > span.lucide {
+      font-size: 16px;
+      opacity: 0.5;
+    }
+  }
+
+  > button.suggested {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+    height: 30px;
+    min-width: unset;
+
+    > span.lucide {
+      font-weight: normal;
+    }
+  }
+}

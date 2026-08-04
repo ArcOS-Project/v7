@@ -16,6 +16,7 @@
 @import url("./window/toast.css");
 @import url("./window/actionbar.css");
 @import url("./window/statusbar.css");
+@import url("./window/sidebar/symbolic.css");
 
 div.window:not(.core) {
   position: absolute;
@@ -84,7 +85,7 @@ div.window:not(.core).fullscreen div.titlebar {
   display: none !important;
 }
 
-div.window:not(.core).fullscreen>div.body {
+div.window:not(.core).fullscreen > div.body {
   height: 100vh !important;
   border-top: none !important;
   border-radius: 0 !important;
@@ -94,11 +95,11 @@ div.window:not(.core):not(.glass).focused {
   background-color: var(--glass-bg);
 }
 
-div.window:not(.core):not(.glass).focused>div.titlebar {
+div.window:not(.core):not(.glass).focused > div.titlebar {
   backdrop-filter: blur(var(--blur));
 }
 
-div.window:not(.core):not(.glass)>div.body {
+div.window:not(.core):not(.glass) > div.body {
   background-color: var(--win-bg);
 }
 
