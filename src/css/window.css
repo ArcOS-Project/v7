@@ -16,6 +16,7 @@
 @import url("./window/toast.css");
 @import url("./window/actionbar.css");
 @import url("./window/statusbar.css");
+@import url("./window/sidebar/symbolic.css");
 
 div.window:not(.core) {
   position: absolute;

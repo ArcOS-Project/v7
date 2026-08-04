@@ -10,11 +10,11 @@
   const { path, rootFolders, drives } = process;
 </script>
 
-<div class="sidebar">
-  <section>
+<div class="window-symbolic-sidebar">
+  <section class="sidebar-section">
     <h1>{process.userPreferences().account.displayName || process.username}</h1>
 
-    <button class="folder" onclick={() => process.navigate(UserPaths.Home)} class:selected={$path === UserPaths.Home}>
+    <button class="sidebar-button folder" onclick={() => process.navigate(UserPaths.Home)} class:selected={$path === UserPaths.Home}>
       <span class="lucide icon-house"></span>
       <span>Home</span>
     </button>
@@ -24,12 +24,12 @@
     {/each}
   </section>
   {#if Object.values(process.virtualLocations).filter((l) => !l.hidden).length}
-    <section>
+    <section class="sidebar-section">
       <h1>Places</h1>
       {#each Object.entries(process.virtualLocations) as [id, location] (id)}
         {#if !location.hidden || $userPreferences.appPreferences.fileManager?.showHiddenDrives}
           <button
-            class="folder"
+            class="sidebar-button folder"
             onclick={() => process.navigate(`::${id}`)}
             class:selected={$path === `::${id}`}
             data-contextmenu="place-{id}"
@@ -41,7 +41,7 @@
       {/each}
     </section>
   {/if}
-  <section>
+  <section class="sidebar-section">
     <h1>Drives</h1>
     {#each Object.entries($drives) as [id, drive] (`${id}-${drive.data.uuid}`)}
       {#if !drive.data.HIDDEN || $userPreferences.appPreferences.fileManager?.showHiddenDrives}

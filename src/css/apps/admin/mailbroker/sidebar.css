@@ -1,0 +1,8 @@
+#MailbrokerManagerApp > div.body {
+  div.sidebar {
+    width: 200px;
+    height: 100%;
+    border-right: var(--win-border);
+    padding: 10px;
+  }
+}
