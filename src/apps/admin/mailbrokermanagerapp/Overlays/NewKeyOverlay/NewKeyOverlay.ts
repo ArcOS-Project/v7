@@ -10,7 +10,7 @@ const NewKeyOverlay: App = {
     icon: "MailbrokerAdminIcon",
   },
   position: { centered: true },
- size: {
+  size: {
     w: 380,
     h: 200,
   },

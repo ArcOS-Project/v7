@@ -1,4 +1,4 @@
-import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
@@ -9,7 +9,7 @@ import SendOverlay from "./Overlays/SendOverlay/SendOverlay";
 import KeyOverlay from "./Overlays/ViewKeyOverlay/KeyOverlay";
 import { mailbrokerPages } from "./store";
 
-export class MailbrokerRuntime extends AppProcess implements IMailbrokerRuntime {
+export class MailbrokerManagerRuntime extends AppProcess implements IMailbrokerManagerRuntime {
   currentPage = Store<string>("");
   pageProps = Store<Record<string, any>>({});
 

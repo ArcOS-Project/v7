@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
@@ -20,7 +20,7 @@
   }: {
     data: Mailbroker.SentMail;
     pageProps: PageProps;
-    process: IMailbrokerRuntime;
+    process: IMailbrokerManagerRuntime;
   } = $props();
 
   let showCode = $state<boolean>(false);

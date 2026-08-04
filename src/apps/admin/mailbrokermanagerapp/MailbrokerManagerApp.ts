@@ -1,7 +1,7 @@
 import "$css/apps/admin/mailbroker.css";
 import type { App } from "$types/apps/app";
 import MailbrokerManager from "./MailbrokerManager.svelte";
-import { MailbrokerRuntime } from "./runtime";
+import { MailbrokerManagerRuntime } from "./runtime";
 
 const MailbrokerManagerApp: App = {
   metadata: {
@@ -28,7 +28,7 @@ const MailbrokerManagerApp: App = {
     close: true,
   },
   assets: {
-    runtime: MailbrokerRuntime,
+    runtime: MailbrokerManagerRuntime,
     component: MailbrokerManager as any,
   },
   glass: true,

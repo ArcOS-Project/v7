@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
@@ -20,7 +20,7 @@
     data,
     pageProps,
   }: {
-    process: IMailbrokerRuntime;
+    process: IMailbrokerManagerRuntime;
     data: Mailbroker.MailTemplate;
     pageProps: PageProps;
   } = $props();

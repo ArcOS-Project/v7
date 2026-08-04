@@ -5,7 +5,7 @@ import type { Mailbroker } from "$types/server/mailbroker";
 import type { ReadableStore } from "$types/shared/writable";
 import type { ExpandedUserInfo } from "$types/user";
 
-export interface IMailbrokerRuntime extends IAppProcess {
+export interface IMailbrokerManagerRuntime extends IAppProcess {
   get admin(): IAdminBootstrapper;
   currentPage: ReadableStore<string>;
   pageProps: ReadableStore<Record<string, any>>;
@@ -30,5 +30,5 @@ export interface IMailbrokerViewKeyOverlayRuntime extends IAppProcess {
 
 export interface IMailbrokerNewKeyOverlayRuntime extends IAppProcess {
   get admin(): IAdminBootstrapper;
-  get parent(): IMailbrokerRuntime;
+  get parent(): IMailbrokerManagerRuntime;
 }

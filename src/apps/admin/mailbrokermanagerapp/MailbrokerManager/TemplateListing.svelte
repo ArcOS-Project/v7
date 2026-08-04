@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import { Plural } from "$ts/util";
   import { Store } from "$ts/writable";
@@ -13,7 +13,7 @@
     templates,
     hideNewButton = false,
   }: {
-    process: IMailbrokerRuntime;
+    process: IMailbrokerManagerRuntime;
     templates: Mailbroker.MailTemplate[];
     hideNewButton?: boolean;
   } = $props();

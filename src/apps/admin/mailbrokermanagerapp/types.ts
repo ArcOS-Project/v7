@@ -1,5 +1,5 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
 import type { MaybePromise } from "$types/shared/common";
 import type { Component } from "svelte";
 
@@ -9,7 +9,7 @@ export interface MailbrokerPage {
   content: Component<any>;
   hidden?: boolean;
   separator?: boolean;
-  data?: (process: IMailbrokerRuntime, pageProps: any) => MaybePromise<ICommandResult<Record<string, any>>>;
+  data?: (process: IMailbrokerManagerRuntime, pageProps: any) => MaybePromise<ICommandResult<Record<string, any>>>;
   scopes?: string[];
 }
 

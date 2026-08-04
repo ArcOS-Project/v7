@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import { mailbrokerPages } from "../store";
 
-  let { process }: { process: IMailbrokerRuntime } = $props();
+  let { process }: { process: IMailbrokerManagerRuntime } = $props();
   const { currentPage } = process;
 </script>
 

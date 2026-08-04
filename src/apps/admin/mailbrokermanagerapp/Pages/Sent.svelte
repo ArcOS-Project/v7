@@ -5,9 +5,9 @@
   import type { Unsubscriber } from "$types/shared/writable";
   import { onDestroy, onMount } from "svelte";
   import SentListingOption from "./Sent/SentListingOption.svelte";
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
 
-  let { data, process }: { data: Mailbroker.SentMail[]; process: IMailbrokerRuntime } = $props();
+  let { data, process }: { data: Mailbroker.SentMail[]; process: IMailbrokerManagerRuntime } = $props();
 
   const searchValue = Store<string>("");
 

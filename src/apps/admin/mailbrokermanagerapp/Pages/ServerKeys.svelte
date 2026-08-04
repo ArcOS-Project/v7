@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import { Plural } from "$ts/util";
   import { Store } from "$ts/writable";
@@ -9,7 +9,7 @@
   import ServerKeyOption from "./ServerKeys/ServerKeyOption.svelte";
   import dayjs from "dayjs";
 
-  let { process, data }: { process: IMailbrokerRuntime; data: Mailbroker.MailKey[] } = $props();
+  let { process, data }: { process: IMailbrokerManagerRuntime; data: Mailbroker.MailKey[] } = $props();
 
   const searchValue = Store<string>("");
 
@@ -43,7 +43,7 @@
   <h1>{data.length} {Plural("server key", data.length)}</h1>
   <div class="search-bar">
     <span class="lucide icon-search"></span>
-    <input type="text" placeholder="Search server keys" />
+    <input type="text" placeholder="Search server keys" bind:value={$searchValue}/>
   </div>
   <button
     class="suggested"
@@ -59,7 +59,7 @@
 
   {#if !filteredKeys.length}
     <p class="empty-notice">
-      <span>There are no sent records that match the criteria.</span>
+      <span>There are no server keys that match the criteria.</span>
     </p>
   {/if}
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import type { Mailbroker } from "$types/server/mailbroker";
   import type { ReadableStore } from "$types/shared/writable";
   import dayjs from "dayjs";
@@ -11,7 +11,7 @@
     updateData,
     deprecated,
   }: {
-    process: IMailbrokerRuntime;
+    process: IMailbrokerManagerRuntime;
     template: Mailbroker.MailTemplate;
     updateData: ReadableStore<Mailbroker.MailTemplateUpdate>;
     deprecated: boolean;

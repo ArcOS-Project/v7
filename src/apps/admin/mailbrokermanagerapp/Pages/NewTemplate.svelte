@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
@@ -7,7 +7,7 @@
   import type { Mailbroker } from "$types/server/mailbroker";
   import TemplateEditor from "./ViewTemplate/TemplateEditor.svelte";
 
-  let { process }: { process: IMailbrokerRuntime } = $props();
+  let { process }: { process: IMailbrokerManagerRuntime } = $props();
 
   let data = Store<Mailbroker.MailTemplateUpdate>({
     fromSuffix: "Accounts",

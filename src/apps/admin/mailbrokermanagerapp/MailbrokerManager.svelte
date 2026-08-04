@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ICommandResult } from "$interfaces/ICommandResult";
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import CustomTitlebar from "$lib/CustomTitlebar.svelte";
   import { CommandResult } from "$ts/result";
   import { onMount, type Component } from "svelte";
@@ -9,7 +9,7 @@
   import type { MailbrokerPage } from "./types";
   import Spinner from "$lib/Spinner.svelte";
 
-  let { process }: { process: IMailbrokerRuntime } = $props();
+  let { process }: { process: IMailbrokerManagerRuntime } = $props();
   const { currentPage, pageProps } = process;
   let Page: Component | undefined = $state();
   let pageData = $state<MailbrokerPage>();

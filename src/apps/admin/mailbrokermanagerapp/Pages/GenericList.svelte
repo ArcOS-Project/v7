@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import type { Mailbroker } from "$types/server/mailbroker";
   import TemplateListing from "../MailbrokerManager/TemplateListing.svelte";
   import type { MailbrokerPage } from "../types";
@@ -10,7 +10,7 @@
     pageData,
   }: {
     data: Mailbroker.MailTemplate[];
-    process: IMailbrokerRuntime;
+    process: IMailbrokerManagerRuntime;
     pageData: MailbrokerPage;
   } = $props();
 </script>

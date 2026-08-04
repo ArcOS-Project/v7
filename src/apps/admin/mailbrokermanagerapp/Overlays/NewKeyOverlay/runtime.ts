@@ -1,4 +1,4 @@
-import type { IMailbrokerRuntime, IMailbrokerNewKeyOverlayRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+import type { IMailbrokerManagerRuntime, IMailbrokerNewKeyOverlayRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Stack } from "$ts/env";
@@ -10,7 +10,7 @@ export class MailbrokerNewKeyOverlayRuntime extends AppProcess implements IMailb
   }
 
   get parent() {
-    return Stack.getProcess<IMailbrokerRuntime>(this.parentPid)!;
+    return Stack.getProcess<IMailbrokerManagerRuntime>(this.parentPid)!;
   }
 
   constructor(pid: number, parentPid: number, app: AppProcessData) {

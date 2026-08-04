@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import type { Mailbroker } from "$types/server/mailbroker";
   import ServerKeyPills from "../../MailbrokerManager/ServerKeyPills.svelte";
 
-  let { process, serverKey }: { process: IMailbrokerRuntime; serverKey: Mailbroker.MailKey } = $props();
+  let { process, serverKey }: { process: IMailbrokerManagerRuntime; serverKey: Mailbroker.MailKey } = $props();
 </script>
 
 <button class="server-key-option" onclick={() => process.spawnOverlay("KeyOverlay", serverKey._id)}>

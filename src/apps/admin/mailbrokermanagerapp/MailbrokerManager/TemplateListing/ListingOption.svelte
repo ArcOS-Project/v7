@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IMailbrokerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
   import type { Mailbroker } from "$types/server/mailbroker";
   import TemplatePills from "../TemplatePills.svelte";
 
-  let { template, process }: { template: Mailbroker.MailTemplate; process: IMailbrokerRuntime } = $props();
+  let { template, process }: { template: Mailbroker.MailTemplate; process: IMailbrokerManagerRuntime } = $props();
 
   async function viewTemplate() {
     process.switchPage("viewTemplate", { templateId: template._id });
