@@ -10,8 +10,8 @@ export class WeatherHelper extends BaseHelper {
 
     const preferences = this.userPreferences();
     const params = {
-      latitude: preferences.shell.actionCenter.weatherLocation.latitude,
-      longitude: preferences.shell.actionCenter.weatherLocation.longitude,
+      latitude: preferences.weatherSettings.latitude,
+      longitude: preferences.weatherSettings.longitude,
       current: ["temperature_2m", "weather_code", "is_day"],
     };
     const url = "https://api.open-meteo.com/v1/forecast";
@@ -75,7 +75,7 @@ export class WeatherHelper extends BaseHelper {
         start: "#d7d2cc",
         end: "#304352",
       },
-      iconColor: "#778899",
+      iconColor: "#90abc7",
       icon: "cloudy",
     },
     45: {

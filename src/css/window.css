@@ -37,6 +37,18 @@ div.window:not(.core) {
   flex-direction: column;
 }
 
+div.window {
+  --accent-textual: var(--accent-light) !important;
+  --accent-textual-fg: var(--accent-suggested-fg) !important;
+  scrollbar-color: var(--button-glass-bg) transparent;
+  scrollbar-width: thin;
+}
+
+.theme-light div.window {
+  --accent-textual: var(--accent-dark-medium) !important;
+  --accent-textual-fg: var(--accent-dark-medium-fg) !important;
+}
+
 div.window:not(.core).shell-colored.colored::before {
   opacity: 0.1;
   transition: opacity 0.1s !important;
@@ -144,16 +156,8 @@ div.window.overlay.glass {
 }
 
 div.window:not(.core) a {
-  color: var(--accent-light);
+  color: var(--accent-textual);
   text-underline-offset: 2px;
-
-  .theme-light & {
-    /*
-       * Uses the calculated result if available,
-       * otherwise, uses uglier dark accent color.
-       */
-    color: var(--accent-suggested-end, var(--accent-dark));
-  }
 }
 
 div.window:not(.core) div.resizer {

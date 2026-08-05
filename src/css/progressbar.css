@@ -13,7 +13,7 @@ div.progress-bar div.inner {
   --width: 0%;
   height: calc(var(--bar-height) - 2px);
   width: var(--width, 0%);
-  background-color: var(--accent-dark);
+  background-color: var(--accent-textual);
   position: relative;
   overflow: hidden;
 }
@@ -30,7 +30,7 @@ div.progress-bar:not(.indeterminate) div.inner::after {
   left: 0;
   width: 40%;
   height: calc(var(--bar-height) - 2px);
-  background: linear-gradient(to right, #0000 0%, var(--accent-light) 50%, #0000 100%);
+  background: linear-gradient(to right, #0000 0%, var(--accent-lighter) 50%, #0000 100%);
   animation: progress-bar-inner-effect 2s linear infinite;
 }
 

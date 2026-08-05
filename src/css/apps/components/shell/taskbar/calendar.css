@@ -121,7 +121,7 @@
 }
 
 #arcShell div.taskbar div.calendar-popup div.calendar div.day.today p.day-number {
-  background-color: var(--accent-light);
+  background-color: var(--accent-textual);
   color: var(--win-bg) !important;
 }
 

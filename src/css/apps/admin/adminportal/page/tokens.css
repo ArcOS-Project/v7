@@ -57,7 +57,7 @@
 
 #AdminPortal .container.tokens div.segment.icon span.lucide {
   font-size: 16px;
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #AdminPortal .container.tokens div.segment.author {

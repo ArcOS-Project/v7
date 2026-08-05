@@ -46,7 +46,7 @@
 }
 
 #Sqeleton > div.body div.bottom-pane div.tabs button.active > span:not(.count) {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #Sqeleton > div.body div.bottom-pane div.tabs button.active::after {

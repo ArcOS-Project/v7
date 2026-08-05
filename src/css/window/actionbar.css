@@ -3,6 +3,10 @@ div.window.glass div.window-action-bar {
   border-top-color: var(--button-glass-bg);
 }
 
+.theme-light div.window:not(.glass) div.window-action-bar {
+  background-color: var(--win-bg);
+}
+
 div.window div.window-action-bar {
   height: 51px;
   padding: 10px;
@@ -118,10 +122,15 @@ div.window div.window-action-bar button.action-bar-icon-button {
   align-items: center;
   font-size: 16px;
   min-width: fit-content;
+  border:var(--win-border)
 }
 
 div.window div.window-action-bar button.action-bar-button * {
   color: inherit !important;
+}
+
+div.window div.window-action-bar button.suggested {
+  box-shadow: none !important;
 }
 
 div.window div.window-action-bar div.sep {

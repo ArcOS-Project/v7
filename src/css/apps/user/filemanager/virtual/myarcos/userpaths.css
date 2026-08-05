@@ -47,7 +47,7 @@
 #fileManager > div.body div.my_arcos section.user-paths > div button span.pill span.lucide {
   font-size: 16px;
   height: 16px;
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #fileManager > div.body div.my_arcos section.user-paths > div button span.path > span.lucide {

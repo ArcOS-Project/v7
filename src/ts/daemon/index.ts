@@ -60,6 +60,7 @@ export class UserDaemon extends Process implements IUserDaemon {
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
   public serviceHost?: ServiceHost;
+  public InitComplete = Store<boolean>(false);
 
   public get betaClient() {
     return axios.create({

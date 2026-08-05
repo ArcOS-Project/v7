@@ -67,7 +67,7 @@ div.shell div.startmenu div.bottom div.actions button span {
 }
 
 div.shell div.startmenu div.bottom div.actions button:hover {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 div.shell div.startmenu div.bottom div.actions button:active {

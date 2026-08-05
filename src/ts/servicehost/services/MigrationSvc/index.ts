@@ -12,6 +12,7 @@ import { LogLevel } from "$types/shared/logging";
 import { AppShortcutsMigration } from "./nodes/AppShortcuts";
 import { FileAssociationsMigration } from "./nodes/FileAssociations";
 import { IconConfigurationMigration } from "./nodes/IconConfiguration";
+import { WeatherSettingsMigration } from "./nodes/WeatherSettingsMigration";
 
 export class MigrationService extends BaseService implements IMigrationService {
   private Index = Store<Record<string, number>>({});
@@ -24,7 +25,12 @@ export class MigrationService extends BaseService implements IMigrationService {
     .WithCooldown(100)
     .Build();
 
-  public MIGRATIONS: IMigrationNodeConstructor[] = [FileAssociationsMigration, IconConfigurationMigration, AppShortcutsMigration];
+  public MIGRATIONS: IMigrationNodeConstructor[] = [
+    FileAssociationsMigration,
+    IconConfigurationMigration,
+    AppShortcutsMigration,
+    WeatherSettingsMigration,
+  ];
 
   public get Config() {
     return this.Index();
