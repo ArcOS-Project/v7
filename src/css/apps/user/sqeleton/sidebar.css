@@ -106,7 +106,7 @@
 }
 
 #Sqeleton > div.body div.sidebar span.lucide {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #Sqeleton > div.body div.sidebar div.query.selected {

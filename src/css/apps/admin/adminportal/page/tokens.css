@@ -35,7 +35,7 @@
 #AdminPortal .container.tokens div.row.header button {
   padding: 0;
   background-color: transparent;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   font-weight: bold;
   border-radius: 0;
 }

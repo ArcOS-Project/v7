@@ -92,7 +92,7 @@
 
 #AppStore > div.body div.sidebar div.pages span.lucide {
   font-size: 16px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   height: 16px;
 }
 
@@ -152,7 +152,7 @@
 }
 
 #AppStore > div.body > div.container section > h1 button span {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   font-size: 14px;
 }
 #AppStore > div.body > div.container section > h1 button span.lucide {
@@ -304,7 +304,7 @@
 #AppStore > div.body div.empty span.lucide {
   font-size: 64px;
   margin-bottom: 15px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #AppStore > div.body div.empty h1 {
