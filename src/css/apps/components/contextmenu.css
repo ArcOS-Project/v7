@@ -4,10 +4,6 @@
   pointer-events: none !important;
 }
 
-#contextMenu div.context-menu {
-  z-index: calc(infinity) !important;
-}
-
 #contextMenu div.context-menu,
 #contextMenu div.context-menu div.sub-items {
   position: absolute;
@@ -74,6 +70,7 @@
   position: relative;
   z-index: 1;
   height: 28px;
+  transition: none !important;
 }
 
 #contextMenu div.context-menu button.menu-item:disabled {
@@ -99,8 +96,8 @@
 }
 
 #contextMenu div.context-menu.colored button.menu-item:hover {
-  background-color: var(--accent-light-transparent);
-  /* box-shadow: 0 1px 2px 1px #0000001c; */
+  background-color: var(--accent-textual);
+  color: var(--accent-textual-fg);
 }
 
 #contextMenu div.context-menu button.menu-item.subitems {
@@ -115,9 +112,8 @@
 }
 
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
-  background-color: var(--accent-textual);
-  opacity: 1;
-  color: var(--accent-textual-fg);
+  background-color: var(--accent-transparent);
+  color: var(--accent-light);
   box-shadow: none;
 }
 
@@ -130,6 +126,7 @@
 #contextMenu div.context-menu.compact {
   padding: 3px;
   min-height: 32px;
+  border-radius: 10px;
 }
 
 #contextMenu div.context-menu.compact button.menu-item {
@@ -138,6 +135,11 @@
   height: 24px;
   line-height: 16px;
   gap: 5px;
+  border-radius: 6px;
+}
+
+#contextMenu div.context-menu.compact button.menu-item:hover {
+  outline: none;
 }
 
 #contextMenu div.context-menu button.menu-item .icon {

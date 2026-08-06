@@ -17,6 +17,7 @@ import { EchoCommand } from "./commands/echo";
 import { ExitCommand } from "./commands/exit";
 import { ExploreCommand } from "./commands/explore";
 import { FindCommand } from "./commands/find";
+import { GudCommand } from "./commands/gud";
 import { HistoryCommand } from "./commands/history";
 import { InputCommand } from "./commands/input";
 import { KillCommand } from "./commands/kill";
@@ -35,6 +36,7 @@ import { ServiceCommand } from "./commands/service";
 import { ShutdownCommand } from "./commands/shutdown";
 import { SoundbusCommand } from "./commands/soundbus";
 import { SpawnCommand } from "./commands/spawn";
+import { SudCommand } from "./commands/sud";
 import { TasksCommand } from "./commands/tasks";
 import { TestCommand } from "./commands/test";
 import { TostrCommand } from "./commands/tostr";
@@ -85,4 +87,6 @@ export const TerminalCommandStore: ITerminalProcessConstructor[] = [
   MigrationsCommand,
   LoadCommand,
   BasicCommand,
+  GudCommand,
+  SudCommand,
 ];

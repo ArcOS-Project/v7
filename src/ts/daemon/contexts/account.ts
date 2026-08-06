@@ -123,6 +123,8 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
   }
 
   async deleteAccount() {
+    this.Log("deleteAccount");
+    
     MessageBox(
       {
         title: "Delete ArcOS Account",
