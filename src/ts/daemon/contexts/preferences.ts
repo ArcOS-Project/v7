@@ -171,6 +171,7 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
 
       Daemon!.renderer?.setAppRendererClasses(v);
       Daemon!.workspaces?.syncVirtualDesktops(v);
+      Daemon!.wallpaper?.updateWallpaper(v);
       Daemon!.updateGlobalDispatch();
     });
 

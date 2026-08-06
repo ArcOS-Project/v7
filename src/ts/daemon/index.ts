@@ -301,6 +301,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("autorun", "Running autorun", async () => {
+      this.wallpaper?.lastWallpaper.set("");
       await this.wallpaper?.updateWallpaper(this.preferences());
       await this.init?.handleShellAndAutorun();
       await this.checks?.checkForUpdates();
