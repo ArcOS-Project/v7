@@ -302,6 +302,7 @@ export class UserDaemon extends Process implements IUserDaemon {
     });
 
     await performStartStage("autorun", "Running autorun", async () => {
+      await this.wallpaper?.updateWallpaper(this.preferences());
       await this.init?.handleShellAndAutorun();
       await this.checks?.checkForUpdates();
       await this.serviceHost?.getService<IMessagingInterface>("MessagingService")?.checkForMissedMessages();

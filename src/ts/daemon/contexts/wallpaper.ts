@@ -28,15 +28,12 @@ export class WallpaperUserContext extends UserContext implements IWallpaperUserC
     if (this._disposed) return;
 
     const incoming = v.desktop.wallpaper;
-
     if (incoming === this.lastWallpaper()) return;
 
-    this.lastWallpaper.set(incoming);
-
     const wallpaper = await this.getWallpaper(incoming);
-
     if (!wallpaper) return;
 
+    this.lastWallpaper.set(incoming);
     this.Wallpaper.set(wallpaper);
   }
 
