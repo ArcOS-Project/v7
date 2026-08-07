@@ -5,7 +5,7 @@ import { NewFolderRuntime } from "./runtime";
 
 export const FsNewFolderApp: App = {
   metadata: {
-    name: "New Folder",
+    name: "%apps.FsNewFolder.title%",
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: "ComponentIcon",

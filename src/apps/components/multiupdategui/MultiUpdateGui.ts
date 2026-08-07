@@ -5,7 +5,7 @@ import { MultiUpdateGuiRuntime } from "./runtime";
 
 export const MultiUpdateGuiApp: App = {
   metadata: {
-    name: "App Updater",
+    name: "%apps.MultiUpdateGui._name%",
     author: "Izaak Kuipers",
     version: "1.0.0",
     icon: "UpdateIcon",

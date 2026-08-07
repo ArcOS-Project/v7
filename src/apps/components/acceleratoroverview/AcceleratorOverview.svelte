@@ -6,9 +6,9 @@
 </script>
 
 {#if $store && $apps}
-  <div class="header">
-    <h1>Keyboard Shortcuts</h1>
-    <p>Get more work done faster with these handy shortcuts!</p>
+  <div class="header" data-prefix="apps.AcceleratorOverview.header">
+    <h1>%title%</h1>
+    <p>%subtitle%</p>
   </div>
   <div class="shortcuts">
     {#each $store as [name, shortcuts]}

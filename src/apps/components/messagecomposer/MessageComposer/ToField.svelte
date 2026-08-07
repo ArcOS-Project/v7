@@ -27,11 +27,11 @@
 </script>
 
 <div class="field to">
-  <p class="name">To:</p>
+  <p class="name">%toField.to%</p>
   <div class="value">
     {#each $recipients as recipient (recipient)}
       <Recipient {recipient} {process} />
     {/each}
-    <input type="text" {onkeydown} bind:value placeholder="Enter username" disabled={$sending} {onblur} />
+    <input type="text" {onkeydown} bind:value placeholder="%toField.enterUsername%" disabled={$sending} {onblur} />
   </div>
 </div>

@@ -9,7 +9,7 @@
 <div class="header">
   <Icon {icon} />
   <h1>{title}</h1>
-  <p>This file operation encountered an error.</p>
+  <p>%apps.FsProgressFail.subtitle%</p>
 </div>
 <div class="errors">
   {#each errors as error}
@@ -19,4 +19,4 @@
     </div>
   {/each}
 </div>
-<button class="suggested" onclick={() => process.closeWindow()}>Okay</button>
+<button class="suggested" onclick={() => process.closeWindow()}>%general.okay%</button>

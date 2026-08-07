@@ -5,7 +5,7 @@ import { IconPickerRuntime } from "./runtime";
 
 export const IconPickerApp: App = {
   metadata: {
-    name: "Icon Picker",
+    name: "%apps.IconPicker._name%",
     version: "3.0.0",
     author: "Izaak Kuipers",
     icon: "IconLibraryIcon",

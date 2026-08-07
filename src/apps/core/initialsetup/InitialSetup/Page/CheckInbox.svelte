@@ -4,9 +4,7 @@
 
 <div class="hero-page">
   <Send />
-  <h1>Check your inbox</h1>
-  <p class="subtitle">You've got mail!</p>
-  <p class="message">
-    We sent you a link to activate your account. Open it to continue. Be sure to check your spam if you can’t find it.
-  </p>
+  <h1>%checkInbox.title%</h1>
+  <p class="subtitle">%checkInbox.subtitle%</p>
+  <p class="message">%checkInbox.message%</p>
 </div>

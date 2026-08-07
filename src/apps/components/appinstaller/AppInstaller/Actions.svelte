@@ -8,14 +8,14 @@
 
 <div class="actions">
   {#if $failReason}
-    <button class="suggested" onclick={() => process.revert()}>Revert</button>
+    <button class="suggested" onclick={() => process.revert()}>%actions.revert%</button>
   {:else if $installing || $completed}
     {#if !isLibrary}
-      <button onclick={() => process.runNow()} disabled={$installing}>Open now</button>
+      <button onclick={() => process.runNow()} disabled={$installing}>%actions.openNow%</button>
     {/if}
     <button class:suggested={$completed} disabled={!$completed} onclick={() => process.closeWindow()}>Done</button>
   {:else}
-    <button onclick={() => process.closeWindow()}>Cancel</button>
-    <button class="suggested" onclick={() => process.go()}>Install</button>
+    <button onclick={() => process.closeWindow()}>%general.cancel%</button>
+    <button class="suggested" onclick={() => process.go()}>%actions.install%</button>
   {/if}
 </div>

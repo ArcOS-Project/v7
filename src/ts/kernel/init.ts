@@ -1,7 +1,7 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Fs, getKMod, I18n, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";
 import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -44,6 +44,8 @@ export class InitProcess extends Process {
     await kernel!.state?.loadState(connected ? "boot" : "serverdown", {}, true);
     __Console__.timeEnd("** Init jumpstart");
     this.name = "InitProcess";
+
+    I18n.startObserver(Stack.renderer?.target!);
 
     if (ArcMode() === "nightly") this.nightly();
 

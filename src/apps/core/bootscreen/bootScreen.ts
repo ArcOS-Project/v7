@@ -5,7 +5,7 @@ import { BootScreenRuntime } from "./runtime";
 
 export const BootScreen: App = {
   metadata: {
-    name: "Boot App",
+    name: "%apps.bootScreen._name%",
     author: "Izaak Kuipers",
     version: "9.0.0",
     icon: "ComponentIcon",

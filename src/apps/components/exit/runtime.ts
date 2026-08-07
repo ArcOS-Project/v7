@@ -3,6 +3,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import type { RenderArgs } from "$types/process";
 import { ExitActions } from "./store";
 import type { ExitAction } from "./types";
 
@@ -33,5 +34,9 @@ export class ExitRuntime extends AppProcess implements IExitRuntime {
     if (alternate && option.alternateAction)
       option.alternateAction(Daemon!); // Alternate: when shift key is pressed
     else option.action(Daemon!);
+  }
+
+  render(args: RenderArgs) {
+    this.getBody().setAttribute("data-prefix", "apps.ExitApp");
   }
 }

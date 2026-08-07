@@ -37,8 +37,8 @@ export class AppInstallerRuntime extends AppProcess implements IAppInstallerRunt
       // Should never happen unless nik fucked something up (yes, nik)
       MessageBox(
         {
-          title: "Can't install package",
-          message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
+          title: "%apps.AppInstaller.noDistrib.title%",
+          message: "%apps.AppInstaller.noDistrib.message%",
           buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -55,24 +55,25 @@ export class AppInstallerRuntime extends AppProcess implements IAppInstallerRunt
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppInstaller");
+
     if (!this.userPreferences().security.enableThirdParty) {
       // The user has to allow TPAs explicitly
       MessageBox(
         {
-          title: "Can't install app",
-          message:
-            "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
+          title: "%apps.AppInstaller.noEnableThirdParty.title%",
+          message: "%apps.AppInstaller.noEnableThirdParty.message%",
           image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {
-              caption: "Take me there",
+              caption: "%apps.AppInstaller.noEnableThirdParty.takeMeThere%",
               action: () => {
                 this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
-              caption: "Okay",
+              caption: "%general.okay%",
               action: () => {},
               suggested: true,
             },

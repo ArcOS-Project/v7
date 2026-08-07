@@ -24,7 +24,7 @@
     <ActionSubtle mono text={appId} />
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.killAll()}>Kill all</ActionButton>
-    <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    <ActionButton onclick={() => process.killAll()}>%actions.killAll%</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>%general.close%</ActionButton>
   {/snippet}
 </ActionBar>

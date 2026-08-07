@@ -11,15 +11,15 @@
 <div class="top">
   <Icon icon="FolderIcon" />
   <div class="right">
-    <h1>New folder</h1>
-    <p>Think of a wonderful name for this new folder:</p>
+    <h1>%apps.FsNewFolder.title%</h1>
+    <p>%apps.FsNewFile.subtitle%</p>
     <input type="text" bind:value={$newFolder} />
   </div>
 </div>
 
 <ActionBar>
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
-    <ActionButton suggested disabled={!$newFolder} onclick={() => process.createFolder()}>Create</ActionButton>
+    <ActionButton onclick={() => process.closeWindow()}>%general.cancel%</ActionButton>
+    <ActionButton suggested disabled={!$newFolder} onclick={() => process.createFolder()}>%apps.FsNewFolder.create%</ActionButton>
   {/snippet}
 </ActionBar>

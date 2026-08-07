@@ -31,23 +31,24 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppPreInstall");
+
     if (!this.userPreferences().security.enableThirdParty) {
       MessageBox(
         {
-          title: "Can't install app",
-          message:
-            "Third-party apps aren't enabled on your account. Please enable third-party apps in the Settings to install this app.",
+          title: "%apps.AppPreInstall.noEnableThirdParty.title%",
+          message: "%apps.AppPreInstall.noEnableThirdParty.message%",
           image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [
             {
-              caption: "Take me there",
+              caption: "%apps.AppPreInstall.noEnableThirdParty.takeMeThere%",
               action: () => {
                 this.spawnApp("systemSettings", +Env.get("shell_pid"), "apps");
               },
             },
             {
-              caption: "Okay",
+              caption: "%general.okay%",
               action: () => {},
               suggested: true,
             },
@@ -65,7 +66,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
       {
         type: "size",
         icon: "DownloadIcon",
-        caption: "Reading ArcOS package",
+        caption: "%apps.AppPreInstall.readingPackage%",
         subtitle: this.pkgPath,
       },
       +Env.get("shell_pid")
@@ -87,16 +88,21 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
       await prog?.stop();
 
       if (!content) {
-        return this.fail("The package contents could not be read");
+        return this.fail("%apps.AppPreInstall.errors.noContents%");
       }
 
       this.zip = new JSZip();
       const buffer = await this.zip.loadAsync(content, {});
+
+      if (!buffer.files["_metadata.json"] || !buffer.files["payload/_app.tpa"]) {
+        return this.fail("%apps.AppPreInstall.errors.missingFiles%");
+      }
+
       const metaBinary = await buffer.files["_metadata.json"].async("arraybuffer");
       const metadata = tryJsonParse<ArcPackage>(arrayBufferToText(metaBinary));
       this.metadata.set(metadata);
     } catch {
-      return this.fail("Filesystem error");
+      return this.fail("%apps.AppPreInstall.errors.fsError%");
     }
   }
 
@@ -108,8 +114,8 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
 
     MessageBox(
       {
-        title: "Failed to open package",
-        message: `ArcOS failed to open the specified package. ${reason}`,
+        title: "%apps.AppPreInstall.fail.title%",
+        message: `%apps.AppPreInstall.fail.messagePartial% ${reason}`,
         buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
@@ -125,9 +131,9 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
 
     const meta = this.metadata();
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS wants to install an application",
+      what: "%apps.AppPreInstall.elevation.what%",
       title: meta.name,
-      description: `${meta.author} - ${meta.version}`,
+      description: `%apps.AppPreInstall.elevation.description(${meta.author}::${meta.version})%`,
       image: "ArcAppMimeIcon",
       level: ElevationLevel.medium,
     });

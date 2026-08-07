@@ -6,7 +6,7 @@ import { FsProgressRuntime } from "./runtime";
 export const FsProgressApp: App = {
   metadata: {
     name: "FsProgress",
-    author: "The ArcOS Team",
+    author: "%general.ArcOSTeam%",
     version: "1.0.0",
     icon: "ComponentIcon",
     appGroup: "components",

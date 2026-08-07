@@ -7,4 +7,4 @@
 <p class="error-message">
   {@html $errorMessage}
 </p>
-<button onclick={() => ($errorMessage = "")}>Okay</button>
+<button onclick={() => ($errorMessage = "")}>%general.okay%</button>

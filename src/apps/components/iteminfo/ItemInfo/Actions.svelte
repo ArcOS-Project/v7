@@ -14,10 +14,10 @@
       <ActionButton
         onclick={() => process.spawnOverlayApp("ShortcutProperties", process.pid, $info.location.fullPath, process.shortcut())}
       >
-        Edit Shortcut...
+        %actions.editShortcut%
       </ActionButton>
     {/if}
-    <ActionButton onclick={() => process.open()}>Open</ActionButton>
-    <ActionButton suggested onclick={() => process.closeWindow()}>Okay</ActionButton>
+    <ActionButton onclick={() => process.open()}>%general.open%</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>%general.okay%</ActionButton>
   {/snippet}
 </ActionBar>
