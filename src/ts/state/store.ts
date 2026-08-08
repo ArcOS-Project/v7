@@ -16,7 +16,7 @@ const globs = Object.values(
   import.meta.glob([
     "$apps/core/bootscreen/bootScreen",
     "$apps/core/initialsetup/initialSetupWizard",
-    "$apps/core/loginapp/loginApp",
+    "$apps/core/newloginapp/NewLoginApp",
     "$apps/core/switchserver/SwitchServer",
   ])
 );
