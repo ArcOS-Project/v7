@@ -32,15 +32,14 @@ export class ShareCreateGuiRuntime extends AppProcess implements IShareCreateGui
 
     if (!name || !password) return;
 
-    const result = await this.shares.createShare(name, password); // Let's create the share
+    const createResult = await this.shares.createShare(name, password); // Let's create the share
 
-    if (!result) {
+    if (!createResult.success) {
       // create failed or smth
       MessageBox(
         {
           title: "Failed to create share",
-          message:
-            "ArcOS was unable to create the share you requested. You might already have the maximum amount of shares in your account.",
+          message: `ArcOS was unable to create the share you requested. ${createResult.errorMessage ?? "An unknown error occurred while attempting to create the share. Please contact support."}`,
           buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
@@ -52,7 +51,7 @@ export class ShareCreateGuiRuntime extends AppProcess implements IShareCreateGui
       return;
     }
 
-    const drive = await this.shares.mountShareById(result._id); // Mount the created share
+    const drive = await this.shares.mountShareById(createResult.result!._id); // Mount the created share
 
     // NOTE: The user daemon automatically mounts owned shares upon login, so we don't have to add it to startup
 

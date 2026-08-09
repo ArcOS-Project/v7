@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IShareConnector } from "$interfaces/modules/server/IShareConnector";
 import type { IShareManager } from "$interfaces/services/IShareManager";
@@ -48,16 +49,16 @@ export class ShareManager extends BaseService implements IShareManager {
     return (await this.ShareConnector.JoinedGet()).result ?? [];
   }
 
-  async createShare(name: string, password: string): Promise<SharedDriveType | undefined> {
-    return (await this.ShareConnector.Create(name, password)).result;
+  async createShare(name: string, password: string): Promise<ICommandResult<SharedDriveType>> {
+    return await this.ShareConnector.Create(name, password);
   }
 
   async deleteShare(shareId: string) {
     return (await this.ShareConnector.Delete(shareId)).success;
   }
 
-  async changeSharePassword(shareId: string, newPassword: string): Promise<boolean> {
-    return (await this.ShareConnector.ChangePswdPost(shareId, newPassword)).success;
+  async changeSharePassword(shareId: string, newPassword: string): Promise<ICommandResult> {
+    return await this.ShareConnector.ChangePswdPost(shareId, newPassword);
   }
 
   async renameShare(shareId: string, newName: string): Promise<boolean> {

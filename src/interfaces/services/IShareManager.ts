@@ -1,3 +1,4 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { SharedDriveType } from "$types/server/shares";
@@ -8,9 +9,9 @@ export interface IShareManager extends IBaseService {
   getOwnedShares(): Promise<SharedDriveType[]>;
   mountOwnedShares(): Promise<void>;
   getJoinedShares(): Promise<SharedDriveType[]>;
-  createShare(name: string, password: string): Promise<SharedDriveType | undefined>;
+  createShare(name: string, password: string): Promise<ICommandResult<SharedDriveType>>;
   deleteShare(shareId: string): Promise<boolean>;
-  changeSharePassword(shareId: string, newPassword: string): Promise<boolean>;
+  changeSharePassword(shareId: string, newPassword: string): Promise<ICommandResult>;
   renameShare(shareId: string, newName: string): Promise<boolean>;
   joinShare(
     username: string,
