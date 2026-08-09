@@ -42,6 +42,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/arctermcolors/ArcTermColors",
   "$apps/components/masteroptions/MasterOptions",
   "$apps/components/sendbetafeedback/SendBetaFeedbackApp",
+  "$apps/components/pswdresetwizard/PswdResetWizardApp",
   "$apps/user/advsystemsettings/AdvSystemSettings",
   "$apps/user/appstore/AppStore",
   "$apps/user/arcterm/ArcTerm",

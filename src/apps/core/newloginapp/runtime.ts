@@ -1,9 +1,12 @@
+import PswdResetWizardApp from "$apps/components/pswdresetwizard/PswdResetWizardApp";
 import TotpAuthGuiApp from "$apps/components/totpauthgui/TotpAuthGui";
+import type { Constructs } from "$interfaces/common";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { INewLoginAppRuntime } from "$interfaces/runtimes/INewLoginAppRuntime";
+import type { IPswdResetWizardRuntime } from "$interfaces/runtimes/IPswdResetWizardRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
 import { UserDaemon } from "$ts/daemon";
@@ -266,6 +269,34 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
 
   public CreateUser(): void {
     State?.loadState("initialSetup");
+  }
+
+  public async ForgotPassword(): Promise<void> {
+    await new Promise<void>(async (resolve) => {
+      const proc = await Stack.spawn<IPswdResetWizardRuntime>(
+        PswdResetWizardApp.assets.runtime as Constructs<IPswdResetWizardRuntime>,
+        undefined,
+        "",
+        this.pid,
+        {
+          data: { ...PswdResetWizardApp, overlay: true },
+          id: PswdResetWizardApp.id,
+        }
+      );
+
+      if (!proc) {
+        // todo
+        resolve();
+        return;
+      }
+
+      const unsub = proc.Finished.subscribe((v) => {
+        if (!v) return;
+
+        resolve();
+        unsub?.();
+      });
+    });
   }
 
   //#endregion

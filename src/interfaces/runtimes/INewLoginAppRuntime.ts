@@ -20,15 +20,16 @@ export interface INewLoginAppRuntime extends IAppProcess {
   RemoveUser(userId: string): void;
   SelectUser(userId: string): void;
   LoadLoginStateUsingPersistenceFrom(userId: string): void;
-
+  
   JumpstartUserDaemon(token: string, userInfo: UserInfo): Promise<void>;
   PerformLogin(identity: string, password: string): Promise<void>;
   AskFor2FA(userId?: string): Promise<boolean>;
+  ForgotPassword(): Promise<void>;
   CreateUser(): void;
-
+  
   PerformShutdown(userDaemon?: IUserDaemon): Promise<void>;
   PerformRestart(userDaemon?: IUserDaemon): Promise<void>;
-
+  
   DismissError(): void;
   ShowError(message: string): void;
   ShowErrorAndWait(message: string): Promise<void>;

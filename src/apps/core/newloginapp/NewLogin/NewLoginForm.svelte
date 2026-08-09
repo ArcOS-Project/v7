@@ -43,7 +43,7 @@
   </div>
 </div>
 
-<button class="link password-reset" disabled>Forgot password?</button>
+<button class="link password-reset" onclick={() => process.ForgotPassword()}>Forgot password?</button>
 
 {#if !$State.selectedUser && !ServerInfo?.disableRegistration}
   <button class="login-action create-user" onclick={() => process.CreateUser()}>No account?</button>
