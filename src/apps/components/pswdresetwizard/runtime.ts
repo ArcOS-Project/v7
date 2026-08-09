@@ -4,9 +4,11 @@ import type { IPswdResetWizardRuntime } from "$interfaces/runtimes/IPswdResetWiz
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, GetConnector, Kernel, Stack } from "$ts/env";
 import { GoodStatusIcon } from "$ts/images/status";
+import { checkPasswordStrength } from "$ts/util";
 import { MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import { PasswordStrengthCaptions, type PasswordStrength } from "$types/user";
 import { PswdResetPages } from "./store";
 import type { PswdResetPage } from "./types";
 
@@ -91,7 +93,14 @@ export class PswdResetWizardRuntime extends AppProcess implements IPswdResetWiza
   }
 
   public async DoChangePassword() {
-    if (!this.NewPassword()) return;
+    const password = this.NewPassword();
+    if (!password) return;
+
+    const passwordStrength = checkPasswordStrength(password).value as PasswordStrength;
+    if (passwordStrength === "tooWeak") {
+      this.ErrorMessage.set(`Password is ${PasswordStrengthCaptions[passwordStrength]}!`);
+      return;
+    }
 
     this.Loading.set(true);
     const result = await this.UserConnector.ConsumePswdResetRequest(this.RecoveryUserId!, this.ResetToken!, this.NewPassword());

@@ -89,7 +89,6 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
   }
 
   async render(args: RenderArgs) {
-    console.trace("what");
     if (this.ServerInfo?.freshBackend) {
       await State.loadState("initialSetup");
       return false;
