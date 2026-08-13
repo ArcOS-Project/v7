@@ -1,4 +1,4 @@
-import type { SetupState } from "$apps/components/totpsetupgui/store";
+import type { SetupState } from "$apps/components/totpsetupgui/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore } from "$types/shared/writable";
 
