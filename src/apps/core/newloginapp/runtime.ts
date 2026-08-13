@@ -132,7 +132,7 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
     this.Persistence.update((v) => {
       const userConnector = Server.GetConn<IUserConnector>("UserConnector", "");
       const persistence: LoginPersistenceUser = {
-        displayName: info.preferences.account.displayName ?? info.username,
+        displayName: info.username,
         username: info.username,
         userId: info._id,
         profilePictureUrl: userConnector.PictureUrl(info._id),
