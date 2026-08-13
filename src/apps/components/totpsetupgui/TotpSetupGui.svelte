@@ -7,7 +7,7 @@
   import Input from "./TotpSetupGui/Input.svelte";
 
   const { process }: { process: ITotpSetupGuiRuntime } = $props();
-  const { code, url } = process;
+  const { code, url, setupState, firstTimeSetup } = process;
   let errored = $state(false);
   let locked = $state(false);
 
@@ -51,6 +51,28 @@
       );
       $code = "";
     } else {
+      if (firstTimeSetup) {
+        await MessageBox(
+          {
+            title: "ArcOS Security",
+            message: "Two-factor authentication has now been enabled on your account.",
+            buttons: [
+              {
+                caption: "Okay",
+                action: () => {
+                  setupState.set("successful");
+                },
+              },
+            ],
+            sound: "arcos.dialog.info",
+            image: "GoodStatusIcon",
+          },
+          process.parentPid,
+          true
+        );
+        return;
+      }
+
       MessageBox(
         {
           title: "ArcOS Security",
