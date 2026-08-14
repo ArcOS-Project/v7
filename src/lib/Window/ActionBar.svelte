@@ -1,15 +1,18 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  const {
-    leftContent,
-    rightContent,
-    className = "",
-    floating = false,
-  }: { leftContent?: Snippet; rightContent?: Snippet; className?: string; floating?: boolean } = $props();
+  interface Props {
+    leftContent?: Snippet;
+    rightContent?: Snippet;
+    className?: string;
+    floating?: boolean;
+    onTop?: boolean;
+  }
+
+  const { leftContent, rightContent, className = "", floating = false, onTop = false }: Props = $props();
 </script>
 
-<div class={`window-action-bar ${className}`.trim()} class:floating>
+<div class={`window-action-bar ${className}`.trim()} class:floating class:on-top={onTop}>
   <div class="left">
     {#if leftContent}
       {@render leftContent()}
