@@ -13,12 +13,24 @@
   const { userPreferences } = process;
   const { store } = Stack;
 
+  function shouldShow(openedProcess: IProcess) {
+    return (
+      ProcessesHelper.IsAnyGraphicalAppProcess(openedProcess) &&
+      !openedProcess._disposed &&
+      (isPopulatable(openedProcess.app.data) || openedProcess.overridePopulatable) &&
+      (!$userPreferences.shell.taskbar.openedAppsPerWorkspace ||
+        Daemon?.workspaces?.getDesktopIndexByUuid(openedProcess.app.desktop || "") === $userPreferences.workspaces.index)
+    );
+  }
+
   let positions = Store<Map<number, { x: number; y: number }>>(new Map());
   let tabs = Store<Map<number, IProcess>>(new Map());
   store()
     .entries()
-    .forEach((v, i) => {
-      tabs().set(v[0], v[1]);
+    .forEach(([pid, process]) => {
+      if (shouldShow(process)) {
+        tabs().set(pid, process);
+      }
     });
 
   store.subscribe((v) => {
@@ -43,7 +55,7 @@
       );
     } else {
       v.entries().forEach(([pid, process]) => {
-        if (!tabs().keys().toArray().includes(pid)) {
+        if (!tabs().keys().toArray().includes(pid) && shouldShow(process)) {
           tabs().set(pid, process);
           tabs.set(new Map(tabs()));
 
@@ -125,9 +137,7 @@
         },
       }}
     >
-      {#if ProcessesHelper.IsAnyGraphicalAppProcess(openedProcess) && !openedProcess._disposed && (isPopulatable(openedProcess.app.data) || openedProcess.overridePopulatable) && (!$userPreferences.shell.taskbar.openedAppsPerWorkspace || Daemon?.workspaces?.getDesktopIndexByUuid(openedProcess.app.desktop || "") === $userPreferences.workspaces.index)}
-        <OpenedApp {pid} openedProcess={openedProcess as any} {process} />
-      {/if}
+      <OpenedApp {pid} openedProcess={openedProcess as any} {process} />
     </div>
   {/each}
 </div>
