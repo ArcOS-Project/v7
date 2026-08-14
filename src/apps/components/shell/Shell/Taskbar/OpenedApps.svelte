@@ -36,34 +36,35 @@
   store.subscribe((v) => {
     if (tabs().size === v.size) return;
 
-    // process has been killed
-    if (v.size < tabs().size) {
-      tabs.set(
-        new Map(
-          [...tabs().entries()].filter(([pid]) => {
-            return v.keys().toArray().includes(pid);
-          })
-        )
-      );
+    // add new processes
 
-      positions.set(
-        new Map(
-          [...positions().entries()].filter(([pid]) => {
-            return v.keys().toArray().includes(pid);
-          })
-        )
-      );
-    } else {
-      v.entries().forEach(([pid, process]) => {
-        if (!tabs().keys().toArray().includes(pid) && shouldShow(process)) {
-          tabs().set(pid, process);
-          tabs.set(new Map(tabs()));
+    v.entries().forEach(([pid, process]) => {
+      if (!tabs().keys().toArray().includes(pid) && shouldShow(process)) {
+        tabs().set(pid, process);
+        tabs.set(new Map(tabs()));
 
-          positions().set(pid, { x: 0, y: 0 });
-          positions.set(new Map(positions()));
-        }
-      });
-    }
+        positions().set(pid, { x: 0, y: 0 });
+        positions.set(new Map(positions()));
+      }
+    });
+
+    // remove old processes
+
+    tabs.set(
+      new Map(
+        [...tabs().entries()].filter(([pid]) => {
+          return v.keys().toArray().includes(pid);
+        })
+      )
+    );
+
+    positions.set(
+      new Map(
+        [...positions().entries()].filter(([pid]) => {
+          return v.keys().toArray().includes(pid);
+        })
+      )
+    );
 
     // console.log("proc list:", tabs());
     // console.log("pos list: ", positions());
