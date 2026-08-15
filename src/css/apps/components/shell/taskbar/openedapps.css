@@ -17,10 +17,6 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
 
 #arcShell div.shell div.taskbar div.opened-apps div.drag-container {
   display: inline-flex;
-
-  &:not(:has(> button)) {
-    display: none;
-  }
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button {
