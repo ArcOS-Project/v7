@@ -6,9 +6,10 @@ import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { Daemon, Env, getKMod, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
+import { Store } from "$ts/writable";
 import type { Service } from "$types/services/service";
 import type { Unsubscriber } from "$types/shared/writable";
-import type { GlobalDispatchClient } from "$types/system/dispatch";
+import type { GlobalDispatchClient, GlobalDispatchState } from "$types/system/dispatch";
 import type { UserPreferences } from "$types/user";
 import io, { Socket } from "socket.io-client";
 
@@ -17,6 +18,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   client: Socket | undefined;
   server: IServerManager;
   authorized = false;
+  public ConnectionState = Store<GlobalDispatchState>("connecting");
 
   //#region LIFECYCLE
 
@@ -34,24 +36,32 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   async start() {
     this.initBroadcast?.("Connecting global dispatch");
-    return new Promise<void>((resolve) => {
-      this.client = io(this.server.url, { transports: ["websocket"] });
-      this.client.on("connect", async () => {
-        await this.connected();
-        resolve();
-      });
+    this.client = io(this.server.url, { transports: ["websocket"] });
+    this.client.on("connect", () => {
+      this.ConnectionState.set("connecting");
+      this.connected();
+    });
 
-      this.client.on("kicked", () => {
-        const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid"));
-        daemon?.power?.logoff();
-      });
+    this.client.on("kicked", () => {
+      const daemon = Stack.getProcess<IUserDaemon>(+Env.get("userdaemon_pid"));
+      daemon?.power?.logoff();
+    });
+
+    this.client.on("disconnect", (reason) => {
+      if (reason === "transport error" || reason === "transport close" || reason === "ping timeout") {
+        this.ConnectionState.set("disconnected");
+      }
     });
   }
 
   async stop(broadcast?: (m: string) => void) {
     broadcast?.("Stopping development environment");
-    this.client?.disconnect();
-    this.stackUnsubscribe?.();
+
+    return new Promise<void>((resolve) => {
+      this.client?.once("disconnect", () => resolve());
+      this.client?.disconnect();
+      this.stackUnsubscribe?.();
+    });
   }
 
   //#endregion
@@ -67,6 +77,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
         Env.set("dispatch_sock_id", this.client?.id);
         this.authorized = true;
         this.enableListener();
+        this.ConnectionState.set("connected");
         resolve();
       });
 

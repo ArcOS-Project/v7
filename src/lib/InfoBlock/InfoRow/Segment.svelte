@@ -3,7 +3,6 @@
 
   interface Props {
     title: string;
-    help?: () => any;
     right?: boolean;
     className?: string;
     children: Snippet;
@@ -11,16 +10,11 @@
     alt?: string;
   }
 
-  const { title, help, right = false, className = "", alt = "", children, grow }: Props = $props();
+  const { title, right = false, className = "", alt = "", children, grow }: Props = $props();
 </script>
 
 <div class="segment {className}" class:right class:grow>
-  <p class="title">
-    {title}
-    {#if help}
-      <button class="lucide icon-hand-helping" title="What's this?" aria-label="What's this?"></button>
-    {/if}
-  </p>
+  <p class="title">{title}</p>
   <p class="value" title={alt}>
     {@render children()}
   </p>
