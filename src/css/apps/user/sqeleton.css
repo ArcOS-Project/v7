@@ -4,6 +4,8 @@
 @import url("./sqeleton/actionbar.css");
 @import url("./sqeleton/bottompane.css");
 @import url("./sqeleton/statusbar.css");
+@import url("./sqeleton/opened.css");
+
 #Sqeleton > div.body {
   padding: 0;
   display: flex;

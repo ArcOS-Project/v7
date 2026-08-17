@@ -1,4 +1,4 @@
-import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable } from "$apps/user/sqeleton/types";
+import type { SqeletonError, SqeletonHistoryItem, SqeletonOpenedQuery, SqeletonTabs, SqlTable } from "$apps/user/sqeleton/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { ISqlInterfaceProcess } from "$interfaces/ISqlInterfaceProcess";
@@ -9,7 +9,7 @@ export interface ISqeletonRuntime extends IAppProcess {
   openedFile: ReadableStore<string>;
   openedFileName: ReadableStore<string>;
   _intf: ReadableStore<ISqlInterfaceProcess | undefined>;
-  queries: ReadableStore<string[]>;
+  queries: ReadableStore<SqeletonOpenedQuery[]>;
   queryIndex: ReadableStore<number>;
   errors: ReadableStore<SqeletonError[]>;
   queryHistory: ReadableStore<SqeletonHistoryItem[]>;

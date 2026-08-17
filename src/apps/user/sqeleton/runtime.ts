@@ -12,13 +12,13 @@ import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
-import type { SqeletonError, SqeletonHistoryItem, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
+import type { SqeletonError, SqeletonHistoryItem, SqeletonOpenedQuery, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
 export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   openedFile = Store<string>("");
   openedFileName = Store<string>("");
   _intf = Store<ISqlInterfaceProcess | undefined>();
-  queries = Store<string[]>([""]);
+  queries = Store<SqeletonOpenedQuery[]>([]);
   queryIndex = Store<number>(0);
   errors = Store<SqeletonError[]>([]);
   queryHistory = Store<SqeletonHistoryItem[]>([]);
@@ -217,18 +217,23 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     }
   }
 
-  newQuery(value = "") {
+  newQuery(value = "", filePath?: string) {
     this.queryIndex.set(this.queries().length);
     this.queries.update((v) => {
-      v[this.queryIndex()] = value;
+      v[this.queryIndex()] = {
+        content: value,
+        filename: filePath ? getItemNameFromPath(filePath) : "Untitled",
+        hasChanges: false,
+        id: UUID()
+      };
       return v;
     });
   }
 
-  openOrCreateQuery(value: string) {
-    const index = this.queries().indexOf(value);
+  openOrCreateQuery(filePath: string) {
+    const index = this.queries().findIndex((query) => query.filePath === filePath);
 
-    if (index < 0) return this.newQuery(value);
+    if (index < 0) return this.newQuery();
 
     this.queryIndex.set(index);
   }
