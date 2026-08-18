@@ -19,20 +19,13 @@
   height: 100%;
 }
 
-#Sqeleton > div.body div.editor {
-  display: flex;
-  flex-direction: column;
+#Sqeleton > div.body div.sql-editor {
   height: 0;
   flex-grow: 1;
+  border-top: var(--win-border);
 }
 
-#Sqeleton > div.body div.editor div.sql-editor {
-  height: 0;
-  flex-grow: 1;
-  border-top:var(--win-border);
-}
-
-#Sqeleton > div.body div.editor div.sql-editor textarea {
+#Sqeleton > div.body div.sql-editor textarea {
   width: 100%;
   height: 100%;
   padding: 10px;
@@ -43,7 +36,7 @@
   font-family: "Source Code Pro";
 }
 
-#Sqeleton > div.body div.editor div.bottom-pane {
-  height: 250px;
+#Sqeleton > div.body div.bottom-pane {
+  height: 35%;
   border-top: var(--win-border);
 }

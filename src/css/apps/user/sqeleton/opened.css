@@ -1,23 +1,24 @@
 #Sqeleton > div.body div.opened-editors {
   overflow-x: scroll;
-  padding: 10px;
-  padding-right: 0;
+  padding: 6px;
   border-bottom: var(--win-border);
   white-space: nowrap;
   overflow-y: hidden;
   display: flex;
   align-items: center;
+  height: 43px;
+  scrollbar-width: none;
 }
 
 #Sqeleton > div.body div.opened-editors button.query {
-  padding: 0 10px;
-  height: 30px;
+  padding: 0 8px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   outline: none;
   border-radius: 6px;
-  margin-right: 10px;
+  margin-right: 2px;
   background-color: transparent;
   min-width: fit-content;
 }
@@ -26,22 +27,13 @@
   background-color: var(--button-bg);
 }
 
-#Sqeleton > div.body div.opened-editors button.add {
-  display: inline-flex;
-  justify-content: start;
-  align-items: center;
-  position: sticky;
-  right: 0;
-  min-width: 50px;
-  height: 30px;
-  padding: 0 10px;
-  font-size: 16px;
-  background-color: var(--win-bg);
-  outline: none;
-  border-radius: 0;
-  opacity: 1;
+#Sqeleton > div.body div.opened-editors button.query span.lucide {
+  color: var(--accent-textual);
 }
 
-#Sqeleton > div.body div.opened-editors button.add:hover {
-  color: var(--accent-textual);
+#Sqeleton > div.body div.opened-editors button.query div.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--fg);
 }

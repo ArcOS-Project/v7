@@ -29,19 +29,28 @@ export interface ISqeletonRuntime extends IAppProcess {
   start(): Promise<void>;
   stop(): Promise<void>;
   render({ path }: { path?: string }): Promise<void>;
-  readFile(path: string): Promise<void>;
-  openFile(): Promise<void>;
-  newFile(): Promise<void>;
-  execute(code: string, simple?: boolean, system?: boolean): Promise<string | Record<string, any>[][] | undefined>;
-  updateTables(): Promise<void>;
-  newQuery(value?: string): void;
-  openOrCreateQuery(value: string): void;
+  readDatabase(path: string): Promise<void>;
+  openDatabase(): Promise<void>;
+  newDatabase(): Promise<void>;
+  executeSql(code: string, simple?: boolean, system?: boolean): Promise<string | Record<string, any>[][] | undefined>;
+  updateTableList(): Promise<void>;
+  openEditor(value?: string, filePath?: string): void;
+  closeQueryAck(index: number): Promise<void>;
+  closeQuery(index: number): Promise<void>;
+  saveCurrentQuery(): Promise<void>;
+  saveQuery(query: SqeletonOpenedQuery, index: number): Promise<ICommandResult>;
+  saveQueryAs(query: SqeletonOpenedQuery, index: number): Promise<ICommandResult>;
+  openQuery(): Promise<void>;
+  readQuery(path: string): Promise<void>;
   deleteQuery(index?: number): void;
   tableToSql(table: SqlTable, pretty?: boolean, dropFirst?: boolean): Promise<ICommandResult<string>>;
   hasSyntaxError(input: string): Promise<boolean>;
   waitForAvailable(): Promise<void>;
-  dropTableInteractively(table: string): void;
+  dropTableAck(table: string): void;
+
   ExistingConnectionError(): void;
   DbOpenError(e: string): void;
   TablesUpdateError(e: string): void;
+  QuerySaveError(result: ICommandResult): void;
+  QueryReadError(path: string): void;
 }

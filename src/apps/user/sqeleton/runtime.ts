@@ -7,11 +7,13 @@ import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
 import { SqlInterfaceProcess } from "$ts/sql";
 import { UserPaths } from "$ts/user/store";
+import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import { SqeletonAccelerators } from "./accelerators";
 import type { SqeletonError, SqeletonHistoryItem, SqeletonOpenedQuery, SqeletonTabs, SqlTable, SqlTableColumn } from "./types";
 
 export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
@@ -69,6 +71,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   }
 
   async start() {
+    this.acceleratorStore.push(...SqeletonAccelerators(this));
     this.tempDb = await SqlInterfaceProcess.Create(this.pid, this.tempDbPath);
   }
 
@@ -78,7 +81,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
   async render({ path }: { path?: string }) {
     if (path) {
-      await this.readFile(path);
+      await this.readDatabase(path);
     }
 
     await import("$css/apps/user/sqeleton.css");
@@ -86,7 +89,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
   //#endregion
 
-  async readFile(path: string) {
+  async readDatabase(path: string) {
     if (this.openedFile()) {
       this.ExistingConnectionError();
       return;
@@ -97,15 +100,16 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
       if (!this.Interface?.db) throw "Failed to open database. The resource might be locked.";
 
-      this.updateTables();
+      this.updateTableList();
       this.openedFile.set(path);
       this.openedFileName.set(getItemNameFromPath(path));
+      this.windowTitle.set(`${this.openedFileName()} - Sqeleton v${this.app.data.metadata.version}`);
     } catch (e) {
       this.DbOpenError(`${e}`);
     }
   }
 
-  async openFile() {
+  async openDatabase() {
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Select a database to open",
       icon: "SqeletonIcon",
@@ -115,10 +119,10 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
     if (!path) return;
 
-    this.readFile(path);
+    this.readDatabase(path);
   }
 
-  async newFile() {
+  async newDatabase() {
     const [path] = await Daemon!.files!.LoadSaveDialog({
       title: "Choose where to save the new database",
       icon: "SqeletonIcon",
@@ -134,10 +138,10 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     await db?.writeFile();
     await db?.killSelf();
 
-    this.readFile(path);
+    this.readDatabase(path);
   }
 
-  async execute(code: string, simple = false, system = false) {
+  async executeSql(code: string, simple = false, system = false) {
     await this.waitForAvailable();
     this.busy = true;
     this.working.set(true);
@@ -176,15 +180,15 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       });
     }
 
-    if (!simple) this.updateTables();
+    if (!simple) this.updateTableList();
 
     this.working.set(false);
     this.busy = false;
     return result;
   }
 
-  async updateTables() {
-    const query = await this.execute(
+  async updateTableList() {
+    const query = await this.executeSql(
       `SELECT * FROM sqlite_master WHERE NAME NOT LIKE "sqlite%" AND type IS NOT 'trigger';`,
       true,
       true
@@ -197,7 +201,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
       this.tables.set([]);
     } else {
       const columnQueryStr = (query[0] as SqlTable[]).map((table) => `PRAGMA table_info(${table.name});`).join("\n") + "\n";
-      const columns = await this.execute(columnQueryStr, true, true);
+      const columns = await this.executeSql(columnQueryStr, true, true);
 
       if (typeof columns === "string" || !columns?.length) {
         this.tables.set([]);
@@ -217,25 +221,147 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
     }
   }
 
-  newQuery(value = "", filePath?: string) {
-    this.queryIndex.set(this.queries().length);
+  openEditor(value = "", filePath?: string) {
     this.queries.update((v) => {
-      v[this.queryIndex()] = {
+      const query: SqeletonOpenedQuery = {
         content: value,
         filename: filePath ? getItemNameFromPath(filePath) : "Untitled",
-        hasChanges: false,
-        id: UUID()
+        filePath,
+        hasChanges: !filePath,
+        id: UUID(),
       };
+
+      if (v.length) {
+        v.splice(this.queryIndex() + 1, 0, query);
+        this.queryIndex.set(this.queryIndex() + 1);
+      } else {
+        v.push(query);
+      }
+
       return v;
     });
   }
 
-  openOrCreateQuery(filePath: string) {
-    const index = this.queries().findIndex((query) => query.filePath === filePath);
+  async closeQueryAck(index: number) {
+    const query = this.queries()[index];
+    if (!query) return;
 
-    if (index < 0) return this.newQuery();
+    if (!query.hasChanges) {
+      this.closeQuery(index);
+      return;
+    }
 
-    this.queryIndex.set(index);
+    MessageBox(
+      {
+        title: "Save changes?",
+        message: `Do you want to save the changes you made to '${query.filename}'?`,
+        buttons: [
+          {
+            caption: "Cancel",
+            action: () => {},
+          },
+          {
+            caption: "No",
+            action: async () => {
+              this.closeQuery(index);
+              return;
+            },
+          },
+          {
+            caption: "Yes",
+            action: async () => {
+              const result = await this.saveQuery(query, index);
+
+              if (!result.success && result.errorMessage) {
+                this.QuerySaveError(result);
+                return;
+              }
+
+              this.closeQuery(index);
+
+              return;
+            },
+            suggested: true,
+          },
+        ],
+        image: "WarningIcon",
+        sound: "arcos.dialog.warning",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  async closeQuery(index: number) {
+    this.queries.update((v) => {
+      v.splice(index, 1);
+      return v;
+    });
+
+    this.queryIndex.set(Math.max(index - 1, 0));
+  }
+
+  async saveCurrentQuery(): Promise<void> {
+    const query = this.queries()[this.queryIndex()];
+    if (!query) return;
+
+    const result = await this.saveQuery(query, this.queryIndex());
+    if (!result.success) this.QuerySaveError(result);
+  }
+
+  async saveQuery(query: SqeletonOpenedQuery, index: number): Promise<ICommandResult> {
+    if (!query.filePath) return await this.saveQueryAs(query, index); // send to saveQueryAs...
+
+    await Fs.writeFile(query.filePath, textToBlob(query.content));
+
+    this.queries.update((v) => {
+      if (v[index]) v[index].hasChanges = false;
+      return v;
+    });
+
+    return CommandResult.Ok();
+  }
+
+  async saveQueryAs(query: SqeletonOpenedQuery, index: number): Promise<ICommandResult> {
+    try {
+      const [path] = await Daemon.files!.LoadSaveDialog({
+        title: "Choose where to save this query",
+        icon: "SqeletonIcon",
+        isSave: true,
+        extensions: [".sql"],
+      });
+
+      if (!path) return CommandResult.Error("");
+
+      query.filePath = path;
+
+      return await this.saveQuery(query, index); // ...and send back to saveQuery
+    } catch (e: any) {
+      return CommandResult.Error(`${e?.message ?? e}`);
+    }
+  }
+
+  async openQuery(): Promise<void> {
+    const [path] = await Daemon!.files!.LoadSaveDialog({
+      title: "Select an SQL file to open",
+      icon: "SqeletonIcon",
+      startDir: UserPaths.Documents,
+      extensions: [".sql"],
+    });
+
+    if (!path) return;
+
+    await this.readQuery(path);
+  }
+
+  async readQuery(path: string): Promise<void> {
+    const content = await Fs.readFile(path);
+    if (!content) {
+      this.QueryReadError(path);
+      return;
+    }
+
+    this.openEditor(arrayBufferToText(content), path);
   }
 
   deleteQuery(index = this.queryIndex()) {
@@ -246,7 +372,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
   }
 
   async tableToSql(table: SqlTable, pretty = true, dropFirst = false): Promise<ICommandResult<string>> {
-    const items = (await this.execute(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
+    const items = (await this.executeSql(`SELECT * FROM ${table.name} WHERE 1;`, true, true))?.[0];
 
     if (!items) return CommandResult.Error("Didn't find any items");
 
@@ -298,7 +424,7 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
 
   //#region MESSAGES
 
-  dropTableInteractively(table: string) {
+  dropTableAck(table: string) {
     MessageBox(
       {
         title: "Are you sure?",
@@ -309,8 +435,8 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
           {
             caption: "Drop",
             action: async () => {
-              await this.execute(`DROP TABLE IF EXISTS ${table};`, true, true);
-              this.updateTables();
+              await this.executeSql(`DROP TABLE IF EXISTS ${table};`, true, true);
+              this.updateTableList();
             },
             suggested: true,
           },
@@ -361,13 +487,41 @@ export class SqeletonRuntime extends AppProcess implements ISqeletonRuntime {
           {
             caption: "Retry",
             action: () => {
-              this.updateTables();
+              this.updateTableList();
             },
             suggested: true,
           },
         ],
         sound: "arcos.dialog.warning",
         image: "WarningIcon",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  QuerySaveError(result: ICommandResult) {
+    MessageBox(
+      {
+        title: "Failed to save query",
+        message: `An error occurred while attempting to save the query. ${result.errorMessage ?? "Unknown failure."}`,
+        buttons: [BTN_OKAY_SUG],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
+      },
+      this.pid,
+      true
+    );
+  }
+
+  QueryReadError(path: string) {
+    MessageBox(
+      {
+        title: "Failed to read query",
+        message: `An error occurred while attempting to read a query from disk.<br><br>${path}`,
+        buttons: [BTN_OKAY_SUG],
+        sound: "arcos.dialog.error",
+        image: "ErrorIcon",
       },
       this.pid,
       true
