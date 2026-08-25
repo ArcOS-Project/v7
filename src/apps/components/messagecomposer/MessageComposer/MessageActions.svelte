@@ -6,7 +6,7 @@
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
 
   const { process }: { process: IMessageComposerRuntime } = $props();
-  const { title, body, recipients, sending, attachments, showPreview } = process;
+  const { sending, showPreview } = process;
 </script>
 
 <ActionBar onTop>
@@ -14,9 +14,9 @@
     <ActionButton icon="paperclip" title="Add attachment" disabled={$sending} onclick={() => process.addAttachment()}>
       Attach...
     </ActionButton>
-    <ActionButton icon="signature" title="Add signature" disabled={$sending} onclick={() => process.addSignature()}>
+    <!-- <ActionButton icon="signature" title="Add signature" disabled={$sending} onclick={() => process.addSignature()}>
       Signature...
-    </ActionButton>
+    </ActionButton> -->
   {/snippet}
   {#snippet rightContent()}
     <ActionGroup>
