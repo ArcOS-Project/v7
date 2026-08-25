@@ -6,7 +6,7 @@ export interface AppKeyCombination {
   ctrl?: boolean;
   shift?: boolean;
   key?: string;
-  action(proc: any, event: KeyboardEvent): MaybePromise<void>;
+  action(proc: any, event: KeyboardEvent): MaybePromise<any>;
   global?: boolean;
 }
 
