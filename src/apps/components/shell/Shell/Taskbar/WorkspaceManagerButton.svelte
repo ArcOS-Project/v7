@@ -38,7 +38,7 @@
 </script>
 
 <button
-  class="workspace-manager-button"
+  class="menu-trigger workspace-manager-button"
   class:active={$workspaceManagerOpened}
   onclick={toggle}
   onwheel={scroll}

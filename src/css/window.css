@@ -40,8 +40,15 @@ div.window:not(.core) {
 div.window {
   --accent-textual: var(--accent-light) !important;
   --accent-textual-fg: var(--accent-suggested-fg) !important;
+}
+
+div.window::-webkit-scrollbar-track {
+  width: 5px;
+}
+
+body:not(.browser-chrome.host-windows) div.window {
   scrollbar-color: var(--button-glass-bg) transparent;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
 .theme-light div.window {

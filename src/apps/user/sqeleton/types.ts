@@ -12,6 +12,14 @@ export interface SqlTable {
   columns: SqlTableColumn[];
 }
 
+export interface SqeletonOpenedQuery {
+  filePath?: string;
+  filename?: string;
+  content: string;
+  hasChanges?: boolean;
+  id: string;
+}
+
 export interface SqlTableColumn {
   cid: number;
   name: string;

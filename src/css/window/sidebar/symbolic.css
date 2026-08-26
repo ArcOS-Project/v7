@@ -4,9 +4,8 @@ div.window:not(.core) > div.body {
     height: 100%;
     width: var(--sidebar-width);
     border-right: var(--win-border);
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 10px;
-    padding-right: 2px;
 
     section.sidebar-section {
       h1 {

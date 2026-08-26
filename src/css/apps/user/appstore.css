@@ -56,7 +56,6 @@
   padding: 0 10px;
   height: calc(100% - 40px - 70px);
   overflow-y: scroll;
-  padding-right: 2px;
 }
 
 #AppStore > div.body div.sidebar div.pages p.group-name {

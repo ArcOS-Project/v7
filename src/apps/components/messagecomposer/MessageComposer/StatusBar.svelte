@@ -3,22 +3,19 @@
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import IconActionButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
-  import Pill from "$lib/Window/ActionBar/ActionPill.svelte";
-  import Separator from "$lib/Window/ActionBar/ActionSeparator.svelte";
+  import ActionPill from "$lib/Window/ActionBar/ActionPill.svelte";
   import { formatBytes } from "$ts/util/fs";
 
-  const { process }: { process: IMessageComposerRuntime } = $props();
-  const { title, body, recipients, sending, attachments } = process;
+  let { process }: { process: IMessageComposerRuntime } = $props();
+  const { body, attachments, sending, title, recipients } = process;
 </script>
 
 <ActionBar>
   {#snippet leftContent()}
-    <Pill key={"Body"}>{formatBytes($body.length)}</Pill>
-    <Pill key={"Attachments"}>{formatBytes($attachments.map((a) => a.data.size).reduce((a, b) => a + b, 0))}</Pill>
+    <ActionPill key={"Body"}>{formatBytes($body.length)}</ActionPill>
+    <ActionPill key={"Attachments"}>{formatBytes($attachments.map((a) => a.data.size).reduce((a, b) => a + b, 0))}</ActionPill>
   {/snippet}
   {#snippet rightContent()}
-    <IconActionButton icon="paperclip" title="Add attachment" disabled={$sending} onclick={() => process.addAttachment()} />
-    <Separator />
     <IconActionButton
       icon="trash-2"
       title="Discard message"

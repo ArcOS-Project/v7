@@ -12,8 +12,8 @@ export const MessageComposerApp: App = {
     appGroup: "multimedia",
   },
   position: { centered: true },
-  size: { w: 550, h: 450 },
-  minSize: { w: 550, h: 450 },
+  size: { w: 800, h: 650 },
+  minSize: { w: 800, h: 650 },
   maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,

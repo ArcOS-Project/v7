@@ -35,6 +35,15 @@ div.window div.window-action-bar > div.left {
   flex-grow: 1;
 }
 
+div.window div.window-action-bar.on-top {
+  border-top: none;
+  border-bottom: var(--win-border);
+}
+
+div.window.glass div.window-action-bar.on-top {
+  border-bottom-color: var(--button-glass-bg);
+}
+
 div.window div.window-action-bar.floating {
   height: 52px;
   border-radius: 15px;
@@ -122,7 +131,7 @@ div.window div.window-action-bar button.action-bar-icon-button {
   align-items: center;
   font-size: 16px;
   min-width: fit-content;
-  border:var(--win-border)
+  border: var(--win-border);
 }
 
 div.window div.window-action-bar button.action-bar-button * {

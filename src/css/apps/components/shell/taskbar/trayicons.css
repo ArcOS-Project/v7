@@ -1,0 +1,75 @@
+div.shell div.taskbar div.tray-icons {
+  padding: 0 3px !important;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon,
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger {
+  margin: 0;
+  padding: 0;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger:hover {
+  background-color: var(--shell-component-bg);
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger:disabled {
+  opacity: 1;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger.active {
+  background-color: var(--accent-transparent);
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > button.trigger img {
+  height: 20px;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup {
+  --w: 150px;
+  --h: 200px;
+  position: absolute;
+  top: calc(0px - var(--h) - 10px);
+  width: var(--w);
+  height: var(--h);
+  background-color: var(--win-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--border);
+  border-radius: var(--win-border-rad);
+  margin-top: 20px;
+  scale: 0.9;
+  opacity: 0;
+  pointer-events: none !important;
+  overflow: hidden;
+  transition:
+    scale 0.2s,
+    margin 0.2s,
+    opacity 0.2s;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup.visible {
+  opacity: 1;
+  margin-top: 0;
+  pointer-events: initial !important;
+  scale: 1;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
+  pointer-events: none !important;
+}
+
+#arcShell div.taskbar div.tray-icons > div.icon > div.popup:not(.visible) * {
+  pointer-events: none !important;
+}
+
+div.shell.has-fullscreen div.taskbar {
+  translate: 0 70px !important;
+}

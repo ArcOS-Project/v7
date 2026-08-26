@@ -7,6 +7,7 @@ import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
 import { textToBlob } from "$ts/util/convert";
+import { UAParser } from "ua-parser-js";
 import { StateHandler } from "../state";
 import { Process } from "./mods/stack/process/instance";
 
@@ -26,6 +27,7 @@ export class InitProcess extends Process {
   async jumpstart() {
     __Console__.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
+    this.parseBrowserInfo();
 
     await Stack.startRenderer(this.pid);
 
@@ -71,5 +73,14 @@ export class InitProcess extends Process {
   nightly() {
     document.title = `NIGHTLY - ArcOS v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
     Env.set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
+  }
+
+  parseBrowserInfo() {
+    const ua = UAParser(navigator.userAgent);
+
+    document.body.classList.add(
+      `browser-${ua.browser?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g,"-"),
+      `host-${ua.os?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g,"-")
+    );
   }
 }
