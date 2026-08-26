@@ -9,9 +9,7 @@ import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
-import type { SearchItem } from "$types/services/search";
 import type { RecursiveDirectoryReadReturn } from "$types/system/fs";
-import type { Workspace } from "$types/user";
 import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
 
@@ -44,25 +42,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     super(pid, parentPid, app);
 
     this.setSource(__SOURCE__);
-  }
-
-  gotReadySignal(): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  deleteWorkspace(workspace: Workspace): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  MutateIndex(e: KeyboardEvent): void | -1 {
-    throw new Error("Method not implemented.");
-  }
-  Trigger(result: SearchItem): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  Submit(): void {
-    throw new Error("Method not implemented.");
-  }
-  changeShell(id: string): Promise<false | undefined> {
-    throw new Error("Method not implemented.");
   }
 
   async start() {
@@ -201,9 +180,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
     });
   }
 
-  //#endregion
-  //#region STARTMENU
-
   public async refreshStartMenu(): Promise<void> {
     try {
       const tree = await Fs.tree(this.STARTMENU_FOLDER);
@@ -219,12 +195,6 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
       return;
     }
   }
-
-  //#endregion
-  //#region CALENDAR
-
-  //#endregion
-  //#region WEATHER
 
   async exit() {
     this.startMenuOpened.set(false); // First close the start menu
@@ -254,6 +224,4 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
     this.FullscreenCount.set(fullscreenCount);
   }
-
-  //#endregion
 }

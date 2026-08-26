@@ -66,7 +66,7 @@
 }
 
 #AppInstaller > div.body div.ready-to-install span {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   font-size: 64px;
   margin-bottom: 10px;
 }

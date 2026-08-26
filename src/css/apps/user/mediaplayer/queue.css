@@ -3,7 +3,6 @@
   height: 100%;
   border-left: var(--win-border);
   padding: 10px;
-  padding-right: 2px;
   overflow-y: scroll;
 }
 

@@ -1,5 +1,5 @@
 import type { UserDaemonStartOptions } from "$types/daemon";
-import type { ReadableStore } from "$types/shared/writable";
+import type { BooleanStore, ReadableStore } from "$types/shared/writable";
 import type { UserInfo, UserPreferences } from "$types/user";
 import type { AxiosInstance } from "axios";
 import type { IAccountUserContext } from "./contexts/IAccountUserContext";
@@ -43,6 +43,7 @@ export interface IUserDaemon extends IProcess {
   _blockLeaveInvocations: boolean;
   _toLoginInvoked: boolean;
   _criticalProcess: boolean;
+  InitComplete: BooleanStore;
   copyList: ReadableStore<string[]>;
   cutList: ReadableStore<string[]>;
   get betaClient(): AxiosInstance;

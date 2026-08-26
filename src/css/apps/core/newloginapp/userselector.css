@@ -1,0 +1,80 @@
+#NewLoginApp > div.body div.user-selector {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 250px;
+  height: fit-content;
+  max-height: 360px; /* room for 4 users + add user */
+  overflow-y: auto;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  div.user-option {
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    margin-top: 4px;
+    transition:
+      background-color 0.2s,
+      backdrop-filter 0.1s;
+
+    &:hover,
+    &.selected {
+      background-color: #fff1;
+      backdrop-filter: blur(var(--blur));
+    }
+
+    button.trigger {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+      background-color: transparent;
+      width: 0;
+      flex-grow: 1;
+      text-align: left;
+
+      h1 {
+        font-size: 16px;
+        margin-bottom: 2px;
+        line-height: 19px;
+        font-weight: normal;
+      }
+
+      p.role {
+        font-size: 12px;
+        opacity: 0.5;
+      }
+    }
+    &.add-user span.lucide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+      background-color: #fff1;
+      border: #fff1 1px solid;
+      border-radius: 50%;
+    }
+
+    button.delete {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      background-color: transparent;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    &:not(.selected) button.delete {
+      display: none;
+    }
+  }
+}

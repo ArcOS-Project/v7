@@ -4,6 +4,10 @@
   pointer-events: none !important;
 }
 
+#contextMenu div.context-menu {
+  z-index: calc(infinity) !important;
+}
+
 #contextMenu div.context-menu,
 #contextMenu div.context-menu div.sub-items {
   position: absolute;
@@ -111,8 +115,9 @@
 }
 
 #contextMenu div.context-menu.colored button.menu-item:not(.subitems):active {
-  background-color: var(--accent-transparent);
-  color: var(--accent-light);
+  background-color: var(--accent-textual);
+  opacity: 1;
+  color: var(--accent-textual-fg);
   box-shadow: none;
 }
 

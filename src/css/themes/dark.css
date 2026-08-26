@@ -52,6 +52,8 @@
 
 :root {
   --accent: dodgerblue;
+  --accent-dark-medium: rgb(0, 134, 178);
+  --accent-dark-medium-fg: #000;
   --accent-dark: rgb(0, 94, 126);
   --accent-light: #80dfff;
   --accent-darkest: rgb(0, 46, 61);
@@ -59,6 +61,8 @@
   --accent-suggested-start: var(--accent) !important;
   --accent-suggested-end: var(--accent) !important;
   --accent-suggested-fg: #000 !important;
+  --accent-textual: var(--accent-light);
+  --accent-textual-fg: var(--accent-suggested-fg);
 }
 
 :root .theme-dark.noglass {

@@ -1,0 +1,33 @@
+#MailbrokerManagerApp_NewKeyOverlay > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+
+  div.top {
+    display: flex;
+    align-items: start;
+    gap: 15px;
+    padding: 15px;
+    height: 0;
+    flex-grow: 1;
+
+    img {
+      height: 48px;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    > div.right {
+      width: 0;
+      flex-grow: 1;
+    }
+  }
+}

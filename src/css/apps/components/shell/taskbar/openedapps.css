@@ -1,5 +1,6 @@
 div.shell div.taskbar div.opened-apps {
   /* background-color: var(--button-glass-bg); */
+  width: 0;
   flex-grow: 1;
   height: 41px;
   /* padding: 3px; */
@@ -7,6 +8,7 @@ div.shell div.taskbar div.opened-apps {
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
+  scrollbar-width: none;
 }
 
 div.shell div.taskbar div.opened-apps::-webkit-scrollbar {

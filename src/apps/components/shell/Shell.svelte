@@ -14,6 +14,7 @@
 
   const { process }: AppComponentProps<IShellRuntime> = $props();
   const { userPreferences, startMenuOpened, actionCenterOpened, username, FullscreenCount } = process;
+  const { InitComplete } = Daemon;
 
   let currentDesktop = $state<string>();
 
@@ -28,27 +29,29 @@
   });
 </script>
 
-<div
-  class="shell taskbar-bounds fullscreen"
-  class:docked={$userPreferences.shell.taskbar.docked}
-  class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop]?.size > 0}
->
-  <div class="primary">
-    <VirtualDesktops {process} />
-    <VirtualDesktopIndicator {process} />
-    <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
-    <div></div>
-    <ActionCenter {actionCenterOpened} {userPreferences} {process} />
-    <PushNotification {process} />
-    {#if Daemon.userInfo.isSystem}
-      <div class="desktop-watermark">
-        ArcOS v{ArcOSVersion}-{ArcMode()}_{ArcBuild()}<br />
-        {Daemon.username}@{Server.hostname}<br />
-        THIS IS A SYSTEM ACCOUNT. WATCH OUT.
-      </div>
-    {/if}
+{#if $InitComplete}
+  <div
+    class="shell taskbar-bounds fullscreen"
+    class:docked={$userPreferences.shell.taskbar.docked}
+    class:has-fullscreen={currentDesktop && $FullscreenCount[currentDesktop]?.size > 0}
+  >
+    <div class="primary">
+      <VirtualDesktops {process} />
+      <VirtualDesktopIndicator {process} />
+      <StartMenu {userPreferences} {startMenuOpened} {process} {username} />
+      <div></div>
+      <ActionCenter {actionCenterOpened} {userPreferences} {process} />
+      <PushNotification {process} />
+      {#if Daemon.userInfo.isSystem}
+        <div class="desktop-watermark">
+          ArcOS v{ArcOSVersion}-{ArcMode()}_{ArcBuild()}<br />
+          {Daemon.username}@{Server.hostname}<br />
+          THIS IS A SYSTEM ACCOUNT. WATCH OUT.
+        </div>
+      {/if}
+    </div>
+    <div class="secondary">
+      <Taskbar {process} />
+    </div>
   </div>
-  <div class="secondary">
-    <Taskbar {process} />
-  </div>
-</div>
+{/if}

@@ -23,12 +23,6 @@ export const DefaultUserPreferences: UserPreferences = {
       accentedStartButton: false,
     },
     actionCenter: {
-      weatherLocation: {
-        // unset
-        latitude: Infinity,
-        longitude: Infinity,
-        name: "unset",
-      },
       noteContent: "",
       galleryImage: "",
       cardIndex: 0,
@@ -92,6 +86,13 @@ export const DefaultUserPreferences: UserPreferences = {
   globalSettings: {},
   _internalImportBlocklist: [],
   enableVerboseLogin: false,
+  weatherSettings: {
+    migrated: false,
+    displayMode: "withCondition",
+    latitude: 0,
+    longitude: 0,
+    name: "unset",
+  },
 };
 
 export const DefaultUserInfo: UserInfo = {

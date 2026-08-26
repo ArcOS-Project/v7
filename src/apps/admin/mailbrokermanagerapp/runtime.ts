@@ -1,0 +1,61 @@
+import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import { AppProcess } from "$ts/apps/process";
+import { Daemon } from "$ts/env";
+import { Store } from "$ts/writable";
+import type { App, AppProcessData } from "$types/apps/app";
+import NewKeyOverlay from "./Overlays/NewKeyOverlay/NewKeyOverlay";
+import SendOverlay from "./Overlays/SendOverlay/SendOverlay";
+import KeyOverlay from "./Overlays/ViewKeyOverlay/KeyOverlay";
+import { mailbrokerPages } from "./store";
+
+export class MailbrokerManagerRuntime extends AppProcess implements IMailbrokerManagerRuntime {
+  currentPage = Store<string>("");
+  pageProps = Store<Record<string, any>>({});
+
+  get admin() {
+    return Daemon.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper")!;
+  }
+
+  protected overlayStore: Record<string, App> = {
+    SendOverlay,
+    KeyOverlay,
+    NewKeyOverlay,
+  };
+
+  //#region LIFECYCLE
+
+  constructor(pid: number, parentPid: number, app: AppProcessData) {
+    super(pid, parentPid, app);
+
+    this.switchPage("activeTemplates");
+
+    this.setSource(__SOURCE__);
+  }
+
+  switchPage(pageId: string, props?: Record<string, any>, force = false) {
+    this.Log(`Loading page '${pageId}'`);
+
+    if (!mailbrokerPages.has(pageId)) return;
+
+    if (force) {
+      this.currentPage.set("");
+    }
+
+    this.pageProps.set({});
+
+    const page = mailbrokerPages.get(pageId);
+
+    this.pageProps.set(props ?? {});
+    this.currentPage.set(pageId);
+    this.windowTitle.set(`${page?.name}`);
+  }
+
+  async start() {}
+
+  async stop() {}
+
+  async render() {}
+
+  //#endregion LIFECYCLE
+}

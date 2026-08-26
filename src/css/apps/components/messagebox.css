@@ -1,5 +1,6 @@
 #messageBox {
   width: max-content !important;
+  height:fit-content !important;
   display: flex;
   flex-direction: column;
 }
@@ -13,7 +14,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: fit-content;
 }
 
 #messageBox div.top {

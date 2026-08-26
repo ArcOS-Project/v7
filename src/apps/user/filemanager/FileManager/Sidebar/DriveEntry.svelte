@@ -21,7 +21,7 @@
 </script>
 
 <button
-  class="drive"
+  class="sidebar-button drive"
   onclick={() => process.navigate(`${identifier}/`)}
   class:selected={$path === `${identifier}/`}
   data-contextmenu={identifiesAs === "share" ? "sidebar-shared-drive" : "sidebar-drive"}

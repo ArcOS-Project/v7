@@ -75,7 +75,7 @@
 }
 
 #ShareListGui > div.body div.listing button.selected > span.lucide {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #ShareListGui > div.body button.refresh {

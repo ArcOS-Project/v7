@@ -39,5 +39,5 @@
   width: var(--value, 0%);
   height: 6px;
   border-radius: 3px;
-  background-color: var(--accent-light);
+  background-color: var(--accent-textual);
 }

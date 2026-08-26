@@ -8,20 +8,20 @@
 </script>
 
 <button
-  ondblclick={() => process.newQuery(`SELECT * FROM ${table.name} WHERE 1;`)}
+  ondblclick={() => process.openEditor(`SELECT * FROM ${table.name} WHERE 1;`)}
   use:contextMenu={[
     [
       {
         caption: "View top 200 rows",
         action: () => {
-          process.execute(`SELECT * FROM ${table.name} LIMIT 200`);
+          process.executeSql(`SELECT * FROM ${table.name} LIMIT 200`);
           process.currentTab.set("result");
         },
         icon: "eye",
       },
       {
         caption: "View top 1000 rows",
-        action: () => process.execute(`SELECT * FROM ${table.name} LIMIT 1000`),
+        action: () => process.executeSql(`SELECT * FROM ${table.name} LIMIT 1000`),
         icon: "view",
       },
       { sep: true },
@@ -32,7 +32,7 @@
             caption: "Drop existing table first",
             action: async () => {
               const sqlResult = await process.tableToSql(table, true, true);
-              if (sqlResult.success) process.newQuery(sqlResult.result);
+              if (sqlResult.success) process.openEditor(sqlResult.result);
             },
             icon: "eraser",
           },
@@ -40,7 +40,7 @@
             caption: "Keep existing table",
             action: async () => {
               const sqlResult = await process.tableToSql(table, true, false);
-              if (sqlResult) process.newQuery(sqlResult.result);
+              if (sqlResult) process.openEditor(sqlResult.result);
             },
             icon: "check-check",
           },
@@ -50,7 +50,7 @@
       { sep: true },
       {
         caption: "Drop table...",
-        action: () => process.dropTableInteractively(table.name),
+        action: () => process.dropTableAck(table.name),
         icon: "bomb",
       },
     ],

@@ -1,0 +1,89 @@
+@import url("./mailbroker/sidebar.css");
+@import url("./mailbroker/templatelisting.css");
+@import url("./mailbroker/pages/sent.css");
+@import url("./mailbroker/pages/viewsent.css");
+@import url("./mailbroker/pages/viewtemplate.css");
+@import url("./mailbroker/pages/newtemplate.css");
+@import url("./mailbroker/pages/keys.css");
+@import url("./mailbroker/pages/logs.css");
+@import url("./mailbroker/listingheader.css");
+@import url("./mailbroker/overlays/sendoverlay.css");
+@import url("./mailbroker/overlays/keyoverlay.css");
+@import url("./mailbroker/overlays/newkeyoverlay.css");
+
+#MailbrokerManagerApp > div.body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+
+  > div.window-symbolic-sidebar {
+    --sidebar-width: 250px;
+  }
+
+  > div.container {
+    width: 0;
+    height: 100%;
+    flex-grow: 1;
+    background-color: var(--win-bg);
+    display: flex;
+    flex-direction: column;
+
+    > div.page-content {
+      padding: 0;
+      height: 0;
+      flex-grow: 1;
+
+      &.loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      div.page-load-error {
+        padding: 10px;
+        border: var(--button-glass-bg) 1px solid;
+        border-radius: 10px;
+        margin: 10px;
+
+        div.error {
+          display: flex;
+          align-items: start;
+          gap: 15px;
+
+          > span.lucide {
+            font-size: 32px;
+            color: var(--clr-red-fg);
+          }
+
+          h1 {
+            font-size: 18px;
+          }
+
+          p {
+            opacity: 0.5;
+          }
+        }
+      }
+
+      div.pills {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        div.pill {
+          height: 20px;
+          padding: 0 7px;
+          border-radius: 4px;
+          background-color: var(--button-bg);
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+      }
+    }
+
+    > div.titlebar.custom {
+      border-bottom: var(--win-border);
+    }
+  }
+}

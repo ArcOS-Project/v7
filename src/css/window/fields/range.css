@@ -24,7 +24,7 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -3px;
-  background-color: var(--accent-lighter);
+  background-color: var(--accent-textual);
   opacity: 1;
   border-radius: 0.5rem;
   height: 10px;
@@ -40,7 +40,7 @@ input[type="range"]::-moz-range-track {
 }
 
 input[type="range"]::-moz-range-thumb {
-  background-color: var(--accent-lighter);
+  background-color: var(--accent-textual);
   border: none;
   border-radius: 0.5rem;
   height: 1rem;

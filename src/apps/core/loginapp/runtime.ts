@@ -290,23 +290,33 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   //#endregion
   //#region CREDENTIALS
 
-  async proceed(username: string, password: string) {
-    this.Log(`Trying login of '${username}'`);
+  async proceed(identifier: string, password: string) {
+    this.Log(`Trying login of '${identifier}'`);
 
-    this.loadingStatus.set(`Hi, ${username}!`);
-
-    const tokenResult = await LoginUser(username, password);
+    const tokenResult = await LoginUser(identifier, password);
 
     if (!tokenResult.success) {
       this.loadingStatus.set("");
-      this.errorMessage.set(tokenResult.errorMessage ?? "Username or password incorrect");
+      this.errorMessage.set(tokenResult.errorMessage ?? "Username/Email or password incorrect");
 
       this.updateServerStuff();
 
       return;
     }
 
-    await this.startDaemon(tokenResult.result!, username);
+    const userInfo = await this.validateUserToken(tokenResult.result!);
+    if (!userInfo) {
+      this.resetCookies();
+
+      this.loadingStatus.set("");
+      this.errorMessage.set("Session token is invalid.");
+
+      return;
+    }
+
+    this.loadingStatus.set(`Hi, ${userInfo.username}!`);
+
+    await this.startDaemon(tokenResult.result!, userInfo.username);
   }
 
   private saveToken(userDaemon: IUserDaemon) {
@@ -449,7 +459,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
   updateServerStuff() {
     if (this.server.serverInfo) this.serverInfo.set(this.server.serverInfo);
     this.DEFAULT_WALLPAPER.set(
-      this.serverInfo()?.loginWallpaper ? `${this.server.url}/loginbg${authcode()}` : Wallpapers.img18.url
+      this.serverInfo()?.loginWallpaper ? `${this.server.url}/loginbg${authcode()}` : Wallpapers.img39.url
     );
     this.loginBackground.set(this.DEFAULT_WALLPAPER());
   }

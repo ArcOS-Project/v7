@@ -26,7 +26,6 @@ export interface IShellRuntime extends IAppProcess {
   stop(): Promise<boolean>;
   pinApp(appId: string): Promise<void>;
   unpinApp(appId: string): void;
-  deleteWorkspace(workspace: Workspace): Promise<void>;
   refreshStartMenu(): Promise<void>;
   exit(): Promise<void>;
   updateFullscreenCount(): void;

@@ -10,7 +10,7 @@
 </script>
 
 <button
-  class="action-center-button"
+  class="menu-trigger action-center-button"
   class:active={$actionCenterOpened}
   onclick={toggle}
   aria-label="Action Center"

@@ -235,7 +235,7 @@
 }
 
 #AdminPortal div.viewShare div.accessor-row div.segment.icon span.lucide {
-  color: var(--accent-light);
+  color: var(--accent-textual);
   font-weight: normal;
   font-size: 16px;
 }
