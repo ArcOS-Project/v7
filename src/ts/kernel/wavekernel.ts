@@ -4,7 +4,6 @@ import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
-import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
@@ -41,7 +40,6 @@ export class WaveKernel implements IWaveKernel {
     if (import.meta.env.DEV) {
       const win = window as any;
       win.kernel = this;
-      win.JsExec = JsExec;
     }
   }
 

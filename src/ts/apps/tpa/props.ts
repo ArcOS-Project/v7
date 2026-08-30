@@ -4,7 +4,6 @@ import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { __Console__ } from "$ts/console";
 import { Daemon, Env, Fs, Stack } from "$ts/env";
 import { getAllImages } from "$ts/images";
-import type { JsExec } from "$ts/jsexec";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
@@ -32,10 +31,11 @@ import { Store } from "$ts/writable";
 import type { ThirdPartyPropMap } from "$types/tpa/thirdparty";
 import axios from "axios";
 import dayjs from "dayjs";
-import { ThirdPartyProcess } from "./process";
+import { ThirdPartyProcess } from "$ts/apps/tpa/process";
 import { SupplementaryThirdPartyPropFunctions } from "./supplementary";
+import type { JsExecEngineData } from "$types/tpa/engine";
 
-export function ThirdPartyProps(engine: JsExec): ThirdPartyPropMap {
+export function ThirdPartyProps(engine: JsExecEngineData): ThirdPartyPropMap {
   const props = {
     env: Env, // TEMP
     handler: Stack, // TEMP

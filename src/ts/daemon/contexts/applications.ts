@@ -128,6 +128,8 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       v.security.enableThirdParty = true;
       return v;
     });
+
+    await Daemon!.serviceHost?.startService("JsExecSvc");
   }
 
   async disableThirdParty() {
@@ -151,5 +153,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     for (const [pid, proc] of [...store]) {
       if (!proc._disposed && (proc instanceof ThirdPartyAppProcess || proc instanceof ThirdPartyProcess)) Stack.kill(pid, true);
     }
+
+    await Daemon!.serviceHost?.stopService("JsExecSvc");
   }
 }
