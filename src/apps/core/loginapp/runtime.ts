@@ -251,7 +251,7 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
       broadcast("Stopping User Daemon");
       await userDaemon.killSelf();
     }
-    State?.loadState("turnedOff");
+    await State?.loadState("turnedOff");
   }
 
   async restart(userDaemon?: IUserDaemon) {

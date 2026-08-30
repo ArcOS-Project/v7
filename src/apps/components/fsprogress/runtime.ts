@@ -1,5 +1,6 @@
 import type { IFsProgressRuntime } from "$interfaces/runtimes/IFsProgressRuntime";
 import { AppProcess } from "$ts/apps/process";
+import { IsElectron } from "$ts/electron";
 import { Stack } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -29,6 +30,10 @@ export class FsProgressRuntime extends AppProcess implements IFsProgressRuntime 
       this.windowTitle.set(v.caption);
       this.windowIcon.set(v.icon);
 
+      if (IsElectron()) {
+        electron!.updateIconProgress(v.done, v.max);
+      }
+
       if (v.done >= v.max && v.max > 0 && !v.errors.length) {
         await this.closeWindow(); // Close the window if pending operations are done
 
@@ -47,6 +52,10 @@ export class FsProgressRuntime extends AppProcess implements IFsProgressRuntime 
 
   async onClose(): Promise<boolean> {
     if (this.parentPid) Stack.renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
+
+    if (IsElectron()) {
+      electron!.updateIconProgress(0, 0);
+    }
 
     return true;
   }

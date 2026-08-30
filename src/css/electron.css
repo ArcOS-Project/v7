@@ -1,0 +1,108 @@
+@import url("./themes.css");
+
+@property --electron-titlebar-height {
+  syntax: "<length> | <percentage>";
+  inherits: false;
+  initial-value: 40px;
+}
+
+:root {
+  --electron-titlebar-height: 40px;
+}
+
+body.electron-app {
+  overflow: hidden;
+  transform: translateZ(0);
+  border-radius: 0px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: border-radius .2s;
+  }
+
+  &.transparent {
+    background-color: transparent;
+  }
+
+}
+
+/* Please, PLEASE don't judge me for this. it works.
+ * It's just a way for me to check if the titlebar is
+ * hidden or not and affect the apprenderer size
+ */
+body:has(#electron-titlebar.hidden) #appRenderer.electron-app {
+  height: 100%;
+}
+
+body.electron-app.rounded {
+  border-radius: var(--win-border-rad)
+}
+
+#appRenderer.electron-app {
+  top: unset;
+  bottom: 0;
+  height: calc(100% - var(--electron-titlebar-height));
+}
+
+#electron-titlebar {
+  display: flex;
+  position: relative;
+  top: 0;
+
+  height: var(--electron-titlebar-height);
+  width: 100%;
+
+  z-index: 10000 !important;
+  padding: .75rem;
+
+  app-region: drag;
+
+  user-select: none;
+
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(4px);
+
+  &.hidden {
+    display: none;
+
+    ~#appRenderer.electron-app {
+      height: 100%;
+    }
+  }
+
+}
+
+#electron-titlebar>.window-title {
+  flex: 1;
+  display: inline-flex;
+  gap: .5rem;
+
+  &>img {
+    height: 100%;
+  }
+
+  &>span {
+    align-self: center;
+    font-size: 1.15rem;
+  }
+}
+
+#electron-titlebar>.controls {
+  align-self: center;
+
+  & button {
+    margin: 0;
+    padding: .15rem;
+    font-size: 1.15rem;
+    border: none;
+    aspect-ratio: 1;
+    background-color: transparent;
+    color: var(--fg);
+    transition: opacity 0.2s;
+
+    app-region: no-drag;
+
+    &:hover {
+      color: var(--accent-light);
+    }
+  }
+}
