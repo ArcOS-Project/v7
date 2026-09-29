@@ -1,16 +1,18 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import { Daemon } from "$ts/env";
+import { Daemon, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
-import { ToAxiosProgress } from "$ts/util";
+import { authcode, ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
+  ExtendedStat,
   FilesystemProgressCallback,
   FilesystemStat,
+  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
@@ -184,18 +186,34 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
   }
 
   async direct(path: string): Promise<string | undefined> {
-    const content = await this.readFile(path, () => {});
-    if (!content) return undefined;
+    try {
+      const response = await Backend.post(
+        `/admin/afs/accessors/${path}`,
+        {},
+        { headers: { Authorization: `Bearer ${Daemon!.token}` } }
+      );
 
-    const blob = arrayBufferToBlob(content);
-    return URL.createObjectURL(blob);
+      const data = response.data as FsAccess;
+
+      return `${this.server.url}/admin/afs/direct/${data.userId}/${data.accessor}${authcode()}`;
+    } catch {
+      return undefined;
+    }
   }
 
   async stat(path: string): Promise<FilesystemStat | undefined> {
     try {
       const response = await Backend.get(`/admin/afs/stat/${path}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
+      const data = response.data as ExtendedStat;
 
-      return response.data as FilesystemStat;
+      if (data.modifiers?.createdBy?.user?.profilePicture) {
+        data.modifiers.createdBy.user.profilePicture = `${Server.url}${data.modifiers.createdBy.user.profilePicture}${authcode()}`;
+      }
+      if (data.modifiers?.lastWrite?.user?.profilePicture) {
+        data.modifiers.lastWrite.user.profilePicture = `${Server.url}${data.modifiers.lastWrite.user.profilePicture}${authcode()}`;
+      }
+
+      return data as FilesystemStat;
     } catch {
       return undefined;
     }

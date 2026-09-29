@@ -247,11 +247,11 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
       const response = await Backend.get(`/fs/stat/${path}`, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
       const data = response.data as ExtendedStat;
 
-      if (data.modifiers?.createdBy?.user) {
-        data.modifiers.createdBy.user.profilePicture = `${Server.url}${data.modifiers.createdBy.user.profilePicture}`;
+      if (data.modifiers?.createdBy?.user?.profilePicture) {
+        data.modifiers.createdBy.user.profilePicture = `${Server.url}${data.modifiers.createdBy.user.profilePicture}${authcode()}`;
       }
-      if (data.modifiers?.lastWrite?.user) {
-        data.modifiers.lastWrite.user.profilePicture = `${Server.url}${data.modifiers.lastWrite.user.profilePicture}`;
+      if (data.modifiers?.lastWrite?.user?.profilePicture) {
+        data.modifiers.lastWrite.user.profilePicture = `${Server.url}${data.modifiers.lastWrite.user.profilePicture}${authcode()}`;
       }
 
       return data as ExtendedStat;

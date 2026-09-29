@@ -198,12 +198,14 @@ export const ActivityIconTranslations = {
   unknown: "shield-question",
   login: "log-in",
   logout: "log-out",
+  shutdown: "power",
 };
 
 export const ActivityCaptionTranslations = {
   unknown: "Unknown activity",
   login: "Logged in",
   logout: "Logged out",
+  shutdown: "Shut down ArcOS",
 };
 
 export const TimeFrames: Record<string, string> = {

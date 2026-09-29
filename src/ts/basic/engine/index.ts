@@ -430,6 +430,7 @@ export class ArcBasicEngine {
     await this.setVariable("ERR", message);
 
     if (exit) {
+      this.HALT = true;
       const line = this.source[this.programCounter];
       const lineNumber = `${this.programCounter + 1}`;
       const columnNumber = Math.max(columnIndexHint ? line.indexOf(columnIndexHint) : 0, 0);
