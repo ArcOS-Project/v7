@@ -9,8 +9,8 @@
 #systemSettings div.apps_manageApps div.options {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px;
+  gap: 15px;
+  padding: 0 15px;
 }
 
 #systemSettings div.apps_manageApps div.options div.view-mode {
@@ -63,7 +63,7 @@
   position: relative;
   height: 0;
   flex-grow: 1;
-  padding: 10px;
+  padding: 15px;
   overflow-y: scroll;
 }
 
@@ -81,15 +81,17 @@
   --font-size: 12px;
   padding: 12px;
   outline: none;
-  border-radius: 6px;
+  border-radius: 10px;
   width: 250px;
   height: fit-content;
   margin-right: 8px;
   margin-bottom: 8px;
 }
 
-#systemSettings div.apps_manageApps div.apps.grid-large button.app {
-  width: 200px;
+#systemSettings div.apps_manageApps div.apps button.app:hover {
+  background-color: var(--button-glass-bg);
+  outline: var(--button-glass-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #systemSettings div.apps_manageApps div.apps button.app h1 {
@@ -113,17 +115,15 @@
   grid-area: icon;
 }
 
-#systemSettings div.apps_manageApps div.apps.grid-large button.app img {
-  width: 40px;
-  height: 40px;
+#systemSettings div.apps_manageApps div.apps button.app.list-item img {
+  width: 32px;
+  height: 32px;
 }
 
-#systemSettings div.apps_manageApps div.apps.grid-large button.app h1 {
-  font-size: 14px;
-}
-
-#systemSettings div.apps_manageApps div.apps.list {
-  display: block;
+#systemSettings div.apps_manageApps div.apps button.app.list-item p.type {
+  opacity: 0.5;
+  margin-left: auto;
+  padding: 0 10px;
 }
 
 #systemSettings div.apps_manageApps div.apps.list button.app {
@@ -145,13 +145,10 @@
   font-style: italic;
 }
 
-#systemSettings div.apps_manageApps div.apps.list button.app img {
-  width: 20px;
-  height: 20px;
-}
-
-#systemSettings div.apps_manageApps div.apps.list button.app h1 {
-  margin-right: auto;
+#systemSettings div.apps_manageApps div.apps button.app.grid-item:hover {
+  background-color: var(--button-glass-hover-bg);
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
 }
 
 #systemSettings div.apps_manageApps p.no-results {

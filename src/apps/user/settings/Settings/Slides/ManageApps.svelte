@@ -1,13 +1,16 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
-  import Icon from "$lib/Icon.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
-  import { Daemon } from "$ts/env";
   import { isPopulatable } from "$ts/util/apps";
   import { Store } from "$ts/writable";
   import type { App, AppStorage } from "$types/apps/app";
   import Fuse, { type IFuseOptions } from "fuse.js";
   import { onMount } from "svelte";
+  import ViewMode from "./ManageApps/ViewMode.svelte";
+  import SearchBar from "./ManageApps/SearchBar.svelte";
+  import FIlter from "./ManageApps/FIlter.svelte";
+  import GridAppItem from "./ManageApps/GridAppItem.svelte";
+  import GridListItem from "./ManageApps/GridListItem.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { userPreferences } = process;
@@ -16,13 +19,13 @@
   let store = Store<AppStorage>([]);
   let search = Store<string>("");
   let filter = Store<string>("visible");
-  let view = $state<string>("grid-small");
+  let view = $state<string>("grid");
 
   function update() {
     const options: IFuseOptions<App> = {
       includeScore: true,
       keys: ["metadata.name", "id"],
-      threshold: 0.4,
+      threshold: 0.2,
     };
 
     const fuse = new Fuse($buffer, options);
@@ -54,56 +57,20 @@
 </script>
 
 <div class="options">
-  <div class="search">
-    <span class="lucide icon-search"></span>
-    <input type="text" placeholder="Find apps..." bind:value={$search} />
-  </div>
-  <div class="view-mode">
-    <button
-      class="lucide icon-grid-2x2"
-      aria-label="Large grid"
-      class:suggested={view === "grid-large"}
-      onclick={() => (view = "grid-large")}
-      title="Grid view"
-    ></button>
-    <button
-      class="lucide icon-grid-3x3"
-      aria-label="Small grid"
-      class:suggested={view === "grid-small"}
-      onclick={() => (view = "grid-small")}
-      title="Compact grid"
-    ></button>
-    <button
-      class="lucide icon-list"
-      title="List view"
-      aria-label="List"
-      class:suggested={view === "list"}
-      onclick={() => (view = "list")}
-    ></button>
-  </div>
-  <select class="filter" bind:value={$filter}>
-    <option value="all">All</option>
-    <option value="hidden">Hidden</option>
-    <option value="visible">Visible</option>
-    <option value="builtin">Built-in</option>
-    <option value="thirdparty">Third-party</option>
-    <option value="disabled">Disabled</option>
-  </select>
+  <SearchBar {search} />
+  <ViewMode bind:view />
+  <FIlter {filter} />
 </div>
 <div class="apps {view}">
   {#if !$store.length}
     <p class="no-results">No results!</p>
   {:else}
     {#each $store as app (`${app.originId}-${app.id}-${app.metadata.name}`)}
-      <button
-        class="app"
-        onclick={() => process.spawnOverlayApp("AppInfo", process.pid, app.id)}
-        class:disabled={Daemon?.apps?.checkDisabled(app.id, app.noSafeMode)}
-      >
-        <Icon icon="@app::{app.id}" />
-        <h1>{app.metadata.name}</h1>
-        <p class="author">{app.metadata.author} - v{app.metadata.version}</p>
-      </button>
+      {#if view === "grid"}
+        <GridAppItem {app} {process} />
+      {:else if view === "list"}
+        <GridListItem {app} {process} />
+      {/if}
     {/each}
   {/if}
 </div>
