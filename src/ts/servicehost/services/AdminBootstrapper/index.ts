@@ -24,6 +24,7 @@ import type {
   AdminTemporaryPassword,
   AuditLog,
   AuditLogQueryOptions,
+  BugHuntGetResponse,
   BugReportSourceInformation,
   FsAccess,
   FSItem,
@@ -367,12 +368,12 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
-  async getBugReport(id: string): Promise<BugReport | undefined> {
+  async getBugReport(id: string): Promise<BugHuntGetResponse | undefined> {
     if (this._disposed) return;
     try {
-      const response = await this.adminClient.get(`/report/${id}`);
+      const response = await this.adminClient.get(`/bughunt/report/${id}`);
 
-      return response.data as BugReport;
+      return response.data as BugHuntGetResponse;
     } catch {
       return undefined;
     }

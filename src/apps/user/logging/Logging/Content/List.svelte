@@ -10,6 +10,7 @@
   <div class="row head">
     <div class="segment icon"></div>
     <div class="segment timestamp">Timestamp</div>
+    <div class="segment source">Source</div>
     <div class="segment message">Message</div>
   </div>
   <div class="rows">

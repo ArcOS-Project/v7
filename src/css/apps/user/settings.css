@@ -38,7 +38,7 @@
 #systemSettings > div.body div.container {
   flex-grow: 1;
   max-width: calc(100% - 250px);
-  background-color: var(--win-bg);
+  background-color: var(--glass-bg);
   transition:
     background-color 0.2s,
     color 0.2s;

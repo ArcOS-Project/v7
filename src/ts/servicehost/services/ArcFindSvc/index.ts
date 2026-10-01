@@ -129,8 +129,10 @@ export class ArcFindService extends BaseService implements IArcFindService {
 
     this.fileSystemIndex = index; // Set the cache
 
+    const assoc = Daemon.assoc;
+
     for (const file of index) {
-      const info = Daemon?.assoc?.getFileAssociation(file.name);
+      const info = assoc?.getFileAssociation(file.name);
 
       if (preferences.searchOptions.excludeShortcuts && !!file.shortcut) continue;
 

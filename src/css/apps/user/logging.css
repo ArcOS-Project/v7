@@ -137,7 +137,8 @@
 }
 
 #logging > div.body div.log-list div.row div.segment.message {
-  max-width: calc(100% - 160px - 16px - 20px);
+  width: 0;
+  flex-grow: 1;
 }
 
 #logging > div.body div.log-list div.row div.segment:not(.icon) {
@@ -146,6 +147,10 @@
 
 #logging > div.body div.log-list div.row div.segment.timestamp {
   width: 160px;
+}
+
+#logging > div.body div.log-list div.row div.segment.source {
+  width: 200px;
 }
 
 #logging > div.body div.log-list div.row:not(.head) div.segment.timestamp {

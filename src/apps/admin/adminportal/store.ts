@@ -73,7 +73,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         const id = process.switchPageProps().id;
 
-        return { report: await process.admin.getBugReport(id) };
+        return (await process.admin.getBugReport(id)) ?? {};
       },
     },
   ],
@@ -89,9 +89,9 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       props: async (process) => {
         const id = process.switchPageProps().id;
         const report = await process.admin.getBugReport(id);
-        if (!report) return { report };
+        if (!report) return report;
 
-        const source = await process.admin.getReportSourceFile(report);
+        const source = await process.admin.getReportSourceFile(report.report);
 
         return { report, source };
       },

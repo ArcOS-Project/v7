@@ -6,6 +6,7 @@ import type {
   AdminTemporaryPassword,
   AuditLog,
   AuditLogQueryOptions,
+  BugHuntGetResponse,
   BugReportSourceInformation,
   FSItem,
   IpAddress,
@@ -54,7 +55,7 @@ export interface IAdminBootstrapper extends IBaseService {
   closeBugReport(reportId: string): Promise<boolean>;
   reopenBugReport(reportId: string): Promise<boolean>;
   getAllBugReports(): Promise<BugReport[]>;
-  getBugReport(id: string): Promise<BugReport | undefined>;
+  getBugReport(id: string): Promise<BugHuntGetResponse | undefined>;
   getBugHuntStatistics(): Promise<ReportStatistics | undefined>;
   setSystemFor(username: string, value: boolean): Promise<boolean>;
   disapproveUser(username: string): Promise<boolean>;

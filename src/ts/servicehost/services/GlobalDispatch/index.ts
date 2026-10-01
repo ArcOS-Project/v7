@@ -93,6 +93,15 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
     this.emit("update", {
       lastActive: Date.now(),
       processCount: Stack.store().size,
+      processes: [...Stack.store()].map(([pid, proc]) => ({
+        pid,
+        parentPid: proc.parentPid,
+        name: proc.name,
+        className: proc.constructor.name,
+        classType: Object.getPrototypeOf(proc.constructor).name,
+        sourceUrl: proc.sourceUrl,
+        state: proc.STATE,
+      })),
       lastApp: Stack.renderer?.lastInteract?.app?.data,
     });
   }

@@ -11,7 +11,7 @@
   let loading = $state<boolean>(true);
 
   onMount(async () => {
-    report = await process.admin.getBugReport(id);
+    report = (await process.admin.getBugReport(id))?.report;
 
     loading = false;
   });
