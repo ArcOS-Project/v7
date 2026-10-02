@@ -4,11 +4,11 @@ import type { PublicUserInfo, UserInfo } from "$types/user";
 
 // !tpa
 export interface IAccountUserContext extends IUserContext {
-  discontinueToken(token?: string): Promise<boolean | undefined>;
   getUserInfo(): Promise<ICommandResult<UserInfo>>;
-  changeUsername(newUsername: string): Promise<boolean>;
-  changePassword(newPassword: string): Promise<boolean>;
-  getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined>;
+  getPublicUserInfoOf(userId: string): Promise<ICommandResult<PublicUserInfo>>;
+  changeUsername(newUsername: string): Promise<ICommandResult>;
+  changePassword(newPassword: string): Promise<ICommandResult>;
+  discontinueToken(token?: string): Promise<ICommandResult>;
   deleteAccount(): Promise<void>;
 }
 // !endtpa

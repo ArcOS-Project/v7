@@ -11,16 +11,15 @@
   let newUsername = $state("");
 
   async function changeIt() {
-    const result = await Daemon?.account?.changeUsername(newUsername);
+    const result = await Daemon.account!.changeUsername(newUsername);
 
     process.closeWindow();
 
-    if (!result) {
+    if (!result.success) {
       MessageBox(
         {
           title: "Change username",
-          message:
-            "Failed to change username! Either the username isn't allowed, it's already in use or you didn't approve the elevation request. Please try again.",
+          message: `Failed to change username! ${result.errorMessage ?? "Either the username isn't allowed, it's already in use or you didn't approve the elevation request."} Please try again.`,
           buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",

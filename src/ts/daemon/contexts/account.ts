@@ -17,17 +17,15 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     super(id, daemon);
   }
 
-  async discontinueToken(token = Daemon!.token) {
-    if (this._disposed) return;
+  async discontinueToken(token = Daemon!.token): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
 
     this.Log(`Discontinuing token`);
 
     try {
-      const response = await Backend.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } });
-
-      return response.status === 200;
-    } catch {
-      return false;
+      return CommandResult.FromResponse(await Backend.post(`/logout`, {}, { headers: { Authorization: `Bearer ${token}` } }));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 
@@ -63,8 +61,8 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     }
   }
 
-  async changeUsername(newUsername: string): Promise<boolean> {
-    if (this._disposed) return false;
+  async changeUsername(newUsername: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
 
     this.Log(`Changing username to "${newUsername}"`);
 
@@ -76,23 +74,23 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return false;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided.");
 
     const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Rename(newUsername);
-    if (!result.success) return false;
+    if (!result.success) return result;
 
     this.username = newUsername;
     SysDispatch.dispatch("change-username", [newUsername]);
     Cookies.set("arcUsername", newUsername, {
       expires: 14,
-      domain: import.meta.env.DEV ? "localhost" : "izk-arcos.nl",
+      domain: import.meta.env.DEV ? "localhost" : "arcweb.nl",
     });
 
-    return true;
+    return CommandResult.Ok();
   }
 
-  async changePassword(newPassword: string): Promise<boolean> {
-    if (this._disposed) return false;
+  async changePassword(newPassword: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
 
     this.Log(`Changing password to [REDACTED]`);
 
@@ -104,22 +102,19 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return false;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
 
-    const result = await Daemon.GetConnector<IUserConnector>("UserConnector").ChangePassword(newPassword);
-    if (!result.success) return false;
-
-    return true;
+    return await Daemon.GetConnector<IUserConnector>("UserConnector").ChangePassword(newPassword);
   }
 
-  async getPublicUserInfoOf(userId: string): Promise<PublicUserInfo | undefined> {
+  async getPublicUserInfoOf(userId: string): Promise<ICommandResult<PublicUserInfo>> {
     const result = await Daemon.GetConnector<IUserConnector>("UserConnector").Info(userId);
-    if (!result.success) return undefined;
+    if (!result.success) return result;
 
     const information = result.result as PublicUserInfo;
     information.profilePicture = Daemon.GetConnector<IUserConnector>("UserConnector").PictureUrl(userId);
 
-    return information;
+    return result;
   }
 
   async deleteAccount() {

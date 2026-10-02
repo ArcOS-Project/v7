@@ -4,6 +4,7 @@
   import { Daemon } from "$ts/env";
   import { TimeFrames } from "$ts/user/store";
   import { groupByTimeFrame } from "$ts/util";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import type { LoginActivity } from "$types/user/activity";
   import { onMount } from "svelte";
   import Section from "../Section.svelte";
@@ -18,7 +19,25 @@
   });
 
   async function getActivity() {
-    groups = groupByTimeFrame<LoginActivity>(((await Daemon?.activity?.getLoginActivity()) || []).reverse(), "createdAt");
+    const activityResult = await Daemon.activity?.getLoginActivity();
+
+    if (!activityResult?.errorMessage) {
+      MessageBox(
+        {
+          title: "An error occurred",
+          message: `Failed to obtain your login activity. ${activityResult?.errorMessage ?? "Unknown fault."}`,
+          buttons: [BTN_OKAY_SUG],
+          image: "WarningIcon",
+          sound: "arcos.dialog.warning",
+        },
+        process.pid,
+        true
+      );
+
+      return;
+    }
+
+    groups = groupByTimeFrame<LoginActivity>(activityResult.result!.reverse(), "createdAt");
   }
 </script>
 

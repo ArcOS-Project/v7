@@ -138,12 +138,12 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
 
     if (this.userInfoCache[userId]) return CommandResult.Ok(this.userInfoCache[userId]);
 
-    const info = await Daemon?.account?.getPublicUserInfoOf(userId);
-    if (!info) return CommandResult.Error("Failed to obtain user info");
+    const infoResult = await Daemon.account!.getPublicUserInfoOf(userId);
+    if (infoResult?.success) {
+      this.userInfoCache[userId] = infoResult.result!;
+    }
 
-    this.userInfoCache[userId] = info;
-
-    return CommandResult.Ok(info);
+    return infoResult;
   }
 
   async readMessageFromFile(path: string) {

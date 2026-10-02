@@ -32,12 +32,11 @@
 
     process.closeWindow();
 
-    if (!result) {
+    if (!result?.success) {
       MessageBox(
         {
           title: "Change password",
-          message:
-            "Failed to change your password! Either the password is invalid or you didn't approve the elevation request. Please try again.",
+          message: `Failed to change your password! ${result?.errorMessage ?? "Either the password is invalid or you didn't approve the elevation request."} Please try again.`,
           buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",

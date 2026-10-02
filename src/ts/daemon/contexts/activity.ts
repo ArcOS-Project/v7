@@ -1,7 +1,9 @@
 import type { ILoginActivityUserContext } from "$interfaces/contexts/ILoginActivityUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Daemon } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
+import { CommandResult } from "$ts/result";
 import { toForm } from "$ts/util/form";
 import type { LoginActivity } from "$types/user/activity";
 import { UserContext } from "../context";
@@ -11,22 +13,22 @@ export class LoginActivityUserContext extends UserContext implements ILoginActiv
     super(id, daemon);
   }
 
-  async getLoginActivity(): Promise<LoginActivity[]> {
-    if (this._disposed) return [];
+  async getLoginActivity(): Promise<ICommandResult<LoginActivity[]>> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
 
     try {
       const response = await Backend.get("/activity", {
         headers: { Authorization: `Bearer ${Daemon!.token}` },
       });
 
-      return response.data as LoginActivity[];
-    } catch {
-      return [];
+      return CommandResult.Ok(response.data as LoginActivity[]);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 
   async logActivity(action: string) {
-    if (this._disposed) return false;
+    if (this._disposed) return CommandResult.Error("Disposed.");
 
     this.Log(`Broadcasting login activity "${action}" to server`);
 
@@ -41,9 +43,9 @@ export class LoginActivityUserContext extends UserContext implements ILoginActiv
         { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
-      return response.status === 200;
-    } catch {
-      return false;
+      return CommandResult.FromResponse(response);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
     }
   }
 }

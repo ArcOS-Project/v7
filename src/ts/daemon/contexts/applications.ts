@@ -1,10 +1,12 @@
 import type { IApplicationsUserContext } from "$interfaces/contexts/IApplicationsUserContext";
 import type { IAppProcess } from "$interfaces/IAppProcess";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
 import { Daemon, Stack, SysDispatch } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
+import { CommandResult } from "$ts/result";
 import { isPopulatable } from "$ts/util/apps";
 import type { App } from "$types/apps/app";
 import { ElevationLevel } from "$types/system/elevation";
@@ -44,16 +46,16 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     return isPopulatable(app);
   }
 
-  async disableApp(appId: string) {
-    if (this._disposed) return false;
-    if (this.checkDisabled(appId)) return false;
+  async disableApp(appId: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
+    if (this.checkDisabled(appId)) return CommandResult.Error("Application is already disabled");
 
     this.Log(`Disabling application ${appId}`);
 
     const appStore = this.appStorage();
     const app = appStore?.getAppSynchronous(appId);
 
-    if (!app || this.isVital(app)) return;
+    if (!app || this.isVital(app)) return CommandResult.Error("Application not found or vital");
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
@@ -62,7 +64,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
-    if (!elevated) return;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
 
     Daemon!.preferences.update((v) => {
       v.disabledApps.push(appId);
@@ -80,18 +82,19 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       }
 
     SysDispatch.dispatch("app-store-refresh");
+    return CommandResult.Ok();
   }
 
-  async enableApp(appId: string) {
-    if (this._disposed) return false;
-    if (!this.checkDisabled(appId)) return false;
+  async enableApp(appId: string): Promise<ICommandResult> {
+    if (this._disposed) return CommandResult.Error("Disposed.");
+    if (!this.checkDisabled(appId)) return CommandResult.Error("Application is already enabled.");
 
     this.Log(`Enabling application ${appId}`);
 
     const appStore = this.appStorage();
     const app = await appStore?.getAppSynchronous(appId);
 
-    if (!app) return;
+    if (!app) return CommandResult.Error("Application not found");
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
@@ -100,7 +103,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
-    if (!elevated) return;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
 
     Daemon!.preferencesCtx?.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
@@ -111,9 +114,11 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     });
 
     SysDispatch.dispatch("app-store-refresh");
+
+    return CommandResult.Ok();
   }
 
-  async enableThirdParty() {
+  async enableThirdParty(): Promise<ICommandResult> {
     const elevated = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS wants to enable third-party applications",
       title: "Enable Third-party",
@@ -122,12 +127,14 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided.");
 
     Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = true;
       return v;
     });
+
+    return CommandResult.Ok();
   }
 
   async disableThirdParty() {
@@ -139,7 +146,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return;
+    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
 
     Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = false;
@@ -151,5 +158,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     for (const [pid, proc] of [...store]) {
       if (!proc._disposed && (proc instanceof ThirdPartyAppProcess || proc instanceof ThirdPartyProcess)) Stack.kill(pid, true);
     }
+
+    return CommandResult.Ok();
   }
 }
