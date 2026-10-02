@@ -8,7 +8,11 @@ export class SetprefCommand extends BasicCommand {
   async execute(line: string): Promise<string | undefined> {
     const [rawHierarchy, ...values] = await this.interpreter.getStrings(line, false);
 
-    if (values.length > 1) {
+    if (!rawHierarchy) {
+      return "No hierarchy found. Did you wrap it in a string?"
+    }
+
+    if (values.length !== 1) {
       return "SETPREF takes exactly one value";
     }
 
