@@ -139,7 +139,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       return 0;
     }
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to install a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
@@ -147,7 +147,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return "elevateCancel";
+    if (!elevationResult.success) return "elevateCancel";
 
     const result = await this.distrib.storeItemInstaller(freshPkg._id, onDownloadProgress);
     if (!result) return false;
@@ -197,14 +197,14 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       return 0;
     }
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to update a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
       image: StoreItemIcon(pkg),
       level: ElevationLevel.medium,
     });
-    if (!elevated) return false;
+    if (!elevationResult.success) return false;
 
     const result = await this.distrib.updateStoreItem(freshPkg._id, true, onDownloadProgress);
     if (!result) return false;
@@ -223,7 +223,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
   async deprecatePackage(pkg: StoreItem) {
     this.Log(`deprecatePackage: ${pkg._id}`);
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -231,7 +231,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return false;
+    if (!elevationResult.success) return false;
 
     await this.distrib!.publishing_deprecateStoreItem(pkg._id);
 
@@ -243,7 +243,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
   async deletePackage(pkg: StoreItem) {
     this.Log(`deletePackage: ${pkg._id}`);
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to delete one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
@@ -251,7 +251,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       level: ElevationLevel.high,
     });
 
-    if (!elevated) return false;
+    if (!elevationResult) return false;
 
     await this.distrib!.publishing_deleteStoreItem(pkg._id);
 

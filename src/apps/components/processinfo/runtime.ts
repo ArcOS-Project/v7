@@ -33,7 +33,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
   async kill(proc: IProcess) {
     this.Log(`kill: ${proc.pid}`);
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image: (ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
@@ -41,7 +41,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
       level: ElevationLevel.high,
     });
 
-    if (!elevated) return;
+    if (!elevationResult.success) return;
 
     const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 

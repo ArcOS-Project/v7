@@ -220,7 +220,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
   async check_elevation(app: App) {
     if (app.elevated) {
-      const elevated = await Daemon!.elevation?.manuallyElevate({
+      const elevationResult = await Daemon!.elevation?.manuallyElevate({
         what: "ArcOS needs your permission to open the following application:",
         title: app.metadata.name,
         description: `by ${app.metadata.author}`,
@@ -228,7 +228,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         level: ElevationLevel.low,
       });
 
-      if (!elevated) throw new Error("Elevation is required but wasn't provided.");
+      if (!elevationResult?.success) throw new Error("Elevation is required but wasn't provided.");
     }
   }
 

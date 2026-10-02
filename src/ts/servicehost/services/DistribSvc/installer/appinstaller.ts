@@ -108,14 +108,16 @@ export class AppInstallerProcess extends InstallerProcessBase {
 
     try {
       const result = await Daemon?.appreg?.registerAppFromPath(join(this.metadata!.installLocation, "_app.tpa"));
-      if (!result) {
+      if (!result?.success) {
         this.setCurrentStatus("done");
         this.parent.BUSY = "";
         await this.parent.addPackageToInstalled(this.metadata!);
-        return true;
-      }
 
-      throw result;
+        return true;
+      } else {
+        this.fail(result.errorMessage ?? "Unknown error");
+        return false;
+      }
     } catch (e) {
       this.fail(`Could not register: ${e}`);
       return false;

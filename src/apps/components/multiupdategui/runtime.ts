@@ -94,7 +94,7 @@ export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGui
 
     this.working.set(true);
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,
@@ -102,7 +102,7 @@ export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGui
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) {
+    if (!elevationResult.success) {
       this.working.set(false);
       return;
     }

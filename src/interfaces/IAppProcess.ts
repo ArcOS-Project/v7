@@ -55,6 +55,10 @@ export interface IAppProcess extends IProcess {
     parentPid?: number | undefined,
     ...args: any[]
   ): Promise<T | undefined>;
+  /**
+   * @deprecated This method should no longer be used.
+   * @since 7.0.11
+   */
   elevate(id: string): Promise<unknown>;
   appStore(): IApplicationStorage;
   getIcon(id: string): Promise<string>;

@@ -38,7 +38,7 @@
   async function deleteApp() {
     const deleted = await Daemon?.appreg?.uninstallAppWithAck(target!);
 
-    if (deleted) process.closeWindow();
+    if (deleted?.success) process.closeWindow();
   }
 </script>
 
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div class="right">
-    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={Daemon?.apps?.isVital(target!)}
+    <button class="disable" onclick={toggleDisabledState} class:disabled disabled={Daemon?.apps?.checkIsVital(target!)}
       >{disabled ? "Enable" : "Disable"}</button
     >
     {#if (target?.entrypoint || target?.workingDirectory) && installed}

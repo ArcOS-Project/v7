@@ -1,8 +1,10 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
@@ -18,11 +20,11 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
   }
 
   // Essential entrypoint: ApplicationStorage calls this method to obtain the list of installed user applications.
-  async getUserApps(): Promise<AppStorage> {
+  async getUserApps(): Promise<ICommandResult<AppStorage>> {
     try {
-      if (!Daemon!.preferences()) return [];
+      if (!Daemon!.preferences()) return CommandResult.Error("Can't get user applications without preferences");
 
-      await this.modeUserAppsToFs();
+      await this.moveUserAppsToFs();
       const bulk = Object.fromEntries(
         Object.entries((await Fs.bulk(UserPaths.AppRepository, "json")) || {}).map(([k, v]) => [k.replace(".json", ""), v])
       );
@@ -35,57 +37,71 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
         this.Log(`AppRepository contains malformed data: ${brokenApps.join(", ")}`, LogLevel.warning);
       }
 
-      return Object.values(bulk).filter((a) => typeof a === "object") as AppStorage;
-    } catch {
-      return [];
+      return CommandResult.Ok(Object.values(bulk).filter((a) => typeof a === "object") as AppStorage);
+    } catch (e) {
+      return CommandResult.Error(`Failed to obtain user applications: ${e}`);
     }
   }
 
-  async registerApp(data: InstalledApp) {
+  async registerApp(data: InstalledApp): Promise<ICommandResult> {
     this.Log(`Registering ${data.id}: writing ${data.id}.json to AppRepository`);
-    const appStore = this.appStorage();
 
-    await Fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
-    await appStore?.refresh();
-    await this.addToStartMenu(data.id);
+    try {
+      const appStore = this.appStorage();
+
+      await Fs.writeFile(join(UserPaths.AppRepository, `${data.id}.json`), textToBlob(JSON.stringify(data, null, 2)));
+      await appStore?.refresh();
+      return await this.addToStartMenu(data.id);
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
+    }
   }
 
-  async uninstallPackageWithStatus(id: string, deleteFiles = false) {
+  async uninstallPackageWithStatus(id: string, deleteFiles = false): Promise<ICommandResult> {
     this.Log(`Attempting to uninstall app '${id}'`);
 
-    const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
-    if (!distrib) return false;
+    try {
+      const distrib = this.serviceHost?.getService<IDistributionServiceProcess>("DistribSvc");
+      if (!distrib) return CommandResult.Error("The distribution service isn't running.");
 
-    const prog = await Daemon!.helpers!.GlobalLoadIndicator();
-    const result = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
-    await prog.stop();
+      const prog = await Daemon!.helpers!.GlobalLoadIndicator();
+      const uninstalled = await distrib.uninstallPackage(id, deleteFiles, (s) => prog.caption.set(s));
+      if (!uninstalled) {
+        return CommandResult.Error("Failed to uninstall the package. The package may not have been installed correctly.");
+      }
 
-    return result;
+      await prog.stop();
+
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
+    }
   }
 
-  async registerAppFromPath(path: string) {
+  async registerAppFromPath(path: string): Promise<ICommandResult> {
     try {
       const contents = await Fs.readFile(path);
-      if (!contents) return "failed to read file";
+      if (!contents) return CommandResult.Error("Failed to read file");
 
       const text = arrayBufferToText(contents);
       const json = tryJsonParse<InstalledApp>(text);
 
-      if (typeof json !== "object") return "failed to convert to JSON";
-      if (!json.metadata || !json.entrypoint) return "missing properties";
+      if (typeof json !== "object") return CommandResult.Error("Failed to convert to JSON");
+      if (!json.metadata || !json.entrypoint) return CommandResult.Error("Missing properties");
 
       (json as any).thirdParty = true;
       json.tpaPath = path;
       json.workingDirectory = getParentDirectory(path);
 
-      await this.registerApp(json);
+      return await this.registerApp(json);
     } catch (e) {
       this.Log(`Failed to install app from "${path}": ${e}`, LogLevel.error);
+      return CommandResult.Error(`${e}`);
     }
   }
 
-  async uninstallAppWithAck(app: App): Promise<boolean> {
-    return new Promise<boolean>((r) => {
+  async uninstallAppWithAck(app: App): Promise<ICommandResult> {
+    return new Promise<ICommandResult>((resolve) => {
       MessageBox(
         {
           title: `${app.metadata.name}`,
@@ -96,14 +112,13 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
             {
               caption: "Cancel",
               action: () => {
-                r(false);
+                resolve(CommandResult.Ok());
               },
             },
             {
               caption: "Uninstall",
               action: () => {
-                this.uninstallPackageWithStatus(app?.id, true);
-                r(true);
+                resolve(this.uninstallPackageWithStatus(app?.id, true));
               },
               suggested: true,
             },
@@ -115,13 +130,13 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     });
   }
 
-  async pinApp(appId: string) {
+  pinApp(appId: string): ICommandResult {
     this.Log(`Pinning ${appId}`);
 
     const appStore = this.serviceHost?.getService("AppStorage") as IApplicationStorage;
     const app = appStore?.getAppSynchronous(appId);
 
-    if (!app) return;
+    if (!app) return CommandResult.Error("The application could not be found");
 
     Daemon!.preferences.update((v) => {
       if (v.pinnedApps.includes(appId)) return v;
@@ -130,6 +145,8 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
       return v;
     });
+
+    return CommandResult.Ok();
   }
 
   unpinApp(appId: string) {
@@ -142,6 +159,8 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
 
       return v;
     });
+
+    return CommandResult.Ok();
   }
 
   determineStartMenuShortcutPath(app: App) {
@@ -150,15 +169,15 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     return join(UserPaths.StartMenu, app.metadata.appGroup ? `$$${app.metadata.appGroup}` : "", `_${app.id}.arclnk`);
   }
 
-  async addToStartMenu(appId: string) {
+  async addToStartMenu(appId: string): Promise<ICommandResult> {
     const app = this.appStorage()?.getAppSynchronous(appId);
-    if (!app) return;
+    if (!app) return CommandResult.Error("The application could not be found");
 
     const path = this.determineStartMenuShortcutPath(app);
-    if (!path) return;
+    if (!path) return CommandResult.Error("The shortcut path for the application could not be found");
 
     const existing = await Fs.stat(path);
-    if (existing) return;
+    if (existing) return CommandResult.Error("The shortcut already exists");
 
     await Daemon!.shortcuts?.createShortcut(
       {
@@ -172,62 +191,79 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     );
 
     SysDispatch.dispatch("startmenu-refresh");
+    return CommandResult.Ok();
   }
 
-  async removeFromStartMenu(appId: string) {
+  async removeFromStartMenu(appId: string): Promise<ICommandResult> {
     const app = this.appStorage()?.getAppSynchronous(appId);
-    if (!app) return;
+    if (!app) return CommandResult.Error("The application could not be found");
 
     const path = this.determineStartMenuShortcutPath(app);
-    if (!path) return;
+    if (!path) return CommandResult.Error("The shortcut path for the application could not be found");
 
     await Fs.deleteItem(path, false);
     SysDispatch.dispatch("startmenu-refresh");
+
+    return CommandResult.Ok();
   }
 
-  async updateStartMenuFolder(quiet = false) {
+  async updateStartMenuFolder(quiet = false): Promise<ICommandResult> {
     const installedApps = Daemon?.appStorage()?.buffer();
+    if (!installedApps) return CommandResult.Error("The list of installed applications could not be obtained");
 
-    if (!installedApps) return;
+    try {
+      const gli = quiet
+        ? undefined
+        : await Daemon!.helpers!.GlobalLoadIndicator("Updating the start menu...", +Env.get("shell_pid"), {
+            max: Object.keys(AppGroups).length + installedApps.length,
+            value: 0,
+            useHtml: true,
+          });
 
-    const gli = quiet
-      ? undefined
-      : await Daemon!.helpers!.GlobalLoadIndicator("Updating the start menu...", +Env.get("shell_pid"), {
-          max: Object.keys(AppGroups).length + installedApps.length,
-          value: 0,
-          useHtml: true,
-        });
+      for (const appGroup in AppGroups) {
+        gli?.incrementProgress?.();
+        gli?.caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
 
-    for (const appGroup in AppGroups) {
-      gli?.incrementProgress?.();
-      gli?.caption.set(`Updating the start menu...<br>Creating folder for ${AppGroups[appGroup]}`);
+        await Fs.createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
+      }
 
-      await Fs.createDirectory(join(UserPaths.StartMenu, `$$${appGroup}`), false);
+      const promises = [];
+
+      for (const app of installedApps) {
+        promises.push(
+          new Promise(async (r) => {
+            const registrationResult = await Daemon?.appreg?.addToStartMenu(app.id);
+
+            if (registrationResult?.success) {
+              gli?.caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
+            } else {
+              gli?.caption.set(
+                `Updating the start menu...<br>${app.metadata.name} - Error: ${registrationResult?.errorMessage ?? "Unknown fault"}`
+              );
+            }
+
+            gli?.incrementProgress?.();
+
+            r(void 0);
+          })
+        );
+      }
+
+      await Promise.all(promises);
+
+      SysDispatch.dispatch("startmenu-refresh");
+      gli?.stop?.();
+
+      return CommandResult.Ok();
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
     }
-
-    const promises = [];
-
-    for (const app of installedApps) {
-      promises.push(
-        new Promise(async (r) => {
-          await Daemon?.appreg?.addToStartMenu(app.id);
-
-          gli?.caption.set(`Updating the start menu...<br>Created shortcut for ${app.metadata.name}`);
-
-          gli?.incrementProgress?.();
-
-          r(void 0);
-        })
-      );
-    }
-
-    await Promise.all(promises);
-
-    SysDispatch.dispatch("startmenu-refresh");
-    gli?.stop?.();
   }
 
-  async modeUserAppsToFs() {
+  /**
+   * @deprecated Migration for ArcOS version 7.0.5, no longer in effect
+   */
+  async moveUserAppsToFs() {
     const apps = Daemon!.preferences().userApps;
 
     if (!Object.entries(apps).length) return;

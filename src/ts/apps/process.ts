@@ -369,7 +369,7 @@ export class AppProcess extends Process implements IAppProcess {
 
   async elevate(id: string) {
     if (!this.elevations[id]) return false;
-    return await Daemon!.elevation!.manuallyElevate(this.elevations[id]);
+    return (await Daemon!.elevation!.manuallyElevate(this.elevations[id])).success;
   }
 
   appStore() {

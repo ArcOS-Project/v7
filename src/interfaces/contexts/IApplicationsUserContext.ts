@@ -5,8 +5,8 @@ import type { App } from "$types/apps/app";
 // !tpa
 export interface IApplicationsUserContext extends IUserContext {
   checkDisabled(appId: string, noSafeMode?: boolean): boolean;
-  isVital(app: App): boolean | undefined;
-  isPopulatableByAppIdSync(appId: string): boolean;
+  checkIsVital(app: App): boolean | undefined;
+  checkIsPopulatableByAppIdSync(appId: string): boolean;
   disableApp(appId: string): Promise<ICommandResult>;
   enableApp(appId: string): Promise<ICommandResult>;
   enableThirdParty(): Promise<ICommandResult>;

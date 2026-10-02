@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
@@ -34,24 +35,14 @@ const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
 
     await prog.stop();
 
-    if (!content) throw new Error(`RunTpaBundleHandler: content read failure`);
+    if (!content) {
+      return CommandResult.Error("The TPA bundle file could not be read");
+    }
 
     const zip = new JSZip();
     const buffer = await zip.loadAsync(content, {});
-
     if (!buffer.files["_package.tpa"]) {
-      MessageBox(
-        {
-          title: "Failed to open TPA package",
-          message: "This archive doesn't contain a TPA file.",
-          buttons: [{ caption: "Okay", action: () => {} }],
-          image: "ErrorIcon",
-        },
-        +Env.get("shell_pid"),
-        true
-      );
-
-      return;
+      return CommandResult.Error("This archive doesn't contain a TPA.");
     }
 
     await Fs.createDirectory("T:/PkgTemp");
@@ -80,7 +71,7 @@ const runTpaBundle: (d: IUserDaemon) => FileHandler = (daemon) => ({
       }
     }
 
-    await daemon.files!.openFile(join(extractPath, "_package.tpa"));
+    return await daemon.files!.openFile(join(extractPath, "_package.tpa"));
   },
   isHandler: true,
 });

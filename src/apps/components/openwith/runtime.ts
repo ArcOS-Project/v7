@@ -53,11 +53,6 @@ export class OpenWithRuntime extends AppProcess implements IOpenWithRuntime {
     if (!id) return;
 
     await this.closeWindow();
-
-    // Very questionable way to get and execute the selected file handler from the daemon's file handlers
-    if (Daemon?.files!.fileHandlers?.[id]) return await Daemon?.files!.fileHandlers?.[id]?.handle(this.path());
-
-    // In case the selection is an app, not a handler
-    await this.spawnApp(id, this.parentPid, this.path());
+    await Daemon.files?.executeFileOpenerResult(this.path(), this.all().find((opener) => opener.id === id)!, this.pid);
   }
 }

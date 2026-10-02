@@ -314,7 +314,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   async setup2fa() {
     if (this.safeMode) return;
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to set up two-factor authentication",
       image: "ElevationIcon",
       title: "Set up 2FA",
@@ -322,7 +322,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
       level: ElevationLevel.high,
     });
 
-    if (!elevated) return;
+    if (!elevationResult.success) return;
 
     await this.spawnOverlayApp("TotpSetupGui", this.pid);
   }
@@ -330,7 +330,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   async disableTotp() {
     if (this.safeMode) return;
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable two-factor authentication",
       image: "ElevationIcon",
       title: "Disable 2FA",
@@ -338,7 +338,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
       level: ElevationLevel.high,
     });
 
-    if (!elevated) return;
+    if (!elevationResult.success) return;
 
     const result = await Daemon.GetConnector<ITotpConnector>("TotpConnector").Delete();
 

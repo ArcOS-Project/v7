@@ -20,7 +20,7 @@
     $populatable = Object.values(shortcuts).filter(({ target, type }) => {
       if (type !== "app") return false;
 
-      return Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps;
+      return Daemon?.apps?.checkIsPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps;
     });
   }
 </script>

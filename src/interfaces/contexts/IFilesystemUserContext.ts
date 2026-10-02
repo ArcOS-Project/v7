@@ -24,6 +24,8 @@ export interface IFilesystemUserContext extends IUserContext {
   copyMultiple(sources: string[], destination: string, pid: number): Promise<void>;
   findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]>;
   getAllFileHandlers(): Promise<FileOpenerResult[]>;
+  executeFileOpenerResult(path: string, opener: FileOpenerResult, parentPid?: number, silent?: boolean): Promise<ICommandResult>;
+  executeFileHandler(path: string, handler: FileHandler): Promise<ICommandResult>;
   LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">): Promise<string[] | [undefined]>;
   openFile(path: string, shortcut?: ArcShortcut): Promise<any>;
   openWith(path: string): Promise<void>;

@@ -28,16 +28,16 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     const appStore = this.appStorage();
     const app = appStore?.buffer().filter((a) => a.id === appId)[0];
 
-    if (app && this.isVital(app) && !noSafeMode) return false;
+    if (app && this.checkIsVital(app) && !noSafeMode) return false;
 
     return (disabledApps || []).includes(appId) || !!(this.safeMode && noSafeMode);
   }
 
-  isVital(app: App) {
+  checkIsVital(app: App) {
     return app.vital && !app.entrypoint && !app.workingDirectory && !app.thirdParty;
   }
 
-  isPopulatableByAppIdSync(appId: string): boolean {
+  checkIsPopulatableByAppIdSync(appId: string): boolean {
     const storage = this.appStorage();
     const app = storage?.getAppSynchronous(appId);
 
@@ -55,16 +55,16 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     const appStore = this.appStorage();
     const app = appStore?.getAppSynchronous(appId);
 
-    if (!app || this.isVital(app)) return CommandResult.Error("Application not found or vital");
+    if (!app || this.checkIsVital(app)) return CommandResult.Error("Application not found or vital");
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS needs your permission to disable an application",
       image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
-    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
+    if (!elevationResult.success) return elevationResult!;
 
     Daemon!.preferences.update((v) => {
       v.disabledApps.push(appId);
@@ -96,14 +96,14 @@ export class ApplicationsUserContext extends UserContext implements IApplication
 
     if (!app) return CommandResult.Error("Application not found");
 
-    const elevated = await Daemon!.elevation?.manuallyElevate({
+    const elevationResult = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS needs your permission to enable an application",
       image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
       level: ElevationLevel.medium,
     });
-    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
+    if (!elevationResult?.success) return elevationResult!;
 
     Daemon!.preferencesCtx?.preferences.update((v) => {
       if (!v.disabledApps.includes(appId)) return v;
@@ -119,7 +119,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
   }
 
   async enableThirdParty(): Promise<ICommandResult> {
-    const elevated = await Daemon!.elevation?.manuallyElevate({
+    const elevationResult = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS wants to enable third-party applications",
       title: "Enable Third-party",
       description: "ArcOS System",
@@ -127,7 +127,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided.");
+    if (!elevationResult?.success) return elevationResult!;
 
     Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = true;
@@ -137,8 +137,8 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     return CommandResult.Ok();
   }
 
-  async disableThirdParty() {
-    const elevated = await Daemon!.elevation?.manuallyElevate({
+  async disableThirdParty(): Promise<ICommandResult> {
+    const elevationResult = await Daemon!.elevation?.manuallyElevate({
       what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
       title: "Disable Third-party",
       description: "ArcOS System",
@@ -146,7 +146,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return CommandResult.Error("Elevation is required but wasn't provided");
+    if (!elevationResult?.success) return elevationResult!;
 
     Daemon!.preferences.update((v) => {
       v.security.enableThirdParty = false;

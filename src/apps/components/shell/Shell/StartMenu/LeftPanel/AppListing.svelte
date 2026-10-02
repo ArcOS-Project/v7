@@ -24,7 +24,7 @@
       singleDepthList = sortByKey(
         result.filter(
           ({ target, type }) =>
-            type === "app" && (Daemon?.apps?.isPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
+            type === "app" && (Daemon?.apps?.checkIsPopulatableByAppIdSync(target) || $userPreferences.shell.visuals.showHiddenApps)
         ),
         "name"
       );

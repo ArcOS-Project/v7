@@ -1,4 +1,6 @@
+import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemProxy } from "$interfaces/IFilesystemDrive";
+import type { MaybePromise } from "$types/shared/common";
 import type { App } from "../apps/app";
 import type { PublicUserInfo } from "../user";
 import type { ArcShortcut, ShortcutStore } from "./shortcut";
@@ -93,7 +95,7 @@ export interface FileHandler {
     extensions?: string[];
     mimetypes?: string[];
   };
-  handle: (path: string) => void;
+  handle: (path: string) => MaybePromise<ICommandResult>;
 }
 
 export interface FileOpenerResult {
@@ -176,4 +178,3 @@ export const DefaultUserQuota: UserQuota = {
   percentage: 0,
   unknown: true,
 };
-

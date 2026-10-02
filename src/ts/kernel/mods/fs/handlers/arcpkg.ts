@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import type { FileHandler } from "$types/system/fs";
 
 const installArcPkg: (d: IUserDaemon) => FileHandler = (daemon) => ({
@@ -11,7 +12,7 @@ const installArcPkg: (d: IUserDaemon) => FileHandler = (daemon) => ({
     extensions: [".arc"],
   },
   async handle(path) {
-    daemon.spawn?.spawnApp("AppPreInstall", +Env.get("shell_pid"), { asOverlay: true }, path);
+    return CommandResult.Ok(daemon.spawn?.spawnApp("AppPreInstall", +Env.get("shell_pid"), { asOverlay: true }, path));
   },
 });
 

@@ -124,7 +124,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
     this.Log(`Proceeding with installation`);
 
     const meta = this.metadata();
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: "ArcOS wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
@@ -132,7 +132,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
       level: ElevationLevel.medium,
     });
 
-    if (!elevated) return;
+    if (!elevationResult.success) return;
 
     await this.closeWindow();
     this.spawnOverlayApp("AppInstaller", +Env.get("shell_pid"), this.metadata, this.zip);

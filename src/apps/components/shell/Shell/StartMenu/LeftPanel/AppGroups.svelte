@@ -19,7 +19,7 @@
           <AppGroupButton {process} shortcuts={dir.children.shortcuts} name={dir.name} />
         {/each}
         {#each Object.values($StartMenuContents.shortcuts) as shortcut (`${shortcut.target}-${shortcut.name}-${shortcut.icon}-${shortcut.type}`)}
-          {#if (Daemon?.apps?.isPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(shortcut.target) && shortcut.type === "app"}
+          {#if (Daemon?.apps?.checkIsPopulatableByAppIdSync(shortcut.target) || $userPreferences.shell.visuals.showHiddenApps) && !Daemon?.apps?.checkDisabled(shortcut.target) && shortcut.type === "app"}
             <ListItem {process} {shortcut} />
           {/if}
         {/each}

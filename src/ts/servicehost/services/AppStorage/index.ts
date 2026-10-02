@@ -48,7 +48,12 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
       const builtins = await this.loadAppsFromViteModules(BuiltinAppImportPathAbsolutes);
 
       this.loadOrigin("builtin", () => builtins);
-      this.loadOrigin("userApps", async () => await Daemon.appreg!.getUserApps());
+      this.loadOrigin("userApps", async () => {
+        const result = await Daemon.appreg!.getUserApps();
+        if (!result.success) return [];
+
+        return result.result!;
+      });
       await this.refresh();
     }
   }

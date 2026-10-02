@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Fs } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
@@ -16,9 +17,9 @@ const installTpaFile: (d: IUserDaemon) => FileHandler = (daemon) => ({
     const text = arrayBufferToText((await Fs.readFile(path))!);
     const json = tryJsonParse(text);
 
-    if (typeof json !== "object") throw new Error(`InstallTpaFileHandler: JSON parse failed`);
+    if (typeof json !== "object") return CommandResult.Error("Failed to parse the JSON content");
 
-    await daemon.appreg!.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
+    return await daemon.appreg!.registerApp({ ...json, workingDirectory: getParentDirectory(path), tpaPath: path });
   },
   isHandler: true,
 });

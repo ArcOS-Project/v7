@@ -1,5 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { Env, Fs } from "$ts/env";
+import { CommandResult } from "$ts/result";
 import { arrayBufferToText } from "$ts/util/convert";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { tryJsonParse } from "$ts/util/json";
@@ -27,18 +28,31 @@ const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
         +Env.get("shell_pid"),
         true
       );
+
+      return reason;
     }
+
     const content = await Fs.readFile(path);
-    if (!content) return fail("The contents of the file could not be read");
+    if (!content) {
+      return CommandResult.Error(fail("The contents of the file could not be read"));
+    }
 
     const json = tryJsonParse<UserTheme>(arrayBufferToText(content));
 
-    if (typeof json === "string") return fail("Couldn't parse the JSON object");
-    if (!daemon.themes!.verifyTheme(json)) return fail("The theme is missing some required data");
+    if (typeof json === "string") {
+      return CommandResult.Error(fail("Couldn't parse the JSON object"));
+    }
+
+    if (!daemon.themes!.verifyTheme(json)) {
+      return CommandResult.Error(fail("The theme is missing some required data"));
+    }
 
     const applied = daemon.themes!.applyThemeData(json);
+    if (!applied) {
+      return CommandResult.Error(fail("The theme could not be applied."));
+    }
 
-    if (!applied) fail("The theme could not be applied.");
+    return CommandResult.Ok();
   },
 });
 

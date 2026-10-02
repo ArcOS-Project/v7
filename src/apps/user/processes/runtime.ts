@@ -51,7 +51,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
 
     const name = ProcessesHelper.IsAnyAppProcess(proc) ? proc.app.data.metadata.name : proc.name;
 
-    const elevated = await Daemon!.elevation!.manuallyElevate({
+    const elevationResult = await Daemon!.elevation!.manuallyElevate({
       what: `ArcOS needs your permission to kill a process`,
       image: ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon",
       title: name,
@@ -59,7 +59,7 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
       level: ElevationLevel.high,
     });
 
-    if (!elevated) return;
+    if (!elevationResult.success) return;
 
     MessageBox(
       {

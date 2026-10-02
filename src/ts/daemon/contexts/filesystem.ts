@@ -65,13 +65,15 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     const elevated =
       fromSystem ||
-      (await Daemon!.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to mount a ZIP file",
-        title: getItemNameFromPath(path),
-        description: letter ? `As ${letter}:/` : "As a drive",
-        image: "DriveIcon",
-        level: ElevationLevel.medium,
-      }));
+      (
+        await Daemon!.elevation?.manuallyElevate({
+          what: "ArcOS needs your permission to mount a ZIP file",
+          title: getItemNameFromPath(path),
+          description: letter ? `As ${letter}:/` : "As a drive",
+          image: "DriveIcon",
+          level: ElevationLevel.medium,
+        })
+      )?.success;
 
     if (!elevated) return;
 
@@ -410,6 +412,49 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     }
 
     return result;
+  }
+
+  async executeFileOpenerResult(
+    path: string,
+    opener: FileOpenerResult,
+    parentPid = this.pid,
+    silent = false
+  ): Promise<ICommandResult> {
+    switch (opener.type) {
+      case "app":
+        return CommandResult.Ok(await Daemon.spawn?.spawnApp(opener.id, parentPid, {}, path));
+      case "handler":
+        return await this.executeFileHandler(path, opener.handler!, silent);
+      default:
+        return CommandResult.Error(`Unknown FileOpenerResult type '${opener.type}'`);
+    }
+  }
+
+  async executeFileHandler(path: string, handler: FileHandler, silent = false): Promise<ICommandResult> {
+    try {
+      const result = await handler.handle(path);
+      if (result.success) return result;
+
+      throw new Error(result.errorMessage);
+    } catch (e: any) {
+      const message = e?.message ?? e ?? "Unknown error";
+
+      if (!silent) {
+        MessageBox(
+          {
+            title: "File handler failed",
+            message: `An error occurred while attempting to execute a file handler. ${message}`,
+            image: "WarningIcon",
+            buttons: [BTN_OKAY_SUG],
+            sound: "arcos.dialog.warning",
+          },
+          Daemon.getShell()?.pid ?? this.pid,
+          true
+        );
+      }
+
+      return CommandResult.Error(message);
+    }
   }
 
   async LoadSaveDialog(data: Omit<LoadSaveDialogData, "returnId">): Promise<string[] | [undefined]> {
