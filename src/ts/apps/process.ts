@@ -135,9 +135,9 @@ export class AppProcess extends Process implements IAppProcess {
       SysDispatch.dispatch("window-unfullscreen", [this.pid, contextId, this.app.desktop]);
 
     const elements = [
-      ...document.querySelectorAll(`div.window[data-context="${contextId}"]`),
-      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-context="${contextId}"]`) || []),
-      ...(document.querySelectorAll(`button.opened-app[data-context="${contextId}"]`) || []),
+      ...document.querySelectorAll(`div.window[data-wcontext="${contextId}"]`),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-wcontext="${contextId}"]`) || []),
+      ...(document.querySelectorAll(`button.opened-app[data-wcontext="${contextId}"]`) || []),
     ];
 
     if (!elements.length) {
@@ -241,7 +241,7 @@ export class AppProcess extends Process implements IAppProcess {
 
     await this.killSelf();
 
-    if (!this.app.data.core) Stack.renderer?.focusPid(instances[0].pid);
+    if (!this.app.data.core) Stack.renderer?.focusContext(instances[0].pid);
     if (instances[0].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
 
     return instances[0];
@@ -309,7 +309,7 @@ export class AppProcess extends Process implements IAppProcess {
       const shiftKey = combo.shift ? e.shiftKey : true;
       const altKey = combo.alt ? e.altKey : true;
       const modifiersConditionMet = altKey && ctrlKey && shiftKey;
-      const focusConditionMet = Stack.renderer?.focusedPid() === this.pid || combo.global;
+      const focusConditionMet = Stack.renderer?.focusedContext() === this.pid || combo.global;
 
       const comboKey = combo.key?.trim().toLowerCase();
       const pressedKey = String.fromCharCode(e.keyCode).toLowerCase().trim();
@@ -354,7 +354,7 @@ export class AppProcess extends Process implements IAppProcess {
       ...args
     );
 
-    if (proc) Stack.renderer?.focusPid(proc?.pid);
+    if (proc) Stack.renderer?.focusContext(proc?.pid);
 
     return !!proc;
   }

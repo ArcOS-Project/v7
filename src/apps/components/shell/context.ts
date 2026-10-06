@@ -250,7 +250,7 @@ export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
           const appProc = Stack.getProcess(proc.parentPid) as IAppProcess;
           if (!appProc || !appProc.app) return;
 
-          Stack.renderer?.focusPid(appProc.pid);
+          Stack.renderer?.focusContext(appProc.pid);
         },
       },
       { sep: true },

@@ -111,7 +111,7 @@ export class ThirdPartyAppProcess extends AppProcess implements IThirdPartyAppPr
 
     await Sleep(1000); // 1s to give invocator's GLI the time it needs
 
-    Stack.renderer?.focusPid(this.pid);
+    Stack.renderer?.focusContext(this.pid);
   }
 
   private validateConstructorProperties(

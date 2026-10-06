@@ -13,18 +13,18 @@ import { UUID } from "$ts/util/uuid";
 import { LogLevel } from "$types/shared/logging";
 import { Draggable } from "@neodrag/vanilla";
 import { unmount } from "svelte";
-import type { App, AppProcessData, WindowResizer } from "../../types/apps/app";
+import type { App, WindowResizer } from "../../types/apps/app";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
 
 export class AppRenderer extends Process implements IAppRenderer {
-  currentState: number[] = [];
+  currentState: string[] = [];
   target: HTMLDivElement;
   maxZIndex = 1e6;
-  focusedPid = Store(-1);
-  appStore = Store<Map<string, AppProcessData>>(new Map());
+  focusedContext = Store("");
+  state = Store<Map<string, IAppRendererContext>>(new Map());
   lastInteract?: IAppRendererContext;
   override _criticalProcess: boolean = true;
 
@@ -45,11 +45,11 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   protected async start() {
-    this.focusedPid.subscribe((v) => {
+    this.focusedContext.subscribe((v) => {
       if (this._disposed || !v) return;
 
-      this.lastInteract = Stack.getProcess(v);
-      if (this.lastInteract?.process) this.lastInteract.process?.blinking?.set(false);
+      this.lastInteract = this.state().get(v);
+      if (this.lastInteract?.process) this.lastInteract.blinking?.set(false);
     });
   }
 
@@ -75,49 +75,47 @@ export class AppRenderer extends Process implements IAppRenderer {
     const body = document.createElement("div");
     this._resizeGrabbers(context, window);
 
-    const { app } = context;
-    const { data } = app;
-
     body.className = "body";
 
     const shell = Stack.getProcess(+Env.get("shell_pid"));
 
     window.className = "window shell-colored";
-    window.setAttribute("data-pid", context.pid.toString());
+    window.setAttribute("data-pid", context.ownerPid.toString());
     window.addEventListener("click", () => {
       this.lastInteract = context;
     });
-    window.id = data.id;
+    window.id = context.appId;
     window.classList.toggle("no-shell", !shell);
 
     Daemon?.preferences.subscribe((v) => {
-      window.classList.toggle("colored", v.shell.taskbar.colored && !app.data.core);
+      window.classList.toggle("colored", v.shell.taskbar.colored && !context.data.core);
     });
 
-    if (!data.core && !data.state.headless) {
+    if (!context.data.core && !context.data.state.headless) {
       window.append(titlebar as HTMLDivElement, body, toast);
     } else {
       window.append(body, toast);
     }
 
-    if (data.state.headless) window.classList.add("headless");
+    if (context.data.state.headless) window.classList.add("headless");
 
-    window.classList.add(data.id);
+    window.classList.add(context.data.id);
 
-    if (data.glass) window.classList.add("glass");
+    if (context.data.glass) window.classList.add("glass");
 
-    this._windowClasses(context, window, data);
-    this._windowEvents(context, window, titlebar, data);
+    this._windowClasses(context, window, context.data);
+    this._windowEvents(context, window, titlebar, context.data);
 
-    if (data.overlay && context.parentPid) {
+    if (context.data.overlay && context.parentContextId) {
       const wrapper = document.createElement("div");
-      const parent = document.querySelector(`div.window[data-pid="${context.parentPid}"]`) || this.target;
+      const parent = document.querySelector(`div.window[data-wcontext="${context.parentContextId}"]`) || this.target;
 
       if (!parent) {
         renderTarget.append(window);
       } else {
-        wrapper.setAttribute("data-pid", context.pid.toString());
-        wrapper.className = `window-overlay-wrapper shade-${context.app.id}`;
+        wrapper.setAttribute("data-pid", context.ownerPid.toString());
+        wrapper.setAttribute("data-wcontext", context.identifier.toString());
+        wrapper.className = `window-overlay-wrapper shade-${context.appId}`;
 
         window.classList.add("overlay");
 
@@ -136,23 +134,24 @@ export class AppRenderer extends Process implements IAppRenderer {
       window.classList.add("visible");
     }, 100);
 
-    this.currentState.push(context.pid);
-    if (!data.core && !data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(context)) this.focusPid(context.pid);
+    this.currentState.push(context.identifier);
+    if (!context.data.core && !context.data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(context.process!))
+      this.focusContext(context.identifier);
 
     try {
       await context.__render__(body);
       await context.CrashDetection();
     } catch (e) {
-      if (!context._disposed) {
-        context.STATE = "error";
-        this.notifyCrash(data, e as Error, context);
+      if (!context.process?._disposed) {
+        context.process!.STATE = "error";
+        this.notifyCrash(context.data, e as Error, context.process);
       }
-      await this.remove(context.pid);
-      await Stack.kill(context.pid);
+      this.removeAllOfProcess(context.ownerPid);
+      await Stack.kill(context.ownerPid);
     }
   }
 
-  _windowClasses(proc: IAppProcess, window: HTMLDivElement, data: App) {
+  _windowClasses(context: IAppRendererContext, window: HTMLDivElement, data: App) {
     this.disposedCheck();
 
     if (data.core) window.classList.add("core");
@@ -185,16 +184,16 @@ export class AppRenderer extends Process implements IAppRenderer {
       if (data.state?.maximized) window.classList.add("maximized");
       if (data.state?.fullscreen) {
         window.classList.add("fullscreen");
-        SysDispatch.dispatch("window-fullscreen", [proc.pid, proc.app.desktop]);
+        SysDispatch.dispatch("window-fullscreen", [context.identifier, context.desktop]);
       }
       if (data.entrypoint || data.thirdParty || data.workingDirectory) window.classList.add("tp");
     }
   }
 
-  async centerWindow(proc: IAppProcess) {
+  async centerWindow(context: IAppRendererContext) {
     await Sleep(0);
-    const data = proc.app.data;
-    const window = proc.getWindow();
+    const data = context.data;
+    const window = context.getWindow();
     const rect = window.getBoundingClientRect();
 
     if (data.position?.centered) {
@@ -205,12 +204,12 @@ export class AppRenderer extends Process implements IAppRenderer {
       window.style.left = `${x}px`;
       window.style.transform = `translate3d(0px, 0px, 0px)`;
       window.style.translate = `0 0`;
-      this._windowDraggable(proc, window);
+      this._windowDraggable(context, window);
     }
   }
 
-  _windowDraggable(proc: IAppProcess, window: HTMLDivElement) {
-    proc?.draggable?.destroy();
+  _windowDraggable(context: IAppRendererContext, window: HTMLDivElement) {
+    context?.draggable?.destroy();
 
     const draggable = new Draggable(window, {
       bounds: { top: 0, left: -10000000, right: -10000000, bottom: -10000000 },
@@ -220,46 +219,46 @@ export class AppRenderer extends Process implements IAppRenderer {
       gpuAcceleration: false,
     });
 
-    proc.draggable = draggable;
+    context.draggable = draggable;
   }
 
-  _windowEvents(proc: IAppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
+  _windowEvents(context: IAppRendererContext, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
     this.disposedCheck();
 
     if (data.core || data.overlay) return;
 
-    this._windowDraggable(proc, window);
+    this._windowDraggable(context, window);
 
     if (titlebar) {
       titlebar?.setAttribute("data-contextmenu", "_window-titlebar");
-      contextProps(titlebar, [proc]);
+      contextProps(titlebar, [context]);
     }
 
     window.addEventListener("mousedown", () => {
-      this.focusPid(proc.pid);
+      this.focusContext(context.identifier);
     });
 
-    this.focusedPid.subscribe((v) => {
+    this.focusedContext.subscribe((v) => {
       window.classList.remove("focused");
 
-      if (v === proc.pid) window.classList.add("focused");
+      if (v === context.identifier) window.classList.add("focused");
     });
   }
 
-  focusPid(pid: number) {
+  focusContext(contextId: string) {
     this.disposedCheck();
 
-    const currentFocus = this.focusedPid.get();
-    const window = document.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const currentFocus = this.focusedContext.get();
+    const window = document.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
 
-    this.unMinimize(pid);
+    this.unMinimize(contextId);
 
-    if (!window || currentFocus === pid) return;
+    if (!window || currentFocus === contextId) return;
 
     this.maxZIndex++;
     window.style.zIndex = this.maxZIndex.toString();
 
-    this.focusedPid.set(pid);
+    this.focusedContext.set(contextId);
   }
 
   _renderTitlebar(context: IAppRendererContext) {
@@ -305,7 +304,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
       close.className = "close icon-x";
       close.addEventListener("click", async () => {
-        context.process?.closeWindow();
+        context?.closeWindow();
       });
 
       controls.append(close);
@@ -355,7 +354,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     return titlebar;
   }
 
-  _renderAltMenu(process: IAppProcess) {
+  _renderAltMenu(context: IAppRendererContext) {
     const menu = document.createElement("div");
 
     menu.className = "alt-menu nodrag";
@@ -364,7 +363,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     const contextMenu = Stack.getProcess<IContextMenuRuntime>(+contextMenuPid);
     if (!contextMenu) return menu;
 
-    process.altMenu.subscribe((v) => {
+    context.altMenu.subscribe((v) => {
       menu.classList.toggle("hidden", !v.length);
       menu.innerHTML = "";
 
@@ -416,7 +415,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     return menu;
   }
 
-  _renderToast(process: IAppProcess) {
+  _renderToast(context: IAppRendererContext) {
     const toast = document.createElement("div");
     const content = document.createElement("span");
     const icon = document.createElement("span");
@@ -427,7 +426,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     toast.append(icon, content);
 
-    process.toastMessage.subscribe((v) => {
+    context.toastMessage.subscribe((v) => {
       if (!v) {
         toast.classList.remove("show");
 
@@ -442,8 +441,8 @@ export class AppRenderer extends Process implements IAppRenderer {
     return toast;
   }
 
-  _resizeGrabbers(process: IAppProcess, window: HTMLDivElement) {
-    if (!process.app.data.state.resizable || process.app.data.core) return undefined;
+  _resizeGrabbers(context: IAppRendererContext, window: HTMLDivElement) {
+    if (!context.data.state.resizable || context.data.core) return undefined;
 
     const RESIZERS: WindowResizer[] = [
       { className: "top", cursor: "ns-resize", width: "100%", height: "7px", top: "-3px" },
@@ -556,20 +555,20 @@ export class AppRenderer extends Process implements IAppRenderer {
     return el;
   }
 
-  async remove(pid: number) {
+  remove(contextId: string) {
     if (this._disposed) return;
 
-    this.Log(`Removing render state of PID ${pid}`);
+    this.Log(`Removing render state of context ${contextId}`);
 
-    if (!pid) return;
+    if (!contextId) return;
 
-    const process = Stack.getProcess<IAppProcess>(pid, true);
+    const context = this.state().get(contextId);
 
-    if (process?.componentMount && Object.entries(process.componentMount).length) unmount(process?.componentMount);
+    if (context?.componentMount && Object.entries(context.componentMount).length) unmount(context?.componentMount);
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`);
-    const wrapper = this.target.querySelector(`div.window-overlay-wrapper[data-pid="${pid}"]`);
-    const styling = document.body.querySelector(`link[id="$${pid}"]`);
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`);
+    const wrapper = this.target.querySelector(`div.window-overlay-wrapper[data-wcontext="${contextId}"]`);
+    const styling = document.body.querySelector(`link[id="${contextId}"]`);
 
     if (window) window.remove();
     if (styling) styling.remove();
@@ -577,17 +576,27 @@ export class AppRenderer extends Process implements IAppRenderer {
       wrapper.remove();
     }
 
-    if (this.focusedPid() === process?.pid) this.focusedPid.set(-1);
+    if (this.focusedContext() === context?.identifier) this.focusedContext.set("");
 
-    const stateIndex = this.currentState.indexOf(pid);
-
+    const stateIndex = this.currentState.indexOf(contextId);
     if (stateIndex > -1) this.currentState.splice(stateIndex, 1);
   }
 
-  toggleMaximize(pid: number) {
+  removeAllOfProcess(pid: number) {
+    const contexts = [...this.state()].filter(([_, context]) => context.ownerPid === pid);
+
+    for (const [contextId] of contexts) {
+      this.remove(contextId);
+    }
+  }
+
+  toggleMaximize(contextId: string) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const context = this.state().get(contextId);
+    if (!context) return;
+
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
     if (!window) return;
 
     if (window.classList.contains("maximized")) {
@@ -599,18 +608,16 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     window.classList.toggle("maximized");
 
-    this.updateDraggableDisabledState(pid, window);
+    this.updateDraggableDisabledState(context, window);
 
-    SysDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [pid]);
+    SysDispatch.dispatch(window.classList.contains("maximized") ? "window-maximize" : "window-unmaximize", [contextId]);
   }
 
-  updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
-    const process = Stack.getProcess<IAppProcess>(pid);
+  updateDraggableDisabledState(context: IAppRendererContext, window: HTMLDivElement) {
+    if (!context.draggable) return;
 
-    if (!process || !process.draggable) return;
-
-    process.draggable.options = {
-      ...process.draggable.options,
+    context.draggable.options = {
+      ...context.draggable.options,
       disabled:
         window.classList.contains("snapped") ||
         window.classList.contains("maximized") ||
@@ -620,28 +627,29 @@ export class AppRenderer extends Process implements IAppRenderer {
     };
   }
 
-  unMinimize(pid: number) {
+  unMinimize(contextId: string) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
-
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
     if (!window || !window.classList.contains("minimized")) return;
 
     window.classList.remove("minimized");
-    const process = Stack.getProcess<IAppProcess>(+pid);
 
-    if (!process || !process.app) return;
+    const context = this.state().get(contextId);
+    if (!context) return;
 
-    SysDispatch.dispatch("window-unminimize", [pid, process.app.desktop]);
+    SysDispatch.dispatch("window-unminimize", [context.identifier, context.desktop]);
 
-    this.updateDraggableDisabledState(pid, window);
+    this.updateDraggableDisabledState(context, window);
   }
 
-  unsnapWindow(pid: number, dispatch = true) {
+  unsnapWindow(contextId: string, dispatch = true) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const context = this.state().get(contextId);
+    if (!context) return;
 
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
     if (!window || !window.classList.contains("snapped")) return;
 
     window.classList.remove("snapped");
@@ -651,77 +659,81 @@ export class AppRenderer extends Process implements IAppRenderer {
       window.removeAttribute("data-snapstate");
     }
 
-    if (dispatch) SysDispatch.dispatch("window-unsnap", [pid]);
+    if (dispatch) SysDispatch.dispatch("window-unsnap", [contextId]);
 
-    this.updateDraggableDisabledState(pid, window);
+    this.updateDraggableDisabledState(context, window);
   }
 
-  snapWindow(pid: number, variant: string) {
+  snapWindow(contextId: string, variant: string) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const context = this.state().get(contextId);
+    if (!context) return;
 
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
     if (!window) return;
-    if (window.dataset.snapstate) this.unsnapWindow(pid, false);
+
+    if (window.dataset.snapstate) this.unsnapWindow(contextId, false);
     if (!window.classList.contains("snapped")) window.classList.add("snapped");
 
     window.classList.add(variant);
     window.classList.remove("maximized");
     window.setAttribute("data-snapstate", variant);
 
-    SysDispatch.dispatch("window-snap", [pid, variant]);
-    this.updateDraggableDisabledState(pid, window);
+    SysDispatch.dispatch("window-snap", [contextId, variant]);
+    this.updateDraggableDisabledState(context, window);
   }
 
-  toggleMinimize(pid: number) {
+  toggleMinimize(contextId: string) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const window = this.target.querySelector(`div.window[data-pid="${contextId}"]`) as HTMLDivElement;
 
     if (!window) return;
 
     window.classList.toggle("minimized");
 
     const minimized = window.classList.contains("minimized");
-    if (minimized) this.focusedPid.set(-1);
+    if (minimized) this.focusedContext.set("");
 
-    const process = Stack.getProcess<IAppProcess>(+pid);
+    const context = this.state().get(contextId);
+    if (!context) return;
 
-    if (!process || !process.app) return;
-
-    SysDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [pid, process.app.desktop]);
-    this.updateDraggableDisabledState(pid, window);
+    SysDispatch.dispatch(minimized ? "window-minimize" : "window-unminimize", [contextId, context.desktop]);
+    this.updateDraggableDisabledState(context, window);
   }
 
-  toggleFullscreen(pid: number) {
+  toggleFullscreen(contextId: string) {
     this.disposedCheck();
 
-    const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
+    const context = this.state().get(contextId);
+    if (!context) return;
 
+    const window = this.target.querySelector(`div.window[data-wcontext="${contextId}"]`) as HTMLDivElement;
     if (!window) return;
 
     window.classList.toggle("fullscreen");
 
-    const process = Stack.getProcess<IAppProcess>(+pid);
-
-    if (!process || !process.app) return;
-
     SysDispatch.dispatch(window.classList.contains("fullscreen") ? "window-fullscreen" : "window-unfullscreen", [
-      pid,
-      process.app.desktop,
+      contextId,
+      context.desktop,
     ]);
-    this.updateDraggableDisabledState(pid, window);
+    this.updateDraggableDisabledState(context, window);
   }
 
   getAppInstances(id: string, originPid?: number) {
-    const result = [];
+    const result: IAppProcess[] = [];
 
-    for (const pid of this.currentState) {
-      if (pid === originPid) continue;
-
-      const proc = Stack.getProcess<IAppProcess>(pid);
-
-      if (proc && proc.app && proc.app.data && proc.app.data.id === id) result.push(proc);
+    for (const contextId of this.currentState) {
+      const context = this.state().get(contextId);
+      if (
+        context?.process &&
+        context.appId === id &&
+        (!originPid || context.process.pid !== originPid) &&
+        !result.find((process) => process.pid === context.process!.pid)
+      ) {
+        result.push(context.process);
+      }
     }
 
     return result;

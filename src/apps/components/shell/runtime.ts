@@ -77,9 +77,9 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
 
       const composed = e.composedPath();
 
-      this.startMenuOpened.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
-      this.actionCenterOpened.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
-      this.openedTrayPopup.subscribe((v) => v && Stack.renderer?.focusedPid.set(-1));
+      this.startMenuOpened.subscribe((v) => v && Stack.renderer?.focusedContext.set(-1));
+      this.actionCenterOpened.subscribe((v) => v && Stack.renderer?.focusedContext.set(-1));
+      this.openedTrayPopup.subscribe((v) => v && Stack.renderer?.focusedContext.set(-1));
 
       // Clicked outside the start menu? Then close it
       if (
@@ -138,7 +138,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
         this.arcFind?.searchQuery.set(""); // Remove search query on close
         this.selectedAppGroup.set(""); // Remove selected app group on close
       }
-      if (v) Stack.renderer?.focusedPid.set(-1); // Unfocus window on start menu invocation
+      if (v) Stack.renderer?.focusedContext.set(-1); // Unfocus window on start menu invocation
     });
 
     Daemon?.checks?.checkReducedMotion();

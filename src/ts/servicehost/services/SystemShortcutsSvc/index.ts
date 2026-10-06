@@ -91,7 +91,7 @@ export class SystemShortcutsService extends BaseService implements IBaseService 
       const key = combo.key?.trim().toLowerCase();
       const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
       /** */
-      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
+      const isFocused = Stack.renderer?.focusedContext() == this.pid || combo.global;
 
       if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
@@ -114,7 +114,7 @@ export class SystemShortcutsService extends BaseService implements IBaseService 
 
     if (this.closingFocused) return;
 
-    const focusedPid = Stack.renderer?.focusedPid();
+    const focusedPid = Stack.renderer?.focusedContext();
     if (!focusedPid) return;
 
     const focusedProc = Stack.getProcess(focusedPid);
@@ -140,7 +140,7 @@ export class SystemShortcutsService extends BaseService implements IBaseService 
       return;
     }
 
-    Stack.renderer?.focusPid(targetProcess.pid);
+    Stack.renderer?.focusContext(targetProcess.pid);
   }
 }
 

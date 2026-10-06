@@ -46,7 +46,7 @@ export class FsProgressRuntime extends AppProcess implements IFsProgressRuntime 
   }
 
   async onClose(): Promise<boolean> {
-    if (this.parentPid) Stack.renderer?.focusedPid.set(this.parentPid); // Focus the parent PID upon close
+    if (this.parentPid) Stack.renderer?.focusedContext.set(this.parentPid); // Focus the parent PID upon close
 
     return true;
   }

@@ -253,7 +253,7 @@ export class WorkspaceUserContext extends UserContext implements IWorkspaceUserC
 
     const currentWorkspace = proc.app.desktop;
 
-    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && Stack.renderer?.focusedPid() === pid) {
+    if (currentWorkspace && this.getCurrentDesktop()?.id === currentWorkspace && Stack.renderer?.focusedContext() === pid) {
       this.switchToDesktopByUuid(destination);
     }
 

@@ -20,7 +20,7 @@
   }: { pid: number; proc: IProcess; process: IProcessManagerRuntime; orphan?: boolean } = $props();
 
   const { selected } = process;
-  const { focusedPid } = Stack.renderer!;
+  const { focusedContext: focusedPid } = Stack.renderer!;
 
   let name = $state<string>();
   let icon = $state<string>();
@@ -93,7 +93,7 @@
         {
           caption: "Focus",
           disabled: () => !ProcessesHelper.IsAnyAppProcess(proc),
-          action: () => Stack.renderer?.focusPid(proc.pid),
+          action: () => Stack.renderer?.focusContext(proc.pid),
           icon: "flag",
         },
         { sep: true },

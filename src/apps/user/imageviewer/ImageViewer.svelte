@@ -14,7 +14,7 @@
   let maxScale = $state<number>(16.0);
 
   onMount(() => {
-    $viewer?.getContainer()?.addEventListener("click", () => Stack.renderer?.focusPid(process.pid));
+    $viewer?.getContainer()?.addEventListener("click", () => Stack.renderer?.focusContext(process.pid));
   });
 
   function zoomOut() {

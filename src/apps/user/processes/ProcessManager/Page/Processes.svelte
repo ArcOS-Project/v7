@@ -38,7 +38,7 @@
     <ActionButton disabled={!proc} onclick={() => process.processInfoFor(proc!)}>Process Info</ActionButton>
     <ActionButton
       disabled={!proc || !ProcessesHelper.IsAnyAppProcess(proc) || proc.app.data.overlay}
-      onclick={() => proc && Stack.renderer?.focusPid(proc.pid)}
+      onclick={() => proc && Stack.renderer?.focusContext(proc.pid)}
     >
       Focus
     </ActionButton>

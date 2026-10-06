@@ -289,7 +289,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     SysDispatch.dispatch("fs-flush-folder", firstSourceParent);
     if (firstSourceParent !== destination) SysDispatch.dispatch("fs-flush-folder", destination);
-    Stack?.renderer?.focusPid(pid);
+    Stack?.renderer?.focusContext(pid);
   }
 
   async copyMultiple(sources: string[], destination: string, pid: number) {
@@ -343,7 +343,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     progress.stop();
 
     SysDispatch.dispatch("fs-flush-folder", destination);
-    Stack?.renderer?.focusPid(pid);
+    Stack?.renderer?.focusContext(pid);
   }
 
   async findHandlerToOpenFile(path: string): Promise<FileOpenerResult[]> {

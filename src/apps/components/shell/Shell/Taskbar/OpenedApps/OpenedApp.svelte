@@ -9,10 +9,10 @@
   const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
   const { windowTitle, windowIcon, blinking } = openedProcess;
   const { userPreferences } = process;
-  const { focusedPid } = Stack.renderer!;
+  const { focusedContext: focusedPid } = Stack.renderer!;
 
   function focus() {
-    Stack.renderer?.focusPid(pid);
+    Stack.renderer?.focusContext(pid);
 
     if (openedProcess.app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(openedProcess.app.desktop);
   }
