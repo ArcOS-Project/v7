@@ -3,51 +3,36 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
-import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Daemon, Env, Stack, State } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
-import type { MaybePromise } from "$types/shared/common";
 import { LogLevel } from "$types/shared/logging";
 import type { ReadableStore } from "$types/shared/writable";
 import { type ElevationData } from "$types/system/elevation";
-import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
-import { mount } from "svelte";
-import {
-  type App,
-  type AppContextMenu,
-  type AppProcessData,
-  type ContextMenuItem,
-  type ToastMessage,
-} from "../../types/apps/app";
-import { Sleep } from "../sleep";
+import { type App, type AppProcessData } from "../../types/apps/app";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
+import { AppRendererContext } from "./renderercontext";
+import type { IAppRendererContext } from "$interfaces/IAppRenderer";
 
 export const KEY_IGNORE_LIST = ["tab", "pagedown", "pageup"];
 
 export class AppProcess extends Process implements IAppProcess {
+  appId: string;
+  desktop?: string;
+  parentContextId?: string;
+  app: App;
   crashReason = "";
-  windowTitle = Store("");
-  windowIcon = Store("");
-  app: AppProcessData;
-  componentMount: Record<string, any> = {};
   userPreferences: ReadableStore<UserPreferences> = Store<UserPreferences>(DefaultUserPreferences);
   username: string = "";
-  overridePopulatable: boolean = false;
-  private toastTimeout?: NodeJS.Timeout;
-  public toastMessage = Store<ToastMessage | undefined>();
+  renderTarget?: HTMLDivElement;
   public safeMode = false;
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
-  public renderArgs: RenderArgs = {};
-  public acceleratorStore: AppKeyCombinations = [];
-  public readonly contextMenu: AppContextMenu = {};
-  public altMenu = Store<ContextMenuItem[]>([]);
-  public windowFullscreen = Store<boolean>(false);
-  public blinking = Store<boolean>(false);
+  primaryAppContext: () => IAppRendererContext<this> = () =>
+    AppRendererContext.InferPrimaryContext(this, (...args) => this.Log(...args), this.parentContextId);
 
   get shell() {
     return Stack.getProcess<IShellRuntime>(+Env.get("shell_pid"));
@@ -59,17 +44,10 @@ export class AppProcess extends Process implements IAppProcess {
 
   constructor(pid: number, parentPid: number, app: AppProcessData, ...args: any[]) {
     super(pid, parentPid, app, ...args);
-
-    this.app = {
-      data: { ...app.data },
-      id: app.data.id,
-      desktop: app.desktop,
-    };
-
-    Stack.renderer!.lastInteract = this;
-
-    this.windowTitle.set(app.data.metadata.name || "Application");
+    this.appId = app.id;
     this.name = app.data.id;
+    this.app = app.data;
+    this.desktop = app.desktop;
 
     const desktopProps = State?.stateProps["desktop"];
     const daemon: IUserDaemon | undefined = desktopProps?.userDaemon || Daemon;
@@ -80,16 +58,6 @@ export class AppProcess extends Process implements IAppProcess {
       this.safeMode = daemon.safeMode;
     }
 
-    this.windowIcon.set(`@app::${app.id}`);
-
-    SysDispatch.subscribe("window-unfullscreen", ([pid]) => {
-      if (this.pid === pid) this.windowFullscreen.set(false);
-    });
-
-    SysDispatch.subscribe("window-fullscreen", ([pid]) => {
-      if (this.pid === pid) this.windowFullscreen.set(true);
-    });
-
     if (!this.userPreferences().appPreferences[app.id]) {
       this.userPreferences.update((v) => {
         v.appPreferences[app.id] = {};
@@ -99,80 +67,40 @@ export class AppProcess extends Process implements IAppProcess {
     }
   }
 
-  // Conditional function that can prohibit closing if it returns false
-  async onClose() {
-    return true;
+  //#endregion
+
+  getSingleton(): this[] {
+    return (Stack.renderer?.getAppInstances(this.app.id, this.pid) || []) as this[];
   }
 
-  async ShowToast(toast: ToastMessage, durationMs: number = 3000) {
-    await this.HideToast();
-
-    this.toastMessage.set(toast);
-    this.toastTimeout = setTimeout(() => {
-      this.toastMessage.set(undefined);
-    }, durationMs);
-  }
-
-  async HideToast() {
-    this.toastMessage.set(undefined);
-    clearTimeout(this.toastTimeout);
-    await Sleep(200); // Delay to wait for the hide animation
-  }
-
-  async closeWindow(contextId: string, kill = true) {
-    this.Log(`Closing window ${contextId} of ${this.pid}`);
-
-    const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
-
-    if (!canClose) {
-      this.Log(`Can't close`);
-      return false;
+  async closeIfSecondInstance(): Promise<this | undefined> {
+    if (this.STATE !== "rendering") {
+      throw new AppRuntimeError(
+        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
+      );
     }
 
-    this.STATE = "stopping";
+    this.Log("Closing if second instance");
 
-    if (this.getWindow()?.classList.contains("fullscreen"))
-      SysDispatch.dispatch("window-unfullscreen", [this.pid, contextId, this.app.desktop]);
+    const instances = this.getSingleton();
+    if (!instances.length) return undefined;
 
-    const elements = [
-      ...document.querySelectorAll(`div.window[data-wcontext="${contextId}"]`),
-      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-wcontext="${contextId}"]`) || []),
-      ...(document.querySelectorAll(`button.opened-app[data-wcontext="${contextId}"]`) || []),
-    ];
+    await this.killSelf();
 
-    if (!elements.length) {
-      this.Log(`No elements, calling killSelf`);
+    const contexts = Stack.renderer!.getContextsOfPid(instances[0].pid);
 
-      return this.killSelf();
-    }
+    if (!this.app.core) Stack.renderer?.focusContext(contexts[0].identifier);
+    if (contexts[0].desktop) Daemon?.workspaces?.switchToDesktopByUuid(contexts[0].desktop);
 
-    SysDispatch.dispatch("window-closing", [contextId]);
-
-    for (const element of elements) {
-      element.classList.add("closing");
-    }
-
-    if (kill) {
-      if (!this.app.data.core) await Sleep(400);
-      await this.killSelf();
-    }
-
-    return true;
+    return instances[0];
   }
 
-  render(args: RenderArgs): MaybePromise<any> {
-    /** */
-  }
-
-  async __render__(body: HTMLDivElement) {
-    this.STATE = "rendering";
-    this.startKeyboardShortcutListener();
-
-    if (this.userPreferences().disabledApps.includes(this.app.id)) {
+  public async __start(): Promise<any> {
+    if (this.userPreferences().disabledApps.includes(this.appId)) {
       if (this.safeMode) {
         Daemon?.notifications?.sendNotification({
           title: "Running disabled app!",
-          message: `Allowing execution of disabled app '${this.app.data.metadata.name}' because of Safe Mode.`,
+          message: `Allowing execution of disabled app '${this.app.metadata.name}' because of Safe Mode.`,
           buttons: [
             {
               caption: "Manage apps",
@@ -190,147 +118,16 @@ export class AppProcess extends Process implements IAppProcess {
       }
     }
 
-    this.Log("Rendering window contents");
-
-    const component = this.app.data.assets.component;
-
-    if (component)
-      this.componentMount = mount(component, {
-        target: body,
-        props: {
-          process: this,
-          pid: this.pid,
-          kernel: Kernel,
-          app: this.app.data,
-          windowTitle: this.windowTitle,
-          windowIcon: this.windowIcon,
-        },
-      });
-
-    await this.render(this.renderArgs);
-
-    if (!this._disposed) this.STATE = "running";
-  }
-
-  //#endregion
-
-  async CrashDetection() {
-    while (true) {
-      if (this.crashReason) throw new AppRuntimeError(this.crashReason);
-      if (this._disposed) break;
-
-      await Sleep(1); // prevent hanging bleh
-    }
-  }
-
-  getSingleton(): this[] {
-    return (Stack.renderer?.getAppInstances(this.app.data.id, this.pid) || []) as this[];
-  }
-
-  async closeIfSecondInstance(): Promise<this | undefined> {
-    if (this.STATE !== "rendering") {
-      throw new AppRuntimeError(
-        "Violation: only call closeIfSecondInstance in IAppProcess.render so that it doesn't hang the stack."
-      );
-    }
-
-    this.Log("Closing if second instance");
-
-    const instances = this.getSingleton();
-    if (!instances.length) return undefined;
-
-    await this.killSelf();
-
-    if (!this.app.data.core) Stack.renderer?.focusContext(instances[0].pid);
-    if (instances[0].app.desktop) Daemon?.workspaces?.switchToDesktopByUuid(instances[0].app.desktop);
-
-    return instances[0];
-  }
-
-  getWindow() {
-    if (this.STATE === "starting") {
-      throw new AppRuntimeError("Violation: Called getWindow during process startup: there's no window at this point.");
-    }
-
-    return document.querySelector<HTMLDivElement>(`div.window[data-pid="${this.pid}"]`)!;
-  }
-
-  getBody() {
-    if (this.STATE === "starting") {
-      throw new AppRuntimeError("Violation: Called getBody during process startup: there's no window body at this point.");
-    }
-
-    return document.querySelector<HTMLDivElement>(`div.window[data-pid="${this.pid}"] > div.body`)!;
-  }
-
-  hasOverlays(): boolean {
-    return !!this.getWindow()?.querySelectorAll("div.window-overlay-wrapper")?.length;
-  }
-
-  public startKeyboardShortcutListener() {
-    this.Log("Starting keyboard shortcut listener!");
-
-    document.addEventListener("keydown", (e) => this.processKeyboardEvent(e));
-  }
-
-  public stopKeyboardShortcutListener() {
-    this.Log("Stopping keyboard shortcut listener!", LogLevel.warning);
-
-    document.removeEventListener("keydown", (e) => this.processKeyboardEvent(e));
+    const context = this.primaryAppContext();
+    await context!.__start(this.renderTarget);
   }
 
   public async __stop(): Promise<any> {
     this.Log(`STOPPING PROCESS`);
 
-    this.stopKeyboardShortcutListener();
     this.shell?.trayHost?.disposeProcessTrayIcons(this.pid);
 
     return await this.stop();
-  }
-
-  private async processKeyboardEvent(e: KeyboardEvent) {
-    if (!e.key || this.hasOverlays() || this._disposed) return;
-
-    const textareas = [...(this.getWindow()?.querySelectorAll("textarea, [contenteditable]") ?? [])];
-    const focusingTextArea = !!textareas.find((element) => document.activeElement === element);
-
-    if (!focusingTextArea && KEY_IGNORE_LIST.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
-      e.preventDefault();
-
-      return false;
-    }
-
-    this.unfocusActiveElement();
-
-    if (State?.currentState != "desktop" || this._disposed) return;
-
-    const combo = this.acceleratorStore.find((combo) => {
-      const ctrlKey = combo.ctrl ? e.ctrlKey : true;
-      const shiftKey = combo.shift ? e.shiftKey : true;
-      const altKey = combo.alt ? e.altKey : true;
-      const modifiersConditionMet = altKey && ctrlKey && shiftKey;
-      const focusConditionMet = Stack.renderer?.focusedContext() === this.pid || combo.global;
-
-      const comboKey = combo.key?.trim().toLowerCase();
-      const pressedKey = String.fromCharCode(e.keyCode).toLowerCase().trim();
-
-      return modifiersConditionMet && comboKey === pressedKey && focusConditionMet;
-    });
-
-    if (combo && !Daemon.elevation?._elevating) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      e.stopPropagation();
-
-      await combo.action(this, e);
-    }
-  }
-
-  public unfocusActiveElement() {
-    const el = document.activeElement as HTMLButtonElement;
-    if (!el || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el.isContentEditable) return;
-
-    el.blur();
   }
 
   async spawnOverlay(id: string, ...args: any[]) {
@@ -354,7 +151,7 @@ export class AppProcess extends Process implements IAppProcess {
       ...args
     );
 
-    if (proc) Stack.renderer?.focusContext(proc?.pid);
+    // if (proc) Stack.renderer?.focusContext(Stack.renderer.determineParentContextId(proc.pid)?.identifier); // TODO
 
     return !!proc;
   }
@@ -388,7 +185,5 @@ export class AppProcess extends Process implements IAppProcess {
     return Daemon?.icons?.getIconStore(id)!;
   }
 
-  blink() {
-    this.blinking.set(!this.blinking());
-  }
+  blink() {}
 }

@@ -1,5 +1,4 @@
 import type { Constructs } from "$interfaces/common";
-import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
@@ -122,7 +121,9 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
       this.store.set(store);
 
-      if (this.renderer && proc instanceof AppProcess) this.renderer.render(proc as IAppProcess, renderTarget);
+      if (proc instanceof AppProcess) {
+        proc.renderTarget = renderTarget;
+      }
 
       this.BUSY = "";
       __Console__.timeEnd(`process spawn: ${pid}`);
@@ -182,10 +183,6 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
     await this._killSubProceses(pid, force);
 
-    if (proc instanceof AppProcess && !force) {
-      await proc.closeWindow?.(false);
-    }
-
     SysDispatch.dispatch<[number]>("proc-kill", [pid]);
 
     if (proc.__stop) await proc.__stop();
@@ -197,7 +194,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
     store.set(pid, proc);
     this.store.set(store);
 
-    if (this.renderer) await this.renderer.remove(pid);
+    if (this.renderer) await this.renderer.removeAllOfProcess(pid);
 
     store = this.store();
     store.delete(pid);
@@ -219,12 +216,6 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
     for (const [pid, proc] of procs) {
       if (proc._disposed) continue;
-
-      if (proc instanceof AppProcess && !force) {
-        await proc.closeWindow?.();
-
-        continue;
-      }
 
       await this.kill(pid, force);
     }

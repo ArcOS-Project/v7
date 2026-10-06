@@ -12,7 +12,7 @@ import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { LogLevel } from "$types/shared/logging";
 import { Draggable } from "@neodrag/vanilla";
-import { unmount } from "svelte";
+import { getContext, unmount } from "svelte";
 import type { App, WindowResizer } from "../../types/apps/app";
 import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
@@ -791,5 +791,20 @@ export class AppRenderer extends Process implements IAppRenderer {
     if (!proc) {
       this.Log(`OOPS FALLBACK - ${reason}`);
     }
+  }
+
+  getContextsOfPid(pid: number): IAppRendererContext[] {
+    return [
+      ...this.state()
+        .values()
+        .filter((context) => context.ownerPid === pid),
+    ];
+  }
+
+  determineParentContext(pid: number): IAppRendererContext | undefined {
+    const contexts = this.getContextsOfPid(pid);
+    if (!contexts.length) return undefined;
+
+    return contexts[contexts.length - 1];
   }
 }

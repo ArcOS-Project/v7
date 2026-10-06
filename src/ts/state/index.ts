@@ -49,7 +49,7 @@ export class StateHandler extends Process implements IStateHandler {
     if (this.stateAppProcess) {
       this.Log(`Closing previous state app process...`);
 
-      await this.stateAppProcess.closeWindow();
+      await Stack.kill(this.stateAppProcess.pid);
 
       this.stateAppProcess = undefined;
     }

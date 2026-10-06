@@ -1,7 +1,8 @@
-import type { AppProcessSpawnOptions } from "$types/apps/app";
+import type { App, AppProcessSpawnOptions } from "$types/apps/app";
 import type { ReadableStore } from "$types/shared/writable";
 import type { UserPreferences } from "$types/user";
 import type { Constructs } from "./common";
+import type { IAppRendererContext } from "./IAppRenderer";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
 
@@ -10,10 +11,11 @@ export interface IAppProcess extends IProcess {
   userPreferences: ReadableStore<UserPreferences>;
   username: string;
   safeMode: boolean;
+  app: App;
+  desktop?: string;
+  renderTarget?: HTMLDivElement;
   getSingleton(): this[];
   closeIfSecondInstance(): Promise<this | undefined>;
-  startKeyboardShortcutListener(): void;
-  stopKeyboardShortcutListener(): void;
   __stop(): Promise<any>;
   spawnOverlay(id: string, ...args: any[]): Promise<boolean>;
   spawnApp<T extends IAppProcess = IAppProcess>(
@@ -31,6 +33,9 @@ export interface IAppProcess extends IProcess {
   getIcon(id: string): Promise<string>;
   getIconCached(id: string): string;
   getIconStore(id: string): ReadableStore<string>;
+  primaryAppContext: () => IAppRendererContext<this>;
+  render?(): Promise<any>;
+  __render__?(): Promise<any>;
 }
 
 export interface IAppProcessConstructor extends Constructs<IAppProcess> {
