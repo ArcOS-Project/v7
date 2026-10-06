@@ -1,5 +1,6 @@
 import type { App, AppProcessData, WindowResizer } from "$types/apps/app";
 import type { ReadableStore } from "$types/shared/writable";
+import type { Component } from "svelte";
 import type { IAppProcess } from "./IAppProcess";
 import type { IProcess } from "./IProcess";
 
@@ -10,10 +11,10 @@ export interface IAppRenderer extends IProcess {
   maxZIndex: number;
   focusedPid: ReadableStore<number>;
   appStore: ReadableStore<Map<string, AppProcessData>>;
-  lastInteract?: IAppProcess;
+  lastInteract?: IAppRendererContext;
   _criticalProcess: boolean;
   disposedCheck(): void;
-  render(process: IAppProcess, renderTarget: HTMLDivElement | undefined): Promise<void>;
+  render(context: IAppRendererContext, renderTarget: HTMLDivElement | undefined): Promise<void>;
   _windowClasses(proc: IAppProcess, window: HTMLDivElement, data: App): void;
   _windowEvents(proc: IAppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App): void;
   focusPid(pid: number): void;
@@ -32,5 +33,17 @@ export interface IAppRenderer extends IProcess {
   getAppInstances(id: string, originPid?: number): IAppProcess[];
   notifyCrash(data: App, reason: any, process?: IAppProcess): Promise<void>;
   centerWindow(proc: IAppProcess): Promise<void>;
+}
+
+export interface IAppRendererContext<T extends IAppProcess = IAppProcess> {
+  ownerPid: number;
+  data: App;
+  appId: string;
+  identifier: string;
+  desktop?: string;
+  get process(): T | undefined;
+  windowTitle: ReadableStore<string>;
+  windowIcon: ReadableStore<string>;
+  windowBodyComponent?: Component<any>;
 }
 // !endtpa

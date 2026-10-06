@@ -119,8 +119,8 @@ export class AppProcess extends Process implements IAppProcess {
     await Sleep(200); // Delay to wait for the hide animation
   }
 
-  async closeWindow(kill = true) {
-    this.Log(`Closing window ${this.pid}`);
+  async closeWindow(contextId: string, kill = true) {
+    this.Log(`Closing window ${contextId} of ${this.pid}`);
 
     const canClose = this._disposed || (this.onClose ? await this.onClose() : true);
 
@@ -132,12 +132,12 @@ export class AppProcess extends Process implements IAppProcess {
     this.STATE = "stopping";
 
     if (this.getWindow()?.classList.contains("fullscreen"))
-      SysDispatch.dispatch("window-unfullscreen", [this.pid, this.app.desktop]);
+      SysDispatch.dispatch("window-unfullscreen", [this.pid, contextId, this.app.desktop]);
 
     const elements = [
-      ...document.querySelectorAll(`div.window[data-pid="${this.pid}"]`),
-      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-pid="${this.pid}"]`) || []),
-      ...(document.querySelectorAll(`button.opened-app[data-pid="${this.pid}"]`) || []),
+      ...document.querySelectorAll(`div.window[data-context="${contextId}"]`),
+      ...(document.querySelectorAll(`div.window-overlay-wrapper[data-context="${contextId}"]`) || []),
+      ...(document.querySelectorAll(`button.opened-app[data-context="${contextId}"]`) || []),
     ];
 
     if (!elements.length) {
@@ -146,7 +146,7 @@ export class AppProcess extends Process implements IAppProcess {
       return this.killSelf();
     }
 
-    SysDispatch.dispatch("window-closing", [this.pid]);
+    SysDispatch.dispatch("window-closing", [contextId]);
 
     for (const element of elements) {
       element.classList.add("closing");

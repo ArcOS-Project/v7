@@ -1,5 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { IAppRenderer } from "$interfaces/IAppRenderer";
+import type { IAppRenderer, IAppRendererContext } from "$interfaces/IAppRenderer";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import type { IIconService } from "$interfaces/services/IIconService";
@@ -7,6 +7,7 @@ import { __Console__ } from "$ts/console";
 import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { BlankIcon } from "$ts/images/general";
+import { Sleep } from "$ts/sleep";
 import { contextProps } from "$ts/ui/context/actions.svelte";
 import { UUID } from "$ts/util/uuid";
 import { LogLevel } from "$types/shared/logging";
@@ -17,7 +18,6 @@ import { Process } from "../kernel/mods/stack/process/instance";
 import { Store } from "../writable";
 import { AppRendererError } from "./error";
 import { BuiltinAppImportPathAbsolutes } from "./store";
-import { Sleep } from "$ts/sleep";
 
 export class AppRenderer extends Process implements IAppRenderer {
   currentState: number[] = [];
@@ -25,7 +25,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   maxZIndex = 1e6;
   focusedPid = Store(-1);
   appStore = Store<Map<string, AppProcessData>>(new Map());
-  lastInteract?: IAppProcess;
+  lastInteract?: IAppRendererContext;
   override _criticalProcess: boolean = true;
 
   //#region LIFECYCLE
@@ -49,7 +49,7 @@ export class AppRenderer extends Process implements IAppRenderer {
       if (this._disposed || !v) return;
 
       this.lastInteract = Stack.getProcess(v);
-      if (this.lastInteract) this.lastInteract.blinking?.set(false);
+      if (this.lastInteract?.process) this.lastInteract.process?.blinking?.set(false);
     });
   }
 
@@ -61,21 +61,21 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   //#endregion
 
-  async render(process: IAppProcess, renderTarget: HTMLDivElement | undefined) {
+  async render(context: IAppRendererContext, renderTarget: HTMLDivElement | undefined) {
     this.disposedCheck();
 
-    if (process._disposed) return;
+    if (context?.process?._disposed) return;
 
-    this.Log(`Rendering PID ${process.pid}`);
+    this.Log(`Rendering PID ${context.process?.pid}`);
 
     renderTarget ||= this.target;
     const window = document.createElement("div");
-    const titlebar = this._renderTitlebar(process);
-    const toast = this._renderToast(process);
+    const titlebar = this._renderTitlebar(context);
+    const toast = this._renderToast(context);
     const body = document.createElement("div");
-    this._resizeGrabbers(process, window);
+    this._resizeGrabbers(context, window);
 
-    const { app } = process;
+    const { app } = context;
     const { data } = app;
 
     body.className = "body";
@@ -83,9 +83,9 @@ export class AppRenderer extends Process implements IAppRenderer {
     const shell = Stack.getProcess(+Env.get("shell_pid"));
 
     window.className = "window shell-colored";
-    window.setAttribute("data-pid", process.pid.toString());
+    window.setAttribute("data-pid", context.pid.toString());
     window.addEventListener("click", () => {
-      this.lastInteract = process;
+      this.lastInteract = context;
     });
     window.id = data.id;
     window.classList.toggle("no-shell", !shell);
@@ -106,18 +106,18 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     if (data.glass) window.classList.add("glass");
 
-    this._windowClasses(process, window, data);
-    this._windowEvents(process, window, titlebar, data);
+    this._windowClasses(context, window, data);
+    this._windowEvents(context, window, titlebar, data);
 
-    if (data.overlay && process.parentPid) {
+    if (data.overlay && context.parentPid) {
       const wrapper = document.createElement("div");
-      const parent = document.querySelector(`div.window[data-pid="${process.parentPid}"]`) || this.target;
+      const parent = document.querySelector(`div.window[data-pid="${context.parentPid}"]`) || this.target;
 
       if (!parent) {
         renderTarget.append(window);
       } else {
-        wrapper.setAttribute("data-pid", process.pid.toString());
-        wrapper.className = `window-overlay-wrapper shade-${process.app.id}`;
+        wrapper.setAttribute("data-pid", context.pid.toString());
+        wrapper.className = `window-overlay-wrapper shade-${context.app.id}`;
 
         window.classList.add("overlay");
 
@@ -136,19 +136,19 @@ export class AppRenderer extends Process implements IAppRenderer {
       window.classList.add("visible");
     }, 100);
 
-    this.currentState.push(process.pid);
-    if (!data.core && !data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(process)) this.focusPid(process.pid);
+    this.currentState.push(context.pid);
+    if (!data.core && !data.overlay && ProcessesHelper.IsAnyGraphicalAppProcess(context)) this.focusPid(context.pid);
 
     try {
-      await process.__render__(body);
-      await process.CrashDetection();
+      await context.__render__(body);
+      await context.CrashDetection();
     } catch (e) {
-      if (!process._disposed) {
-        process.STATE = "error";
-        this.notifyCrash(data, e as Error, process);
+      if (!context._disposed) {
+        context.STATE = "error";
+        this.notifyCrash(data, e as Error, context);
       }
-      await this.remove(process.pid);
-      await Stack.kill(process.pid);
+      await this.remove(context.pid);
+      await Stack.kill(context.pid);
     }
   }
 
@@ -262,10 +262,10 @@ export class AppRenderer extends Process implements IAppRenderer {
     this.focusedPid.set(pid);
   }
 
-  _renderTitlebar(process: IAppProcess) {
+  _renderTitlebar(context: IAppRendererContext) {
     this.disposedCheck();
 
-    if (process.app.data.core) return undefined;
+    if (context.data.core) return undefined;
 
     const titlebar = document.createElement("div");
     const title = document.createElement("div");
@@ -275,14 +275,11 @@ export class AppRenderer extends Process implements IAppRenderer {
 
     controls.className = "controls";
 
-    const { app } = process;
-    const { data } = app;
-
-    if (data.controls.minimize) {
+    if (context.data.controls.minimize) {
       const minimize = document.createElement("button");
 
       minimize.className = "minimize icon-chevron-down";
-      minimize.addEventListener("click", () => this.toggleMinimize(process.pid));
+      minimize.addEventListener("click", () => this.toggleMinimize(context.identifier));
 
       controls.append(minimize);
     }
@@ -290,45 +287,48 @@ export class AppRenderer extends Process implements IAppRenderer {
     const unsnap = document.createElement("button");
 
     unsnap.className = "unsnap icon-arrow-down-left";
-    unsnap.addEventListener("click", () => this.unsnapWindow(process.pid));
+    unsnap.addEventListener("click", () => this.unsnapWindow(context.identifier));
 
     controls.append(unsnap);
 
-    if (data.controls.maximize) {
+    if (context.data.controls.maximize) {
       const maximize = document.createElement("button");
 
       maximize.className = "maximize icon-chevron-up";
-      maximize.addEventListener("click", () => this.toggleMaximize(process.pid));
+      maximize.addEventListener("click", () => this.toggleMaximize(context.identifier));
 
       controls.append(maximize);
     }
 
-    if (data.controls.close) {
+    if (context.data.controls.close) {
       const close = document.createElement("button");
 
       close.className = "close icon-x";
       close.addEventListener("click", async () => {
-        process.closeWindow();
+        context.process?.closeWindow();
       });
 
       controls.append(close);
     }
 
-    titleCaption.innerText = `${data.metadata.name}`;
+    titleCaption.innerText = `${context.data.metadata.name}`;
 
-    process.windowTitle.subscribe((v) => {
+    context.windowTitle.subscribe((v) => {
       titleCaption.innerText = v;
     });
 
-    process.windowIcon.subscribe((v) => {
-      titleIcon.src = process.getIconCached(v) || v;
+    context.windowIcon.subscribe((v) => {
+      titleIcon.src = context.process?.getIconCached(v) || v;
     });
 
     Daemon?.serviceHost?.Gate<IIconService>(
       "IconService",
       () => {
-        const icon = process.getIconCached(`@app::${app.id}`) || process.getIconCached("ComponentIcon");
-        titleIcon.src = icon === `@app::${app.id}` ? BlankIcon : icon;
+        const icon =
+          context.process?.getIconCached(`@app::${context.appId}`) ||
+          context.process?.getIconCached("ComponentIcon") ||
+          BlankIcon;
+        titleIcon.src = icon === `@app::${context.appId}` ? BlankIcon : icon;
       },
       () => {
         titleIcon.src = BlankIcon;
@@ -336,7 +336,7 @@ export class AppRenderer extends Process implements IAppRenderer {
     );
 
     title.className = "window-title";
-    title.append(titleIcon, titleCaption, this._renderAltMenu(process));
+    title.append(titleIcon, titleCaption, this._renderAltMenu(context));
 
     if (BETA) {
       const beta = document.createElement("span");
