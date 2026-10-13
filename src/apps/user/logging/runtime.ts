@@ -48,11 +48,9 @@ export class LoggingRuntime extends AppProcess implements ILoggingRuntime {
       groupStore.set(source, items);
     }
 
-    groupStore.set("$all", logs);
-
     this.windowTitle.set(`${this.isArchive ? "Viewing archive - " : ""}${logs.length} items`);
     this.groups.set(groupStore);
-    this.sources.set([...sources, { what: "$all", timestamp: Date.now() }]);
+    this.sources.set(sources);
 
     if (!groupStore.get(this.currentSource())) this.currentSource.set(sources[0].what);
   }

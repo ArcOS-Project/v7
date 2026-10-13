@@ -149,10 +149,6 @@
   width: 160px;
 }
 
-#logging > div.body div.log-list div.row div.segment.source {
-  width: 200px;
-}
-
 #logging > div.body div.log-list div.row:not(.head) div.segment.timestamp {
   font-family: "Source Code Pro";
 }

@@ -22,6 +22,5 @@
     <Icon icon={LogItemIcons[item.level]!} />
   </div>
   <div class="segment timestamp">{timestamp}</div>
-  <div class="segment source">{item.source}</div>
   <div class="segment message" title={item.message}><span>{item.message}</span></div>
 </div>
