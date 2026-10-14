@@ -2,6 +2,10 @@
   margin-bottom: 20px;
 }
 
+#systemSettings div.account_loginActivity section {
+  width: 400px;
+}
+
 #systemSettings div.account_loginActivity div.activity-item {
   display: flex;
   align-items: start;

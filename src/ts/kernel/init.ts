@@ -2,7 +2,7 @@ import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { __Console__ } from "$ts/console";
 import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";
-import { MemoryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
+import { TemporaryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { States } from "$ts/state/store";
@@ -58,7 +58,7 @@ export class InitProcess extends Process {
     this.Log("Initializing TEMP");
 
     try {
-      await Fs.mountDrive("temp", MemoryFilesystemDrive, "T");
+      await Fs.mountDrive("temp", TemporaryFilesystemDrive, "T");
       await Fs.createDirectory("T:/Apps");
       await Fs.createDirectory("T:/Meta");
       await Fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));

@@ -1,5 +1,5 @@
 #systemSettings section {
-  width: 340px;
+  width: 350px;
   margin: 0 auto;
   margin-top: 20px;
 }
@@ -126,4 +126,8 @@
   box-shadow: none;
   outline: var(--button-glass-hover-bg) 1px solid;
   outline-offset: -1px;
+}
+
+.theme-light #systemSettings section div.content select {
+  background-color: var(--win-bg) !important;
 }

@@ -1,4 +1,5 @@
 import type { ExpandedUserInfo } from "../user";
+import type { BugReport } from "./bughunt";
 import type { QueryableOptions } from "./query";
 
 export interface Activity {
@@ -198,4 +199,9 @@ export interface AdminTemporaryPassword {
   passwordValue: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BugHuntGetResponse {
+  report: BugReport;
+  reportId: string;
 }

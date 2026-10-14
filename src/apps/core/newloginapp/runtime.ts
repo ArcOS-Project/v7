@@ -32,6 +32,7 @@ import {
   type LoginState,
   type LoginStatus,
 } from "./types";
+import { LoginUserDaemonStartOptions } from "../loginapp/store";
 
 export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntime {
   private readonly PERSISTENCE_LS_ID = "arcNewLoginPersistence";
@@ -221,6 +222,12 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
 
     this.ShowLoading("Saving token");
     this.SaveToken(userDaemon!);
+
+    // await new Promise(async (r) => {
+    //   while (true) {
+    //     await Sleep(1);
+    //   }
+    // });
 
     const result = await userDaemon?.startUserDaemon(NewLoginUserDaemonStartOptions(this), broadcast.bind(this));
 

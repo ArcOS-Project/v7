@@ -2,7 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IShareConnector } from "$interfaces/modules/server/IShareConnector";
 import { Server } from "$ts/env";
 import { CommandResult } from "$ts/result";
-import { ToAxiosProgress } from "$ts/util";
+import { authcode, ToAxiosProgress } from "$ts/util";
 import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
@@ -131,8 +131,8 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
       const response = CommandResult.FromResponse(await this.server.get(`/stat/${shareId}/${path}`));
       if (!response.success) return response as ICommandResult<ExtendedStat>;
 
-      response.result.modifiers.createdBy.user.profilePicture = `${Server.url}${response.result.modifiers.createdBy.user.profilePicture}`;
-      response.result.modifiers.lastWrite.user.profilePicture = `${Server.url}${response.result.modifiers.lastWrite.user.profilePicture}`;
+      response.result.modifiers.createdBy.user.profilePicture = `${Server.url}${response.result.modifiers.createdBy.user.profilePicture}${authcode()}`;
+      response.result.modifiers.lastWrite.user.profilePicture = `${Server.url}${response.result.modifiers.lastWrite.user.profilePicture}${authcode()}`;
 
       return response;
     } catch (e) {

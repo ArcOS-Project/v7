@@ -31,7 +31,7 @@
     </p>
     <button class="login-action" onclick={() => process.DismissError()}>Okay</button>
   {:else if $Status.variant === LoginStatusVariant.Loading}
-    <p class="loading">
+    <p class="loading theme-dark">
       <Spinner height={24} />
       <span>{@html $Status.content}</span>
     </p>
