@@ -61,6 +61,8 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
       this.client?.once("disconnect", () => resolve());
       this.client?.disconnect();
       this.stackUnsubscribe?.();
+
+      if (this.client?.disconnected) resolve();
     });
   }
 

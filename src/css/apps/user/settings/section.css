@@ -127,3 +127,7 @@
   outline: var(--button-glass-hover-bg) 1px solid;
   outline-offset: -1px;
 }
+
+.theme-light #systemSettings section div.content select {
+  background-color: var(--win-bg) !important;
+}
