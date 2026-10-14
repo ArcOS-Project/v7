@@ -133,7 +133,7 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
     this.Persistence.update((v) => {
       const userConnector = Server.GetConn<IUserConnector>("UserConnector", "");
       const persistence: LoginPersistenceUser = {
-        displayName: info.preferences.account.displayName ?? info.username,
+        displayName: info.preferences?.account?.displayName ?? info.username,
         username: info.username,
         userId: info._id,
         profilePictureUrl: userConnector.PictureUrl(info._id),
@@ -339,7 +339,7 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
   private async PerformLogoff(userDaemon: IUserDaemon) {
     this.Log(`Logging off user '${userDaemon.username}'`);
 
-    this.ShowLoading(`Goodbye, ${userDaemon.preferences().account.displayName ?? userDaemon.username}!`);
+    this.ShowLoading(`Goodbye, ${userDaemon.preferences()?.account?.displayName ?? userDaemon.username}!`);
 
     const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {
