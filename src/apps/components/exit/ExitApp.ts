@@ -5,7 +5,7 @@ import { ExitRuntime } from "./runtime";
 
 const ExitApp: App = {
   metadata: {
-    name: "Exit",
+    name: "%apps.ExitApp._name%",
     author: "Izaak Kuipers",
     version: "6.0.0",
     icon: "ShutdownIcon",

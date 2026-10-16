@@ -23,12 +23,13 @@ export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.AppInfo");
     const targetApp = this.appStore()?.getAppSynchronous(this.targetAppId);
 
     if (!targetApp) {
       Daemon?.notifications?.sendNotification({
-        title: "App not found",
-        message: `AppInfo couldn't find any information about "${this.targetAppId}". Is it installed?`,
+        title: "%apps.AppInfo.noTargetApp.title%",
+        message: `%apps.AppInfo.noTargetApp.message(${this.targetAppId})%`,
         image: "AppInfoIcon",
         timeout: 6000,
       });
@@ -46,8 +47,8 @@ export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
   async killAll() {
     this.Log(`killAll`);
 
-    const elevated = await Daemon?.elevation?.manuallyElevate({
-      what: `ArcOS needs your permission to kill all instances of an app`,
+    const elevated = await this.userDaemon?.manuallyElevate({
+      what: `%apps.AppInfo.killAll.what%`,
       image: `@app::${this.targetAppId}`,
       title: this.targetApp().metadata.name,
       description: this.targetAppId,

@@ -40,6 +40,10 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     this.setSource(__SOURCE__);
   }
 
+  async render() {
+    this.getBody().setAttribute("data-prefix", "apps.MessageComposer");
+  }
+
   //#endregion
   //#region SENDING
 
@@ -51,8 +55,8 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     const prog = await Daemon?.files!.FileProgress(
       {
         type: "none",
-        caption: "Sending message",
-        subtitle: "Preparing...",
+        caption: "%apps.MessageComposer.sendProg.caption%",
+        subtitle: "%apps.MessageComposer.sendProg.subtitleInitial%",
         icon: "MessagingIcon",
       },
       this.pid
@@ -69,7 +73,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
         prog?.setType("size");
         prog?.setMax(progress.max);
         prog?.setDone(progress.value);
-        prog?.updSub("Uploading...");
+        prog?.updSub("%apps.MessageComposer.sendProg.subtitleUploading%");
       }
     );
 
@@ -87,12 +91,12 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     if (!this.isModified()) return this.closeWindow();
     MessageBox(
       {
-        title: "Discard message?",
-        message: "Are you sure you want to discard this message? This cannot be undone.",
+        title: "%apps.MessageComposer.discardMessage.title%",
+        message: "%apps.MessageComposer.discardMessage.title%",
         buttons: [
-          { caption: "Cancel", action: () => {} },
+          { caption: "%general.cancel%", action: () => {} },
           {
-            caption: "Discard",
+            caption: "%general.discard%",
             action: () => {
               this.closeWindow();
             },
@@ -116,8 +120,8 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     this.sending.set(false);
     MessageBox(
       {
-        title: "Failed to send message",
-        message: `The message couldn't be sent${errorMessage}`,
+title: "%apps.MessageComposer.sendFailed.title%",
+        message: `%apps.MessageComposer.sendFailed.message% ${errorMessage}`,
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [BTN_OKAY_SUG],
@@ -135,7 +139,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
 
     const attachments: Attachment[] = [];
     const paths = await Daemon!.files!.LoadSaveDialog({
-      title: "Choose one or more files to attach",
+      title: "%apps.MessageComposer.addAttachment.title%",
       icon: "UploadIcon",
       startDir: UserPaths.Documents,
       multiple: true,
@@ -145,7 +149,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
       {
         max: 100,
         type: "none",
-        caption: "Just a moment...",
+        caption: "%general.genericStatus%",
         icon: "MemoryIcon",
       },
       this.pid
@@ -159,7 +163,11 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
       try {
         const contents = await Fs.readFile(path, (progress) => {
           prog.show();
-          prog.updateCaption(progress.what ? `Reading ${progress.what}` : "Reading file...");
+          prog.updateCaption(
+            progress.what
+              ? `%apps.MessageComposer.fileProgress.readingFileKnown(${progress.what})%`
+              : "%apps.MessageComposer.fileProgress.readingFileUnknown%"
+          );
           prog.updSub(path);
           prog.setType("size");
           prog.setDone(0);

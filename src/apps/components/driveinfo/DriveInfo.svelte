@@ -40,10 +40,11 @@
 <ActionBar floating>
   {#snippet leftContent()}
     {#if isUserFs}
-      <ActionButton onclick={() => (advanced = !advanced)}>{advanced ? "Simple" : "Advanced"}</ActionButton>
+      <ActionButton onclick={() => (advanced = !advanced)}>{advanced ? "%actions.simple%" : "%actions.advanced%"}</ActionButton
+    >
     {/if}
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton suggested onclick={() => process.closeWindow()}>Close</ActionButton>
+    <ActionButton suggested onclick={() => process.closeWindow()}>%general.close%</ActionButton>
   {/snippet}
 </ActionBar>

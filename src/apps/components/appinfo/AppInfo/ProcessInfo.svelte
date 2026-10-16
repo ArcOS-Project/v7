@@ -31,12 +31,12 @@
 
 <InfoBlock className="process-info">
   <InfoRow>
-    <Segment title="Processes">
-      {count} instance(s)
+    <Segment title="%processInfo.processes%">
+      %processInfo.instances({count})%
     </Segment>
-    <Segment title="First PID">
-      {pid < 0 ? "None" : pid}
+    <Segment title="%processInfo.firstPid%">
+      {pid < 0 ? "%general.none%" : pid}
     </Segment>
-    <button class="processes" onclick={() => process.processManager()}>Processes</button>
+    <button class="processes" onclick={() => process.processManager()}>%processInfo.processes%</button>
   </InfoRow>
 </InfoBlock>

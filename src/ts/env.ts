@@ -11,6 +11,7 @@ import type { IServerConnector, IServerManager } from "$interfaces/modules/IServ
 import type { ISoundbus } from "$interfaces/modules/ISoundbus";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import packageJson from "../../package.json";
+import type { I18n as II18n } from "./kernel/mods/i18n";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
@@ -25,6 +26,7 @@ export let SysDispatch: ISystemDispatch;
 export let SoundBus: ISoundbus;
 export let State: IStateHandler;
 export let BugHunt: IBugHunt;
+export let I18n: II18n;
 
 export function SetCurrentKernel(kernel: IWaveKernel) {
   if (Kernel) throw new Error("Tried to reassign CurrentKernel");
@@ -46,6 +48,7 @@ export function SetKernelExports() {
   SysDispatch = getKMod<ISystemDispatch>("dispatch");
   SoundBus = getKMod<ISoundbus>("soundbus");
   BugHunt = getKMod<IBugHunt>("bughunt");
+  I18n = getKMod<II18n>("i18n");
 }
 
 export function getKMod<T extends IKernelModule>(id: string, dontCrash = false): T {

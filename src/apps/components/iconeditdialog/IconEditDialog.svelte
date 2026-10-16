@@ -14,7 +14,7 @@
 
 <div class="left">
   <div class="top">
-    <h1>Change {iconName}</h1>
+    <h1>%title({iconName})%</h1>
     <ModeToggle {process} />
     {#if $type === "@fs"}
       <FileType {process} />
@@ -28,13 +28,13 @@
     {#snippet leftContent()}
       {#if process.defaultIcon}
         <ActionButton onclick={() => process.default} disabled={`${$type}::${$values[$type]}` === process.defaultIcon}>
-          Default
+          %default%
         </ActionButton>
       {/if}
     {/snippet}
     {#snippet rightContent()}
-      <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
-      <ActionButton suggested onclick={() => process.save()}>Save</ActionButton>
+      <ActionButton onclick={() => process.closeWindow()}>%general.cancel%</ActionButton>
+      <ActionButton suggested onclick={() => process.save()}>%general.save%</ActionButton>
     {/snippet}
   </ActionBar>
 </div>

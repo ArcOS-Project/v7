@@ -121,9 +121,13 @@
 </script>
 
 <div class="form-page identity">
-  <h1>Your ArcOS Identity</h1>
-  <p class="subtitle">We'll use this information to create your ArcOS account.</p>
+  <h1>%identity.title%</h1>
+  <p class="subtitle">%identity.subtitle%</p>
   <div class="fields">
+    <div class="field">
+      <p class="name">%identity.fields.displayName%</p>
+      <input type="text" placeholder="John Doe" bind:value={$displayName} />
+    </div>
     <div class="field username">
       <p class="name">Username</p>
       <button
@@ -171,32 +175,35 @@
       <div class="duo">
         <input
           type="password"
-          placeholder="Password"
+          placeholder="%identity.fields.password%"
           bind:value={enteredPassword}
           oninput={onPasswordKeydown}
           class:taken={passwordInvalid}
         />
-        <input type="password" placeholder="Confirm" bind:value={$confirm} class:taken={passwordInvalid} />
+        <input
+          type="password"
+          placeholder="%identity.fields.passwordConfirm%"
+          bind:value={$confirm}
+          class:taken={passwordInvalid}
+        />
       </div>
     </div>
     {#if usernameTaken && emailTaken}
-      <p class="error">Username and email address are both taken!</p>
+      <p class="error">%identity.errors.usernameAndEmailTaken%</p>
     {:else if usernameTaken}
-      <p class="error">Username is already taken!</p>
+      <p class="error">%identity.errors.usernameTaken%</p>
     {:else if emailTaken}
-      <p class="error">Email is already taken!</p>
+      <p class="error">%identity.errors.emailTaken%</p>
     {/if}
     {#if emailInvalid && usernameInvalid}
-      <p class="error">Username and email address are both invalid!</p>
+      <p class="error">%identity.errors.usernameAndEmailInvalid%</p>
     {:else if usernameInvalid}
-      <p class="error">Username is invalid!</p>
+      <p class="error">%identity.errors.usernameInvalid%</p>
     {:else if emailInvalid}
-      <p class="error">Email address is invalid!</p>
+      <p class="error">%identity.errors.emailInvalid%</p>
     {/if}
     {#if passwordInvalid}
-      <p class="error">
-        Password is {PasswordStrengthCaptions[passwordStrength]}!
-      </p>
+      <p class="error">%identity.errors.password{passwordStrength}%</p>
     {/if}
   </div>
   <p class="disclaimer">

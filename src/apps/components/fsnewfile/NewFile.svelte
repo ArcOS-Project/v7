@@ -22,15 +22,15 @@
 <div class="top">
   <Icon {icon} />
   <div class="right">
-    <h1>New file</h1>
-    <p>Think of a wonderful name for this new file:</p>
+    <h1>%apps.FsNewFile.title%</h1>
+    <p>%apps.FsNewFile.subtitle%</p>
     <input type="text" bind:value={$newFile} />
   </div>
 </div>
 
 <ActionBar>
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
-    <ActionButton suggested disabled={!$newFile} onclick={() => process.createFile()}>Create</ActionButton>
+    <ActionButton onclick={() => process.closeWindow()}>%general.cancel%</ActionButton>
+    <ActionButton suggested disabled={!$newFile} onclick={() => process.createFile()}>%apps.FsNewFile.create%</ActionButton>
   {/snippet}
 </ActionBar>

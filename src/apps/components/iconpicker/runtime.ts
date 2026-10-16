@@ -41,6 +41,10 @@ export class IconPickerRuntime extends AppProcess implements IIconPickerRuntime 
     this.groups = iconService.getGroupedIcons();
   }
 
+  async render() {
+    this.getBody().setAttribute("data-prefix", "apps.IconPicker");
+  }
+
   //#endregion
 
   async confirm() {

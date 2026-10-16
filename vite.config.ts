@@ -29,6 +29,7 @@ export default defineConfig({
       $ts: resolve(__dirname, "./src/ts"),
       $lib: resolve(__dirname, "./src/lib"),
       $interfaces: resolve(__dirname, "./src/interfaces"),
+      $lang: resolve(__dirname, "./src/lang"),
     },
   },
   build: {

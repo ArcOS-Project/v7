@@ -52,6 +52,8 @@ export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGui
   }
 
   async render() {
+    this.getBody().setAttribute("data-prefix", "apps.MultiUpdateGui");
+
     this.win = this.getWindow();
 
     if (this.updates.length > 15) {
@@ -95,7 +97,7 @@ export class MultiUpdateGuiRuntime extends AppProcess implements IMultiUpdateGui
     this.working.set(true);
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: `ArcOS needs your permission to update ${this.updates.length} ${Plural("app", this.updates.length)}.`,
+      what: `%apps.MultiUpdateGui.elevation(${this.updates.length}::${Plural("app", this.updates.length)})%`,
       title: this.app.data.metadata.name,
       description: this.app.data.metadata.author,
       image: "UpdateIcon",

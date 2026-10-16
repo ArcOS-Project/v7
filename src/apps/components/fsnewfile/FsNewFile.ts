@@ -5,7 +5,7 @@ import { NewFileRuntime } from "./runtime";
 
 export const FsNewFileApp: App = {
   metadata: {
-    name: "New File",
+    name: "%apps.FsNewFile.title%",
     version: "4.0.0",
     author: "Izaak Kuipers",
     icon: "ComponentIcon",

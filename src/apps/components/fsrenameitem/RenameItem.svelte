@@ -11,15 +11,15 @@
 <div class="top">
   <Icon icon="TextEditorIcon" />
   <div class="right">
-    <h1>Rename file or folder</h1>
-    <p>Enter a new name for the item:</p>
+    <h1>%apps.FsRenameItem.title%</h1>
+    <p>%apps.FsRenameItem.subtitle%</p>
     <input type="text" bind:value={$newName} />
   </div>
 </div>
 
 <ActionBar>
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.closeWindow()}>Cancel</ActionButton>
-    <ActionButton suggested disabled={!$newName} onclick={() => process.rename()}>Rename</ActionButton>
+    <ActionButton onclick={() => process.closeWindow()}>%general.cancel%</ActionButton>
+    <ActionButton suggested disabled={!$newName} onclick={() => process.rename()}>%apps.FsRenameItem.rename%</ActionButton>
   {/snippet}
 </ActionBar>

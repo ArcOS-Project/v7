@@ -28,12 +28,12 @@
 <ActionBar floating>
   {#snippet leftContent()}
     <ActionButton onclick={() => ($selected = defaultIcon || "DefaultIcon")} disabled={$selected === defaultIcon}>
-      Reset
+      %reset%
     </ActionButton>
-    <ActionButton onclick={() => process.selectRandom()}>Random</ActionButton>
+    <ActionButton onclick={() => process.selectRandom()}>%random%</ActionButton>
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton onclick={() => process.cancel()}>Cancel</ActionButton>
-    <ActionButton suggested onclick={() => process.confirm()} disabled={!$selected}>Choose</ActionButton>
+    <ActionButton onclick={() => process.cancel()}>%general.cancel%</ActionButton>
+    <ActionButton suggested onclick={() => process.confirm()} disabled={!$selected}>%choose%</ActionButton>
   {/snippet}
 </ActionBar>

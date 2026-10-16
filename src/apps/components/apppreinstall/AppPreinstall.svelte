@@ -11,17 +11,17 @@
   <div class="header">
     <Icon icon="ArcAppMimeIcon" />
     <h1>{$metadata.name}</h1>
-    <p>Do you want to install this package?</p>
+    <p>%header.title%</p>
   </div>
   <div class="info">
     <h1>{$metadata.description}</h1>
     <div class="rows">
       <div class="row">
-        <p class="key">Author</p>
+        <p class="key">%info.author%</p>
         <p class="value">{$metadata.author}</p>
       </div>
       <div class="row">
-        <p class="key">Version</p>
+        <p class="key">%info.version%</p>
         <p class="value">{$metadata.version}</p>
       </div>
     </div>
@@ -29,9 +29,9 @@
   <div class="action">
     <button class="suggested" onclick={() => process.install()}>
       <span class="lucide icon-shield"></span>
-      <span>Install package</span>
+      <span>%installPackage%</span>
     </button>
-    <button onclick={() => process.closeWindow()}>Cancel</button>
+    <button onclick={() => process.closeWindow()}>%general.cancel%</button>
   </div>
 {:else}
   <div class="loading">

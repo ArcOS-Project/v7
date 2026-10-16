@@ -5,7 +5,7 @@ import { ItemInfoRuntime } from "./runtime";
 
 export const ItemInfoApp: App = {
   metadata: {
-    name: "Item Info",
+    name: "%apps.ItemInfo._name%",
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: "ComponentIcon",

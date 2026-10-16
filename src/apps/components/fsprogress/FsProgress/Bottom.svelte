@@ -22,12 +22,12 @@
 <ActionBar>
   {#snippet leftContent()}
     {#if $Progress.type == "quantity"}
-      <ActionSubtle text="{$Progress.done} / {$Progress.max} done" />
+      <ActionSubtle text="%apps.FsProgress.quantity({$Progress.done}::{$Progress.max})%" />
     {:else if $Progress.type == "size"}
-      <ActionSubtle text="{formatBytes($Progress.done)} / {formatBytes($Progress.max)} done" />
+      <ActionSubtle text="%apps.FsProgress.size({formatBytes($Progress.done)}::{formatBytes($Progress.max)})%" />
     {/if}
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton disabled={!$Progress.cancel || canceling} onclick={cancel}>Cancel</ActionButton>
+    <ActionButton disabled={!$Progress.cancel || canceling} onclick={cancel}>%general.cancel%</ActionButton>
   {/snippet}
 </ActionBar>

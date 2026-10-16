@@ -6,6 +6,7 @@ import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { UserDrive } from "$ts/kernel/mods/fs/drives/userfs";
 import type { AppProcessData } from "$types/apps/app";
 import type { UserQuota } from "$types/system/fs";
+import type { RenderArgs } from "$types/system/process";
 import type { CategorizedDiskUsage } from "$types/user";
 
 export class DriveInfoRuntime extends AppProcess implements IDriveInfoRuntime {
@@ -40,6 +41,10 @@ export class DriveInfoRuntime extends AppProcess implements IDriveInfoRuntime {
     }
 
     stop();
+  }
+
+  async render(args: RenderArgs) {
+    this.getBody().setAttribute("data-prefix", "apps.DriveInfo");
   }
 
   //#endregion

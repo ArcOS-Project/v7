@@ -10,18 +10,18 @@
 
 <InfoBlock className="internal-info">
   <InfoRow>
-    <Segment title="Load time">
+    <Segment title="%internalInfo.loadTime%">
       {target._internalLoadTime?.toFixed(2) || 0}ms
     </Segment>
-    <Segment title="System version">
+    <Segment title="%internalInfo.systemVersion%">
       {target._internalSysVer}
     </Segment>
-    <Segment title="Minimal assembly">
+    <Segment title="%internalInfo.minimalAssembly%">
       {target._internalMinVer || "-"}
     </Segment>
   </InfoRow>
   <InfoRow>
-    <Segment title="Code Path">
+    <Segment title="%internalInfo.codePath%">
       {target._internalOriginalPath}
     </Segment>
   </InfoRow>

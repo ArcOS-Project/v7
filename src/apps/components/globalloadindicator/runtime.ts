@@ -5,7 +5,7 @@ import type { AppProcessData } from "$types/apps/app";
 import type { GlobalLoadIndicatorProgress } from "./types";
 
 export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoadIndicatorRuntime {
-  caption = Store<string>("Just a moment...");
+  caption = Store<string>("%general.genericStatus%");
   progress = Store<GlobalLoadIndicatorProgress | undefined>();
 
   //#region LIFECYCLE

@@ -3,5 +3,5 @@
 </script>
 
 <ProfilePicture height={84} />
-<h1>Choose a profile picture</h1>
-<p>Do you want to upload or pick a profile picture?</p>
+<h1>%profilePicture.title%</h1>
+<p>%profilePicture.subtitle%</p>

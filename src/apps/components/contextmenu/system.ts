@@ -10,14 +10,14 @@ export function WindowSystemContextMenu(): AppContextMenu {
   return {
     "_window-titlebar": [
       {
-        caption: "App Info",
+        caption: "%apps.contextMenu.system.windowTitlebar.appInfo%",
         icon: "info",
         action: (proc: IAppProcess) => {
           proc.spawnOverlayApp("AppInfo", +Env.get("shell_pid"), proc?.app.id);
         },
       },
       {
-        caption: "Process info",
+        caption: "%apps.contextMenu.system.windowTitlebar.processInfo%",
         icon: "cog",
         action: (proc: IAppProcess) => {
           proc.spawnOverlayApp("ProcessInfoApp", +Env.get("shell_pid"), proc);
@@ -26,7 +26,7 @@ export function WindowSystemContextMenu(): AppContextMenu {
       { sep: true },
 
       {
-        caption: "Minimize",
+        caption: "%general.minimize%",
         action: (proc: IAppProcess) => {
           Stack.renderer?.toggleMinimize(proc?.pid);
         },
@@ -35,7 +35,7 @@ export function WindowSystemContextMenu(): AppContextMenu {
         isActive: (proc: IAppProcess) => !!proc?.getWindow()?.classList.contains("minimized"),
       },
       {
-        caption: "Maximize",
+        caption: "%general.maximize%",
         action: (proc: IAppProcess) => {
           Stack.renderer?.unsnapWindow(proc?.pid);
           Stack.renderer?.toggleMaximize(proc?.pid);
@@ -46,64 +46,64 @@ export function WindowSystemContextMenu(): AppContextMenu {
       },
       { sep: true },
       {
-        caption: "Window snapping",
+        caption: "%apps.contextMenu.system.windowTitlebar.windowSnapping%",
         icon: "fullscreen",
         disabled: (proc: IAppProcess) => !proc?.app.data.controls.maximize,
         isActive: (proc: IAppProcess) => !!proc?.getWindow()?.classList.contains("snapped"),
         subItems: [
           {
-            caption: "None",
+            caption: "%general.none%",
             icon: "x",
             action: (proc: IAppProcess) => Stack.renderer?.unsnapWindow(proc?.pid),
           },
           { sep: true },
           {
-            caption: "Left",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingLeft%",
             icon: "arrow-left",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "left"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "left",
           },
           {
-            caption: "Right",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingRight%",
             icon: "arrow-right",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "right"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "right",
           },
           { sep: true },
           {
-            caption: "Top",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingTop%",
             icon: "arrow-up",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "top"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "top",
           },
           {
-            caption: "Bottom",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingBottom%",
             icon: "arrow-down",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "bottom"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom",
           },
           { sep: true },
           {
-            caption: "Top Left",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingTopLeft%",
             icon: "arrow-up-left",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "top-left"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "top-left",
           },
           {
-            caption: "Top Right",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingTopRight%",
             icon: "arrow-up-right",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "top-right"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "top-right",
           },
           { sep: true },
           {
-            caption: "Bottom Left",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingBottomLeft%",
             icon: "arrow-down-left",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "bottom-left"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-left",
           },
           {
-            caption: "Bottom Right",
+            caption: "%apps.contextMenu.system.windowTitlebar.snappingBottomRight%",
             icon: "arrow-down-right",
             action: (proc: IAppProcess) => Stack.renderer?.snapWindow(proc?.pid, "bottom-right"),
             isActive: (proc: IAppProcess) => proc?.getWindow()?.dataset.snapstate === "bottom-right",
@@ -111,11 +111,11 @@ export function WindowSystemContextMenu(): AppContextMenu {
         ],
       },
       {
-        caption: "Move to workspace",
+        caption: "%apps.contextMenu.system.windowTitlebar.moveWorkspace%",
         icon: "rotate-ccw-square",
         subItems: [
           {
-            caption: "Left workspace",
+            caption: "%apps.contextMenu.system.windowTitlebar.moveWorkspaceLeft%",
             icon: "arrow-left",
             action: (proc: IAppProcess) => {
               if (!proc?.pid) return;
@@ -129,7 +129,7 @@ export function WindowSystemContextMenu(): AppContextMenu {
             },
           },
           {
-            caption: "Right workspace",
+            caption: "%apps.contextMenu.system.windowTitlebar.moveWorkspaceRight%",
             icon: "arrow-right",
             action: (proc: IAppProcess) => {
               if (!proc?.pid) return;
@@ -146,7 +146,7 @@ export function WindowSystemContextMenu(): AppContextMenu {
       },
       { sep: true },
       {
-        caption: "Close",
+        caption: "%general.close%",
         action: (proc: IAppProcess) => {
           proc.closeWindow();
         },
