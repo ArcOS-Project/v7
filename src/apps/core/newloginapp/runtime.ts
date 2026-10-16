@@ -32,6 +32,7 @@ import {
   type LoginState,
   type LoginStatus,
 } from "./types";
+import { LoginUserDaemonStartOptions } from "../loginapp/store";
 
 export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntime {
   private readonly PERSISTENCE_LS_ID = "arcNewLoginPersistence";
@@ -132,7 +133,7 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
     this.Persistence.update((v) => {
       const userConnector = Server.GetConn<IUserConnector>("UserConnector", "");
       const persistence: LoginPersistenceUser = {
-        displayName: info.preferences.account.displayName ?? info.username,
+        displayName: info.preferences?.account?.displayName ?? info.username,
         username: info.username,
         userId: info._id,
         profilePictureUrl: userConnector.PictureUrl(info._id),
@@ -221,6 +222,12 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
 
     this.ShowLoading("Saving token");
     this.SaveToken(userDaemon!);
+
+    // await new Promise(async (r) => {
+    //   while (true) {
+    //     await Sleep(1);
+    //   }
+    // });
 
     const result = await userDaemon?.startUserDaemon(NewLoginUserDaemonStartOptions(this), broadcast.bind(this));
 
@@ -332,7 +339,7 @@ export class NewLoginAppRuntime extends AppProcess implements INewLoginAppRuntim
   private async PerformLogoff(userDaemon: IUserDaemon) {
     this.Log(`Logging off user '${userDaemon.username}'`);
 
-    this.ShowLoading(`Goodbye, ${userDaemon.preferences().account.displayName ?? userDaemon.username}!`);
+    this.ShowLoading(`Goodbye, ${userDaemon.preferences()?.account?.displayName ?? userDaemon.username}!`);
 
     const verbose = userDaemon.preferences().enableVerboseLogin;
     const broadcast = (message: string) => {

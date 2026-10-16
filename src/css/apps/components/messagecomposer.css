@@ -90,8 +90,8 @@
 }
 
 #MessageComposer > div.body div.message-body {
+  height: 0;
   flex-grow: 1;
-  border-bottom: var(--win-border);
 }
 
 #MessageComposer > div.body div.message-body textarea {
@@ -101,6 +101,12 @@
   background-color: var(--win-bg);
   border: none;
   padding: 15px;
+  font-family: "Source Code Pro";
+}
+
+#MessageComposer > div.body div.markdown-body {
+  padding: 15px;
+  height: 100%;
 }
 
 #MessageComposer > div.body div.attachment-bar {
@@ -152,12 +158,6 @@
   background-color: transparent;
   min-width: fit-content;
   outline: none;
-}
-
-#MessageComposer > div.body div.window-action-bar {
-  background-color: var(--win-bg);
-  border-top: none;
-  height: 50px;
 }
 
 #MessageComposer > div.body div.window-action-bar .discard-button {

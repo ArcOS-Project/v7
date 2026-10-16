@@ -4,32 +4,19 @@
   import StatusSegment from "$lib/Window/StatusBar/StatusSegment.svelte";
   import { Plural } from "$ts/util";
   import { formatBytes } from "$ts/util/fs";
-  import { Store } from "$ts/writable";
-  import { onMount } from "svelte";
 
   const { process }: { process: ISqeletonRuntime } = $props();
   const { openedFileName, queryIndex, queries, result, queryHistory, tables, errors, working } = process;
-
-  let sqlCode = Store<string>("");
-
-  onMount(() => {
-    queryIndex.subscribe((v) => {
-      $sqlCode = $queries[v] ?? "";
-    });
-
-    queries.subscribe((v) => {
-      if (v[$queryIndex] !== $sqlCode) {
-        $sqlCode = v[$queryIndex] ?? "";
-      }
-    });
-  });
 </script>
 
 <StatusBar>
   {#snippet leftContent()}
     <StatusSegment image="DbMimeIcon">{$openedFileName}</StatusSegment>
-    <StatusSegment>In query #{$queryIndex}</StatusSegment>
-    <StatusSegment>{formatBytes($sqlCode.length)}</StatusSegment>
+    <StatusSegment>In query {$queries[$queryIndex]?.filename ?? "None"}</StatusSegment>
+    {#if $queries[$queryIndex]?.hasChanges}
+      <StatusSegment>Modified</StatusSegment>
+    {/if}
+    <StatusSegment>{formatBytes($queries[$queryIndex]?.content?.length ?? 0)}</StatusSegment>
   {/snippet}
   {#snippet rightContent()}
     <StatusSegment className="stats">

@@ -237,6 +237,9 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
     };
 
     if (userDaemon) {
+      broadcast("Notifying login activity");
+      await userDaemon.activity?.logActivity("shutdown");
+
       broadcast("Stopping Service Host");
       await userDaemon.serviceHost?.spinDown(broadcast);
 
@@ -268,6 +271,9 @@ export class LoginAppRuntime extends AppProcess implements ILoginAppRuntime {
     this.loadingStatus.set(`Restarting...`);
 
     if (userDaemon) {
+      broadcast("Notifying login activity");
+      await userDaemon.activity?.logActivity("shutdown");
+
       broadcast("Stopping Service Host");
       await userDaemon.serviceHost?.spinDown(broadcast);
 

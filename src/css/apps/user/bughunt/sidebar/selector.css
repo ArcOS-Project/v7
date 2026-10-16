@@ -1,6 +1,5 @@
 #BugHunt > div.body div.sidebar div.selector {
   padding: 10px;
-  padding-right: 2px;
   overflow-y: scroll;
   height: calc(100% - 40px - 52px);
 }

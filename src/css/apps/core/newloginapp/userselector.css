@@ -3,11 +3,20 @@
   bottom: 30px;
   left: 30px;
   width: 250px;
+  height: fit-content;
+  max-height: 360px; /* room for 4 users + add user */
+  overflow-y: auto;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   div.user-option {
     display: flex;
     align-items: center;
     border-radius: 10px;
+    margin-top: 4px;
     transition:
       background-color 0.2s,
       backdrop-filter 0.1s;

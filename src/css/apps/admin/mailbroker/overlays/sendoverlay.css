@@ -10,7 +10,7 @@
     border-bottom: var(--win-border);
 
     span.lucide {
-      border-right:var(--win-border);
+      border-right: var(--win-border);
       width: 40px;
       height: 40px;
       display: flex;
@@ -20,6 +20,7 @@
     }
 
     select {
+      width: 0;
       flex-grow: 1;
       border: none;
       height: 100%;

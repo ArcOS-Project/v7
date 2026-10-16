@@ -1,0 +1,38 @@
+div.shell div.taskbar div.clock {
+  display: flex;
+  justify-content: end;
+}
+
+div.shell div.taskbar button.clock-button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px !important;
+  border-radius: 10px;
+  width: fit-content !important;
+  font-size: 14px !important;
+}
+
+div.shell div.taskbar button.clock-button:hover {
+  background-color: var(--button-glass-hover-bg);
+}
+
+div.shell div.taskbar button.clock-button:active {
+  background-color: var(--button-glass-active-bg);
+  opacity: 0.5;
+}
+
+.theme-light div.shell div.taskbar button.clock-button:hover {
+  background-color: var(--shell-component-bg);
+  filter: brightness(0.95);
+}
+
+.theme-light div.shell div.taskbar button.clock-button:active {
+  background-color: var(--shell-component-bg);
+  opacity: 0.5;
+}
+
+div.shell div.taskbar button.clock-button.active {
+  background-color: var(--accent-textual) !important;
+  color: var(--win-bg) !important;
+}

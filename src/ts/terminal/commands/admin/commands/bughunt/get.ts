@@ -8,10 +8,10 @@ export const AdminBugHuntReportGet: AdminCommandType = async (term, admin, [id])
   if (!admin.canAccess(AdminScopes.adminBugHuntGet, AdminScopes.adminUsersList)) return 2;
   if (!id) return 5;
 
-  const report = await admin.getBugReport(id);
+  const reportResult = await admin.getBugReport(id);
+  if (!reportResult) return 3;
 
-  if (!report) return 3;
-
+  const report = reportResult.report;
   const opened = report.closed ? `${BRRED}Closed${RESET}` : `${BRGREEN}Open${RESET}`;
   const api = `${report.api || "No server"}`;
   const frontend = `${report.frontend}`;
