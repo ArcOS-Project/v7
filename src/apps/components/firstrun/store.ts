@@ -1,12 +1,18 @@
-import { Daemon } from "$ts/env";
+import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
+import { Daemon, SoundBus } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
+import { MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
+import { ElevationLevel } from "$types/system/elevation";
 import type { ArcShortcut } from "$types/system/shortcut";
+import type { TotpSetupGuiRuntime } from "../totpsetupgui/runtime";
 import DisplayName from "./FirstRun/Page/DisplayName.svelte";
 import Finish from "./FirstRun/Page/Finish.svelte";
 import ProfilePicture from "./FirstRun/Page/ProfilePicture.svelte";
 import Style from "./FirstRun/Page/Style.svelte";
 import ThirdParty from "./FirstRun/Page/ThirdParty.svelte";
+import TOTPFailed from "./FirstRun/Page/TOTPFailed.svelte";
+import TOTPSetup from "./FirstRun/Page/TOTPSetup.svelte";
 import Welcome from "./FirstRun/Page/Welcome.svelte";
 import { DarkModeGraphic, LightModeGraphic } from "./images";
 import type { FirstRunPage, FirstRunTheme } from "./types";
@@ -127,7 +133,7 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
         right: [
           {
             caption: "Not now",
-            action: (process) => process.switchPage("finish"),
+            action: (process) => process.switchPage("totpSetup"),
           },
           {
             caption: "Enable",
@@ -136,10 +142,73 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
                 v.security.enableThirdParty = true;
                 return v;
               });
-              process.switchPage("finish");
+              process.switchPage("totpSetup");
             },
             suggested: true,
           },
+        ],
+      },
+    },
+  ],
+  [
+    "totpSetup",
+    {
+      name: "Set-up 2FA?",
+      hero: true,
+      component: TOTPSetup,
+      actions: {
+        left: [
+          {
+            caption: "Go back",
+            action: (process) => process.switchPage("thirdParty"),
+          },
+        ],
+        right: [
+          {
+            caption: "Skip",
+            action: (process) => process.switchPage("finish"),
+          },
+          {
+            caption: "Set-up 2FA",
+            action: async (process) => {
+              const totpSetupProc = await process.spawnOverlayApp<TotpSetupGuiRuntime>("TotpSetupGui", process.pid, true);
+              if (!totpSetupProc) {
+                process.switchPage("totpFailed");
+                SoundBus.playSound("arcos.dialog.error");
+              }
+
+              totpSetupProc?.setupState.subscribe((v) => {
+                if (v === "successful") {
+                  process.switchPage("finish");
+                }
+              });
+            },
+            suggested: true,
+          },
+        ],
+      },
+    },
+  ],
+  [
+    "totpFailed",
+    {
+      name: "2FA Setup Failed",
+      hero: true,
+      component: TOTPFailed,
+      actions: {
+        left: [
+          {
+            caption: "Go back",
+            action: (process) => process.switchPage("thirdParty"),
+          },
+        ],
+        right: [
+          {
+            caption: "Try again",
+            action: (process) => process.switchPage("totpSetup"),
+          },
+
+          { caption: "Finish later", action: (process) => process.switchPage("finish"), suggested: true },
         ],
       },
     },
