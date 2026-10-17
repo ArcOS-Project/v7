@@ -250,23 +250,23 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     name: "Sunny Lake",
     builtin: true,
   },
-  /**Allucat1000 */
+  /**Huopa */
   img33: {
     url: img33,
     thumb: img33Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Snowy Mountains",
   },
   img34: {
     url: img34,
     thumb: img34Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Germanic Waterfall",
   },
   img37: {
     url: img37,
     thumb: img37Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Italian Bliss",
   },
   /**Blocky (Cy) */
