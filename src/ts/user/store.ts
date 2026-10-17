@@ -28,7 +28,7 @@ export const BuiltinThemes: ThemeStore = {
     loginBackground: "img18",
   },
   snowyMountains: {
-    author: "Allucat1000",
+    author: "Huopa",
     version: "1.0",
     name: "Snowy Mountains",
     taskbarLabels: false,
@@ -44,7 +44,7 @@ export const BuiltinThemes: ThemeStore = {
     loginBackground: "img33",
   },
   germanicWaterfall: {
-    author: "Allucat1000",
+    author: "Huopa",
     version: "1.0",
     name: "Germanic Waterfall",
     taskbarLabels: false,
