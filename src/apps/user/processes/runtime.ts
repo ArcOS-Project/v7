@@ -2,6 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IServiceHost, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env, Stack } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
@@ -24,6 +25,9 @@ export class ProcessManagerRuntime extends AppProcess implements IProcessManager
     Services: Services as any,
   };
   host: IServiceHost;
+  get adminBootstrapper() {
+    return this.host.getService<IAdminBootstrapper>("AdminBootstrapper")!;
+  }
 
   //#region LIFECYCLE
 
