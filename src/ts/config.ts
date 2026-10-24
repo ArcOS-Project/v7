@@ -12,7 +12,7 @@ export class ConfigurationBuilder<T = object> {
   #savePath?: string;
   #defaults?: T;
   #process?: IProcess;
-  #cooldown?: number;
+  #cooldownMs?: number;
   #localStorageKey?: string;
   #built = false;
 
@@ -58,11 +58,11 @@ export class ConfigurationBuilder<T = object> {
     return this;
   }
 
-  WithCooldown(cooldown: number) {
-    if (this.#cooldown !== undefined) throw new Error("ConfigurationBuilder: cooldown can only be set once");
+  WithCooldown(cooldownMs: number) {
+    if (this.#cooldownMs !== undefined) throw new Error("ConfigurationBuilder: cooldownMs can only be set once");
     if (this.#built) throw new Error("ConfigurationBuilder has to be fully configured before building");
 
-    this.#cooldown = cooldown;
+    this.#cooldownMs = cooldownMs;
     return this;
   }
 
@@ -74,7 +74,7 @@ export class ConfigurationBuilder<T = object> {
     const localStorageKey = this.#localStorageKey;
     const defaults = this.#defaults;
     const process = this.#process;
-    const cooldown = this.#cooldown;
+    const cooldown = this.#cooldownMs;
     let initialRun = true;
 
     if (!savePath && !localStorageKey) throw new Error("savePath or localStorageKey is required. Use WritesTo or WithLocalStorage to set");
