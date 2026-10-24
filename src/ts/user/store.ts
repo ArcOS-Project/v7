@@ -343,6 +343,10 @@ export const UserPaths = {
   AppRepository: "U:/System/AppRepository",
   Libraries: "U:/System/Libraries",
   StartMenu: "U:/System/Start",
+  Mui: "U:/System/Mui",
+  MuiHashes: "U:/System/Mui/Hashes",
+  MuiPages: "U:/System/Mui/Pages",
+  MuiBuildTracking: "U:/System/Mui/BuildTracking",
 };
 
 export const SystemFolders = [

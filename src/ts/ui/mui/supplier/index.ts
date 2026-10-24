@@ -38,6 +38,8 @@ export class MuiSupplier<TProcess extends IProcess = IProcess> {
         .WithCooldown(100)
         .Build();
 
+      await this.ShaConfigurator.initialize();
+
       return await this.CheckUpdatedArcBuild();
     } catch (e) {
       return CommandResult.Error(`${e}`);
