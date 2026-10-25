@@ -20,7 +20,7 @@ import type { ReadableServiceStore, Service, ServiceChangeResult, ServiceStore }
 import { LogLevel } from "$types/shared/logging";
 import type { IBaseService, IServiceHost, ServiceIdentifier } from "../../interfaces/IServiceHost";
 import { arcFindService } from "./services/ArcFindSvc";
-import { asyncMuiSupplierService } from "./services/AsyncMuiSupplierSvc";
+import { asyncJuiSupplierService } from "./services/AsyncJuiSupplierSvc";
 import { migrationService } from "./services/MigrationSvc";
 import { systemShortcutsService } from "./services/SystemShortcutsSvc";
 import { trayHostService } from "./services/TrayHostSvc";
@@ -116,7 +116,7 @@ export class ServiceHost extends Process implements IServiceHost {
     ["ArcFindSvc", { ...arcFindService }],
     ["SystemShortcutsSvc", { ...systemShortcutsService }],
     ["AppStorage", { ...appStoreService }],
-    ["AsyncMuiSupplierSvc", { ...asyncMuiSupplierService }],
+    ["AsyncJuiSupplierSvc", { ...asyncJuiSupplierService }],
     ["ProtoService", { ...protoService }],
     ["TrayHostSvc", { ...trayHostService }],
     ["AdminBootstrapper", { ...adminService }],

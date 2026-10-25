@@ -1,9 +1,9 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ReadableStore } from "$types/shared/writable";
-import type { ModularSettingsPage, SettingsBlock } from "$types/system/mui/settings";
+import type { JoltSettingsPage, JoltSettingsBlock } from "$types/system/jui/settings";
 
 // !tpa
-export interface ISettingsRuntime extends IAppProcess<SettingsBlock, ModularSettingsPage> {
+export interface ISettingsRuntime extends IAppProcess<JoltSettingsBlock, JoltSettingsPage> {
   currentPage: ReadableStore<string>;
   currentSlide: ReadableStore<string>;
   slideVisible: ReadableStore<boolean>;

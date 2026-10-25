@@ -12,7 +12,7 @@ import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
 import { ElevationLevel, type ElevationData } from "$types/system/elevation";
-import type { ModularSettingsPage } from "$types/system/mui/settings";
+import type { JoltSettingsPage } from "$types/system/jui/settings";
 import { SettingsContext } from "./context";
 import { ChangePasswordApp } from "./overlays/changePassword";
 import { ChangeUsernameApp } from "./overlays/changeUsername";
@@ -110,9 +110,9 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   switchPage(pageId: string) {
     this.Log(`Loading page '${pageId}'`);
 
-    if (!this.MuiSupplier.Pages.has(pageId)) return;
+    if (!this.JuiSupplier.Pages.has(pageId)) return;
 
-    const page: ModularSettingsPage = this.MuiSupplier.Pages.get(pageId);
+    const page: JoltSettingsPage = this.JuiSupplier.Pages.get(pageId);
 
     this.currentPage.set(pageId);
 

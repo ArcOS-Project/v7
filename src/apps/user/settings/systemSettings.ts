@@ -1,6 +1,6 @@
 import "$css/apps/user/settings.css";
 import type { App } from "$types/apps/app";
-import { SettingsMuiSupplierOptions } from "./mui/supplierconfig";
+import { SettingsJuiSupplierOptions } from "./jui/supplierconfig";
 import { SettingsRuntime } from "./runtime";
 import Settings from "./Settings.svelte";
 
@@ -32,8 +32,8 @@ export const SystemSettings: App = {
     component: Settings as any,
     runtime: SettingsRuntime,
   },
-  muiSupplier: {
-    supplierOptions: SettingsMuiSupplierOptions
+  joltSupplier: {
+    supplierOptions: SettingsJuiSupplierOptions
   },
   id: "systemSettings",
   vital: true,

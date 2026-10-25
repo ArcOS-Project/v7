@@ -6,7 +6,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { SvelteComponent } from "svelte";
 import type { MaybePromise } from "../shared/common";
 import type { ReadableStore } from "../shared/writable";
-import type { AmbientMuiSupplierSettings } from "$types/system/mui/ambient";
+import type { AmbientJuiSupplierSettings } from "../system/jui/ambient";
 
 // !tpa-props
 export interface App {
@@ -36,7 +36,7 @@ export interface App {
   acceleratorDescriptions?: Record<string, string>; // <[combo in One+Two+Key format], description>
   fileSignatures?: Record<string, string>;
   process?: IThirdPartyAppProcess;
-  muiSupplier?: AmbientMuiSupplierSettings;
+  joltSupplier?: AmbientJuiSupplierSettings;
   tpaRevision?: number;
   noSafeMode?: boolean;
   vital?: boolean;

@@ -6,16 +6,16 @@
   import { onMount, type Component } from "svelte";
   import Sidebar from "./Settings/Sidebar.svelte";
   import Slide from "./Settings/Slide.svelte";
-  import type { ModularSettingsPage } from "$types/system/mui/settings";
-  import ModularUiView from "$lib/ModularUi/ModularUiView.svelte";
-  import { SettingsMuiRenderer } from "./mui/renderer";
+  import type { JoltSettingsPage } from "$types/system/jui/settings";
+  import ModularUiView from "$lib/JoltUi/JoltUiView.svelte";
+  import { SettingsJuiRenderer } from "./jui/renderer";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage, slideVisible, userPreferences } = process;
 
   let hide = $state(true);
   let className = $state("");
-  let pageData = $state<ModularSettingsPage | undefined>();
+  let pageData = $state<JoltSettingsPage | undefined>();
 
   onMount(() => {
     const sub = currentPage.subscribe(async (v) => {
@@ -25,7 +25,7 @@
 
       pageData = undefined;
       await Sleep(0);
-      pageData = process.MuiSupplier.Pages.get(v);
+      pageData = process.JuiSupplier.Pages.get(v);
       className = v;
 
       await Sleep(10);
@@ -49,7 +49,7 @@
   <div class="page-content" class:hide>
     <div class="page-wrapper">
       {#if pageData}
-        <ModularUiView rendererConstructor={SettingsMuiRenderer} {process} page={pageData}></ModularUiView>
+        <ModularUiView rendererConstructor={SettingsJuiRenderer} {process} page={pageData}></ModularUiView>
       {/if}
     </div>
   </div>

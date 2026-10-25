@@ -3,7 +3,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
-import type { IAsyncMuiSupplierSvc } from "$interfaces/services/IAsyncMuiSupplierSvc";
+import type { IAsyncJuiSupplierSvc } from "$interfaces/services/IAsyncJuiSupplierSvc";
 import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
@@ -26,7 +26,7 @@ import {
 import { Sleep } from "../sleep";
 import { Store } from "../writable";
 import { AppRuntimeError } from "./error";
-import type { MuiSupplier } from "$ts/ui/mui/supplier";
+import type { JuiSupplier } from "../ui/jui/supplier";
 
 export const KEY_IGNORE_LIST = ["tab", "pagedown", "pageup"];
 
@@ -51,8 +51,8 @@ export class AppProcess extends Process implements IAppProcess {
   public windowFullscreen = Store<boolean>(false);
   public blinking = Store<boolean>(false);
 
-  get MuiSupplier() {
-    return Daemon.serviceHost!.getService<IAsyncMuiSupplierSvc>("AsyncMuiSupplierSvc")!.GetSupplier(this.app.id)! as MuiSupplier<
+  get JuiSupplier() {
+    return Daemon.serviceHost!.getService<IAsyncJuiSupplierSvc>("AsyncJuiSupplierSvc")!.GetSupplier(this.app.id)! as JuiSupplier<
       any,
       any
     >;

@@ -2,17 +2,17 @@ import type { AppKeyCombinations } from "$types/apps/accelerator";
 import type { AppContextMenu, AppProcessData, AppProcessSpawnOptions, ContextMenuItem, ToastMessage } from "$types/apps/app";
 import type { MaybePromise } from "$types/shared/common";
 import type { ReadableStore } from "$types/shared/writable";
-import type { ModularBlock, ModularPage } from "$types/system/mui";
+import type { JoltBlock, JoltUiPage } from "$types/system/jui";
 import type { RenderArgs } from "$types/system/process";
 import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import type { Constructs } from "./common";
-import type { IMuiSupplier } from "./IMuiSupplier";
+import type { IJuiSupplier } from "./IJuiSupplier";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
 
 // !tpa
-export interface IAppProcess<TMuiBlock extends ModularBlock = any, TMuiPage extends ModularPage<TMuiBlock> = any>
+export interface IAppProcess<TJuiBlock extends JoltBlock = any, TJuiPage extends JoltUiPage<TJuiBlock> = any>
   extends IProcess {
   crashReason: string;
   windowTitle: ReadableStore<string>;
@@ -31,7 +31,7 @@ export interface IAppProcess<TMuiBlock extends ModularBlock = any, TMuiPage exte
   windowFullscreen: ReadableStore<boolean>;
   draggable: Draggable | undefined;
   blinking: ReadableStore<boolean>;
-  MuiSupplier: IMuiSupplier<TMuiBlock, TMuiPage>;
+  JuiSupplier: IJuiSupplier<TJuiBlock, TJuiPage>;
   onClose(): Promise<boolean>;
   ShowToast(toast: ToastMessage, durationMs?: number): Promise<void>;
   HideToast(): Promise<void>;

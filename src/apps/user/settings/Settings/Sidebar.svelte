@@ -5,7 +5,7 @@
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage } = process;
-  const Pages = process.MuiSupplier.Pages;
+  const Pages = process.JuiSupplier.Pages;
 </script>
 
 <div class="sidebar">

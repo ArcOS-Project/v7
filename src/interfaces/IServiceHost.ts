@@ -48,5 +48,5 @@ export type ServiceIdentifier =
   | "LibMgmtSvc"
   | "MigrationSvc"
   | "RecentFilesSvc"
-  | "AsyncMuiSupplierSvc";
+  | "AsyncJuiSupplierSvc";
 // !endtpa
