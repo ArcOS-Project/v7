@@ -1,7 +1,7 @@
-import type { BaseLeafBlock, IfBlock, ModularBlock, ModularPage } from ".";
+import type { BaseLeafBlock, EmbeddedComponentBlock, IfBlock, ModularBlock, ModularOnClick, ModularPage } from ".";
 
 interface BaseInput {
-  disabledIf?: SettingsCondition[];
+  disabledIf?: string[];
 }
 
 export interface SwitchInput extends BaseInput {
@@ -23,8 +23,6 @@ export interface EmbeddedInput extends BaseInput {
 
 export type SettingsOptionInput = SwitchInput | ButtonInput | EmbeddedInput;
 
-export type SettingsCondition = "SAFE_MODE";
-
 export interface SettingsLayoutBlock extends ModularBlock<"Layout"> {
   variant: "centered";
   children: SettingsBlock[];
@@ -32,6 +30,7 @@ export interface SettingsLayoutBlock extends ModularBlock<"Layout"> {
 
 export interface SettingsSectionBlock extends ModularBlock<"Section"> {
   title?: string;
+  className?: string;
   children: SettingsBlock[];
 }
 
@@ -40,16 +39,19 @@ export interface SettingsOptionBlock extends ModularBlock<"Option"> {
   image?: string;
   chevron?: boolean;
   input?: SettingsOptionInput;
+  onclick?: ModularOnClick;
+  disabledIf?: string[];
 }
 
 export type SettingsBlock =
   | BaseLeafBlock
-  | IfBlock<SettingsBlock, SettingsCondition>
+  | IfBlock<SettingsBlock>
+  | EmbeddedComponentBlock<SettingsBlock>
   | SettingsLayoutBlock
   | SettingsSectionBlock
   | SettingsOptionBlock;
 
-export type SettingsPage = ModularPage<
+export type ModularSettingsPage = ModularPage<
   SettingsBlock,
   {
     title: string;

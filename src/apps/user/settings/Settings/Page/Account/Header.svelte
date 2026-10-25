@@ -1,18 +1,13 @@
 <script lang="ts">
-  import type { IUserDaemon } from "$interfaces/IUserDaemon";
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
-  import type { UserInfo } from "$types/user";
+  import { Daemon } from "$ts/env";
   import AccountName from "./Header/AccountName.svelte";
 
   const {
-    userInfo,
-    userDaemon,
     process,
   }: {
     process: ISettingsRuntime;
-    userInfo: UserInfo;
-    userDaemon: IUserDaemon;
   } = $props();
 </script>
 
@@ -26,7 +21,7 @@
             class="lucide icon-upload"
             aria-label="Upload profile picture"
             title="Upload profile picture"
-            onclick={() => userDaemon?.preferencesCtx?.uploadProfilePicture()}
+            onclick={() => Daemon?.preferencesCtx?.uploadProfilePicture()}
           ></button>
           <button
             class="lucide icon-folder-open"
@@ -51,7 +46,7 @@
       </div>
     {/if}
   </div>
-  <AccountName {process} {userInfo} />
+  <AccountName {process} />
 
-  <p class="email">{userInfo.email}</p>
+  <p class="email">{Daemon.userInfo.email}</p>
 </div>

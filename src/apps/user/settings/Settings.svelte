@@ -6,15 +6,16 @@
   import { onMount, type Component } from "svelte";
   import Sidebar from "./Settings/Sidebar.svelte";
   import Slide from "./Settings/Slide.svelte";
-  import { settingsPageStore } from "./store";
-  import type { SettingsPage } from "./types";
+  import type { ModularSettingsPage } from "$types/system/mui/settings";
+  import ModularUiView from "$lib/ModularUi/ModularUiView.svelte";
+  import { SettingsMuiRenderer } from "./mui/renderer";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage, slideVisible, userPreferences } = process;
 
   let hide = $state(true);
   let className = $state("");
-  let pageData = $state<SettingsPage>();
+  let pageData = $state<ModularSettingsPage>();
 
   onMount(() => {
     const sub = currentPage.subscribe(async (v) => {
@@ -22,8 +23,7 @@
       hide = true;
       await Sleep(userPreferences().shell.visuals.noAnimations ? 0 : 200);
 
-      pageData = settingsPageStore.get(v);
-      Page = pageData?.content;
+      pageData = process.MuiSupplier.Pages.get(v);
       className = v;
 
       await Sleep(10);
@@ -32,8 +32,6 @@
 
     return () => sub();
   });
-
-  let Page: Component | undefined = $state();
 </script>
 
 <Sidebar {process} />
@@ -44,12 +42,12 @@
       ></button>
     {/if}
     <Icon icon={pageData?.icon || "SettingsIcon"} />
-    <span>{pageData?.name || "Settings"}</span>
+    <span>{pageData?.title || "Settings"}</span>
   </CustomTitlebar>
   <div class="page-content" class:hide>
     <div class="page-wrapper">
-      {#if Page}
-        <Page {process} />
+      {#if pageData}
+        <ModularUiView rendererConstructor={SettingsMuiRenderer} {process} page={pageData}></ModularUiView>
       {/if}
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script
   lang="ts"
-  generics="TRenderer extends IMuiRenderer = IMuiRenderer, TProcess extends IProcess = IProcess, TBlock extends ModularBlock = BaseLeafBlock, TPage extends ModularPage<TBlock> = ModularPage<TBlock>"
+  generics="TRenderer extends IMuiRenderer = IMuiRenderer, TProcess extends IProcess = IProcess, TBlock extends ModularBlock = BaseLeafBlock, TPage extends ModularPage<any> = ModularPage<any>"
 >
   import type { Constructs } from "$interfaces/common";
   import type { IMuiRenderer } from "$interfaces/IMuiRenderer";
@@ -20,6 +20,7 @@
 
   onMount(() => {
     renderer = new rendererConstructor(process);
+    renderer._Initialize();
     blocks = pageContext.page;
   });
 </script>

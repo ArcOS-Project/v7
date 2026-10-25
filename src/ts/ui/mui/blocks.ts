@@ -1,6 +1,6 @@
-import EmbeddedComponentRenderer from "$lib/ModularUi/Renderers/EmbeddedComponentRenderer.svelte";
-import IfRenderer from "$lib/ModularUi/Renderers/IfRenderer.svelte";
-import SeparatorRenderer from "$lib/ModularUi/Renderers/SeparatorRenderer.svelte";
+import EmbeddedComponentRenderer from "$lib/ModularUi/BlockImplementations/EmbeddedComponentRenderer.svelte";
+import IfRenderer from "$lib/ModularUi/BlockImplementations/IfRenderer.svelte";
+import SeparatorRenderer from "$lib/ModularUi/BlockImplementations/SeparatorRenderer.svelte";
 import type { Component } from "svelte";
 
 export const BaseBlockImplementations: Record<string, Component<any>> = {

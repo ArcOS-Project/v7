@@ -1,9 +1,9 @@
-<script lang="ts" generics="TCondition extends string, TBlock extends ModularBlock = BaseLeafBlock">
+<script lang="ts" generics="TBlock extends ModularBlock = BaseLeafBlock">
   import type { IMuiRenderer } from "$interfaces/IMuiRenderer";
   import MuiRendererBranch from "$lib/ModularUi/MuiRendererBranch.svelte";
   import type { BaseLeafBlock, IfBlock, ModularBlock } from "$types/system/mui";
 
-  let { block, renderer }: { block: IfBlock<TBlock, TCondition>; renderer: IMuiRenderer } = $props();
+  let { block, renderer }: { block: IfBlock<TBlock>; renderer: IMuiRenderer } = $props();
 
   const { Conditions } = renderer;
   const ConditionsMet = $derived(renderer.ConditionsMet(block.conditions));

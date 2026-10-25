@@ -357,6 +357,11 @@ export const SystemFolders = [
   UserPaths.Configuration,
   UserPaths.AppShortcuts,
   UserPaths.AppRepository,
+  UserPaths.Mui,
+  UserPaths.MuiBuildTracking,
+  UserPaths.MuiHashes,
+  UserPaths.MuiPages,
+  UserPaths.Libraries,
 ];
 
 export const UserPathCaptions: Record<string, string> = {

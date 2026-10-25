@@ -1,6 +1,6 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IConfigurator } from "$interfaces/IConfigurator";
-import type { IProcess } from "$interfaces/IProcess";
+import type { IMuiSupplier } from "$interfaces/IMuiSupplier";
 import { ConfigurationBuilder } from "$ts/config";
 import { Fs } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
@@ -10,19 +10,21 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { tryJsonStringify } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { ModularPage } from "$types/system/mui";
+import type { BaseLeafBlock, ModularBlock, ModularPage } from "$types/system/mui";
 import type { MuiSupplierOptions } from "$types/system/mui/supplier";
 
-export class MuiSupplier<TProcess extends IProcess = IProcess> {
+export class MuiSupplier<TBlock extends ModularBlock = BaseLeafBlock, TPage extends ModularPage<TBlock> = ModularPage<TBlock>>
+  implements IMuiSupplier<TBlock, TPage>
+{
   // R<filename, sha256>
   ShaConfiguration = Store<Record<string, string>>({});
   ShaConfigurator?: IConfigurator<Record<string, string>>;
+  Pages = new Map<string, TPage>();
+  Loading = Store<boolean>(true);
   private options: MuiSupplierOptions;
-  private process: TProcess;
 
-  constructor(process: TProcess, options: MuiSupplierOptions) {
+  constructor(options: MuiSupplierOptions) {
     this.options = options;
-    this.process = process;
   }
 
   async Initialize(): Promise<ICommandResult> {
@@ -31,7 +33,6 @@ export class MuiSupplier<TProcess extends IProcess = IProcess> {
       const defaults = await this.CalculateHashes();
 
       this.ShaConfigurator = new ConfigurationBuilder<Record<string, string>>()
-        .ForProcess(this.process)
         .ReadsFrom(this.ShaConfiguration)
         .WritesTo(this.options.shaFilePath)
         .WithDefaults(defaults)
@@ -39,8 +40,12 @@ export class MuiSupplier<TProcess extends IProcess = IProcess> {
         .Build();
 
       await this.ShaConfigurator.initialize();
+      const updateResult = await this.CheckUpdatedArcBuild();
+      await this.LoadPages();
 
-      return await this.CheckUpdatedArcBuild();
+      this.Loading.set(false);
+
+      return updateResult;
     } catch (e) {
       return CommandResult.Error(`${e}`);
     }
@@ -106,7 +111,7 @@ export class MuiSupplier<TProcess extends IProcess = IProcess> {
   }
 
   async CalculateHashes() {
-    const bulk = await Fs.bulk(this.options.jsonFolderPath, ".json");
+    const bulk = await Fs.bulk(this.options.jsonFolderPath, "json");
     const result: Record<string, string> = {};
 
     const promises = Object.keys(bulk).map(
@@ -123,5 +128,14 @@ export class MuiSupplier<TProcess extends IProcess = IProcess> {
 
   public static StringifyMuiPage(page: ModularPage<any>) {
     return tryJsonStringify(page, 4);
+  }
+
+  async LoadPages() {
+    const bulk = await Fs.bulk(this.options.jsonFolderPath, "json");
+
+    for (const filename in bulk) {
+      const page = bulk[filename] as TPage;
+      this.Pages.set(page.pageIdentifier, page);
+    }
   }
 }

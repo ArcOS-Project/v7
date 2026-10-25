@@ -1,21 +1,21 @@
 <script lang="ts">
   import type { ISettingsRuntime } from "$interfaces/runtimes/ISettingsRuntime";
   import Icon from "$lib/Icon.svelte";
-  import { settingsPageStore } from "../store";
   import AccountButton from "./Sidebar/AccountButton.svelte";
 
   const { process }: { process: ISettingsRuntime } = $props();
   const { currentPage } = process;
+  const Pages = process.MuiSupplier.Pages;
 </script>
 
 <div class="sidebar">
   <AccountButton {process} />
   <hr />
-  {#each [...settingsPageStore] as [id, page]}
+  {#each [...Pages] as [id, page]}
     {#if !page.hidden && (process.safeMode ? !page.noSafeMode : true)}
       <button class="page" class:selected={$currentPage === id} onclick={() => process.switchPage(id)}>
         <Icon icon={page.icon} />
-        <span>{page.name}</span>
+        <span>{page.title}</span>
       </button>
       {#if page.separator}
         <hr />

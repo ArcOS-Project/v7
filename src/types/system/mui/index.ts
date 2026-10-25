@@ -8,20 +8,20 @@ export interface EmbeddedComponentBlock<TBlock> extends ModularBlock<"EmbeddedCo
   subComponents?: TBlock[];
 }
 
-export interface IconButtonBlock<TCondition extends string = string> extends ModularBlock<"IconButton"> {
+export interface IconButtonBlock extends ModularBlock<"IconButton"> {
   props?: Record<string, any>;
   icon: string;
   title?: string;
-  action: string;
-  disabledIf?: TCondition[];
+  onclick: ModularOnClick;
+  disabledIf?: string[];
 }
 
 export interface SeparatorBlock extends ModularBlock<"Separator"> {
   className?: string;
 }
 
-export interface IfBlock<TBlock, TCondition extends string = string> extends ModularBlock<"If"> {
-  conditions: TCondition[];
+export interface IfBlock<TBlock> extends ModularBlock<"If"> {
+  conditions: string[];
   ifMet: TBlock[];
   else?: TBlock[];
 }
@@ -32,3 +32,8 @@ export type ModularPage<TBlock, TMeta extends object = {}> = {
   pageIdentifier: string;
   page: TBlock[];
 } & TMeta;
+
+export interface ModularOnClick {
+  operation: string;
+  arguments: any[];
+}
