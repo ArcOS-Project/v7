@@ -1,4 +1,4 @@
-import type { BaseLeafBlock, EmbeddedComponentBlock, IfBlock, ModularBlock, ModularOnClick, ModularPage } from ".";
+import type { BaseLeafBlock, EmbeddedComponentBlock, IconButtonBlock, IfBlock, ModularBlock, ModularOnClick, ModularPage, SeparatorBlock } from ".";
 
 interface BaseInput {
   disabledIf?: string[];
@@ -44,7 +44,8 @@ export interface SettingsOptionBlock extends ModularBlock<"Option"> {
 }
 
 export type SettingsBlock =
-  | BaseLeafBlock
+  | SeparatorBlock
+  | IconButtonBlock
   | IfBlock<SettingsBlock>
   | EmbeddedComponentBlock<SettingsBlock>
   | SettingsLayoutBlock

@@ -26,7 +26,7 @@ export interface IfBlock<TBlock> extends ModularBlock<"If"> {
   else?: TBlock[];
 }
 
-export type BaseLeafBlock<TBlock = ModularBlock> = EmbeddedComponentBlock<TBlock> | IconButtonBlock | SeparatorBlock;
+export type BaseLeafBlock = IconButtonBlock | SeparatorBlock;
 
 export type ModularPage<TBlock, TMeta extends object = {}> = {
   pageIdentifier: string;

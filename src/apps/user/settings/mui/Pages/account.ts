@@ -2,7 +2,7 @@ import type { ModularSettingsPage } from "$types/system/mui/settings";
 
 export const SettingsAccountPage: ModularSettingsPage = {
   pageIdentifier: "account",
-  title: "My ArcOS Identity",
+  title: "Your ArcOS Identity",
   icon: "AccountIcon",
   description: "Manage your ArcOS account",
   hidden: true,

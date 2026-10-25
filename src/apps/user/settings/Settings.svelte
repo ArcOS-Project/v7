@@ -15,7 +15,7 @@
 
   let hide = $state(true);
   let className = $state("");
-  let pageData = $state<ModularSettingsPage>();
+  let pageData = $state<ModularSettingsPage | undefined>();
 
   onMount(() => {
     const sub = currentPage.subscribe(async (v) => {
@@ -23,6 +23,8 @@
       hide = true;
       await Sleep(userPreferences().shell.visuals.noAnimations ? 0 : 200);
 
+      pageData = undefined;
+      await Sleep(0);
       pageData = process.MuiSupplier.Pages.get(v);
       className = v;
 

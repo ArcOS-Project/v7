@@ -3,7 +3,7 @@ import { join } from "$ts/util/fs";
 import type { SettingsBlock, ModularSettingsPage } from "$types/system/mui/settings";
 import type { MuiSupplierOptions } from "$types/system/mui/supplier";
 import { SettingsAccountPage } from "./Pages/account";
-import { SettingsWallpaperPage } from "./Pages/themes";
+import { SettingsThemesPage } from "./Pages/themes";
 
 export const SettingsMuiSupplierOptions: MuiSupplierOptions<SettingsBlock, ModularSettingsPage> = {
   shaFilePath: join(UserPaths.MuiHashes, "Settings.json"),
@@ -11,7 +11,7 @@ export const SettingsMuiSupplierOptions: MuiSupplierOptions<SettingsBlock, Modul
   trackedOsBuildPath: join(UserPaths.MuiBuildTracking, "Settings.txt"),
   softCopies: {
     account: SettingsAccountPage,
-    themes: SettingsWallpaperPage
+    themes: SettingsThemesPage
   },
 
 };
