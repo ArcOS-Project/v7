@@ -47,5 +47,6 @@ export type ServiceIdentifier =
   | "IconService"
   | "LibMgmtSvc"
   | "MigrationSvc"
-  | "RecentFilesSvc";
+  | "RecentFilesSvc"
+  | "JsExecSvc";
 // !endtpa

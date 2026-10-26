@@ -1,5 +1,5 @@
 /**
- * ArcOS JavaScript Execution Engine
+ * ArcOS JavaScript Execution Engine Service
  *
  * This file executes JS files in ArcOS under a relatively controlled environment.
  * It is part of the ArcOS TPA framework: a system for running third-party apps.
@@ -8,54 +8,44 @@
  *
  * © IzKuipers 2025
  */
+import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { ITpaConnector } from "$interfaces/modules/server/ITpaConnector";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProps } from "$ts/apps/tpa/props";
-import { Daemon, Env, Fs, Stack } from "$ts/env";
-import { Process } from "$ts/kernel/mods/stack/process/instance";
+import { Daemon, Fs } from "$ts/env";
+import { BaseService } from "$ts/servicehost/base";
 import { arrayBufferToText } from "$ts/util/convert";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import type { App } from "$types/apps/app";
-import type { ParsedImportStatement, ThirdPartyPropMap } from "$types/tpa/thirdparty";
+import type { Service } from "$types/services/service";
+import type { ParsedImportStatement } from "$types/tpa/thirdparty";
 import * as acorn from "acorn";
+import type { JsExecEngineData } from "$types/tpa/engine";
+import type { IJsExecService } from "$interfaces/services/IJsExec";
 
-export class JsExec extends Process {
+export class JsExecService extends BaseService implements IJsExecService {
   public readonly TPA_REVISION = ThirdPartyAppProcess.TPA_REV;
-  props?: ThirdPartyPropMap;
-  app?: App;
-  args: any[];
-  metaPath?: string;
-  filePath?: string;
-  workingDirectory: string;
-  operationId: string;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, filePath: string, ...args: any[]) {
-    super(pid, parentPid);
+  constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
+    super(pid, parentPid, name, host, initBroadcast);
 
-    this.args = args;
-    this.filePath = filePath;
-    this.workingDirectory = getParentDirectory(filePath);
-    this.name = "JsExec";
     this.setSource(__SOURCE__);
-    this.operationId = UUID();
   }
 
   async start() {
-    if (!this.filePath) return false;
-
-    this.props = ThirdPartyProps(this);
+    this.initBroadcast?.("Starting TPA service");
   }
 
   //#endregion
   //#region URL
 
-  async getTpaUrl(wrapped: string) {
+  private async getTpaUrl(engine: JsExecEngineData, wrapped: string) {
     this.Log(`Getting TPA file URL`);
 
-    const { appId, userId, filename } = this.getTpaUrlInfo();
+    const { appId, userId, filename } = this.getTpaUrlInfo(engine);
     try {
       const urlResult = await Daemon!.GetConnector<ITpaConnector>("TpaConnector").CreateUrl(wrapped, userId, appId, filename);
 
@@ -66,16 +56,16 @@ export class JsExec extends Process {
     }
   }
 
-  getTpaPostUrl() {
-    const { appId, userId, filename } = this.getTpaUrlInfo();
+  private getTpaPostUrl(engine: JsExecEngineData) {
+    const { appId, userId, filename } = this.getTpaUrlInfo(engine);
 
     return `/tpa/v2/${userId}/${appId}/${filename}`;
   }
 
-  getTpaUrlInfo() {
-    const appId = this.app?.id || "ArcOS";
+  private getTpaUrlInfo(engine: JsExecEngineData) {
+    const appId = engine.app?.id || "ArcOS";
     const userId = Daemon?.userInfo?._id || "SYSTEM";
-    const filename = getItemNameFromPath(this.filePath!);
+    const filename = getItemNameFromPath(engine.filePath!);
 
     return { appId, userId, filename };
   }
@@ -83,59 +73,57 @@ export class JsExec extends Process {
   //#endregion
   //#region EXECUTION
 
-  async exec(tpaUrl: string) {
-    this.Log(`Executing ${this.filePath}`);
+  private async exec(engine: JsExecEngineData, tpaUrl: string) {
+    this.Log(`Executing ${engine.filePath}`);
 
     const code = await import(/* @vite-ignore */ tpaUrl);
 
     if (!code.default || !(code.default instanceof Function)) throw new JsExecError("Expected a default function");
 
     try {
-      const result = await code.default(this.props!);
+      const result = await code.default(engine.props!);
       return result;
     } catch (e) {
       throw e;
-    } finally {
-      await this.killSelf();
     }
   }
 
-  async getContents() {
+  async getContents(engine: JsExecEngineData) {
     this.Log(`Reading script contents`);
 
-    const unwrapped = this.convertImportStatementsToRegex(arrayBufferToText((await Fs.readFile(this.filePath!))!)!);
-    if (!unwrapped) throw new JsExecError(`Failed to read ${this.filePath}: not found`);
+    const unwrapped = this.convertImportStatementsToRegex(arrayBufferToText((await Fs.readFile(engine.filePath!))!)!);
+    if (!unwrapped) throw new JsExecError(`Failed to read ${engine.filePath}: not found`);
 
     await this.testFileContents(unwrapped);
 
-    const wrapped = this.wrap(unwrapped);
-    const tpaUrl = await this.getTpaUrl(wrapped);
+    const wrapped = this.wrap(engine, unwrapped);
+    const tpaUrl = await this.getTpaUrl(engine, wrapped);
 
-    return await this.exec(tpaUrl);
+    return await this.exec(engine, tpaUrl);
   }
 
   //#endregion
   //#region HELPERS
 
-  setApp(app: App, metaPath?: string) {
+  private setApp(engine: JsExecEngineData, app: App, metaPath?: string) {
     this.Log(`Setting app data to ${app.id} (${metaPath ?? "<unknown meta>"})`);
 
-    if (this.app) return;
+    if (engine.app) return engine;
 
     if (app.tpaRevision && app.tpaRevision > this.TPA_REVISION)
       throw new JsExecError(
         `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`
       );
 
-    this.app = app;
-    this.metaPath = metaPath;
-    this.props = ThirdPartyProps(this);
+    engine.app = app;
+    engine.metaPath = metaPath;
+    engine.props = ThirdPartyProps(engine);
   }
 
-  private wrap(contents: string) {
-    if (!this.props) throw new JsExecError(`No TPA props to use`);
+  private wrap(engine: JsExecEngineData, contents: string) {
+    if (!engine.props) throw new JsExecError(`No TPA props to use`);
 
-    return `export default async function({${Object.keys(this.props).join(",")}}) {\nconst global = arguments;\n${contents}\n}`;
+    return `export default async function({${Object.keys(engine.props).join(",")}}) {\nconst global = arguments;\n${contents}\n}`;
   }
 
   private convertImportStatementsToRegex(sourceFile: string) {
@@ -157,7 +145,7 @@ export class JsExec extends Process {
     return sourceFile;
   }
 
-  async testFileContents(unwrapped: string) {
+  private async testFileContents(unwrapped: string) {
     try {
       const ast = acorn.parse(unwrapped, {
         sourceType: "module",
@@ -179,8 +167,24 @@ export class JsExec extends Process {
 
   //#endregion
 
-  static async Invoke(filePath: string, ...args: any[]) {
-    return await Stack.spawn<JsExec>(JsExec, undefined, undefined, +Env.get("userdaemon_pid"), filePath, ...args);
+  setupEngine(filePath: string, app?: App, metaPath?: string, ...args: any[]) {
+    let engine = {} as JsExecEngineData;
+    engine.args = args;
+    engine.filePath = filePath;
+    engine.workingDirectory = getParentDirectory(filePath);
+    engine.operationId = UUID();
+
+    if (app && metaPath) {
+      this.setApp(engine, app, metaPath);
+    }
+
+    return engine;
+  }
+
+  async Invoke(filePath: string, app?: App, metaPath?: string, ...args: any[]) {
+    let engine = this.setupEngine(filePath, app, metaPath, ...args);
+
+    return this.getContents(engine);
   }
 }
 
@@ -191,3 +195,13 @@ export class JsExecError extends Error {
     this.name = "JsExecError";
   }
 }
+
+export const jsExecService: Service = {
+  name: "TPA Service",
+  description: "Provides the interface to spawn TPAs.",
+  process: JsExecService,
+  initialState: "started",
+  startCondition(daemon) {
+    return daemon.preferences().security.enableThirdParty;
+  },
+};

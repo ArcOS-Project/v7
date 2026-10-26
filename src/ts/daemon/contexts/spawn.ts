@@ -3,10 +3,10 @@ import type { ISpawnUserContext } from "$interfaces/contexts/ISpawnUserContext";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { IJsExecService } from "$interfaces/services/IJsExec";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
 import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
-import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
@@ -158,9 +158,11 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
 
     try {
       const entrypoint = join(app.workingDirectory, app.entrypoint);
-      const engine = await JsExec.Invoke(entrypoint, ...args);
-      engine?.setApp(app, app.tpaPath);
-      const result = await engine?.getContents();
+
+      const jsExecService = Daemon.serviceHost?.getService<IJsExecService>("JsExecSvc");
+      if (!jsExecService) throw new Error("JsExecSvc is not started. Are TPAs enabled?");
+
+      const result = await jsExecService.Invoke(entrypoint, app, app.tpaPath, ...args);
 
       gli?.stop?.();
 

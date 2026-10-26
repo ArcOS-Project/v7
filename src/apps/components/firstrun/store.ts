@@ -131,11 +131,12 @@ export const FirstRunPages = new Map<string, FirstRunPage>([
           },
           {
             caption: "Enable",
-            action: (process) => {
+            action: async (process) => {
               process.userPreferences.update((v) => {
                 v.security.enableThirdParty = true;
                 return v;
               });
+              await Daemon!.serviceHost?.startService("JsExecSvc");
               process.switchPage("finish");
             },
             suggested: true,
