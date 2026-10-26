@@ -1,4 +1,7 @@
 // !tpa
+/**
+ * The selected language of Cod
+ */
 export type CodLang =
   | "css"
   | "ini"
