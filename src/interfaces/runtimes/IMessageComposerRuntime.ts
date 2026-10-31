@@ -1,7 +1,7 @@
 import type { Attachment } from "$apps/components/messagecomposer/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
-import type { ReadableStore } from "$types/shared/writable";
+import type { BooleanStore, ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface IMessageComposerRuntime extends IAppProcess {
@@ -12,6 +12,7 @@ export interface IMessageComposerRuntime extends IAppProcess {
   body: ReadableStore<string>;
   replyId: string | undefined;
   service: IMessagingInterface;
+  showPreview: BooleanStore
   send(): Promise<void>;
   discard(): Promise<boolean | void>;
   sendFailed(): void;
@@ -20,4 +21,5 @@ export interface IMessageComposerRuntime extends IAppProcess {
   removeAttachment(uuid: string): void;
   removeRecipient(recipient: string): void;
   isModified(): number;
+  addSignature(): void;
 }

@@ -49,7 +49,7 @@
 </div>
 
 <div class="sent-emails">
-  {#each filteredSent as sentRecord (sentRecord._id)}
+  {#each filteredSent.toReversed() as sentRecord (sentRecord._id)}
     <SentListingOption {process} {sentRecord} />
   {/each}
 

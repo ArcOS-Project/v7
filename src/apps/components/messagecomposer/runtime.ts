@@ -17,6 +17,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
   sending = Store<boolean>(false);
   recipients = Store<string[]>([]);
   attachments = Store<Attachment[]>([]);
+  showPreview = Store<boolean>(false);
   title = Store<string>("");
   body = Store<string>("");
   replyId: string | undefined;
@@ -199,6 +200,13 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
     this.Log(`removeAttachment: ${uuid}`);
 
     this.attachments.update((v) => v.filter((a) => a.uuid !== uuid));
+  }
+
+  //#endregion
+  //#region SIGNATURES
+
+  addSignature() {
+    // stub
   }
 
   //#endregion

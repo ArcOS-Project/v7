@@ -455,14 +455,18 @@ export class Filesystem extends KernelModule implements IFilesystem {
           });
         }
 
-        await this.deleteItem(join(source, path), false);
+        if (!keepSource) {
+          await this.deleteItem(join(source, path), false);
+        }
 
         return true;
       };
 
       const result = await walk();
 
-      if (!keepSource) await this.deleteItem(source, false);
+      if (!keepSource) {
+        await this.deleteItem(source, false);
+      }
 
       return result;
     } else {

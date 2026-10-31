@@ -28,7 +28,7 @@ export const BuiltinThemes: ThemeStore = {
     loginBackground: "img18",
   },
   snowyMountains: {
-    author: "Allucat1000",
+    author: "Huopa",
     version: "1.0",
     name: "Snowy Mountains",
     taskbarLabels: false,
@@ -44,7 +44,7 @@ export const BuiltinThemes: ThemeStore = {
     loginBackground: "img33",
   },
   germanicWaterfall: {
-    author: "Allucat1000",
+    author: "Huopa",
     version: "1.0",
     name: "Germanic Waterfall",
     taskbarLabels: false,
@@ -198,12 +198,14 @@ export const ActivityIconTranslations = {
   unknown: "shield-question",
   login: "log-in",
   logout: "log-out",
+  shutdown: "power",
 };
 
 export const ActivityCaptionTranslations = {
   unknown: "Unknown activity",
   login: "Logged in",
   logout: "Logged out",
+  shutdown: "Shut down ArcOS",
 };
 
 export const TimeFrames: Record<string, string> = {

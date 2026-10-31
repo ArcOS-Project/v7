@@ -40,8 +40,8 @@ export interface IAppProcess extends IProcess {
   getWindow(): HTMLDivElement;
   getBody(): HTMLDivElement;
   hasOverlays(): boolean;
-  startAcceleratorListener(): void;
-  stopAcceleratorListener(): void;
+  startKeyboardShortcutListener(): void;
+  stopKeyboardShortcutListener(): void;
   __stop(): Promise<any>;
   unfocusActiveElement(): void;
   spawnOverlay(id: string, ...args: any[]): Promise<boolean>;

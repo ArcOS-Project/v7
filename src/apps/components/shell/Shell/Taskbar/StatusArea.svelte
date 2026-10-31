@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
+  import ServiceGate from "$lib/ServiceGate.svelte";
   import { Daemon } from "$ts/env";
+  import DispatchStatus from "./StatusArea/DispatchStatus.svelte";
   import Battery from "./StatusTray/Battery.svelte";
   import StackBusy from "./StatusTray/StackBusy.svelte";
 
@@ -10,6 +13,11 @@
 </script>
 
 <div class="status-area">
+  <ServiceGate id="GlobalDispatch">
+    {#snippet ifActive(service: IGlobalDispatch)}
+      <DispatchStatus {service} />
+    {/snippet}
+  </ServiceGate>
   <StackBusy {stackBusy} />
   {#if Daemon?.power}
     <Battery {battery} userPreferences={process.userPreferences} />

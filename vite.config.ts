@@ -41,6 +41,7 @@ export default defineConfig({
     },
     assetsInlineLimit: 1,
     minify: true,
+    target: []
   },
   esbuild: {
     keepNames: true,
