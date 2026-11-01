@@ -7,6 +7,7 @@
   import OpenedApp from "./OpenedApps/OpenedApp.svelte";
   import type { IProcess } from "$interfaces/IProcess";
   import { flip } from "svelte/animate";
+  import type { Attachment } from "svelte/attachments";
 
   const { process }: { process: IShellRuntime } = $props();
   const { userPreferences } = process;
@@ -24,6 +25,9 @@
 
   let positions = $state<Map<number, { x: number; y: number }>>(new Map());
   let tabs = $state<Map<number, IProcess>>(new Map());
+  // probably needs cleanup here
+  // outer map number is index on taskbar, inner map is pid+element
+  let buttonElements = $state<Map<number, { pid: number; button: HTMLElement }>>(new Map(new Map()));
 
   store.subscribe((v) => {
     // if (tabs.size === v.size) return;
@@ -58,10 +62,23 @@
     }
     return positions.get(pid)!;
   }
+
+  function handleButtonRef(currentIndex: number, pid: number): Attachment<HTMLElement> {
+    return (element) => {
+      buttonElements.set(currentIndex, { pid: pid, button: element });
+
+      return () => {
+        const process = buttonElements.get(currentIndex);
+        if (!process || !tabs.has(process.pid)) {
+          buttonElements.delete(currentIndex);
+        }
+      };
+    };
+  }
 </script>
 
 <div class="opened-apps">
-  {#each [...tabs] as [pid, openedProcess] (pid)}
+  {#each [...tabs] as [pid, openedProcess], i (pid)}
     <div
       class="drag-container"
       animate:flip={{ duration: 500 }}
@@ -72,11 +89,45 @@
           delay: 125,
         },
         position: getPos(pid),
+        onDrag(data) {
+          const iconButton = data.currentNode.firstElementChild as HTMLElement | null;
+          if (!iconButton) return;
+
+          const movementActuationDistance = 0.5;
+          const iconDragDist = data.offsetX / iconButton.offsetWidth;
+          const iconDragDistRounded = iconDragDist >= 0 ? Math.floor(iconDragDist) : Math.ceil(iconDragDist);
+          const iconGridDragDist =
+            Math.abs(iconDragDist) - Math.abs(iconDragDistRounded) >= movementActuationDistance
+              ? iconDragDist < 0
+                ? iconDragDistRounded - 1
+                : iconDragDistRounded + 1
+              : iconDragDistRounded;
+
+          let idxPos = i + iconGridDragDist;
+          if (idxPos < 0) {
+            idxPos = 0;
+          } else if (idxPos > tabs.size - 1) {
+            idxPos = tabs.size - 1;
+          }
+
+          // begin doin tha position thing
+
+          const currentEntry = buttonElements.get(idxPos);
+          if (!currentEntry) return;
+
+          buttonElements.forEach((process, index) => {
+            if (index === idxPos && idxPos !== i) {
+              currentEntry.button.classList.add("current-drag-target");
+            } else {
+              process.button.classList.remove("current-drag-target");
+            }
+          });
+        },
         onDragEnd(data) {
           const iconButton = data.currentNode.firstElementChild as HTMLElement | null;
           if (!iconButton) return;
 
-          const movementActuationDistance = 0.75;
+          const movementActuationDistance = 0.5;
           const iconDragDist = data.offsetX / iconButton.offsetWidth;
           const iconDragDistRounded = iconDragDist >= 0 ? Math.floor(iconDragDist) : Math.ceil(iconDragDist);
           const iconGridDragDist =
@@ -105,10 +156,15 @@
 
           // force reset position so it's not visually offset
           positions.set(pid, { x: 0, y: 0 });
+
+          // remove leftover classes
+          for (const process of buttonElements.values()) {
+            process.button.classList.remove("current-drag-target");
+          }
         },
       }}
     >
-      <OpenedApp {pid} openedProcess={openedProcess as any} {process} />
+      <OpenedApp {@attach handleButtonRef(i, pid)} {pid} openedProcess={openedProcess as any} {process} />
     </div>
   {/each}
 </div>

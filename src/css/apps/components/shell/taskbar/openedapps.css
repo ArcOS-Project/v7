@@ -23,13 +23,10 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
 #arcShell div.shell div.taskbar div.opened-apps button {
   display: flex;
   max-width: 180px;
-  align-items: center;
-  gap: 10px;
   margin: 0;
-  padding: 0 10px;
+  padding: 0;
   height: 40px;
   background-color: var(--button-glass-bg);
-  overflow: Hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   transition:
@@ -40,12 +37,30 @@ div.shell div.taskbar div.opened-apps::-webkit-scrollbar {
     scale 0.2s;
   border-radius: 10px;
   position: relative;
+
+  & div.inner-contents {
+    position: relative;
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+
+    gap: 10px;
+    padding: 0 10px;
+    align-items: center;
+  }
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button.iconic {
-  padding: 5px;
+  padding: 0;
   width: 40px;
-  justify-content: center;
+
+  & div.inner-contents {
+    justify-content: center;
+    padding: 5px;
+  }
 }
 
 #arcShell div.shell div.taskbar div.opened-apps button:not(.iconic).closing {
@@ -127,6 +142,39 @@ div.shell div.taskbar div.opened-apps button.active img.backdrop {
 
 .theme-light #arcShell div.shell div.taskbar div.opened-apps button:not(.active) {
   opacity: 0.7;
+}
+
+#arcShell>div.body div.taskbar div.drag-container.neodrag-dragging {
+  position: relative;
+  z-index: 1;
+
+  & button.opened-app {
+    backdrop-filter: blur(var(--blur));
+  }
+
+}
+
+#arcShell>div.body div.taskbar button.opened-app {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+#arcShell>div.body div.taskbar button.opened-app.current-drag-target {
+  opacity: .5;
+
+  &::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    border: 2px solid var(--accent-dark-medium);
+    border-radius: inherit;
+
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+  }
 }
 
 #arcShell>div.body div.taskbar button.opened-app.blinking {
