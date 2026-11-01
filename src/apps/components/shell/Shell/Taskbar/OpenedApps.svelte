@@ -25,23 +25,13 @@
   let positions = $state<Map<number, { x: number; y: number }>>(new Map());
   let tabs = $state<Map<number, IProcess>>(new Map());
 
-  // get any exisiting processes
-  // just in case
-  store()
-    .entries()
-    .forEach(([pid, process]) => {
-      if (shouldShow(process)) {
-        tabs.set(pid, process);
-      }
-    });
-
   store.subscribe((v) => {
-    if (tabs.size === v.size) return;
+    // if (tabs.size === v.size) return;
 
     // add new processes
 
-    v.entries().forEach(([pid, process]) => {
-      if (!tabs.keys().toArray().includes(pid) && shouldShow(process)) {
+    $store.entries().forEach(([pid, process]) => {
+      if (!tabs.has(pid) && shouldShow(process)) {
         tabs.set(pid, process);
         positions.set(pid, { x: 0, y: 0 });
       }
@@ -50,14 +40,14 @@
     // remove dead processes
 
     tabs = new Map(
-      [...tabs.entries()].filter(([pid]) => {
-        return v.keys().toArray().includes(pid);
+      [...tabs.entries()].filter(([pid, proc]) => {
+        return $store.has(pid) && !proc._disposed;
       })
     );
 
     positions = new Map(
       [...positions.entries()].filter(([pid]) => {
-        return v.keys().toArray().includes(pid);
+        return $store.has(pid) && tabs.has(pid);
       })
     );
   });
