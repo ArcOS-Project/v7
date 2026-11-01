@@ -55,7 +55,8 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   //#endregion
   //#region BUSY
 
-  checkBusy(action?: string) {
+  checkBusy(action?: string, allowList: string[] = []) {
+    if (this.BUSY && allowList.includes(this.BUSY)) return "";
     if (this.BUSY) {
       this.Log(`Refusing to perform '${action || "action"}': DistribSvc is busy with ${this._BUSY}`);
     }
@@ -105,7 +106,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async removeStoreItemFromInstalledByAppId(id: string) {
     this.Log(`removeStoreItemFromInstalledByAppId`);
 
-    if (this.checkBusy("removeStoreItemFromInstalledByAppId")) return undefined;
+    if (this.checkBusy("removeStoreItemFromInstalledByAppId", ["uninstallApp"])) return undefined;
 
     return await this.writeInstalledStoreItemList((await this.loadInstalledStoreItemList()).filter((s) => s.pkg.appId !== id));
   }
@@ -137,7 +138,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async writeInstalledStoreItemList(list: StoreItem[]) {
     this.Log(`writeInstalledStoreItemList: ${list.length} items`);
 
-    if (this.checkBusy("writeInstalledStoreItemList")) return false;
+    if (this.checkBusy("writeInstalledStoreItemList", ["uninstallApp"])) return false;
 
     this.installedStoreItemCache = list;
 
@@ -184,7 +185,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async removePackageFromInstalled(id: string) {
     this.Log(`removePackageFromInstalled`);
 
-    if (this.checkBusy("removePackageFromInstalled")) return undefined;
+    if (this.checkBusy("removePackageFromInstalled", ["uninstallApp"])) return undefined;
 
     return await this.writeInstalledPackageList((await this.loadInstalledPackageList()).filter((s) => s.appId !== id));
   }
@@ -216,7 +217,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
   async writeInstalledPackageList(list: ArcPackage[]) {
     this.Log(`writeInstalledPackageList: ${list.length} items`);
 
-    if (this.checkBusy("writeInstalledPackageList")) return false;
+    if (this.checkBusy("writeInstalledPackageList", ["uninstallApp"])) return false;
 
     this.installedPackagesCache = list;
 
@@ -317,7 +318,12 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
     }
   }
 
-  async packageInstaller<T = IInstallerProcessBase>(zip: JSZip, metadata: ArcPackage, item?: StoreItem, isUpdate = false): Promise<T | undefined> {
+  async packageInstaller<T = IInstallerProcessBase>(
+    zip: JSZip,
+    metadata: ArcPackage,
+    item?: StoreItem,
+    isUpdate = false
+  ): Promise<T | undefined> {
     this.Log(`packageInstaller: ${metadata.appId}, ${item?._id || "no store item"}`);
 
     if (this.checkBusy("packageInstaller")) return undefined;

@@ -81,9 +81,6 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
   }
 
   async MvPost(shareId: string, source: string, destination: string): Promise<ICommandResult> {
-    const sourceFilename = getItemNameFromPath(source);
-    destination = destination.endsWith(sourceFilename) ? destination : join(destination, sourceFilename);
-
     try {
       return CommandResult.FromResponse(await this.server.post(`/mv/${shareId}/${source}`, toForm({ destination })));
     } catch (e) {
