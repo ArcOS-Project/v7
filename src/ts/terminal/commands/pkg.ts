@@ -7,7 +7,7 @@ import { formatBytes, join } from "$ts/util/fs";
 import { ElevationLevel } from "$types/system/elevation";
 import type { Arguments } from "$types/terminal";
 import dayjs from "dayjs";
-import { BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET } from "../colors";
+import { BLUE, BOLD, BRBLUE, BRGREEN, BRPURPLE, CLRROW, CURUP, RESET, UNDERLINE, WHITE } from "../colors";
 import { TerminalProcess } from "../process";
 
 const typeCaptions: Record<string, string> = {
@@ -453,12 +453,22 @@ export class PkgCommand extends TerminalProcess {
   async listAll(): Promise<number> {
     const all = await this.distrib!.getAllStoreItems();
     const installed = await this.distrib!.loadInstalledStoreItemList();
+    const notInstalled = all.filter((a) => !installed.find((b) => a._id === b._id));
 
-    this.rl!.println("");
+    if (installed.length) {
+      this.rl!.println(`\n${BOLD}${UNDERLINE}Installed${RESET}:\n`);
 
-    for (const item of all) {
-      const color = installed.filter((i) => item._id === i._id)[0] ? BRBLUE : RESET;
-      this.rl!.println(`- ${color}${item.name}${RESET}`);
+      for (const pkg of installed) {
+        this.rl!.println(`  ${BRBLUE}${pkg.name}${RESET}`);
+      }
+    }
+
+    if (notInstalled.length) {
+      this.rl!.println(`\n${BOLD}${UNDERLINE}Available${RESET}:\n`);
+
+      for (const pkg of notInstalled) {
+        this.rl!.println(`  ${pkg.name}`);
+      }
     }
 
     return 0;
