@@ -177,7 +177,7 @@
 }
 
 #FirstRun_ChooseProfilePicture > div.body div.profile-picture-grid button.selected {
-  outline: var(--accent-light) 3px solid !important;
+  outline: var(--accent-textual) 3px solid !important;
   /* scale: 1.1; */
   outline-offset: -1px;
 }

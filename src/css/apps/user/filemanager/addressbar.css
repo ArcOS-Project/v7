@@ -72,8 +72,8 @@
 }
 
 #fileManager div.address-bar button.activated {
-  background-color: var(--accent-light) !important;
-  color: var(--accent-darkest);
+  background-color: var(--accent-textual) !important;
+  color: var(--accent-suggested-fg);
 }
 
 #fileManager div.address-bar div.path div.pill {
@@ -114,7 +114,7 @@
 
 #fileManager div.address-bar div.path div.pill span.lucide {
   font-size: 16px;
-  color: var(--accent-light);
+  color: var(--accent-textual);
   height: 16px;
 }
 

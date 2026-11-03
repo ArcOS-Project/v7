@@ -28,15 +28,15 @@
     }
 
     const shares = Daemon?.serviceHost?.getService<IShareManager>("ShareMgmt")!;
-    const result = shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
+    const result = await shares?.changeSharePassword(process.parentProcess.shareId, newPassword);
 
     process.closeWindow();
 
-    if (!result) {
+    if (!result.success) {
       MessageBox(
         {
           title: "Change password",
-          message: "Failed to change your password! Something might have gone wrong on our end. Please try again later.",
+          message: `Failed to change the password of the share. ${result.errorMessage ?? "An unknown error occurred. Please contact support."}`,
           buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",

@@ -391,7 +391,7 @@ export class ArcBasicEngine {
   async findNextEndling(endling: string, startIdx = this.programCounter): Promise<number | undefined> {
     this.Debug(`findNextEndling >>${endling}<< startIdx=${startIdx}`);
 
-    const lookahead = this.source.slice(startIdx, this.source.length - 1);
+    const lookahead = this.source.slice(startIdx, this.source.length);
     const endKeyword = `end${endling.toLowerCase()}`;
     const idx = lookahead.findIndex((l) => l.toLowerCase().trim().startsWith(endKeyword));
 
@@ -430,9 +430,10 @@ export class ArcBasicEngine {
     await this.setVariable("ERR", message);
 
     if (exit) {
+      this.HALT = true;
       const line = this.source[this.programCounter];
       const lineNumber = `${this.programCounter + 1}`;
-      const columnNumber = Math.max(columnIndexHint ? line.indexOf(columnIndexHint) : 0, 0);
+      const columnNumber = Math.max(columnIndexHint ? line?.indexOf(columnIndexHint) ?? 0 : 0, 0);
       const linePrefix = " ".repeat(lineNumber.length) + "  ║  ";
       const leftOffset = " ".repeat(columnNumber);
 

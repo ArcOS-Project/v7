@@ -64,7 +64,7 @@
 }
 #AddServer > div.body div.input.port div.options button.selected {
   font-weight: bold;
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 #AddServer > div.body div.input.port div.options div.sep {
   opacity: 0.2;

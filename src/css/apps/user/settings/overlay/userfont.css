@@ -33,7 +33,7 @@
 }
 
 #systemSettings #UserFont div.body button.reset-font span.lucide {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   font-size: 32px;
 }
 
@@ -52,7 +52,7 @@
 #systemSettings #UserFont div.body div.options button span.lucide {
   font-size: 16px;
   height: 16px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #systemSettings #UserFont div.body div.options button:hover {

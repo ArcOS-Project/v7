@@ -18,11 +18,11 @@
     <p>SQLite editor for ArcOS</p>
   </div>
   <div class="actions">
-    <button class="open-file" onclick={() => process.openFile()}>
+    <button class="open-file" onclick={() => process.openDatabase()}>
       <span class="lucide icon-folder-open"></span>
       <p>Open file</p>
     </button>
-    <button class="new-file" onclick={() => process.newFile()}>
+    <button class="new-file" onclick={() => process.newDatabase()}>
       <span class="lucide icon-database-zap"></span>
       <p>New database</p>
     </button>

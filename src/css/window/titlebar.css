@@ -57,6 +57,6 @@ div.window div.titlebar button.feedback {
   border: none;
   background-color: transparent;
   text-decoration: underline;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   margin-left: auto !important;
 }

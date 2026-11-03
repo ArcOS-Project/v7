@@ -25,5 +25,5 @@
 
 #Messages > div.body div.pages button.active {
   background-color: var(--accent-transparent);
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }

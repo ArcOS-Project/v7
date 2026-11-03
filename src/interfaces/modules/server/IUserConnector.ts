@@ -1,6 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
+import type { PswdResetConsumptionResult, PswdResetCreateResult, PswdResetVerificationResult } from "$types/user/pswdreset";
 import type { IServerConnector } from "../IServerManager";
 
 // !tpa
@@ -16,4 +17,12 @@ export declare class IUserConnector extends IServerConnector {
   DispatchKick(clientId: string): Promise<ICommandResult>;
   PictureUrl(userId: string): string;
   LoginBgUrl(userId: string): string;
+
+  CreatePswdResetRequest(username: string): Promise<ICommandResult<PswdResetCreateResult>>;
+  VerifyPswdResetRequest(userId: string, code: string): Promise<ICommandResult<PswdResetVerificationResult>>;
+  ConsumePswdResetRequest(
+    userId: string,
+    resetToken: string,
+    newPassword: string
+  ): Promise<ICommandResult<PswdResetConsumptionResult>>;
 }

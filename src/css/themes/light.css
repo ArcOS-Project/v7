@@ -46,6 +46,8 @@
   --accent-darken: brightness(0.7);
   --secondary-border: var(--win-bg) 1px solid;
   --secondary-box-shadow: none !important;
+  --accent-textual: var(--accent-dark-medium);
+  --accent-textual-fg: var(--accent-dark-medium-fg);
 }
 
 :root .theme-light.noglass {

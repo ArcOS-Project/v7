@@ -189,7 +189,7 @@
 }
 
 #AdminPortal div.viewBugReport div.leftpanel div.property.provided div.value div.item.active {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   opacity: 1;
 }
 

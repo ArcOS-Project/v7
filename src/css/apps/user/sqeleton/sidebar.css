@@ -15,7 +15,7 @@
 }
 
 #Sqeleton > div.body div.sidebar > details > summary {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 #Sqeleton > div.body div.sidebar details {
@@ -52,8 +52,6 @@
 
 #Sqeleton > div.body div.sidebar h1 {
   opacity: 1;
-  padding: 0 7px;
-  padding-left: 0;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -106,7 +104,7 @@
 }
 
 #Sqeleton > div.body div.sidebar span.lucide {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #Sqeleton > div.body div.sidebar div.query.selected {

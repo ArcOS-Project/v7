@@ -15,7 +15,7 @@
         class="lucide icon-rotate-cw"
         aria-label="Refresh tables"
         title="Refresh tables"
-        onclick={() => process.updateTables()}
+        onclick={() => process.updateTableList()}
       ></button>
     </h1>
   </summary>

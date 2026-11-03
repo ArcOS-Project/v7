@@ -59,6 +59,8 @@ export class SwitchServerRuntime extends AppProcess implements ISwitchServerRunt
         Cookies.remove("arcToken");
         Cookies.remove("arcUsername");
         localStorage.removeItem("arcLoginPersistence");
+        localStorage.removeItem("arcNewLoginPersistence");
+        localStorage.removeItem("arcUsername");
       }
 
       location.reload();

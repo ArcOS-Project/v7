@@ -12,16 +12,16 @@ div.window div.body button:not(.reset) {
   text-align: center;
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link) {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link) {
   outline: var(--button-glass-bg) 1px solid;
   outline-offset: -1px;
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):hover {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):hover {
   background-color: var(--button-glass-hover-bg);
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):active {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link):active {
   background-color: var(--button-glass-active-bg);
 }
 
@@ -30,14 +30,13 @@ div.window div.body button:not(.reset):hover {
 }
 
 button:not(.reset):not(:disabled):active {
-  /* scale: 0.95; */
   opacity: 0.8;
 }
 
 div.window div.body button:not(.reset).link {
   margin: 0;
   padding: 0;
-  color: var(--accent-light);
+  color: var(--accent-textual);
   background-color: transparent !important;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -88,26 +87,26 @@ div.window div.body button:not(.reset).suggested:active {
   filter: brightness(0.8);
 }
 
-div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass) {
+div.window.glass>div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass) {
   background-color: var(--button-glass-bg, #fff1);
 }
 
-div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):hover {
+div.window.glass>div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):hover {
   background-color: var(--button-glass-hover-bg, #fff3);
 }
 
-div.window.glass > div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):active {
+div.window.glass>div.body button:not(.reset):not(.suggested):not(.menu-item):not(.no-glass):active {
   background-color: var(--button-glass-active-bg, #0005);
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide {
   background-color: transparent;
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:hover {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:hover {
   background-color: var(--button-glass-bg);
 }
 
-div.window:not(.core) > div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:active {
+div.window:not(.core)>div.body button:not(.reset):not(.no-glass):not(.suggested):not(.link).lucide:active {
   background-color: var(--button-glass-active-bg);
 }

@@ -162,7 +162,7 @@
 #AdminPortal > div.body div.page-content > div.no-access span.lucide {
   font-size: 64px;
   margin-bottom: 10px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #AdminPortal .redacted {

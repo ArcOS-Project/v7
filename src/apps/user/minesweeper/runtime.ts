@@ -39,7 +39,7 @@ export class MinesweeperRuntime extends AppProcess implements IAppProcess {
   };
 
   ///
-  public readonly DEBUG = true;
+  public readonly DEBUG = false;
   ///
 
   //#region LIFECYCLE

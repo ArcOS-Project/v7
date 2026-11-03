@@ -16,6 +16,7 @@
 @import url("./window/toast.css");
 @import url("./window/actionbar.css");
 @import url("./window/statusbar.css");
+@import url("./window/sidebar/symbolic.css");
 
 div.window:not(.core) {
   position: absolute;
@@ -34,6 +35,25 @@ div.window:not(.core) {
   outline: var(--secondary-border) !important;
   display: flex;
   flex-direction: column;
+}
+
+div.window {
+  --accent-textual: var(--accent-light) !important;
+  --accent-textual-fg: var(--accent-suggested-fg) !important;
+}
+
+div.window::-webkit-scrollbar-track {
+  width: 5px;
+}
+
+body:not(.browser-chrome.host-windows) div.window {
+  scrollbar-color: var(--button-glass-bg) transparent;
+  scrollbar-width: none;
+}
+
+.theme-light div.window {
+  --accent-textual: var(--accent-dark-medium) !important;
+  --accent-textual-fg: var(--accent-dark-medium-fg) !important;
 }
 
 div.window:not(.core).shell-colored.colored::before {
@@ -131,6 +151,7 @@ div.window:not(.core).visible:not(.closing) {
   scale: 1;
   margin-top: 0;
 }
+
 /* 
 div.window:not(.core).resizable {
   resize: both;
@@ -142,7 +163,7 @@ div.window.overlay.glass {
 }
 
 div.window:not(.core) a {
-  color: var(--accent-light);
+  color: var(--accent-textual);
   text-underline-offset: 2px;
 }
 

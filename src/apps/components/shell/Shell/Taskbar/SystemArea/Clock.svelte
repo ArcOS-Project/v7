@@ -3,16 +3,17 @@
   import { Daemon } from "$ts/env";
   import type { UserPreferencesStore } from "$types/user";
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import Calendar from "./Calendar.svelte";
 
   const { process, userPreferences }: { process: IShellRuntime; userPreferences: UserPreferencesStore } = $props();
   const { calendarOpened } = process;
 
   let text = $state("");
+  let interval: NodeJS.Timeout;
 
   onMount(() => {
-    setInterval(() => {
+    interval = setInterval(() => {
       const tb = $userPreferences.shell.taskbar;
 
       const secs = tb.clockSecs ? ":ss" : "";
@@ -22,12 +23,16 @@
       text = dayjs().format(`${date}${time}`);
     });
   });
+
+  onDestroy(() => {
+    if (interval) clearInterval(interval);
+  })
 </script>
 
 <div class="clock">
   <Calendar {process} />
   <button
-    class="clock-button"
+    class="menu-trigger clock-button"
     class:active={$calendarOpened && !Daemon.safeMode}
     disabled={Daemon.safeMode}
     data-contextmenu="taskbar-clock"

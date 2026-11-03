@@ -6,8 +6,12 @@ img.spinner-svg.hide {
   opacity: 0 !important;
 }
 
-#appRenderer[class*="theme-light"] img.spinner-svg {
+.theme-light img.spinner-svg {
   filter: brightness(0.4);
+}
+
+.theme-dark img.spinner-svg {
+  filter: brightness(1);
 }
 
 div.html-spinner {

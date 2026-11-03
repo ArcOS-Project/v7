@@ -34,7 +34,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "wallpaper",
     {
-      name: "Wallpaper",
+      name: "Desktop Wallpaper",
       icon: "DesktopIcon",
       content: Wallpaper,
       description: "Change your desktop wallpaper",
@@ -54,7 +54,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "visuals",
     {
-      name: "Visuals",
+      name: "Appearance",
       icon: "PersonalizationIcon",
       content: Visuals,
       separator: true,
@@ -64,7 +64,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "shell",
     {
-      name: "Shell",
+      name: "Taskbar and start menu",
       icon: "TaskbarIcon",
       content: Shell,
       description: "The taskbar, start menu and action center",
@@ -73,7 +73,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "search",
     {
-      name: "Search",
+      name: "ArcOS Search",
       icon: "ArcFindIcon",
       content: Search,
       description: "The search functionality of ArcOS",
@@ -83,7 +83,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "apps",
     {
-      name: "Apps",
+      name: "Applications",
       icon: "AppsIcon",
       content: Apps,
       separator: true,

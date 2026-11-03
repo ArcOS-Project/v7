@@ -1,7 +1,7 @@
 #systemSettings div.container.wallpaper div.upload-actions {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 #systemSettings div.container.wallpaper div.upload-actions button {

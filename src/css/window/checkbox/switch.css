@@ -37,7 +37,7 @@ div.window > div.body input[type="checkbox"].switch:hover {
 }
 
 div.window > div.body input[type="checkbox"].switch:checked {
-  background-color: var(--accent-light);
+  background-color: var(--accent-textual);
 }
 
 div.window > div.body input[type="checkbox"].switch:checked::after {
@@ -46,7 +46,7 @@ div.window > div.body input[type="checkbox"].switch:checked::after {
 }
 
 div.window > div.body input[type="checkbox"].switch:checked:hover {
-  background-color: var(--accent-light);
+  background-color: var(--accent-textual);
 }
 
 div.window > div.body input[type="checkbox"].switch:disabled {

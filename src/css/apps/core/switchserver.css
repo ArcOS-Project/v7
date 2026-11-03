@@ -33,7 +33,7 @@
 }
 
 #SwitchServer > div.body div.selector div.server-option button.selector span.lucide {
-  color: var(--accent-light);
+  color: var(--accent-textual);
   font-size: 48px;
 }
 

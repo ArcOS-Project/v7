@@ -1,0 +1,87 @@
+div.shell div.taskbar div.weather-applet {
+  --gradient-start: #41aaff;
+  --gradient-end: #71b2c8;
+  background: linear-gradient(to bottom right, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  transition: background 0.3s;
+  position: relative;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  outline: var(--button-glass-hover-bg) 1px solid;
+  outline-offset: -1px;
+}
+
+div.shell div.taskbar div.weather-applet button.lucide {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  font-size: 12px;
+  background-color: transparent;
+}
+
+div.shell div.taskbar div.weather-applet button.lucide:active {
+  background-color: transparent;
+  color: var(--accent-transparent);
+}
+
+div.shell div.taskbar div.weather-applet p {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.8;
+}
+
+div.shell div.taskbar div.weather-applet h1 {
+  font-size: 16px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+div.shell div.taskbar div.weather-applet h1.single {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: normal;
+}
+
+div.shell div.taskbar div.weather-applet h1 button.lucide {
+  opacity: 0.5;
+}
+
+div.shell div.taskbar div.weather-applet span.condition-icon {
+  color: var(--color, var(--fg));
+  font-size: 28px;
+}
+
+div.shell div.taskbar div.weather-applet * {
+  color: #fff;
+}
+
+div.shell div.taskbar div.weather-applet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0002;
+  transition: background-color 0.3s;
+}
+
+div.shell div.taskbar div.weather-applet.night::before {
+  background-color: #0008;
+}
+
+div.shell div.taskbar div.weather-applet * {
+  z-index: 100;
+}
