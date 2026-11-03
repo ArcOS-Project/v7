@@ -6,10 +6,10 @@ import type { ContextMenuItem } from "$types/apps/app";
 
 export function contextProps(node: HTMLElement, args: any[]) {
   const contextMenuPid = Env?.get("contextmenu_pid");
-  if (!contextMenuPid) return;
+  if (!contextMenuPid) throw new Error("contextProps invoked before ContextMenuRuntime construction");
 
   const contextmenu = Stack?.getProcess<IContextMenuRuntime>(+contextMenuPid);
-  if (!contextmenu) return;
+  if (!contextmenu) throw new Error("contextProps invoked before ContextMenuRuntime construction");
 
   const uuid = UUID();
 

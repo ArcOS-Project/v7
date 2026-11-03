@@ -59,7 +59,7 @@
   </div>
   {#each Object.entries(versions) as [userId, version] (userId)}
     {@const user = data.users.find((u) => u._id === userId)}
-    {#if user}
+    {#if user?.profile}
       <div class="row">
         <ProfilePicture fallback={user.profile.profilePicture} height={20} showOnline online={user.profile.dispatchClients > 0} />
         <div class="segment username" class:redacted={$redacted}>
