@@ -1,6 +1,7 @@
 import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import { IsElectron } from "$ts/electron";
 import { getKMod, Kernel, Stack } from "$ts/env";
 import { LogLevel } from "$types/shared/logging";
 import type { State } from "../../types/system/state";
@@ -93,6 +94,11 @@ export class StateHandler extends Process implements IStateHandler {
     }
 
     this.currentState = id;
+
+    if (id == "turnedOff" && IsElectron()) {
+      electron!.setCanClose(true);
+      electron!.closeWindow();
+    }
 
     if (!data.appModule) {
       try {

@@ -1,14 +1,17 @@
+import type { LoginAppRuntime } from "$apps/core/loginapp/runtime";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
+import { IsElectron } from "$ts/electron";
+import { ArcOSVersion, Daemon, Kernel, SetCurrentKernel, SetKernelExports, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
+import type { ArcTerminal } from "$ts/terminal";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/shared/logging";
 import { handleGlobalErrors } from "../error";
 import { InitProcess } from "./init";

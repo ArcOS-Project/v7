@@ -1,33 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo-dm.svg" media="(prefers-color-scheme: dark)" />
-    <link rel="icon" type="image/svg+xml" href="/logo-lm.svg" media="(prefers-color-scheme: light)" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="stylesheet" href="/preboot.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>ArcOS</title>
 
-    <link rel="stylesheet" id="stateCSSLoader" />
-    <style>
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        background-color: #000;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="kernelLog"></div>
-    <main id="main">
-      <div id="stateLoader" class="fullscreen">.</div>
-      <div id="appRenderer"></div>
-    </main>
-    <script type="module" src="/src/main.ts"></script>
-    <script src="/preboot.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/logo-dm.svg" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" type="image/svg+xml" href="/logo-lm.svg" media="(prefers-color-scheme: light)" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/preboot.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>ArcOS</title>
+
+  <link rel="stylesheet" id="stateCSSLoader" />
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="kernelLog"></div>
+  <main id="main">
+    <div id="stateLoader" class="fullscreen">.</div>
+    <div id="appRenderer"></div>
+  </main>
+  <script type="module" src="/src/main.ts"></script>
+  <script src="/preboot.js"></script>
+</body>
+
 </html>
