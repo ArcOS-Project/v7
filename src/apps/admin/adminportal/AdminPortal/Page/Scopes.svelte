@@ -9,17 +9,26 @@
   const { admins } = data;
 </script>
 
-<div class="scope-list">
-  <div class="row header">
-    <div class="segment pfp">
-      <ProfilePicture height={20} fallback={ProfilePictures.def} />
-    </div>
-    <div class="segment username">Username</div>
-    <div class="segment pages">Pages</div>
-    <div class="segment count">Count</div>
-    <div class="segment god">God?</div>
-  </div>
-  {#each admins as admin (admin._id)}
-    <ScopeRow {admin} {process} />
-  {/each}
+<div class="table-wrapper scope-list">
+  <table>
+    <thead>
+      <tr>
+        <th> Username </th>
+        <th>Pages</th>
+        <th>Count</th>
+        <th>God?</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="20%" />
+      <col width="78%" />
+      <col width="1%" />
+      <col width="1%" />
+    </colgroup>
+    <tbody>
+      {#each admins as admin (admin._id)}
+        <ScopeRow {admin} {process} />
+      {/each}
+    </tbody>
+  </table>
 </div>

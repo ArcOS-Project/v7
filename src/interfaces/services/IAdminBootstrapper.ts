@@ -25,8 +25,10 @@ import type { Mailbroker } from "$types/server/mailbroker";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import type { AxiosInstance } from "axios";
 
 export interface IAdminBootstrapper extends IBaseService {
+  get adminClient(): AxiosInstance;
   start(): Promise<void>;
   getUserInfo(): Promise<UserInfo | undefined>;
   mountUserDrive(

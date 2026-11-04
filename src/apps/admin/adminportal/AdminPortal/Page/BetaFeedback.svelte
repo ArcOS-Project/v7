@@ -46,35 +46,44 @@
     </button>
   {/each}
 </div>
-<div class="beta-container" class:loading>
+<div class="table-wrapper beta-container shrink" class:loading>
   {#if loading}
     <Spinner height={32} />
   {:else if selectedItem}
     <ItemDetails item={selectedItem} bind:selectedItem {process} />
   {:else}
-    <div class="beta-list">
-      <div class="beta-row header">
-        <div class="segment username">Username</div>
-        <div class="segment title">Title</div>
-        <div class="segment server">Server</div>
-        <div class="segment date">Date</div>
-        <div class="segment read">Read?</div>
-      </div>
-      {#each items as item (item.id)}
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div class="beta-row" onclick={() => (selectedItem = item)}>
-          <div class="segment username">{item.username}</div>
-          <div class="segment title">{item.title}</div>
-          <div class="segment server">{item.serverName}</div>
-          <div class="segment date">{dayjs(item.created).format("DD-MM-YYYY, HH:mm:ss")}</div>
-          <div class="segment read">
-            {#if item.read}
-              <span class="lucide icon-check-check"></span>
-            {/if}
-          </div>
-        </div>
-      {/each}
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Title</th>
+          <th>Server</th>
+          <th>Date</th>
+          <th>Read?</th>
+        </tr>
+      </thead>
+      <colgroup>
+        <col width="10%" />
+        <col width="30%" />
+        <col width="20%" />
+        <col width="30%" />
+        <col width="1%" />
+      </colgroup>
+      <tbody>
+        {#each items as item (item.id)}
+          <tr onclick={() => (selectedItem = item)}>
+            <td>{item.username}</td>
+            <td>{item.title}</td>
+            <td>{item.serverName}</td>
+            <td>{dayjs(item.created).format("DD-MM-YYYY, HH:mm:ss")}</td>
+            <td class="icon-col">
+              {#if item.read}
+                <span class="lucide icon-check-check"></span>
+              {/if}
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
   {/if}
 </div>

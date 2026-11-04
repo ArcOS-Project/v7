@@ -7,6 +7,7 @@
   import dayjs from "dayjs";
   import type { ActivitiesData } from "../../types";
   import Pagination from "../Pagination.svelte";
+  import UsernameDisplay from "../UsernameDisplay.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: ActivitiesData } = $props();
   const { redacted } = process;
@@ -27,38 +28,43 @@
   <h1>ACTIVITIES ({activities.length})</h1>
   <Pagination bind:currentChunk chunkSize={50} totalChunks={chunks.length - 1} totalItems={total} />
 </div>
-<div class="activities-list">
-  <div class="row header">
-    <div class="segment icon">
-      <span class="lucide icon-shield-ellipsis"></span>
-    </div>
-    <div class="segment username">Username</div>
-    <div class="segment action">Action</div>
-    <div class="segment user-agent">User agent</div>
-    <div class="segment frontend">Frontend</div>
-    <div class="segment timestamp">Timestamp</div>
-  </div>
-  {#if chunks[currentChunk]}
-    {#each chunks[currentChunk] as activity (activity._id)}
-      <div class="row">
-        <div class="segment icon">
-          <span class="lucide icon-{ActivityIconTranslations[activity.action]}"></span>
-        </div>
-        <div class="segment username" class:redacted={$redacted}>
-          {#if activity.user}
-            <ProfilePicture height={20} fallback={activity.user.profile.profilePicture} />
-            <button class="link" onclick={() => process.switchPage("viewUser", { user: activity.user })}>
-              {activity.user.username}
-            </button>
-          {:else}
-            Stranger
-          {/if}
-        </div>
-        <div class="segment action">{ActivityCaptionTranslations[activity.action]}</div>
-        <div class="segment user-agent" title={activity.userAgent}>{activity.userAgent}</div>
-        <div class="segment frontend">{activity.location?.hostname || "Unknown"}</div>
-        <div class="segment timestamp">{dayjs(activity.createdAt).format("D MMM YYYY, HH:mm")}</div>
-      </div>
-    {/each}
-  {/if}
+<div class="table-wrapper activities-list">
+  <table>
+    <thead>
+      <tr>
+        <th class="icon-col">
+          <span class="lucide icon-shield-ellipsis"></span>
+        </th>
+        <th>Username</th>
+        <th>Action</th>
+        <th>User agent</th>
+        <th>Frontend</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="1%" />
+      <col width="19%" />
+      <col width="40%" />
+      <col width="20%" />
+      <col width="10%" />
+      <col width="10%" />
+    </colgroup>
+    <tbody>
+      {#if chunks[currentChunk]}
+        {#each chunks[currentChunk] as activity (activity._id)}
+          <tr>
+            <td class="icon-col"><span class="lucide icon-{ActivityIconTranslations[activity.action]}"></span></td>
+            <td class:redacted={$redacted}>
+              <UsernameDisplay user={activity.user} {process} />
+            </td>
+            <td>{ActivityCaptionTranslations[activity.action]}</td>
+            <td title={activity.userAgent}>{activity.userAgent}</td>
+            <td>{activity.location?.hostname || "Unknown"}</td>
+            <td>{dayjs(activity.createdAt).format("D MMM YYYY, HH:mm")}</td>
+          </tr>
+        {/each}
+      {/if}
+    </tbody>
+  </table>
 </div>

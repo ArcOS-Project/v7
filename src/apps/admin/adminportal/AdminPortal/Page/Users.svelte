@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import Icon from "$lib/Icon.svelte";
-  import { Logo } from "$ts/branding";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
@@ -55,22 +53,36 @@
     </div>
   </div>
 {/if}
-<div class="user-list" class:compact>
-  <div class="user-row header">
-    <Icon icon={Logo()} />
-    <div class="segment username">Username</div>
-    {#if !compact}
-      <div class="segment email">Email</div>
-    {/if}
-    <div class="segment created">Created</div>
-    <div class="segment approved">APP</div>
-    <div class="segment admin">ADM</div>
-    <div class="segment system">SYS</div>
-  </div>
-
-  {#each $store as user (user._id)}
-    <UserRow {process} {user} {selection} {compact} />
-  {/each}
+<div class="table-wrapper user-list" class:compact>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        {#if !compact}
+          <th>Email</th>
+        {/if}
+        <th>Created</th>
+        <th>Approved</th>
+        <th>Admin</th>
+        <th>System</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="30%" />
+      {#if !compact}
+        <col width="30%" />
+      {/if}
+      <col width="20%" />
+      <col width="1%" />
+      <col width="1%" />
+      <col width="1%" />
+    </colgroup>
+    <tbody>
+      {#each $store as user (user._id)}
+        <UserRow {process} {user} {selection} {compact} />
+      {/each}
+    </tbody>
+  </table>
 </div>
 <div class="id-entry">
   <div class="icon">

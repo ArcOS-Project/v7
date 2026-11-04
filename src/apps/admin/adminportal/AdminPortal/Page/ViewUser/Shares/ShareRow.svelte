@@ -12,12 +12,12 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="share-row" ondblclick={() => process.switchPage("viewShare", { share })}>
-  <div class="segment icon">
+<tr class="share-row" ondblclick={() => process.switchPage("viewShare", { share })}>
+  <td class="icon-col">
     <span class="lucide icon-hard-drive"></span>
-  </div>
-  <div class="segment name">{share.shareName}</div>
-  <div class="segment size">{formatBytes(share.maxSize)}</div>
-  <div class="segment members">{share.accessors.length}</div>
-  <div class="segment locked" class:is-locked={share.locked}>{share.locked ? "Yes" : "No"}</div>
-</div>
+  </td>
+  <td>{share.shareName}</td>
+  <td>{formatBytes(share.maxSize)}</td>
+  <td>{share.accessors.length}</td>
+  <td class:clr-orange={share.locked}>{share.locked ? "Yes" : "No"}</td>
+</tr>

@@ -55,7 +55,7 @@ import { AdminScopes } from "./store";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
-  private get adminClient() {
+  get adminClient() {
     return Backend.create({
       headers: {
         Authorization: `Bearer ${Daemon.token}`,

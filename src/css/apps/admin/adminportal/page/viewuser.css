@@ -6,6 +6,8 @@
   border-right: var(--win-border);
   width: calc(100% - 450px);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.viewUser div.leftpanel::-webkit-scrollbar {
@@ -114,6 +116,7 @@
 #AdminPortal div.viewUser div.section.quota > div p.percentage {
   opacity: 0.5;
 }
+
 #AdminPortal div.viewUser div.leftpanel div.section.quota > div button {
   margin-left: auto;
   border-radius: 0;
@@ -123,128 +126,16 @@
   border-left: var(--win-border);
 }
 
-#AdminPortal div.viewUser div.section.shares > div {
-  padding: 0;
-}
-
-#AdminPortal div.viewUser div.section.shares div.share-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: var(--win-border);
-  height: 36px;
-}
-
-#AdminPortal div.viewUser div.section.shares div.share-row:last-child {
-  border-bottom: none;
-  height: 35px;
-}
-
-#AdminPortal div.viewUser div.section.shares div.share-row span.lucide {
-  font-size: 16px;
-  color: var(--accent-textual);
-  line-height: 35px;
-}
-
-#AdminPortal div.viewUser div.section.shares div.share-row div.segment.icon {
-  width: 36px;
-  height: 35px;
-  border-right: var(--win-border);
-  text-align: center;
-  font-weight: normal;
-}
-#AdminPortal div.viewUser div.section.shares div.share-row:hover,
-#AdminPortal div.viewUser div.section.reports div.report-row:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#AdminPortal div.viewUser div.section.shares div.share-row.header {
-  font-weight: bold;
-  background-color: var(--button-bg);
-}
-
-#AdminPortal div.viewUser div.section.shares div.segment.members,
-#AdminPortal div.viewUser div.section.shares div.segment.locked {
-  width: 36px;
-  height: 35px;
-  border-left: var(--win-border);
-  background-color: var(--button-bg);
-  line-height: 36px;
-  text-align: center;
-}
-
-#AdminPortal div.viewUser div.section.shares div.segment.locked {
-  margin-left: -10px;
-}
-
-#AdminPortal div.viewUser div.section.shares div.segment.size {
-  margin-left: auto;
-}
-
+#AdminPortal div.viewUser div.section.shares,
 #AdminPortal div.viewUser div.section.reports {
-  border-bottom: var(--win-border);
-}
-
-#AdminPortal div.viewUser div.section.reports > div {
-  padding: 0;
-}
-
-#AdminPortal div.viewUser div.section.reports div.report-row {
+  height: 0;
+  flex-grow: 1;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: var(--win-border);
-  height: 36px;
-}
+  flex-direction: column;
 
-#AdminPortal div.viewUser div.section.reports div.report-row:last-child {
-  border-bottom: none;
-  height: 35px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.report-row span.lucide {
-  font-size: 16px;
-  color: var(--accent-textual);
-  line-height: 35px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.report-row div.segment.icon {
-  width: 36px;
-  height: 35px;
-  border-right: var(--win-border);
-  text-align: center;
-  font-weight: normal;
-  min-width: 36px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.report-row.header {
-  font-weight: bold;
-  background-color: var(--button-bg);
-}
-
-#AdminPortal div.viewUser div.section.reports div.segment.title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#AdminPortal div.viewUser div.section.reports div.segment.closed,
-#AdminPortal div.viewUser div.section.reports div.segment.resolved {
-  width: 36px;
-  height: 35px;
-  border-left: var(--win-border);
-  background-color: var(--button-bg);
-  line-height: 36px;
-  text-align: center;
-  min-width: 36px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.segment.resolved {
-  margin-left: -10px;
-}
-
-#AdminPortal div.viewUser div.section.reports div.segment.closed {
-  margin-left: auto;
+  & > div {
+    padding: 0;
+  }
 }
 
 #AdminPortal div.viewUser div.rightpanel div.section > div {

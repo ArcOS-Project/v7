@@ -21,22 +21,35 @@
     loadingMax = users.length;
     loadingDone = 0;
 
-    for (const user of users) {
-      try {
-        const response = await Backend.get(`/admin/fs/file/${user.username}/System/Config/DistribSvc/Installed.json`, {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-          responseType: "json",
-        });
+    const promises = users.map(
+      (user) =>
+        new Promise<void>(async (resolve) => {
+          try {
+            const response = await process.admin.adminClient.get(
+              `/fs/file/${user.username}/System/Config/DistribSvc/Installed.json`
+            );
 
-        if (typeof response.data !== "object" || !Array.isArray(response.data)) throw "";
+            console.log(response.data);
+            
+            if (
+              typeof response.data !== "object" ||
+              !Array.isArray(response.data) ||
+              !response.data.find((i) => i?._id === item._id)
+            ) {
+              throw "";
+            }
 
-        if (response.data.find((i) => i?._id === item._id)) installed.push(user);
-      } catch {
-        continue;
-      } finally {
-        loadingDone++;
-      }
-    }
+            installed.push(user);
+          } catch {
+            return;
+          } finally {
+            loadingDone++;
+            resolve();
+          }
+        })
+    );
+
+    await Promise.all(promises);
 
     loading = false;
   }

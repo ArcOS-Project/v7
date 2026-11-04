@@ -9,27 +9,36 @@
 
 <div class="section reports">
   <h1>Reports</h1>
-  <div class="report-list">
-    {#if userReports.length}
-      <div class="report-row header">
-        <div class="segment icon">
-          <span class="lucide icon-bug"></span>
-        </div>
-        <div class="segment title">Title</div>
-        <div class="segment closed">CLO</div>
-      </div>
-      {#each userReports as report (report._id)}
-        <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div class="report-row" ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}>
-          <div class="segment icon">
+  <div class="table-wrapper report-list shrink">
+    <table>
+      <thead>
+        <tr>
+          <th class="icon-col">
             <span class="lucide icon-bug"></span>
-          </div>
-          <div class="segment title">{report.title}</div>
-          <div class="segment closed">{report.closed ? "Yes" : "No"}</div>
-        </div>
-      {/each}
-    {:else}
-      <p class="error-text">NO_REPORTS</p>
-    {/if}
+          </th>
+          <th>Title</th>
+          <th>Closed</th>
+        </tr>
+      </thead>
+      <colgroup></colgroup>
+      <tbody>
+        {#each userReports as report (report._id)}
+          <tr>
+            <td class="icon-col">
+              <span class="lucide icon-bug"></span>
+            </td>
+            <td>{report.title}</td>
+            <td>{report.closed ? "Yes" : "No"}</td>
+          </tr>
+        {/each}
+        {#if !userReports.length}
+          <tr>
+            <td colspan="3">
+              <p class="error-text">NO_REPORTS</p>
+            </td>
+          </tr>
+        {/if}
+      </tbody>
+    </table>
   </div>
 </div>
