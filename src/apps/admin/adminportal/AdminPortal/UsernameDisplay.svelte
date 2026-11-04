@@ -9,7 +9,7 @@
 
 <div class="username-display">
   {#if user}
-    <ProfilePicture height={20} fallback={user.profile.profilePicture} />
+    <ProfilePicture height={20} fallback={user.profile.profilePicture} showOnline online={user.profile.dispatchClients > 0}/>
     <button class="link" onclick={() => process.switchPage("viewUser", { user })} class:redacted={$redacted}>
       {user.username}
     </button>
