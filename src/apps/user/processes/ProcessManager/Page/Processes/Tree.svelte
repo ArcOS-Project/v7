@@ -4,6 +4,7 @@
   import { Stack } from "$ts/env";
   import { onMount } from "svelte";
   import Row from "./Tree/Row.svelte";
+  import Header from "./Header.svelte";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
   const { running } = process;
@@ -19,10 +20,17 @@
   });
 </script>
 
-<div class="process-tree">
+<table class="process-tree">
+  <Header />
+  <colgroup>
+    <col width="59%">
+    <col width="1%">
+    <col width="20%">
+    <col width="20%">
+  </colgroup>
   {#each [...map] as [pid, proc], i (`${i}-${pid} ${proc.name}`)}
     {#if !proc.parentPid || !Stack.getProcess(proc.parentPid)}
       <Row {proc} {pid} {process} orphan={!Stack.getProcess(proc.parentPid) && proc.pid !== 1} />
     {/if}
   {/each}
-</div>
+</table>
