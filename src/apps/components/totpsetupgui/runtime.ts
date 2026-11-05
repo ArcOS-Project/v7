@@ -4,15 +4,20 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon } from "$ts/env";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
+import type { SetupState } from "./types";
 
 export class TotpSetupGuiRuntime extends AppProcess implements ITotpSetupGuiRuntime {
   public code = Store<string>("");
   public url = Store<string>("");
+  public setupState = Store<SetupState>("unfinished");
+  public firstTimeSetup: boolean;
 
   //#region LIFECYCLE
 
-  constructor(pid: number, parentPid: number, app: AppProcessData) {
+  constructor(pid: number, parentPid: number, app: AppProcessData, firstTimeSetup: boolean = false) {
     super(pid, parentPid, app);
+
+    this.firstTimeSetup = firstTimeSetup;
 
     this.setSource(__SOURCE__);
   }
@@ -25,6 +30,12 @@ export class TotpSetupGuiRuntime extends AppProcess implements ITotpSetupGuiRunt
     }
 
     this.url.set(result.result!.url);
+  }
+
+  async onClose(): Promise<boolean> {
+    if (this.setupState() === "unfinished") this.setupState.set("canceled");
+
+    return true;
   }
 
   //#endregion
