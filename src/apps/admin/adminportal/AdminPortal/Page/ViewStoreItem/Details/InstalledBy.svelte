@@ -28,8 +28,6 @@
               `/fs/file/${user.username}/System/Config/DistribSvc/Installed.json`
             );
 
-            console.log(response.data);
-
             if (
               typeof response.data !== "object" ||
               !Array.isArray(response.data) ||

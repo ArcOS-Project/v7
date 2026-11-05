@@ -1,15 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import ArrayBranch from "./ArrayBranch.svelte";
-  import ObjectBranch from "./ObjectBranch.svelte";
   import FunctionBranch from "./FunctionBranch.svelte";
   import MapBranch from "./MapBranch.svelte";
+  import ObjectBranch from "./ObjectBranch.svelte";
 
   let { key, value }: { key: string; value: any } = $props();
-
-  onMount(() => {
-    console.log(`ENTERING ${key}`);
-  });
 
   function color(value: any) {
     switch (typeof value) {
