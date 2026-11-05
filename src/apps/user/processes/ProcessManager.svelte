@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
+  import NewTabs from "$lib/NewTabs.svelte";
   import type { Component } from "svelte";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
@@ -13,13 +14,4 @@
   });
 </script>
 
-<div class="tabs">
-  {#each Object.keys(process.tabs) as name (name)}
-    <button class:selected={$currentTab === name} onclick={() => ($currentTab = name)}>{name}</button>
-  {/each}
-</div>
-<div class="content {$currentTab.replaceAll(' ', '-').toLowerCase()}">
-  {#if Tab}
-    <Tab {process} />
-  {/if}
-</div>
+<NewTabs initialTab="Processes" tabs={process.tabs} {process} fullHeight />

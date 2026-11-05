@@ -1,3 +1,8 @@
+#AdminPortal div.container.users > div.page-content {
+  display: flex;
+  flex-direction: column;
+}
+
 #AdminPortal div.container.users > div.page-content > div.header {
   display: flex;
   align-items: center;
@@ -31,7 +36,8 @@
   opacity: 0.5;
 }
 #AdminPortal div.container.users div.user-list {
-  height: calc(100% - 30px - 30px);
+  height: 0;
+  flex-grow: 1;
   border-top: var(--win-border);
   border-bottom: var(--win-border);
   overflow-y: auto;

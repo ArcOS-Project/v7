@@ -139,7 +139,6 @@
   border-top: none;
 }
 #AdminPortal div.container.viewStoreItem div.installed-by {
-  border-bottom: var(--win-border);
   height: 0;
   flex-grow: 1;
   display: flex;

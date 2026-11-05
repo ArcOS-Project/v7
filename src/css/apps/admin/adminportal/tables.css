@@ -3,18 +3,14 @@
   height: 0;
   flex-grow: 1;
 
-  &.shrink {
-    overflow-x: hidden;
+  &.shrink > table {
+    max-width: 100% !important;
+    width: 100% !important;
 
-    & > table {
-      max-width: 100% !important;
-      width: 100% !important;
-
-      td {
-        white-space: initial !important;
-        padding-top: 3px;
-        padding-bottom: 3px;
-      }
+    td {
+      white-space: initial !important;
+      padding-top: 3px;
+      padding-bottom: 3px;
     }
   }
 }

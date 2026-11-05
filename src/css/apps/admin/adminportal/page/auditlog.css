@@ -101,21 +101,6 @@ details.audit-log div.context {
   overflow-x: scroll;
 }
 
-details.audit-log td {
-  font-family: "Source Code Pro";
-  vertical-align: top;
-}
-
-details.audit-log td.key {
-  padding-right: 10px;
-  font-weight: bold;
-  color: var(--accent);
-}
-
-details.audit-log td.value {
-  white-space: pre;
-}
-
 details.audit-log span.severity {
   margin-left: auto;
   color: var(--accent);

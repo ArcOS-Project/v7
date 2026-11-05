@@ -128,8 +128,8 @@
 
 #AdminPortal div.viewUser div.section.shares,
 #AdminPortal div.viewUser div.section.reports {
-  height: 0;
-  flex-grow: 1;
+  border-top: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
 

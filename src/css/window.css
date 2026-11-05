@@ -16,6 +16,8 @@
 @import url("./window/toast.css");
 @import url("./window/actionbar.css");
 @import url("./window/statusbar.css");
+@import url("./window/newtabs.css");
+@import url("./window/jsonviewer.css");
 @import url("./window/sidebar/symbolic.css");
 
 div.window:not(.core) {
@@ -152,7 +154,7 @@ div.window:not(.core).visible:not(.closing) {
   margin-top: 0;
 }
 
-/* 
+/*
 div.window:not(.core).resizable {
   resize: both;
 } */

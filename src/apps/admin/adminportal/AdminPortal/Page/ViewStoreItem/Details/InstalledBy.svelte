@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/env";
-  import { Backend } from "$ts/kernel/mods/server/axios";
   import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
-  import Users from "../../Users.svelte";
+  import { onMount } from "svelte";
+  import AdminUsersPage from "../../AdminUsersPage.svelte";
 
   const { item, process }: { item: StoreItem; process: IAdminPortalRuntime } = $props();
 
@@ -30,7 +29,7 @@
             );
 
             console.log(response.data);
-            
+
             if (
               typeof response.data !== "object" ||
               !Array.isArray(response.data) ||
@@ -53,6 +52,8 @@
 
     loading = false;
   }
+
+  onMount(collect);
 </script>
 
 <div class="installed-by container users" class:empty={!installed?.length || loading}>
@@ -61,7 +62,7 @@
     <p>{((100 / loadingMax) * loadingDone).toFixed(2)}%</p>
   {:else if installed.length}
     <div class="page-content">
-      <Users {process} data={{ users: installed }} compact />
+      <AdminUsersPage {process} data={{ users: installed }} compact />
     </div>
   {:else}
     <p class="error-text">ERR_NO_INSTALLS</p>
