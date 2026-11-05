@@ -19,23 +19,15 @@
   }
 </script>
 
-<table class="json-viewer">
-  <tbody>
-    {#each Object.entries(data) as [key, value], i}
-      <tr>
-        <td class="key"><b>{key}</b>:</td>
-        <td class="value">
-          {#if Array.isArray(value)}
-            <ArrayBranch {value} />
-          {:else if typeof value === "object"}
-            <ObjectBranch {value} />
-          {:else}
-            <span style="color: var(--clr-{color(value)}-fg);">
-              {value}
-            </span>
-          {/if}
-        </td>
-      </tr>
-    {/each}
-  </tbody>
-</table>
+<div class="json-viewer">
+  {#each Object.entries(data) as [key, value], i}
+    <div class="row">
+      {#if Array.isArray(value)}
+        <ArrayBranch {key} {value} />
+      {:else if typeof value === "object"}
+        <ObjectBranch {key} {value} />
+      {:else}
+      {/if}
+    </div>
+  {/each}
+</div>

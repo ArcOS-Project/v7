@@ -135,7 +135,7 @@
       <button class:selected={page === $sortState} onclick={() => ($sortState = page)}>{page.toUpperCase()}</button>
     {/each}
   </div>
-  <div class="table-wrapper listing">
+  <div class="table-wrapper listing shrink">
     <table>
       <thead>
         <tr>
@@ -147,8 +147,8 @@
       </thead>
       <colgroup>
         <col width="1%" />
-        <col width="15%" />
-        <col width="44%" />
+        <col width="30%" />
+        <col width="34%" />
         <col width="20%" />
       </colgroup>
       <tbody>
