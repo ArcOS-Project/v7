@@ -1,16 +1,16 @@
 <script lang="ts">
-  let { value }: { value: any[] } = $props();
+  import JsonViewerRow from "./JsonViewerRow.svelte";
+
+  let { key, value }: { key: string; value: any[] } = $props();
 </script>
 
 <details>
-  <summary>Array[{value.length}]</summary>
+  <summary><b class="key">{key}</b>: <span class="complex-datatype">Array[{value.length}]</span></summary>
 
   {#if value.length}
-    <ul>
-      {#each value as item, i}
-        <li>{i}: {item}</li>
-      {/each}
-    </ul>
+    {#each value as item, i}
+      <JsonViewerRow key={i.toString()} value={item} />
+    {/each}
   {:else}
     <p class="empty">(empty)</p>
   {/if}

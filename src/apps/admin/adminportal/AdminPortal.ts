@@ -16,7 +16,7 @@ const AdminPortalApp: App = {
   minSize: { w: 900, h: 500 },
   maxSize: { w: NaN, h: NaN },
   state: {
-    maximized: false,
+    maximized: true,
     minimized: false,
     resizable: true,
     fullscreen: false,

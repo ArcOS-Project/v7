@@ -1,11 +1,11 @@
 <script lang="ts">
   import JsonViewer from "$lib/JsonViewer.svelte";
 
-  let { value }: { value: object } = $props();
+  let { key, value }: { key: string; value: object } = $props();
 </script>
 
 <details>
-  <summary>Object</summary>
+  <summary><b class="key">{key}</b>: <span class="complex-datatype">Object</span></summary>
 
   <JsonViewer data={value} />
 </details>

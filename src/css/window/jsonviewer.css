@@ -1,27 +1,28 @@
-table.json-viewer td {
-  vertical-align: top;
+div.json-viewer div.row {
   font-family: "Source Code Pro";
-  padding: 2px 5px;
-
-  &.key {
-    color: var(--accent-light);
-  }
-
-  p.empty {
-    opacity: 0.5;
-    font-style: italic;
-    margin-top: 5px;
-  }
+  margin-bottom: 4px;
 
   details > :not(summary) {
-    padding-left: 10px;
+    padding-left: 20px;
   }
 
   details[open] > summary {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+
+    & + div {
+      margin-top: 4px;
+    }
   }
 
-  ul {
-      padding-left: 30px !important;
+  p.empty {
+    font-style: italic;
+    opacity: 0.5;
+    margin: 2px 0;
+  }
+
+  .complex-datatype {
+    opacity: 0.8;
+    color: var(--clr-purple-fg);
+    font-style: italic;
   }
 }
