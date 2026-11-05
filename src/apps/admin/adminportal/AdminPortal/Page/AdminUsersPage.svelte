@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import type { UsersData } from "../../types";
   import UserRow from "./Users/UserRow.svelte";
+  import { Daemon } from "$ts/env";
 
   const { process, data, compact = false }: { process: IAdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;
@@ -96,7 +97,15 @@
       aria-label="View user data"
       disabled={!$selected}
       title="View user data"
-      onclick={() => process.spawnOverlay("userdata", $selected)}
+      onclick={() =>
+        Daemon.helpers?.ViewGenericObject(
+          $selected!,
+          {
+            windowTitle: `View user data for ${$selected!.username}`,
+            windowIcon: "AccountIcon",
+          },
+          process.pid
+        )}
     ></button>
   </div>
 </div>

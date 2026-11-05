@@ -3,6 +3,7 @@ import type { IconPickerData } from "$apps/components/iconpicker/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserContext } from "$interfaces/IUserDaemon";
+import type { GenericObjectViewerOptions, IGenericObjectViewerRuntime } from "$interfaces/runtimes/IGenericObjectViewerRuntime";
 import type { ReadableStore } from "$types/shared/writable";
 import type { ExpandedTerminal } from "$types/terminal";
 
@@ -28,5 +29,10 @@ export interface IHelpersUserContext extends IUserContext {
   iHaveFeedback(process: IAppProcess): void;
   openWebpage(href: string): void;
   submitBetaFeedback(title: string, message: string): Promise<ICommandResult>;
+  ViewGenericObject(
+    data: object,
+    options?: GenericObjectViewerOptions,
+    parentPid?: number
+  ): Promise<ICommandResult<IGenericObjectViewerRuntime>>;
 }
 // !endtpa

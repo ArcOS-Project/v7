@@ -11,8 +11,8 @@ const GenericObjectViewerApp: App = {
     icon: "ComponentIcon",
   },
   position: { centered: true },
-  size: { w: 600, h: 500 },
-  minSize: { w: 600, h: 500 },
+  size: { w: 800, h: 600 },
+  minSize: { w: 800, h: 600 },
   maxSize: { w: NaN, h: NaN },
   state: {
     minimized: false,

@@ -2,8 +2,21 @@ div.json-viewer div.row {
   font-family: "Source Code Pro";
   margin-bottom: 4px;
 
+  * {
+    user-select: text !important;
+  }
+
   details > :not(summary) {
     padding-left: 20px;
+  }
+
+  details > summary {
+      padding: 0 5px;
+      border-radius: 3px;
+  }
+
+  details > summary:hover {
+    background-color: var(--accent-transparent);
   }
 
   details[open] > summary {
@@ -24,5 +37,9 @@ div.json-viewer div.row {
     opacity: 0.8;
     color: var(--clr-purple-fg);
     font-style: italic;
+  }
+
+  .empty-value {
+    opacity: 0.5;
   }
 }

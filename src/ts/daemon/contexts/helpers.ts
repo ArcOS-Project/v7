@@ -4,6 +4,7 @@ import type { IHelpersUserContext } from "$interfaces/contexts/IHelpersUserConte
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { GenericObjectViewerOptions, IGenericObjectViewerRuntime } from "$interfaces/runtimes/IGenericObjectViewerRuntime";
 import type { IGlobalLoadIndicatorRuntime } from "$interfaces/runtimes/IGlobalLoadIndicatorRuntime";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
 import { ArcOSVersion, Daemon, Env, Server, Stack, SysDispatch } from "$ts/env";
@@ -261,5 +262,36 @@ The information provided in this report is subject for review by Izaak or anothe
       +Env.get("shell_pid"),
       true
     );
+  }
+
+  async ViewGenericObject(
+    data: object,
+    options?: GenericObjectViewerOptions,
+    parentPid?: number
+  ): Promise<ICommandResult<IGenericObjectViewerRuntime>> {
+    try {
+      options ??= {
+        spawnOptions: {
+          asOverlay: true,
+          noWorkspace: true,
+        },
+      };
+      const module = await import("$apps/components/genericobjectviewer/GenericObjectViewerApp");
+      const GenericObjectViewerApp = module.default as App;
+      const result = await Daemon.spawn?.spawnAppMeta<IGenericObjectViewerRuntime>(
+        { ...Object.freeze(GenericObjectViewerApp) },
+        parentPid,
+        options.spawnOptions,
+        data,
+        options.windowTitle,
+        options.windowIcon
+      );
+
+      if (!result) return CommandResult.Error("Process failed to spawn");
+
+      return CommandResult.Ok(result);
+    } catch (e) {
+      return CommandResult.Error(`${e}`);
+    }
   }
 }
