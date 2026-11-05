@@ -5,7 +5,7 @@
 </script>
 
 <details>
-  <summary><b class="key">{key}</b>: <span class="complex-datatype">Object</span></summary>
+  <summary><b class="key">{key}</b>: <span class="complex-datatype">Object</span> {"{...}"}</summary>
 
   <JsonViewer data={value} />
 </details>
