@@ -1,0 +1,27 @@
+table.json-viewer td {
+  vertical-align: top;
+  font-family: "Source Code Pro";
+  padding: 2px 5px;
+
+  &.key {
+    color: var(--accent-light);
+  }
+
+  p.empty {
+    opacity: 0.5;
+    font-style: italic;
+    margin-top: 5px;
+  }
+
+  details > :not(summary) {
+    padding-left: 10px;
+  }
+
+  details[open] > summary {
+    margin-bottom: 5px;
+  }
+
+  ul {
+      padding-left: 30px !important;
+  }
+}
