@@ -7,12 +7,12 @@ div.json-viewer div.row {
   }
 
   details > :not(summary) {
-    padding-left: 20px;
+    padding-left: 30px;
   }
 
   details > summary {
-      padding: 0 5px;
-      border-radius: 3px;
+    padding: 0 5px;
+    border-radius: 3px;
   }
 
   details > summary:hover {
@@ -41,5 +41,30 @@ div.json-viewer div.row {
 
   .empty-value {
     opacity: 0.5;
+  }
+  .function-body {
+    white-space: pre-wrap;
+  }
+
+  .src-url {
+    opacity: 0.3;
+    font-style: italic;
+
+    &:hover {
+        opacity: 1;
+    }
+  }
+
+  button.link {
+    &:not(:hover) {
+      text-decoration: none;
+    }
+
+    color: var(--clr-orange-fg);
+    & * {
+      color: var(--fg) !important;
+    }
+
+    font-style: italic;
   }
 }

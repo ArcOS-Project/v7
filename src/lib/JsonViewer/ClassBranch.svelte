@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ComplexDataTypeSummary from "./ComplexDataTypeSummary.svelte";
   import JsonViewerRow from "./JsonViewerRow.svelte";
 
   let { key, value }: { key: string; value: any } = $props();
@@ -7,7 +8,11 @@
 </script>
 
 <details bind:open>
-  <summary><b class="key">{key}</b>: <span class="complex-datatype">Class {key} {"{...}"}</span></summary>
+  <ComplexDataTypeSummary {key} {value}>
+    {#snippet ValueComponent()}
+      Class {key} {"{...}"}
+    {/snippet}
+  </ComplexDataTypeSummary>
 
   {#if open}
     {#each Object.getOwnPropertyNames(value) as item, i}

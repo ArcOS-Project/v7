@@ -1,12 +1,17 @@
 <script lang="ts">
+  import ComplexDataTypeSummary from "./ComplexDataTypeSummary.svelte";
   import JsonViewerRow from "./JsonViewerRow.svelte";
 
-  let { key, value }: { key: string; value: Map<any, any> } = $props();
-  let open = $derived(false);
+  let { key, value, expand = false }: { key: string; value: Map<any, any>; expand?: boolean } = $props();
+  let open = $derived(expand);
 </script>
 
 <details bind:open>
-  <summary><b class="key">{key}</b>: <span class="complex-datatype">Map({value.size}) [...]</span></summary>
+  <ComplexDataTypeSummary {key} {value}>
+    {#snippet ValueComponent()}
+      Map({value.size}) [...]
+    {/snippet}
+  </ComplexDataTypeSummary>
 
   {#if open}
     {#if value.size}

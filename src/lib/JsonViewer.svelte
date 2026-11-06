@@ -2,7 +2,7 @@
   import { uniqueStrings } from "$ts/util";
   import JsonViewerRow from "./JsonViewer/JsonViewerRow.svelte";
 
-  let { data, withProto = true }: { data: any; withProto?: boolean } = $props();
+  let { data, withProto = true, expandTopLevel = false }: { data: any; withProto?: boolean; expandTopLevel?: boolean } = $props();
 
   let keys = $derived(
     data
@@ -17,7 +17,7 @@
 <div class="json-viewer">
   {#if data && keys.length}
     {#each keys as key}
-      <JsonViewerRow {key} value={data[key]} />
+      <JsonViewerRow {key} value={data[key]} expand={!!expandTopLevel} />
     {/each}
   {:else}
     <p class="empty">(empty)</p>

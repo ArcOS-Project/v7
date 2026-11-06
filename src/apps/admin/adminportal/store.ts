@@ -22,6 +22,7 @@ import AdminViewScopesPage from "./AdminPortal/Page/AdminViewScopesPage.svelte";
 import AdminViewSharePage from "./AdminPortal/Page/AdminViewSharePage.svelte";
 import AdminViewStoreItemPage from "./AdminPortal/Page/AdminViewStoreItemPage.svelte";
 import AdminViewUserPage from "./AdminPortal/Page/AdminViewUserPage.svelte";
+import JobRunner from "./AdminPortal/Page/JobRunner.svelte";
 import type { AdminPortalPage, AdminPortalPages, SpecificAdminActions } from "./types";
 
 export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPortalPage>([
@@ -292,6 +293,14 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
         return { scopes: await process.admin.getAvailableScopes() };
       },
       scopes: [AdminScopes.adminScopesAvailable],
+    },
+  ],
+  [
+    "jobRunner",
+    {
+      name: "Job runner",
+      icon: "sport-shoe",
+      content: JobRunner,
     },
   ],
   [

@@ -95,6 +95,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
       spawnOptions: { asOverlay: false },
       windowTitle: `Peek ${proc.name} [${proc.pid},${proc.parentPid}]`,
       windowIcon: "@builtin::ProcessManagerIcon",
+      dataName: proc.name,
     });
     this.closeWindow();
   }

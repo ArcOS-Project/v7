@@ -26,8 +26,10 @@ import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/sys
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import type { AxiosInstance } from "axios";
+import type { AdminBootstrapperJob } from "$ts/servicehost/services/AdminBootstrapper/jobs";
 
 export interface IAdminBootstrapper extends IBaseService {
+  Jobs: (typeof AdminBootstrapperJob)[];
   get adminClient(): AxiosInstance;
   start(): Promise<void>;
   getUserInfo(): Promise<UserInfo | undefined>;
@@ -154,4 +156,5 @@ export interface IAdminBootstrapper extends IBaseService {
   deleteMailbrokerTemplate(id: string): Promise<ICommandResult>;
   updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult>;
   createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult>;
+  RunJob(jobName: string, broadcast: (message: string) => void): Promise<ICommandResult>;
 }

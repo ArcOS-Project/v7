@@ -283,8 +283,7 @@ The information provided in this report is subject for review by Izaak or anothe
         parentPid,
         options.spawnOptions,
         data,
-        options.windowTitle,
-        options.windowIcon
+        options
       );
 
       if (!result) return CommandResult.Error("Process failed to spawn");

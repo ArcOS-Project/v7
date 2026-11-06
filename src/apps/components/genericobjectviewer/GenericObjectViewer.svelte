@@ -5,4 +5,4 @@
   let { process }: { process: IGenericObjectViewerRuntime } = $props();
 </script>
 
-<JsonViewer data={process.data} />
+<JsonViewer data={process.data} withProto={!!process.withProto} expandTopLevel={!process.withProto} />

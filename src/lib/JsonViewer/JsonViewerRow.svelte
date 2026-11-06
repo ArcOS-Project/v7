@@ -3,8 +3,9 @@
   import FunctionBranch from "./FunctionBranch.svelte";
   import MapBranch from "./MapBranch.svelte";
   import ObjectBranch from "./ObjectBranch.svelte";
+  import PropertyKey from "./PropertyKey.svelte";
 
-  let { key, value }: { key: string; value: any } = $props();
+  let { key, value, expand = false }: { key: string; value: any; expand?: boolean } = $props();
 
   function color(value: any) {
     switch (typeof value) {
@@ -22,19 +23,19 @@
 
 <div class="row">
   {#if value === null}
-    <b class="key">{key}</b>: <span class="empty-value">null</span>
+    <PropertyKey {key} /> <span class="empty-value">null</span>
   {:else if value === undefined}
-    <b class="key">{key}</b>: <span class="empty-value">undefined</span>
+    <PropertyKey {key} /> <span class="empty-value">undefined</span>
   {:else if Array.isArray(value)}
-    <ArrayBranch {key} {value} />
+    <ArrayBranch {key} {value} {expand} />
   {:else if value instanceof Map}
-    <MapBranch {key} {value} />
+    <MapBranch {key} {value} {expand} />
   {:else if typeof value === "function"}
-    <FunctionBranch {key} {value} />
+    <FunctionBranch {key} {value} {expand} />
   {:else if typeof value === "object"}
-    <ObjectBranch {key} {value} />
+    <ObjectBranch {key} {value} {expand} />
   {:else}
-    <b class="key">{key}</b>:
+    <PropertyKey {key} />
     <span style="color: var(--clr-{color(value)}-fg);">
       {#if typeof value === "string"}
         "{value}"

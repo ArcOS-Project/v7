@@ -1,13 +1,15 @@
 <script lang="ts">
+  import ComplexDataTypeSummary from "./ComplexDataTypeSummary.svelte";
   import JsonViewerRow from "./JsonViewerRow.svelte";
+  import PropertyKey from "./PropertyKey.svelte";
 
-  let { key, value }: { key: string; value: any[] } = $props();
+  let { key, value, expand = false }: { key: string; value: any[]; expand?: boolean } = $props();
 
   const ARRAY_PREVIEW = "[...]";
   const OBJECT_PREVIEW = "{...}";
 
   let preview = $derived(`[${value.map(serializePreviewItem).slice(0, 5).join(", ")}${value.length > 5 ? ", ..." : ""}]`);
-  let open = $derived(false);
+  let open = $derived(!!expand);
 
   function serializePreviewItem(item: any) {
     if (Array.isArray(item)) {
@@ -23,7 +25,11 @@
 </script>
 
 <details bind:open>
-  <summary><b class="key">{key}</b>: <span class="complex-datatype">Array({value.length}) {preview}</span></summary>
+  <ComplexDataTypeSummary {key} {value}>
+    {#snippet ValueComponent()}
+      Array({value.length}) {preview}
+    {/snippet}
+  </ComplexDataTypeSummary>
 
   {#if open}
     {#if value.length}
