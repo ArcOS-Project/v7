@@ -1,4 +1,5 @@
 <script lang="ts">
+  import JsonViewer from "$lib/JsonViewer.svelte";
   import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { ServerPfp } from "$ts/images/pfp";
   import { DefaultUserPreferences } from "$ts/user/default";
@@ -55,24 +56,7 @@
     </summary>
     {#if audit.data && open}
       <div class="context">
-        <table class="object">
-          <tbody>
-            {#each Object.entries(audit.data) as [key, value]}
-              <tr class="row">
-                <td class="key">
-                  {key}
-                </td>
-                <td class="value">
-                  {#if typeof value === "string"}
-                    {value}
-                  {:else if typeof value === "object"}
-                    {JSON.stringify(value, null, 2)}
-                  {/if}
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+        <JsonViewer data={audit.data}></JsonViewer>
       </div>
     {/if}
   </details>

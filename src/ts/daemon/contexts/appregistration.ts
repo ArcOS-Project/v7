@@ -185,14 +185,14 @@ export class AppRegistrationUserContext extends UserContext implements IAppRegis
     SysDispatch.dispatch("startmenu-refresh");
   }
 
-  async updateStartMenuFolder(quiet = false) {
+  async updateStartMenuFolder(quiet = false, parentPid = +Env.get("shell_pid")) {
     const installedApps = Daemon?.appStorage()?.buffer();
 
     if (!installedApps) return;
 
     const gli = quiet
       ? undefined
-      : await Daemon!.helpers!.GlobalLoadIndicator("Updating the start menu...", +Env.get("shell_pid"), {
+      : await Daemon!.helpers!.GlobalLoadIndicator("Updating the start menu...", parentPid, {
           max: Object.keys(AppGroups).length + installedApps.length,
           value: 0,
           useHtml: true,

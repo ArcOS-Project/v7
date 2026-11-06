@@ -375,12 +375,13 @@ export class Filesystem extends KernelModule implements IFilesystem {
     } else {
       drive.isCapable("moveItem");
 
+      const sourceParent = getParentDirectory(source);
+      const destinationParent = getParentDirectory(destination);
+      
       source = this.removeDriveLetter(source);
       destination = this.removeDriveLetter(destination);
 
       const result = await drive.moveItem(source, destination);
-      const sourceParent = getParentDirectory(source);
-      const destinationParent = getParentDirectory(destination);
 
       if (dispatch) {
         this.dispatch.dispatch("fs-flush-folder", destinationParent);

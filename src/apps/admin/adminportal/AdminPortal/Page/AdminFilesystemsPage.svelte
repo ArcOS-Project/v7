@@ -15,6 +15,9 @@
 
   const quotas = Store<FilesystemsPageQuota[]>([]);
   let loading = $state<boolean>(true);
+  let used = $state<number>(0);
+  let available = $state<number>(0);
+  let total = $state<number>(0);
 
   onMount(async () => {
     await Promise.all(
@@ -31,29 +34,40 @@
       )
     );
 
+    used = $quotas.reduce((a, b) => a + b.used, 0);
+    available = $quotas.reduce((a, b) => a + b.free, 0);
+    total = $quotas.reduce((a, b) => a + b.max, 0);
+
     loading = false;
   });
 </script>
 
-<div class="fs-list">
-  <div class="row header">
-    <!-- reduce calls: https://stackoverflow.com/a/16751601 -->
-    <div class="segment pfp">
-      <ProfilePicture height={20} />
-    </div>
-    <div class="segment username">Username</div>
-    <div class="segment used">Used ({formatBytes($quotas.map((v) => v.used).reduce((partialSum, a) => partialSum + a, 0))})</div>
-    <div class="segment available">
-      Free ({formatBytes($quotas.map((v) => v.free).reduce((partialSum, a) => partialSum + a, 0))})
-    </div>
-    <div class="segment total">Total ({formatBytes($quotas.map((v) => v.max).reduce((partialSum, a) => partialSum + a, 0))})</div>
-    <div class="segment quota">Quot</div>
-    <div class="segment index">Index</div>
-    <div class="segment mount">Mount</div>
-  </div>
-  {#each sortByKey($quotas, "used", true) as quota (quota.user._id)}
-    <FilesystemRow {quota} {admin} {process} />
-  {/each}
+<div class="table-wrapper fs-list">
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Used ({formatBytes(used)})</th>
+        <th>Free ({formatBytes(available)})</th>
+        <th>Total ({formatBytes(total)})</th>
+        <th>Quota</th>
+        <th class="actions">Actions</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="50%" />
+      <col width="15%" />
+      <col width="15%" />
+      <col width="15%" />
+      <col width="1%" />
+      <col width="19%" />
+    </colgroup>
+    <tbody>
+      {#each sortByKey($quotas, "used", true) as quota (quota.user._id)}
+        <FilesystemRow {quota} {admin} {process} />
+      {/each}
+    </tbody>
+  </table>
 </div>
 <div class="loading-overlay" class:show={loading}>
   <Spinner height={32} />

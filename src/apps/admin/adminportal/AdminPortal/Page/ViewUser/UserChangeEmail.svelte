@@ -5,7 +5,6 @@
 
   const { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
   let newEmail = $state<string>();
-  let loading = $state<boolean>(false);
 
   async function rename() {
     const confirm = await Daemon?.helpers?.Confirm(
@@ -17,8 +16,6 @@
     );
 
     if (!confirm || !newEmail) return;
-
-    loading = true;
 
     await process.admin.changeEmailOf(user.username, newEmail);
     process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);

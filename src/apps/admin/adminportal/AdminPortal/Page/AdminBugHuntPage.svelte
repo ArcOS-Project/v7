@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import type { BugHuntData } from "../../types";
   import QuickView from "./BugHunt/QuickView.svelte";
-  import Row from "./BugHunt/Row.svelte";
+  import AdminBugHuntRow from "./BugHunt/AdminBugHuntRow.svelte";
 
   const { process, data }: { process: IAdminPortalRuntime; data: BugHuntData } = $props();
   const { reports, stats, users } = data;
@@ -135,19 +135,35 @@
       <button class:selected={page === $sortState} onclick={() => ($sortState = page)}>{page.toUpperCase()}</button>
     {/each}
   </div>
-  <div class="listing">
-    <div class="row head">
-      <div class="segment mode-icon"><Icon icon={Logo()} /></div>
-      <div class="segment timestamp">Timestamp</div>
-      <div class="segment title">Title</div>
-      <div class="segment author">Author</div>
-    </div>
-    {#each sortByKey($store, "createdAt", true) as report (report._id)}
-      <Row {process} {report} {idEntry} {quickView} {selectionList} />
-    {/each}
-    {#if !$store.length}
-      <p class="no-results">Logan ate them all.</p>
-    {/if}
+  <div class="table-wrapper listing">
+    <table>
+      <thead>
+        <tr>
+          <th class="icon-col"><Icon icon={Logo()}></Icon></th>
+          <th>Timestamp</th>
+          <th>Title</th>
+          <th>Author</th>
+        </tr>
+      </thead>
+      <colgroup>
+        <col width="1%" />
+        <col width="15%" />
+        <col width="44%" />
+        <col width="20%" />
+      </colgroup>
+      <tbody>
+        {#each sortByKey($store, "createdAt", true) as report (report._id)}
+          <AdminBugHuntRow {process} {report} {idEntry} {quickView} {selectionList} />
+        {/each}
+        {#if !$store.length}
+          <tr>
+            <td colspan="4">
+              <p class="no-results">Logan ate them all.</p>
+            </td>
+          </tr>
+        {/if}
+      </tbody>
+    </table>
   </div>
   <div class="id-entry">
     <div class="icon">

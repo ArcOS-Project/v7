@@ -3,7 +3,6 @@ import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SourceDriveEnable from "$lib/Daemon/SourceDriveEnable.svelte";
 import { ArcOSVersion, Daemon, Env, Fs, Kernel } from "$ts/env";
-import { SecurityMediumIcon } from "$ts/images/general";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";

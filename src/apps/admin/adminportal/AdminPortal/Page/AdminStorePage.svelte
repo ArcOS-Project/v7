@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import Icon from "$lib/Icon.svelte";
-  import { Logo } from "$ts/branding";
   import { sortByKey } from "$ts/util";
   import { Store } from "$ts/writable";
   import type { StoreItem } from "$types/tpa/package";
@@ -47,33 +45,48 @@
     {/each}
   </div>
 </div>
-<div class="item-list">
-  <div class="item-row header">
-    <Icon icon={Logo()} />
-    <div class="segment author">Author</div>
-    <div class="segment name">Name</div>
-    <div class="segment version">Version</div>
-    <div class="segment size">
-      <button class="sort-mode" onclick={() => ($sortMode = "size")} class:selected={$sortMode === "size"}>Size</button>
-    </div>
-    <div class="segment install-count">
-      <button class="sort-mode" onclick={() => ($sortMode = "installCount")} class:selected={$sortMode === "installCount"}
-        >Install count</button
-      >
-    </div>
-    <div class="segment last-updated">
-      <button class="sort-mode" onclick={() => ($sortMode = "lastUpdated")} class:selected={$sortMode === "lastUpdated"}
-        >Last updated</button
-      >
-    </div>
-    <div class="segment verified">VER</div>
-    <div class="segment official">OFF</div>
-    <div class="segment deprecated">DEP</div>
-  </div>
-
-  {#each sortByKey($store, $sortMode, true) as item (item._id)}
-    <StoreRow {process} user={users.filter((u) => u._id === item.userId)[0]!} {item} {selection} />
-  {/each}
+<div class="table-wrapper item-list">
+  <table>
+    <thead>
+      <tr>
+        <th>Author</th>
+        <th>Name</th>
+        <th>Version</th>
+        <th>
+          <button class="sort-mode" onclick={() => ($sortMode = "size")} class:selected={$sortMode === "size"}>Size</button>
+        </th>
+        <th>
+          <button class="sort-mode" onclick={() => ($sortMode = "installCount")} class:selected={$sortMode === "installCount"}>
+            Install count
+          </button>
+        </th>
+        <th>
+          <button class="sort-mode" onclick={() => ($sortMode = "lastUpdated")} class:selected={$sortMode === "lastUpdated"}>
+            Last updated
+          </button>
+        </th>
+        <th>Verified</th>
+        <th>Official</th>
+        <th>Deprecated</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="16%" />
+      <col width="20%" />
+      <col width="10%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="8%" />
+      <col width="1%" />
+      <col width="1%" />
+      <col width="1%" />
+    </colgroup>
+    <tbody>
+      {#each sortByKey($store, $sortMode, true) as item (item._id)}
+        <StoreRow {process} user={users.filter((u) => u._id === item.userId)[0]!} {item} {selection} />
+      {/each}
+    </tbody>
+  </table>
 </div>
 <div class="id-entry">
   <div class="icon">

@@ -7,6 +7,7 @@
   import Spinner from "$lib/Spinner.svelte";
   import { Daemon, Env, Fs } from "$ts/env";
   import { formatBytes } from "$ts/util/fs";
+  import UsernameDisplay from "../../UsernameDisplay.svelte";
 
   const {
     admin,
@@ -48,37 +49,24 @@
   }
 </script>
 
-<div class="row">
-  <div class="segment pfp">
-    <ProfilePicture height={20} fallback={quota.user.profile.profilePicture} />
-  </div>
-  <div class="segment username">
-    <button class="link" onclick={() => process.switchPage("viewUser", { user: quota.user })} class:redacted={$redacted}
-      >{quota.user.username}</button
-    >
-  </div>
-  <div class="segment used">
-    {quota ? formatBytes(quota.used) : "-"}
-  </div>
-  <div class="segment available">
-    {quota ? formatBytes(quota.free) : "-"}
-  </div>
-  <div class="segment total">
-    {quota ? formatBytes(quota.max) : "-"}
-  </div>
-  <div class="segment quota">
+<tr>
+  <td>
+    <UsernameDisplay user={quota.user} {process} />
+  </td>
+  <td>{quota ? formatBytes(quota.used) : "-"}</td>
+  <td>{quota ? formatBytes(quota.free) : "-"}</td>
+  <td>{quota ? formatBytes(quota.max) : "-"}</td>
+  <td class="quota-column">
     {#if quota}
       <CircularProgress max={quota.max} value={quota.used} size={20} strokeWidth={2} />
     {:else}
       -
     {/if}
-  </div>
-  <div class="segment index">
+  </td>
+  <td class="actions">
     <button onclick={index} disabled={indexing}>
       {#if !indexing}Index{:else}<Spinner height={16} />{/if}
     </button>
-  </div>
-  <div class="segment mount">
     <button onclick={mountUser} disabled={mounting}>{Fs.drives[btoa(quota.user.username)] ? "Unmount" : "Mount"}</button>
-  </div>
-</div>
+  </td>
+</tr>

@@ -291,8 +291,13 @@ export class AppProcess extends Process implements IAppProcess {
   private async processKeyboardEvent(e: KeyboardEvent) {
     if (!e.key || this.hasOverlays() || this._disposed) return;
 
-    const textareas = [...(this.getWindow()?.querySelectorAll("textarea, [contenteditable]") ?? [])];
-    const focusingTextArea = !!textareas.find((element) => document.activeElement === element);
+    let focusingTextArea = false;
+
+    const textareas = this.getWindow()?.querySelectorAll("textarea, [contenteditable]");
+
+    for (const textarea of textareas || []) {
+      if (document.activeElement === textarea) focusingTextArea = true;
+    }
 
     if (!focusingTextArea && KEY_IGNORE_LIST.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
       e.preventDefault();
@@ -302,27 +307,28 @@ export class AppProcess extends Process implements IAppProcess {
 
     this.unfocusActiveElement();
 
-    if (State?.currentState != "desktop" || this._disposed) return;
+    const state = State?.currentState;
 
-    const combo = this.acceleratorStore.find((combo) => {
-      const ctrlKey = combo.ctrl ? e.ctrlKey : true;
-      const shiftKey = combo.shift ? e.shiftKey : true;
-      const altKey = combo.alt ? e.altKey : true;
-      const modifiersConditionMet = altKey && ctrlKey && shiftKey;
-      const focusConditionMet = Stack.renderer?.focusedPid() === this.pid || combo.global;
+    if (state != "desktop" || this._disposed) return;
 
-      const comboKey = combo.key?.trim().toLowerCase();
-      const pressedKey = String.fromCharCode(e.keyCode).toLowerCase().trim();
+    for (const combo of this.acceleratorStore) {
+      const alt = combo.alt ? e.altKey : true;
+      const ctrl = combo.ctrl ? e.ctrlKey : true;
+      const shift = combo.shift ? e.shiftKey : true;
+      /** */
+      const modifiers = alt && ctrl && shift;
+      /** */
+      const pK = e.key.toLowerCase().trim();
+      const key = combo.key?.trim().toLowerCase();
+      const codedKey = String.fromCharCode(e.keyCode).toLowerCase();
+      /** */
+      const isFocused = Stack.renderer?.focusedPid() == this.pid || combo.global;
 
-      return modifiersConditionMet && comboKey === pressedKey && focusConditionMet;
-    });
+      if (!modifiers || (key != pK && key && key != codedKey) || !isFocused) continue;
 
-    if (combo && !Daemon.elevation?._elevating) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      e.stopPropagation();
+      if (!Daemon?.elevation!._elevating) await combo.action(this, e);
 
-      await combo.action(this, e);
+      break;
     }
   }
 

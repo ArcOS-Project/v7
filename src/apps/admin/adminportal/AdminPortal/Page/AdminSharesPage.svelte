@@ -61,37 +61,49 @@
     {/each}
   </div>
 </div>
-<div class="share-list">
-  <div class="row header">
-    <div class="segment icon">
-      <span class="lucide icon-hard-drive"></span>
-    </div>
-    <div class="segment name">Share name</div>
-    <div class="segment owner">Owner name</div>
-    <div class="segment members">Members</div>
-    <div class="segment size">Size</div>
-    <div class="segment locked">LCK</div>
-  </div>
 
-  {#each $store as share (share._id)}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div
-      class="row"
-      onclick={() => ($selection = share._id)}
-      ondblclick={() => process.switchPage("viewShare", { share })}
-      class:selected={$selection === share._id}
-    >
-      <div class="segment icon">
-        <span class="lucide icon-hard-drive"></span>
-      </div>
-      <div class="segment name">{share.shareName}</div>
-      <div class="segment owner">{share.ownerName || User(share.userId)?.username}</div>
-      <div class="segment members">{share.accessors.length}</div>
-      <div class="segment size">{formatBytes(share.maxSize)}</div>
-      <div class="segment locked">{share.locked ? "Yes" : "No"}</div>
-    </div>
-  {/each}
+<div class="table-wrapper share-list">
+  <table>
+    <thead>
+      <tr>
+        <th class="icon-col">
+          <span class="lucide icon-hard-drive"></span>
+        </th>
+        <th>Share name</th>
+        <th>Owner name</th>
+        <th>Members</th>
+        <th>Size</th>
+        <th>Locked</th>
+      </tr>
+    </thead>
+    <colgroup>
+      <col width="1%" />
+      <col width="39%" />
+      <col width="30%" />
+      <col width="10%" />
+      <col width="10%" />
+      <col width="1%" />
+    </colgroup>
+    <tbody>
+      {#each $store as share (share._id)}
+        <tr
+          class="row"
+          onclick={() => ($selection = share._id)}
+          ondblclick={() => process.switchPage("viewShare", { share })}
+          class:selected={$selection === share._id}
+        >
+          <td class="icon-col">
+            <span class="lucide icon-hard-drive"></span>
+          </td>
+          <td>{share.shareName}</td>
+          <td>{share.ownerName || User(share.userId)?.username}</td>
+          <td>{share.accessors.length}</td>
+          <td>{formatBytes(share.maxSize)}</td>
+          <td class={share.locked ? "clr-red" : "clr-green"}>{share.locked ? "Yes" : "No"}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
 
 <div class="id-entry">

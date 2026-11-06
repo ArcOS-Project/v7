@@ -52,10 +52,12 @@ import JSZip from "jszip";
 import { parse } from "stacktrace-parser";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import type { AdminBootstrapperJob } from "./jobs";
+import { IndexAllJob } from "./jobs/IndexAllJob";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
-  private get adminClient() {
+  get adminClient() {
     return Backend.create({
       headers: {
         Authorization: `Bearer ${Daemon.token}`,
@@ -66,6 +68,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   //#region LIFECYCLE
+
+  public Jobs: (typeof AdminBootstrapperJob)[] = [IndexAllJob];
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
@@ -1474,6 +1478,14 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
+  }
+
+  async RunJob(jobName: string, broadcast: (message: string) => void): Promise<ICommandResult> {
+    const job = this.Jobs.find((job) => job.name === jobName);
+    if (!job) return CommandResult.Error(`Unknown job '${jobName}'`);
+
+    const instance = new job(job.name);
+    return await instance._run(broadcast);
   }
 }
 

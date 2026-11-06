@@ -30,8 +30,27 @@
 
     p.help {
       opacity: 0.5;
-      font-style:italic;
+      font-style: italic;
       font-size: 12px;
+    }
+
+    p.instruction {
+      margin-bottom: auto;
+    }
+
+    div.page {
+      height: 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    div.warning-message {
+      color: var(--clr-orange-fg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
     div.field-wrapper {
@@ -68,7 +87,7 @@
           border: none;
           border-radius: 0;
         }
-        
+
         &.verification-code input {
           text-align: center;
           font-size: 18px;

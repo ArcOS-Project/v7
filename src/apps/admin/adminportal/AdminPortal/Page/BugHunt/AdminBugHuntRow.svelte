@@ -40,26 +40,23 @@
   }
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-  class="row"
+<tr
   {onclick}
   oncontextmenu={() => ($quickView = report._id!)}
   class:selected={$idEntry === report._id}
   class:selected-multi={$selectionList.includes(report._id!) && $selectionList.length > 1}
   ondblclick={() => process.switchPage("viewBugReport", { id: report._id })}
 >
-  <div class="segment mode-icon">
+  <td class="icon-col">
     {#if report.isAppReport}
       <Icon icon={report.reportAppPkgId ? StoreItemIconPrimitive(report.reportAppPkgId) : "WindowSettingsIcon"} />
     {:else}
       <Icon icon={LogoTranslations[report.mode] || "QuestionIcon"} />
     {/if}
-  </div>
-  <div class="segment timestamp">{timestamp}</div>
-  <div class="segment title">{report.title}</div>
-  <div class="segment author" class:redacted={$redacted && !!report.userData?.username}>
+  </td>
+  <td>{timestamp}</td>
+  <td>{report.title}</td>
+  <td class:redacted={$redacted && !!report.userData?.username}>
     {report.userData?.username || "Stranger"}
-  </div>
-</div>
+  </td>
+</tr>

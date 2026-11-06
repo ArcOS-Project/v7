@@ -1,27 +1,13 @@
 <script lang="ts">
   import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
-  import type { Component } from "svelte";
+  import NewTabs from "$lib/NewTabs.svelte";
 
   const { process }: { process: IAdvSysSetRuntime } = $props();
-  const { tabs, currentTab, bufferChanged } = process;
-
-  let Tab: Component | undefined = $state(undefined);
-
-  currentTab.subscribe((v) => {
-    Tab = tabs[v];
-  });
+  const { tabs, bufferChanged, initialTab } = process;
 </script>
 
-<div class="tabs">
-  {#each Object.keys(tabs) as name}
-    <button class:selected={$currentTab === name} onclick={() => ($currentTab = name)}>{name}</button>
-  {/each}
-</div>
-<div class="content {$currentTab.replaceAll(' ', '-').toLowerCase()}">
-  {#if Tab}
-    <Tab {process} />
-  {/if}
-</div>
+<NewTabs {tabs} {process} {initialTab} padded paddedTop />
+
 <div class="actions">
   <button class="suggested" onclick={() => process.apply(true)}>Okay</button>
   <button onclick={() => process.closeWindow()}>Cancel</button>

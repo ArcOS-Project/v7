@@ -1,10 +1,8 @@
 <script lang="ts">
-  import type { IAppProcess } from "$interfaces/IAppProcess";
-  import type { IProcess } from "$interfaces/IProcess";
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
   import { Stack } from "$ts/env";
-  import { contextMenu } from "$ts/ui/context/actions.svelte";
+  import { contextProps } from "$ts/ui/context/actions.svelte";
   import { onMount } from "svelte";
   import Popup from "./TrayIcon/Popup.svelte";
   import Trigger from "./TrayIcon/Trigger.svelte";
@@ -20,7 +18,7 @@
 </script>
 
 {#if targetedProcess}
-  <div data-contextmenu="taskbar-trayicon" class="icon">
+  <div data-contextmenu="taskbar-trayicon" class="icon" use:contextProps={[targetedProcess]}>
     <Trigger {process} {discriminator} {icon} {targetedProcess} />
     <Popup {process} {discriminator} {icon} />
   </div>
