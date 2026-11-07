@@ -19,6 +19,9 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
   indirect = Store<boolean>(false);
   overridePopulatable: boolean = true;
 
+  width = Store<number>(0);
+  height = Store<number>(0);
+
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, path?: string) {
@@ -37,6 +40,8 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
 
       await Sleep(100);
       v.scaleImageToFit();
+      this.height.set(v.getImage()?.height ?? 0);
+      this.width.set(v.getImage()?.width ?? 0);
     });
   }
 

@@ -11,6 +11,9 @@ export interface IImageViewerRuntime extends IAppProcess {
   scale: NumberStore;
   overridePopulatable: boolean;
 
+  width: ReadableStore<number>;
+  height: ReadableStore<number>;
+
   readFileDialog(): Promise<void>;
   readFile(path: string): Promise<void>;
   readFileIndirectFallback(path: string): Promise<void>;
