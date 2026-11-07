@@ -65,6 +65,7 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/feedback/feedback",
   "$apps/user/sqeleton/Sqeleton",
   "$apps/user/minesweeper/MinesweeperApp",
+  "$apps/user/mediacentre/MediaPlayer",
 ]);
 
 export const AdminAppImportPathAbsolutes = import.meta.glob([
