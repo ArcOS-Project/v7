@@ -1,6 +1,7 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IServiceHost } from "$interfaces/IServiceHost";
+import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
 import type { ReadableStore } from "$types/shared/writable";
 import type { ProcessKillResult } from "$types/system/process";
 import type { Component } from "svelte";
@@ -12,6 +13,7 @@ export interface IProcessManagerRuntime extends IAppProcess {
   currentTab: ReadableStore<string>;
   tabs: Record<string, Component>;
   host: IServiceHost;
+  get adminBootstrapper(): IAdminBootstrapper;
 
   render(): Promise<false | undefined>;
   kill(proc: IProcess): Promise<void>;

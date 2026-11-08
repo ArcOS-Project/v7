@@ -52,6 +52,7 @@ import JSZip from "jszip";
 import { parse } from "stacktrace-parser";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import type { GlobalDispatchProcessSummary } from "$types/system/dispatch";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -1471,6 +1472,14 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     try {
       const response = await this.adminClient.post(`/mailbroker/templates`, toForm(data));
       return CommandResult.Ok(response.data);
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async getDispatchProcessesSummary(): Promise<ICommandResult<GlobalDispatchProcessSummary>> {
+    try {
+      return CommandResult.FromResponse(await this.adminClient.get(`/dispatch/processes`));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }

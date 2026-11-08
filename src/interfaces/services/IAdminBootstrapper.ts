@@ -25,6 +25,7 @@ import type { Mailbroker } from "$types/server/mailbroker";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import type { GlobalDispatchProcessSummary } from "$types/system/dispatch";
 
 export interface IAdminBootstrapper extends IBaseService {
   start(): Promise<void>;
@@ -152,4 +153,5 @@ export interface IAdminBootstrapper extends IBaseService {
   deleteMailbrokerTemplate(id: string): Promise<ICommandResult>;
   updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult>;
   createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult>;
+  getDispatchProcessesSummary(): Promise<ICommandResult<GlobalDispatchProcessSummary>>;
 }
