@@ -1,0 +1,18 @@
+<script lang="ts">
+  import type { IMailbrokerManagerRuntime } from "$interfaces/runtimes/IMailbrokerRuntime";
+  import type { Mailbroker } from "$types/server/mailbroker";
+  import TemplateListing from "../MailbrokerManager/TemplateListing.svelte";
+  import type { MailbrokerPage } from "../types";
+
+  let {
+    data,
+    process,
+    pageData,
+  }: {
+    data: Mailbroker.MailTemplate[];
+    process: IMailbrokerManagerRuntime;
+    pageData: MailbrokerPage;
+  } = $props();
+</script>
+
+<TemplateListing templates={data} {process} hideNewButton={pageData.name.includes("Deprecated")} />

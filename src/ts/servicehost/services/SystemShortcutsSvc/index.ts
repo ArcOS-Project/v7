@@ -1,5 +1,5 @@
 import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
-import { AppProcess, bannedKeys } from "$ts/apps/process";
+import { AppProcess, KEY_IGNORE_LIST } from "$ts/apps/process";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
@@ -68,7 +68,7 @@ export class SystemShortcutsService extends BaseService implements IBaseService 
   private async processor(e: KeyboardEvent) {
     if (!e.key || this._disposed) return;
 
-    if (bannedKeys.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
+    if (KEY_IGNORE_LIST.includes(e.key.toLowerCase()) && State?.currentState === "desktop") {
       e.preventDefault();
 
       return false;

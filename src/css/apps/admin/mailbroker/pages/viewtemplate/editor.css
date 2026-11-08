@@ -1,0 +1,117 @@
+#MailbrokerManagerApp > div.body {
+  div.template-editor {
+    height: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    div.editor-tabs {
+      display: flex;
+      align-items: end;
+      padding: 10px;
+      padding-bottom: 0;
+      height: 40px;
+      border-bottom: var(--win-border);
+
+      button {
+        border-radius: 0;
+        border: var(--win-border);
+        border-bottom: 0;
+        height: 26px;
+        padding: 0 8px;
+        min-width: unset;
+        background-color: var(--win-bg);
+        outline: none;
+
+        &:hover {
+          background-color: var(--button-glass-bg);
+        }
+
+        & + button {
+          border-left: 0;
+        }
+
+        &.selected {
+          background-color: var(--win-bg);
+          height: 30px;
+          padding: 0 8px;
+          translate: 0 1px;
+          border-left: var(--win-border);
+          border-top-right-radius: 5px;
+          border-top-left-radius: 5px;
+        }
+
+        & + button.selected {
+          margin-left: -1px;
+        }
+
+        &:first-child {
+          border-top-left-radius: 5px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 5px;
+        }
+      }
+    }
+
+    div.tab-content {
+      height: 0;
+      flex-grow: 1;
+      padding: 10px;
+    }
+
+    div.tab-general div.property {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 10px;
+
+      h3 {
+        width: 150px;
+      }
+
+      input {
+        width: 250px;
+      }
+    }
+
+    textarea {
+      font-family: "Source Code Pro";
+      font-size: 14px;
+      padding: 10px;
+      background-color: var(--win-bg);
+      border: none;
+      resize: none;
+    }
+
+    div.tab-html {
+      display: flex;
+      padding: 0;
+
+      textarea,
+      div.iframe-wrapper {
+        width: 50%;
+      }
+
+      div.iframe-wrapper {
+        background-color: #fff;
+        border-left:var(--win-border);
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    div.tab-text {
+      padding: 0;
+
+      textarea {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

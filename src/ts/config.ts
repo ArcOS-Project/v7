@@ -13,6 +13,7 @@ export class ConfigurationBuilder<T = object> {
   #defaults?: T;
   #process?: IProcess;
   #cooldown?: number;
+  #localStorageKey?: string;
   #built = false;
 
   ReadsFrom(store: ReadableStore<T>) {
@@ -24,10 +25,20 @@ export class ConfigurationBuilder<T = object> {
   }
 
   WritesTo(path: string) {
+    if (this.#localStorageKey) throw new Error("ConfigurationBuilder can't write to both a file and LocalStorage");
     if (this.#savePath) throw new Error("ConfigurationBuilder savePath can only be set once");
     if (this.#built) throw new Error("ConfigurationBuilder has to be fully configured before building");
 
     this.#savePath = path;
+    return this;
+  }
+
+  WithLocalStorage(key: string) {
+    if (this.#savePath) throw new Error("ConfigurationBuilder can't write to both a file and LocalStorage");
+    if (this.#localStorageKey) throw new Error("ConfigurationBuilder localStorageKey can only be set once");
+    if (this.#built) throw new Error("ConfigurationBuilder has to be fully configured before building");
+
+    this.#localStorageKey = key;
     return this;
   }
 
@@ -60,12 +71,13 @@ export class ConfigurationBuilder<T = object> {
 
     const store = this.#store;
     const savePath = this.#savePath;
+    const localStorageKey = this.#localStorageKey;
     const defaults = this.#defaults;
     const process = this.#process;
     const cooldown = this.#cooldown;
     let initialRun = true;
 
-    if (!savePath) throw new Error("savePath is required. Use WritesTo to set");
+    if (!savePath && !localStorageKey) throw new Error("savePath or localStorageKey is required. Use WritesTo or WithLocalStorage to set");
     if (!store) throw new Error("store is required. Use ReadsFrom to set");
 
     this.Log(`Building new configurator for ${savePath} (process ${process?.name ?? "<none>"})`);
@@ -80,15 +92,22 @@ export class ConfigurationBuilder<T = object> {
 
         Log("Reading configuration");
 
-        const content = await Fs.readFile(savePath!);
-        if (!content) return await this.writeConfiguration(defaults);
+        if (localStorageKey) {
+          const content = localStorage.getItem(localStorageKey);
+          if (!content) return await this.writeConfiguration(defaults);
 
-        try {
-          const obj = tryJsonParse<T>(arrayBufferToText(content));
+          return tryJsonParse<T>(content);
+        } else {
+          const content = await Fs.readFile(savePath!);
+          if (!content) return await this.writeConfiguration(defaults);
 
-          return obj;
-        } catch {
-          return await this.writeConfiguration(defaults);
+          try {
+            const obj = tryJsonParse<T>(arrayBufferToText(content));
+
+            return obj;
+          } catch {
+            return await this.writeConfiguration(defaults);
+          }
         }
       }
 
@@ -103,7 +122,11 @@ export class ConfigurationBuilder<T = object> {
 
         Log("Writing configuration");
 
-        await Fs.writeFile(savePath!, textToBlob(JSON.stringify(configuration, null, 2)));
+        if (localStorageKey) {
+          localStorage.setItem(localStorageKey, JSON.stringify(configuration));
+        } else {
+          await Fs.writeFile(savePath!, textToBlob(JSON.stringify(configuration, null, 2)));
+        }
 
         return configuration;
       }

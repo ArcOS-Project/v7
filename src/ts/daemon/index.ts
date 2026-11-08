@@ -60,6 +60,7 @@ export class UserDaemon extends Process implements IUserDaemon {
   public copyList = Store<string[]>([]);
   public cutList = Store<string[]>([]);
   public serviceHost?: ServiceHost;
+  public InitComplete = Store<boolean>(false);
 
   public get betaClient() {
     return axios.create({
@@ -300,7 +301,7 @@ export class UserDaemon extends Process implements IUserDaemon {
       await this.workspaces!.startVirtualDesktops();
     });
 
-    await performStartStage("autorun", "Running autorun", async () => {
+    await performStartStage("autorun", "Runnping autorun", async () => {
       this.wallpaper?.lastWallpaper.set("");
       await this.wallpaper?.updateWallpaper(this.preferences());
       await this.init?.handleShellAndAutorun();

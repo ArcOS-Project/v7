@@ -19,7 +19,7 @@ export async function LoginUser(identity: string, password: string): Promise<ICo
       })
     );
 
-    if (response.status !== 200) return CommandResult.Error(response.data?.e ?? "Username or password is incorrect");
+    if (response.status !== 200) return CommandResult.Error(response.data?.e ?? "Username/Email or password is incorrect");
 
     return CommandResult.Ok(response.data.token);
   } catch (e) {

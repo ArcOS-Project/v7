@@ -73,7 +73,7 @@
 #MultiUpdateGui > div.body div.update-bar div.bar div.inner {
   width: var(--w);
   height: 100%;
-  background-color: var(--accent-lighter);
+  background-color: var(--accent-textual);
   border-radius: 2.5px;
 }
 
@@ -92,7 +92,7 @@
 
 #MultiUpdateGui > div.body div.update-bar span.lucide.state-working,
 #MultiUpdateGui > div.body div.update-bar span.lucide.state-downloading {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 #MultiUpdateGui > div.body div.update-bar span.lucide.state-success {
   color: var(--clr-green-fg);

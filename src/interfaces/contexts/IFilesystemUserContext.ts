@@ -1,7 +1,7 @@
 import type { FileProgressMutator, FsProgressOperation } from "$apps/components/fsprogress/types";
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
-import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { ITemporaryFilesystemDrive } from "$interfaces/drives/ITemporaryFilesystemDrive";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserContext } from "$interfaces/IUserDaemon";
@@ -12,7 +12,7 @@ import type { CategorizedDiskUsage } from "$types/user";
 
 // !tpa
 export interface IFilesystemUserContext extends IUserContext {
-  TempFs?: IMemoryFilesystemDrive;
+  TempFs?: ITemporaryFilesystemDrive;
   fileHandlers: Record<string, FileHandler>;
   mountedDrives: string[];
   _init(): Promise<void>;

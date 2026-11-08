@@ -97,7 +97,7 @@
 #initialSetupWizard div.hero-page > .lucide {
   width: 72px;
   height: 72px;
-  stroke: var(--accent-light);
+  stroke: var(--accent-textual);
   margin-bottom: 20px;
 }
 

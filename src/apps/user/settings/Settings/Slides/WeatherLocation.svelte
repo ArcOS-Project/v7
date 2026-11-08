@@ -40,13 +40,9 @@
 
   function apply(result: WeatherSearchResult) {
     userPreferences.update((v) => {
-      v.shell.actionCenter.weatherLocation = {
-        latitude: result.latitude,
-        longitude: result.longitude,
-        name: result.country ? `${result.name || "Unknown"}, ${result.country}` : result.name || "Unknown",
-      };
-
-      v.shell.actionCenter.cardIndex = 0;
+      v.weatherSettings.latitude = result.latitude;
+      v.weatherSettings.longitude = result.longitude;
+      v.weatherSettings.name = result.country ? `${result.name || "Unknown"}, ${result.country}` : result.name || "Unknown";
 
       return v;
     });
@@ -56,7 +52,6 @@
     dispatch?.dispatch("refresh-weather");
 
     setTimeout(() => {
-      dispatch?.dispatch("open-action-center");
       searchInput = "";
       hasSearched = false;
       working = false;

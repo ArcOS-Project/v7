@@ -57,5 +57,5 @@
   width: var(--w);
   height: 7px;
   border-radius: 3.5px;
-  background-color: var(--accent-lighter);
+  background-color: var(--accent-textual);
 }

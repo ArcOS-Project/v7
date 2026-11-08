@@ -10,7 +10,7 @@
 </script>
 
 <button
-  class="folder"
+  class="sidebar-button folder"
   onclick={() => process.navigate(`${UserPaths.Home}/${folder.name}`)}
   class:selected={$path.startsWith(`${UserPaths.Home}/${folder.name}`)}
   data-contextmenu="sidebar-folder"

@@ -51,7 +51,7 @@
 
   .progress {
     fill: none;
-    stroke: var(--accent-lighter);
+    stroke: var(--accent-textual);
     stroke-linecap: round;
     transition: stroke-dashoffset 0.3s ease;
   }
