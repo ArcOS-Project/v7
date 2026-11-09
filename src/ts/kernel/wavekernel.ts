@@ -3,7 +3,7 @@ import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel, SetKernelExports } from "$ts/env";
+import { ArcOSVersion, SetCurrentKernel, UpdateKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
@@ -85,7 +85,7 @@ export class WaveKernel implements IWaveKernel {
 
     await this._kernelModules();
 
-    SetKernelExports();
+    // SetKernelExports(this);
 
     const stack = this.getModule<IProcessHandler>("stack");
 
@@ -117,6 +117,7 @@ export class WaveKernel implements IWaveKernel {
       await (this as any)[id].__init();
 
       this.modules.push(id);
+      UpdateKernelExports(this);
       __Console__.timeEnd(`kernel module ${id}`);
     }
   }

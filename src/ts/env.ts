@@ -1,16 +1,15 @@
-import type { IBaseService, ServiceIdentifier } from "$interfaces/IServiceHost";
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
-import type { IKernelModule } from "$interfaces/modules/IKernelModule";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
 import type { ISoundbus } from "$interfaces/modules/ISoundbus";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import packageJson from "../../package.json";
+import { Log } from "./logging";
 
 export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
@@ -27,39 +26,34 @@ export let State: IStateHandler;
 export let BugHunt: IBugHunt;
 
 export function SetCurrentKernel(kernel: IWaveKernel) {
+  kernel.Log("SetCurrentKernel", `Assigning kernel to constant`);
+
   if (Kernel) throw new Error("Tried to reassign CurrentKernel");
 
   Kernel = kernel;
 }
 
 export function SetCurrentStateHandler(state: IStateHandler) {
+  Log("SetCurrentStateHandler", `pid = ${state.pid}`);
   if (State) throw new Error("Tried to reassign StateHandler");
 
   State = state;
 }
 
-export function SetKernelExports() {
-  Fs = getKMod<IFilesystem>("fs");
-  Env = getKMod<IEnvironment>("env");
-  Stack = getKMod<IProcessHandler>("stack");
-  Server = getKMod<IServerManager>("server");
-  SysDispatch = getKMod<ISystemDispatch>("dispatch");
-  SoundBus = getKMod<ISoundbus>("soundbus");
-  BugHunt = getKMod<IBugHunt>("bughunt");
-}
+export function UpdateKernelExports(kernel: IWaveKernel) {
+  Log("UpdateKernelExports", `mods = ${kernel.modules.join(", ")}`);
 
-export function getKMod<T extends IKernelModule>(id: string, dontCrash = false): T {
-  const kernel = Kernel!;
-
-  return kernel.getModule<T>(id, dontCrash) as T;
+  Fs = kernel.getModule<IFilesystem>("fs", true);
+  Env = kernel.getModule<IEnvironment>("env", true);
+  Stack = kernel.getModule<IProcessHandler>("stack", true);
+  Server = kernel.getModule<IServerManager>("server", true);
+  SysDispatch = kernel.getModule<ISystemDispatch>("dispatch", true);
+  SoundBus = kernel.getModule<ISoundbus>("soundbus", true);
+  BugHunt = kernel.getModule<IBugHunt>("bughunt", true);
 }
 
 export function GetConnector<T extends IServerConnector>(name: string, token?: string): T {
-  return getKMod<IServerManager>("server").GetConn(name, token || "");
-}
-
-export function GetService<T extends IBaseService = IBaseService>(id: ServiceIdentifier): T | undefined {
-  return Daemon.serviceHost?.getService<T>(id);
+  return Server.GetConn(name, token || "");
 }
 
 export let Daemon: IUserDaemon;

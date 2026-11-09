@@ -1,5 +1,5 @@
 #systemSettings section {
-  width: 350px;
+  width: 420px;
   margin: 0 auto;
   margin-top: 20px;
 }
@@ -10,7 +10,8 @@
 
 #systemSettings section p.caption {
   padding: 0 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-size: 16px;
   opacity: 0.5;
   font-weight: bold;
   text-align: left;
@@ -29,8 +30,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 41px;
-  padding: 0 10px;
+  height: 50px;
+  padding: 0 15px;
   transition: background-color 0.2s;
 }
 
@@ -119,6 +120,7 @@
 
 #systemSettings section div.content div.option + div.option {
   border-top: var(--win-border);
+  height: 51px;
 }
 
 .theme-light #systemSettings section div.content {

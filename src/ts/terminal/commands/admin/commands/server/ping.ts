@@ -1,5 +1,4 @@
-import type { IServerManager } from "$interfaces/modules/IServerManager";
-import { getKMod } from "$ts/env";
+import { Server } from "$ts/env";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { BOLD, BRBLACK, BRGREEN, BRPURPLE, BRRED, RESET } from "$ts/terminal/colors";
 import { sha256 } from "$ts/util";
@@ -10,7 +9,6 @@ export const AdminServerPing: AdminCommandType = async (term, admin) => {
   try {
     const start = performance.now();
     const response = await Backend.get("/ping");
-    const server = getKMod<IServerManager>("server");
 
     if (response.status !== 200) return 3;
 
@@ -21,7 +19,7 @@ export const AdminServerPing: AdminCommandType = async (term, admin) => {
     const TRUE = `${BRGREEN}Yes${RESET}`;
     const FALSE = `${BRRED}No${RESET}`;
 
-    term.rl?.println(`\r\nSERVER PING -- ${BRGREEN}${BOLD}${server.url}${RESET} (${latency.toFixed(2)}ms)\r\n`);
+    term.rl?.println(`\r\nSERVER PING -- ${BRGREEN}${BOLD}${Server.url}${RESET} (${latency.toFixed(2)}ms)\r\n`);
     term.rl?.println(`${BRPURPLE}Login bottom text    ${BRBLACK}:${RESET} ${info.loginBottomText || NONE}`);
     term.rl?.println(`${BRPURPLE}Login notice         ${BRBLACK}:${RESET} ${info.loginNotice || NONE}`);
     term.rl?.println(`${BRPURPLE}Login wallpaper      ${BRBLACK}:${RESET} ${info.loginWallpaper ? "Supplied" : "Default"}\r\n`);

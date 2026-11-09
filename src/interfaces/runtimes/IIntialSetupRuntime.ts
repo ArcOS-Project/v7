@@ -1,6 +1,5 @@
 import type { PageButtons } from "$apps/core/initialsetup/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { ReadableStore } from "$types/shared/writable";
 import type { Component } from "svelte";
 
@@ -13,7 +12,6 @@ export interface IInitialSetupRuntime extends IAppProcess {
   email: ReadableStore<string>;
   actionsDisabled: ReadableStore<boolean>;
   showMainContent: ReadableStore<boolean>;
-  server: IServerManager;
   readonly pages: Component<any>[];
   readonly pageButtons: PageButtons;
 

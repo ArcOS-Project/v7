@@ -1,9 +1,8 @@
 import type { Constructs } from "$interfaces/common";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-import { getKMod } from "$ts/env";
+import { Server, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
@@ -26,7 +25,6 @@ export class ServerManager extends KernelModule implements IServerManager {
     return "v7-currentserver";
   }
   private currentServer?: ServerOption;
-  private dispatch: ISystemDispatch;
   public connected: boolean = false;
   public serverInfo: ServerInfo | undefined;
   public previewBranch?: string;
@@ -73,22 +71,18 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   public static isConnected() {
-    const server = getKMod<IServerManager>("server", true);
-
-    return server && server.connected;
+    // Server is the live instance of this kmod
+    return Server && Server.connected;
   }
   public static url() {
-    const server = getKMod<IServerManager>("server", true);
-
-    return server ? server.url : undefined;
+    // Server is the live instance of this kmod
+    return Server?.url ?? undefined;
   }
 
   //#region LIFECYCLE
 
   constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
-
-    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init() {
@@ -165,7 +159,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       await this.testConnection(server);
 
-      this.dispatch.dispatch("server-connected");
+      SysDispatch.dispatch("server-connected");
       this.connected = true;
       localStorage.setItem(this.CURRENT_LOCALSTORAGE_KEY, server.url);
 
@@ -178,7 +172,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       return true;
     } catch (e) {
-      this.dispatch.dispatch("server-connection-failed");
+      SysDispatch.dispatch("server-connection-failed");
 
       this.Log(`${e}`);
       return false;
@@ -199,7 +193,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   writeServers(servers: ServerOption[]) {
     this.Log(`writeServers`);
-    this.dispatch.dispatch("server-updated", [servers], true);
+    SysDispatch.dispatch("server-updated", [servers], true);
 
     const string = JSON.stringify(servers, null, 0);
     localStorage.setItem(this.SERVERS_LOCALSTORAGE_KEY, string);

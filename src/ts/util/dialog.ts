@@ -1,17 +1,15 @@
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import { Daemon } from "$ts/env";
+import { Daemon, Stack } from "$ts/env";
 import type { App } from "$types/apps/app";
 import type { ConfirmationData, MessageBoxButton, MessageBoxData } from "$types/shared/messagebox";
 import type { ErrorButton } from "$types/system/notification";
-import { getKMod } from "../env";
 
 export async function MessageBox(data: MessageBoxData, parentPid: number, overlay = false) {
-  const stack = getKMod<IProcessHandler>("stack");
+  /** TODO: use ISpawnUserContext.spawnAppMeta if Daemon is available, otherwise kmod */
   const messageBox = (await import("$apps/components/messagebox/messageBox")).default as App;
-  const appData = { ...messageBox, overlay: overlay && !!stack.getProcess(parentPid) };
+  const appData = { ...messageBox, overlay: overlay && !!Stack.getProcess(parentPid) };
   const desktop = Daemon?.workspaces?.getCurrentDesktop();
 
-  await stack.spawn(
+  await Stack.spawn(
     appData.assets.runtime,
     desktop,
     "SYSTEM",

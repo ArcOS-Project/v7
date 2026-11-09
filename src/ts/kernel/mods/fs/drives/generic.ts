@@ -1,6 +1,4 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
-import { getKMod } from "$ts/env";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/shared/logging";
 import type {
@@ -13,7 +11,6 @@ import type {
 } from "$types/system/fs";
 
 export class FilesystemDrive implements IFilesystemDrive {
-  server: IServerManager;
   public driveLetter: string | undefined;
   public label = "";
   public uuid = "";
@@ -43,8 +40,6 @@ export class FilesystemDrive implements IFilesystemDrive {
   };
 
   constructor(uuid: string, letter?: string, ...args: any[]) {
-    this.server = getKMod("server");
-
     this.uuid = uuid;
     this.driveLetter = letter;
   }

@@ -3,8 +3,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
-import { getKMod } from "$ts/env";
+import { SysDispatch } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { CommandResult } from "$ts/result";
 import { sha256, sliceIntoChunks } from "$ts/util";
@@ -24,7 +23,6 @@ import { SourceFilesystemProxy } from "./proxies/src";
 
 export class Filesystem extends KernelModule implements IFilesystem {
   private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
-  private dispatch: ISystemDispatch;
   private freezeMountingDispatch = false;
   public drives: Record<string, IFilesystemDrive> = {};
   public loadedProxies: IFilesystemProxy[] = [];
@@ -33,8 +31,6 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
-
-    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init() {
@@ -76,7 +72,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     if (!ready) return false;
 
     this.drives[id] = instance;
-    this.dispatch.dispatch("fs-mount-drive", id);
+    SysDispatch.dispatch("fs-mount-drive", id);
 
     return instance as T;
   }
@@ -101,7 +97,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
     delete this.drives[id];
 
-    if (!this.freezeMountingDispatch) this.dispatch.dispatch("fs-umount-drive", id);
+    if (!this.freezeMountingDispatch) SysDispatch.dispatch("fs-umount-drive", id);
 
     return true;
   }
@@ -119,7 +115,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     }
 
     this.freezeMountingDispatch = false;
-    this.dispatch.dispatch("fs-umount-drive", identifiesAs);
+    SysDispatch.dispatch("fs-umount-drive", identifiesAs);
 
     return CommandResult.Ok();
   }
@@ -260,7 +256,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     const parent = getParentDirectory(path);
     const result = await drive.createDirectory(scopedPath);
 
-    if (dispatch) this.dispatch.dispatch("fs-flush-folder", parent);
+    if (dispatch) SysDispatch.dispatch("fs-flush-folder", parent);
     drive.isCapable("makeDir");
 
     return result;
@@ -298,8 +294,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
     const result = await drive.writeFile(scopedPath, data, onProgress);
 
     if (dispatch) {
-      this.dispatch.dispatch("fs-flush-file", path);
-      this.dispatch.dispatch("fs-flush-folder", parent);
+      SysDispatch.dispatch("fs-flush-file", path);
+      SysDispatch.dispatch("fs-flush-folder", parent);
     }
 
     return result;
@@ -347,7 +343,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
       const destinationParent = getParentDirectory(destination);
 
       if (dispatch) {
-        this.dispatch.dispatch("fs-flush-folder", destinationParent);
+        SysDispatch.dispatch("fs-flush-folder", destinationParent);
       }
 
       return result;
@@ -377,15 +373,15 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
       const sourceParent = getParentDirectory(source);
       const destinationParent = getParentDirectory(destination);
-      
+
       source = this.removeDriveLetter(source);
       destination = this.removeDriveLetter(destination);
 
       const result = await drive.moveItem(source, destination);
 
       if (dispatch) {
-        this.dispatch.dispatch("fs-flush-folder", destinationParent);
-        if (sourceParent !== destinationParent) this.dispatch.dispatch("fs-flush-folder", sourceParent);
+        SysDispatch.dispatch("fs-flush-folder", destinationParent);
+        if (sourceParent !== destinationParent) SysDispatch.dispatch("fs-flush-folder", sourceParent);
       }
 
       return result;
@@ -504,7 +500,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     const parent = getParentDirectory(path);
     const result = await drive.deleteItem(scopedPath);
 
-    if (dispatch) this.dispatch.dispatch("fs-flush-folder", parent);
+    if (dispatch) SysDispatch.dispatch("fs-flush-folder", parent);
 
     return result;
   }
@@ -579,7 +575,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
             });
           }
 
-          this.dispatch.dispatch("fs-flush-folder", target);
+          SysDispatch.dispatch("fs-flush-folder", target);
           resolve(result);
         } catch (e) {
           return reject(`${e}`);
