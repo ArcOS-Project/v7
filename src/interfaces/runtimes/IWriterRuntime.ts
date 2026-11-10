@@ -20,4 +20,5 @@ export interface IWriterRuntime extends IAppProcess {
   saveAs(): Promise<void>;
   openFile(): Promise<void>;
   selectAll(): void;
+  print(): Promise<void>;
 }

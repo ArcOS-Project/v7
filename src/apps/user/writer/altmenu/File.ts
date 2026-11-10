@@ -35,6 +35,13 @@ export function FileMenu(runtime: IWriterRuntime): ContextMenuItem {
       },
       { sep: true },
       {
+        caption:"Print",
+        action: () => {
+          runtime.print();
+        }
+      },
+      { sep: true },
+      {
         caption: "Open file location",
         action: () => {
           const parent = getParentDirectory(runtime.openedFile());

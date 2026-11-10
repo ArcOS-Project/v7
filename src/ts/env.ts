@@ -4,6 +4,7 @@ import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { IPrinter } from "$interfaces/modules/IPrinterKernelModule";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
 import type { ISoundbus } from "$interfaces/modules/ISoundbus";
@@ -24,6 +25,7 @@ export let SysDispatch: ISystemDispatch;
 export let SoundBus: ISoundbus;
 export let State: IStateHandler;
 export let BugHunt: IBugHunt;
+export let Printer: IPrinter;
 
 export function SetCurrentKernel(kernel: IWaveKernel) {
   kernel.Log("SetCurrentKernel", `Assigning kernel to constant`);
@@ -50,6 +52,7 @@ export function UpdateKernelExports(kernel: IWaveKernel) {
   SysDispatch = kernel.getModule<ISystemDispatch>("dispatch", true);
   SoundBus = kernel.getModule<ISoundbus>("soundbus", true);
   BugHunt = kernel.getModule<IBugHunt>("bughunt", true);
+  Printer = kernel.getModule<IPrinter>("printer", true);
 }
 
 export function GetConnector<T extends IServerConnector>(name: string, token?: string): T {
