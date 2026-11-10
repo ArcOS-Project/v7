@@ -1,9 +1,9 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IAdminBootstrapper, IAdminBootstrapperJob } from "$interfaces/services/IAdminBootstrapper";
 import { Daemon } from "$ts/env";
 import { CommandResult } from "$ts/result";
 
-export class AdminBootstrapperJob {
+export class AdminBootstrapperJob implements IAdminBootstrapperJob {
   public RequiredScopes: string[] = [];
   public static name: string = "UnknownJob";
   public jobName: string;

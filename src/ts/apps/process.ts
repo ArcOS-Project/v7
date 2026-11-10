@@ -200,7 +200,6 @@ export class AppProcess extends Process implements IAppProcess {
         props: {
           process: this,
           pid: this.pid,
-          kernel: Kernel,
           app: this.app.data,
           windowTitle: this.windowTitle,
           windowIcon: this.windowIcon,

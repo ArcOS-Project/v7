@@ -53,7 +53,7 @@
         return;
       }
 
-      const available = await process.server.checkUsernameAvailability(enteredUsername);
+      const available = await Server.checkUsernameAvailability(enteredUsername);
 
       if (available) $newUsername = enteredUsername;
 
@@ -93,7 +93,7 @@
         return;
       }
 
-      const available = await process.server.checkEmailAvailability(enteredEmail);
+      const available = await Server.checkEmailAvailability(enteredEmail);
 
       if (available) $email = enteredEmail;
 
