@@ -103,6 +103,7 @@
           {
             windowTitle: `View user data for ${$selected!.username}`,
             windowIcon: "AccountIcon",
+            dataName: $selected!.username,
           },
           process.pid
         )}

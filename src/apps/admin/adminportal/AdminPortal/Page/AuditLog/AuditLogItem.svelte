@@ -56,7 +56,7 @@
     </summary>
     {#if audit.data && open}
       <div class="context">
-        <JsonViewer data={audit.data}></JsonViewer>
+        <JsonViewer data={audit.data} withProto={false}></JsonViewer>
       </div>
     {/if}
   </details>
