@@ -40,12 +40,17 @@ export class ImageViewerRuntime extends AppProcess implements IImageViewerRuntim
 
       await Sleep(100);
       v.scaleImageToFit();
-      this.height.set(v.getImage()?.height ?? 0);
-      this.width.set(v.getImage()?.width ?? 0);
     });
   }
 
   async render({ path }: { path: string }) {
+    this.viewer.subscribe(async (v) => {
+      if (!v) return;
+      
+      this.height.set(v.getImage()?.height ?? 0);
+      this.width.set(v.getImage()?.width ?? 0);
+    });
+
     if (!path) return this.closeWindow();
 
     await this.readFile(path);
