@@ -72,7 +72,7 @@ div.window div.window-action-bar div.icon-action-group {
   gap: 5px;
 }
 
-div.window div.window-action-bar button.action-bar-button {
+div.window > div.body button.action-bar-button:not(.reset) {
   padding: 0;
   height: 30px;
   overflow: hidden;
@@ -81,7 +81,7 @@ div.window div.window-action-bar button.action-bar-button {
   position: relative;
 }
 
-div.window div.window-action-bar button.action-bar-button div.button-content {
+div.window > div.body button.action-bar-button:not(.reset) div.button-content {
   padding: 0 15px;
   height: 30px;
   overflow: hidden;
@@ -90,7 +90,7 @@ div.window div.window-action-bar button.action-bar-button div.button-content {
   line-height: 30px;
 }
 
-div.window div.window-action-bar button.action-bar-button.has-icon div.button-content {
+div.window > div.body button.action-bar-button.has-icon:not(.reset) div.button-content {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -98,19 +98,19 @@ div.window div.window-action-bar button.action-bar-button.has-icon div.button-co
   padding-right: 15px;
 }
 
-div.window div.window-action-bar button.action-bar-button.has-icon span.lucide {
+div.window > div.body button.action-bar-button.has-icon:not(.reset) span.lucide {
   font-size: 16px;
   display: block;
   height: 16px;
   line-height: 16px;
 }
 
-div.window div.window-action-bar button.action-bar-button div.button-content.hide {
+div.window > div.body button.action-bar-button:not(.reset) div.button-content.hide {
   opacity: 0;
   pointer-events: none;
 }
 
-div.window div.window-action-bar button.action-bar-button div.spinner-wrapper {
+div.window > div.body button.action-bar-button:not(.reset) div.spinner-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -121,7 +121,7 @@ div.window div.window-action-bar button.action-bar-button div.spinner-wrapper {
   align-items: center;
 }
 
-div.window div.window-action-bar button.action-bar-icon-button {
+div.window > div.body button.action-bar-icon-button:not(.reset) {
   width: 30px;
   height: 30px;
   min-width: unset !important;
@@ -134,7 +134,7 @@ div.window div.window-action-bar button.action-bar-icon-button {
   border: var(--win-border);
 }
 
-div.window div.window-action-bar button.action-bar-button * {
+div.window > div.body button.action-bar-button:not(.reset) * {
   color: inherit !important;
 }
 

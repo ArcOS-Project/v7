@@ -201,6 +201,13 @@ export interface AdminTemporaryPassword {
   updatedAt: string;
 }
 
+export interface AdminUsersQueryOptions extends QueryableOptions {
+  isSystem?: string;
+  admin?: string;
+  approved?: string;
+  username?: string;
+  email?: string;
+}
 export interface BugHuntGetResponse {
   report: BugReport;
   reportId: string;

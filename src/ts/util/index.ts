@@ -148,15 +148,16 @@ export function tryParseInt(input: any, returnsUndefined = false) {
   }
 }
 
-export function sortByKey<T extends any[]>(array: T, key: string, reverse = false) {
-  return array.sort(function (a, b) {
-    const x = a[key];
-    const y = b[key];
+export function sortByKey<T extends any[]>(array: T, key: keyof T[number], reverse = false, aggregate?: (x: T[number]) => T[number]) {
+	return array.sort(function (a, b) {
+		const x = aggregate ? aggregate(a)[key] : a[key];
+		const y = aggregate ? aggregate(b)[key] : b[key];
 
-    const comparison = x < y ? -1 : x > y ? 1 : 0;
-    return reverse ? -comparison : comparison;
-  }) as T;
+		const comparison = x < y ? -1 : x > y ? 1 : 0;
+		return reverse ? -comparison : comparison;
+	}) as T;
 }
+
 
 export function sortByHierarchy(array: any[], hierarchy: string) {
   return array.sort(function (a, b) {

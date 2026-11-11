@@ -1,19 +1,15 @@
+#AdminPortal div.container.users > div.page-content {
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+}
+
 #AdminPortal div.container.users > div.page-content > div.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 30px;
   padding-left: 10px;
-}
-
-#AdminPortal div.container.users > div.page-content button.lucide {
-  border-radius: 0;
-  border-left: var(--win-border);
-  background-color: var(--win-bg);
-  height: 30px;
-  width: 31px;
-  font-size: 16px;
-  padding: 0;
 }
 
 #AdminPortal div.container.users button.lucide:disabled {

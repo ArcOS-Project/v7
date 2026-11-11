@@ -42,7 +42,13 @@ export interface UserPreferences {
   startup?: Record<string, "app" | "file" | "folder" | "share" | "disabled">;
   _internalImportBlocklist: string[];
   enableVerboseLogin?: boolean;
+  sortModes?: Record<string, SortMode>;
   weatherSettings: WeatherSettings;
+}
+
+export interface SortMode {
+  reversed: boolean;
+  column: string;
 }
 
 export type ExpandedUserInfo = UserInfo & { profile: PublicUserInfo };
@@ -79,7 +85,8 @@ export interface ShellPreferences {
   visuals: VisualPreferences;
   customStyle: CustomStylePreferences;
   actionCenter: {
-    weatherLocation?: { // made optional 2026-08-01
+    weatherLocation?: {
+      // made optional 2026-08-01
       latitude: number;
       longitude: number;
       name?: string;

@@ -86,6 +86,7 @@ export const DefaultUserPreferences: UserPreferences = {
   globalSettings: {},
   _internalImportBlocklist: [],
   enableVerboseLogin: false,
+  sortModes: {},
   weatherSettings: {
     migrated: false,
     displayMode: "withCondition",

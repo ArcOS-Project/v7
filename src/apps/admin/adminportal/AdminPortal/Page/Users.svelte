@@ -1,21 +1,30 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import Icon from "$lib/Icon.svelte";
-  import { Logo } from "$ts/branding";
+  import DataTable from "$lib/Tables/DataTable.svelte";
+  import DataTableBooleanColumn from "$lib/Tables/DataTableBooleanColumn.svelte";
+  import DataTableColumn from "$lib/Tables/DataTableColumn.svelte";
+  import DataTablePictureColumn from "$lib/Tables/DataTablePictureColumn.svelte";
+  import EmptyContent from "$lib/Tables/EmptyContent.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import { Store } from "$ts/writable";
   import type { ExpandedUserInfo } from "$types/user";
+  import dayjs from "dayjs";
   import { onMount } from "svelte";
+  import { AdminUsersTableDataSource } from "../../tables/users";
   import type { UsersData } from "../../types";
-  import UserRow from "./Users/UserRow.svelte";
+  import TabBar from "../Components/TabBar.svelte";
 
   const { process, data, compact = false }: { process: IAdminPortalRuntime; data: UsersData; compact?: boolean } = $props();
   const { users } = data;
+  const { redacted } = process;
 
   const states = ["all", "online", "regular", "admins", "disapproved", "sys"] as const;
   const sortState = Store<UsersPageFilters>("all");
   const store = Store<ExpandedUserInfo[]>([]);
   const selection = Store<string>("");
   const selected = Store<ExpandedUserInfo | undefined>(undefined);
+
+  let refresh = $state<() => any>();
 
   type UsersPageFilters = (typeof states)[number];
 
@@ -43,8 +52,50 @@
 
     selection.subscribe((v) => ($selected = users.filter((u) => u._id === v)[0]));
   });
+
+  let count = $state(0);
+  let selectedTab = $state("");
 </script>
 
+<div class="header">
+  <h1>Users ({count})</h1>
+  <TabBar options={["All", "Approved", "Administrator", "System"]} bind:selected={selectedTab} onChange={() => refresh?.()}></TabBar>
+</div>
+
+<DataTable
+  source={AdminUsersTableDataSource(process)}
+  proc={process}
+  query={{
+    admin: selectedTab === "Administrator" ? "true" : undefined,
+    isSystem: selectedTab === "System" ? "true" : undefined,
+    approved: selectedTab === "Approved" ? "true" : undefined,
+  }}
+  bind:count
+  eachKey="_id"
+  bind:refresh
+>
+  {#snippet Empty()}
+    <EmptyContent icon="users" title="No users" message="There are no users on this server" />
+  {/snippet}
+  {#snippet RowTemplate(item)}
+    <DataTablePictureColumn userId={item._id} />
+    <DataTableColumn>
+      <span class:redacted={$redacted}>{item.username}</span>
+    </DataTableColumn>
+    <DataTableColumn>
+      <span class:redacted={$redacted}>{item.email}</span>
+    </DataTableColumn>
+    <DataTableColumn>{dayjs(item.createdAt).format("DD-MM-YYYY, HH:mm:ss")}</DataTableColumn>
+    <DataTableBooleanColumn value={item.approved} friendly></DataTableBooleanColumn>
+    <DataTableBooleanColumn value={item.admin} friendly></DataTableBooleanColumn>
+    <DataTableBooleanColumn value={item.isSystem} friendly></DataTableBooleanColumn>
+  {/snippet}
+  {#snippet RowActions(item)}
+    <ActionIconButton icon="pencil" />
+  {/snippet}
+</DataTable>
+
+<!-- 
 {#if !compact}
   <div class="header">
     <p>{$sortState} ({$store.length})</p>
@@ -87,4 +138,4 @@
       onclick={() => process.spawnOverlay("userdata", $selected)}
     ></button>
   </div>
-</div>
+</div> -->

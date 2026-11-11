@@ -1,0 +1,24 @@
+div.data-table-wrapper div.empty-content {
+  width: 100%;
+  height: 100%;
+  /* flex-grow: 1; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+div.data-table-wrapper div.empty-content > span.lucide {
+  font-size: 64px;
+  color: var(--button-bg);
+  margin-bottom: 20px;
+}
+
+div.data-table-wrapper div.empty-content > h1 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+div.data-table-wrapper div.empty-content > p {
+  margin-bottom: 30px;
+}

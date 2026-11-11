@@ -17,7 +17,7 @@
   const store = Store<StoreItem[]>([]);
   const selection = Store<string>("");
   const selected = Store<StoreItem | undefined>(undefined);
-  const sortMode = Store<string>("installCount");
+  const sortMode = Store<keyof StoreItem>("installCount");
 
   onMount(() => {
     filterMode.subscribe((v) => {
