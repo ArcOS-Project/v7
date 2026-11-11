@@ -11,7 +11,7 @@
   const { process, data }: { process: IAdminPortalRuntime; data: TokensData } = $props();
   const { users, tokens } = data;
 
-  const sortMode = Store<string>("lastUsed");
+  const sortMode = Store<keyof ExpandedToken>("lastUsed");
   const filtered = Store<ExpandedToken[]>([]);
   const userFilter = Store<string>("");
   let chunks = $state<ExpandedToken[][]>([]);
