@@ -3,7 +3,6 @@
   import type { BooleanStore } from "$types/shared/writable";
   import type { UserPreferencesStore } from "$types/user";
   import { QuickSettings } from "../store";
-  import CardStack from "./ActionCenter/CardStack.svelte";
   import Clock from "./ActionCenter/Clock.svelte";
   import Notifications from "./ActionCenter/Notifications.svelte";
   import QuickSetting from "./ActionCenter/QuickSetting.svelte";
@@ -22,9 +21,6 @@
 <div class="actioncenter shell-colored" class:colored={$userPreferences.shell.taskbar.colored} class:opened={$actionCenterOpened}>
   <div class="top">
     <Clock />
-    {#if !process.safeMode}
-      <CardStack {userPreferences} {process} />
-    {/if}
   </div>
   <Notifications {process} />
   {#if !process.safeMode}

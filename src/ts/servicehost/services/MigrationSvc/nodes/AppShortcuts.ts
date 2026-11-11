@@ -5,6 +5,7 @@ import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { join } from "$ts/util/fs";
 import type { MigrationResult, MigrationStatusCallback } from "$types/services/migrations";
+import type { DirectoryReadReturn } from "$types/system/fs";
 import { MigrationNode } from "../node";
 
 export class AppShortcutsMigration extends MigrationNode {
@@ -17,15 +18,18 @@ export class AppShortcutsMigration extends MigrationNode {
 
   async runMigration(cb?: MigrationStatusCallback): Promise<MigrationResult> {
     try {
-      const contents = await Fs.readDir(UserPaths.AppShortcuts);
+      const contents: DirectoryReadReturn | undefined = await Fs.readDir(UserPaths.AppShortcuts);
       const storage = await Daemon!.appStorage()?.get();
 
-      if (!storage || !contents) return { result: "err_noop", errorMessage: "Nothing to do." };
+      if (!storage) return { result: "err_noop", errorMessage: "Nothing to do." };
+      if (!contents) await Fs.createDirectory(UserPaths.AppShortcuts);
 
       for (const app of storage) {
-        const existing = contents?.files.filter((f) => f.name === `${app.id}.arclnk`)[0];
+        const existing = contents?.files?.filter((f) => f.name === `${app.id}.arclnk`)[0];
 
         if (existing) continue;
+
+        cb?.(`Creating shortcut for ${app.id}`);
 
         Daemon!.shortcuts?.createShortcut(
           {
@@ -38,6 +42,8 @@ export class AppShortcutsMigration extends MigrationNode {
         );
         await Sleep(50);
       }
+
+      await Daemon.appreg?.updateStartMenuFolder();
 
       return { result: "err_ok", successMessage: "Updated" };
     } catch (e) {

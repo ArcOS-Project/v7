@@ -21,7 +21,7 @@
 </script>
 
 <button
-  class="drive"
+  class="sidebar-button drive"
   onclick={() => process.navigate(`${identifier}/`)}
   class:selected={$path === `${identifier}/`}
   data-contextmenu={identifiesAs === "share" ? "sidebar-shared-drive" : "sidebar-drive"}
@@ -38,7 +38,7 @@
       (locked)
     {/if}
   </span>
-  {#if !drive.quota.unknown}
+  {#if !drive.quota.unknown && drive.quota.max > 0}
     <CircularProgress
       className="progress {drive.quota.percentage >= 80 ? 'almost-full' : ''}"
       max={drive.quota.max}

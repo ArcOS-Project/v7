@@ -8,7 +8,6 @@
 
 {#if official?.length}
   <PackageGrid items={official} name="Official Apps" {process} />
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

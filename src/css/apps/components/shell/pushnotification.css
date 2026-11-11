@@ -71,7 +71,7 @@ div.shell div.push-notification img.icon {
 
 div.shell div.push-notification div.left span.lucide {
   font-size: 32px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 div.shell div.push-notification div.buttons {

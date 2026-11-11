@@ -1,0 +1,19 @@
+#MinesweeperHighScoreApp > div.body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#MinesweeperHighScoreApp > div.body div.top {
+  height: 0;
+  flex-grow: 1;
+  padding: 15px;
+}
+
+#MinesweeperHighScoreApp > div.body div.top p {
+  margin-bottom: 15px;
+}
+
+#MinesweeperHighScoreApp > div.body div.top input {
+  width: 100%;
+}

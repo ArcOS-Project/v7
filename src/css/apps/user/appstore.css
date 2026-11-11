@@ -56,7 +56,6 @@
   padding: 0 10px;
   height: calc(100% - 40px - 70px);
   overflow-y: scroll;
-  padding-right: 2px;
 }
 
 #AppStore > div.body div.sidebar div.pages p.group-name {
@@ -92,7 +91,7 @@
 
 #AppStore > div.body div.sidebar div.pages span.lucide {
   font-size: 16px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   height: 16px;
 }
 
@@ -152,7 +151,7 @@
 }
 
 #AppStore > div.body > div.container section > h1 button span {
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
   font-size: 14px;
 }
 #AppStore > div.body > div.container section > h1 button span.lucide {
@@ -162,9 +161,10 @@
 #AppStore > div.body > div.container section.package-grid div.items button {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 8px;
   text-align: left;
   gap: 10px;
+  border-radius: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -303,7 +303,7 @@
 #AppStore > div.body div.empty span.lucide {
   font-size: 64px;
   margin-bottom: 15px;
-  color: var(--accent-lighter);
+  color: var(--accent-textual);
 }
 
 #AppStore > div.body div.empty h1 {

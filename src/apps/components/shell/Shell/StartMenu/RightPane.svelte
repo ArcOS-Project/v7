@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
+  import Icon from "$lib/Icon.svelte";
   import { Fs, SysDispatch } from "$ts/env";
   import { contextMenu, contextProps } from "$ts/ui/context/actions.svelte";
   import { UserPaths } from "$ts/user/store";
@@ -7,7 +8,6 @@
   import type { UserPreferencesStore } from "$types/user";
   import { onMount } from "svelte";
   import UserButton from "../Folders/UserButton.svelte";
-  import Icon from "$lib/Icon.svelte";
 
   const {
     process,

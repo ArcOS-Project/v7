@@ -1,7 +1,7 @@
 #systemSettings div.container.loginBackground div.upload-actions {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 #systemSettings div.container.loginBackground div.upload-actions button {
@@ -32,8 +32,8 @@
 }
 
 #systemSettings div.loginBackground div.wallpaper-section div.wallpapers {
-  display: grid;
-  grid-template-columns: repeat(5, 70px);
+  display: flex;
+  flex-wrap: wrap;
   gap: 15px;
 }
 

@@ -12,6 +12,7 @@ export interface IServerManager extends IKernelModule {
   hostname?: string;
   authCode?: string;
   get ConnectorAmount(): number;
+  get ConnectorNames(): string[];
   checkUsernameAvailability(username: string): Promise<boolean>;
   checkEmailAvailability(username: string): Promise<boolean>;
   switchServer(url: string): Promise<boolean>;

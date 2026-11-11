@@ -24,30 +24,40 @@
 <p>
   Below is a list of Global Dispatch clients currently connected to your account. You can disconnect one by clicking the button.
 </p>
-<div class="list">
+<div class="table-wrapper">
   {#if !loading}
-    <div class="row head">
-      <div class="segment ip">IP address</div>
-      <div class="segment authorized">Authorized</div>
-      <button class="lucide icon-rotate-cw" title="Refresh list" disabled={loading} aria-label="Refresh" onclick={update}
-      ></button>
-    </div>
-    {#each clients as client (client.socketId)}
-      <div class="row" title={client.socketId}>
-        <div class="segment ip">
-          {client.ip}
-          {#if client.socketId === Daemon?.globalDispatch?.client?.id}(you){/if}
-        </div>
-        <div class="segment authorized">{client.authorized ? "Yes" : "No"}</div>
-        <button
-          class="lucide icon-link-2-off"
-          onclick={() => disconnectClient(client.socketId)}
-          aria-label="Kick client"
-          title="Kick client"
-          disabled={client.socketId === Daemon?.globalDispatch?.client?.id}
-        ></button>
-      </div>
-    {/each}
+    <table>
+      <thead>
+        <tr>
+          <th>IP address</th>
+          <th>Authorized</th>
+          <th class="action">
+            <button class="lucide icon-rotate-cw" title="Refresh list" disabled={loading} aria-label="Refresh" onclick={update}
+            ></button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each clients as client (client.socketId)}
+          <tr title={client.socketId}>
+            <td class="ip">
+              {client.ip}
+              {#if client.socketId === Daemon?.globalDispatch?.client?.id}(you){/if}
+            </td>
+            <td class="authorized">{client.authorized ? "Yes" : "No"}</td>
+            <td class="action">
+              <button
+                class="lucide icon-link-2-off"
+                onclick={() => disconnectClient(client.socketId)}
+                aria-label="Kick client"
+                title="Kick client"
+                disabled={client.socketId === Daemon.globalDispatch?.client?.id}
+              ></button>
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
   {:else}
     <div class="loading">
       <Spinner height={32} />

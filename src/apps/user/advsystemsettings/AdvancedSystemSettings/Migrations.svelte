@@ -1,41 +1,34 @@
 <script lang="ts">
   import type { IMigrationService } from "$interfaces/services/IMigrationService";
-  import { Daemon } from "$ts/env";
-  import { Sleep } from "$ts/sleep";
-  import { onMount } from "svelte";
+  import ServiceGate from "$lib/ServiceGate.svelte";
   import Row from "./Migrations/Row.svelte";
-
-  const migrationService = Daemon.serviceHost?.getService<IMigrationService>("MigrationSvc");
-
-  let config: Record<string, number> = $state({});
-
-  async function refresh() {
-    config = {};
-    await Sleep(10);
-    config = migrationService?.Config || {};
-  }
-
-  onMount(() => {
-    refresh();
-  });
 </script>
 
 <p>
   Migrations take care of keeping your configuration files up to date when ArcOS updates. The below list contains the migrations
   that ArcOS has, along with versions installed on your system.
 </p>
-<div class="list">
-  {#if migrationService}
-    <div class="row head">
-      <div class="name">Migration</div>
-      <div class="version local">L</div>
-      <div class="version current">C</div>
-      <div class="run-migration">Run</div>
-    </div>
-    {#each Object.entries(config) as [id, version] (id)}
-      <Row {id} {version} {migrationService} {refresh} />
-    {/each}
-  {:else}
-    <p class="error-text">The migration service has to be running to access this tab.</p>
-  {/if}
+<div class="table-wrapper">
+  <ServiceGate id="MigrationSvc">
+    {#snippet ifActive(service: IMigrationService)}
+      <table>
+        <thead>
+          <tr>
+            <th>Migration</th>
+            <th>Latest</th>
+            <th>Installed</th>
+            <th class="run">Run</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each Object.entries(service.Config) as [id, version] (id)}
+            <Row {id} {version} migrationService={service} />
+          {/each}
+        </tbody>
+      </table>
+    {/snippet}
+    {#snippet ifInactive()}
+      <p class="error-text">The migration service has to be running to access this tab.</p>
+    {/snippet}
+  </ServiceGate>
 </div>

@@ -64,11 +64,13 @@ export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/user/donut/DonutApp",
   "$apps/user/feedback/feedback",
   "$apps/user/sqeleton/Sqeleton",
+  "$apps/user/minesweeper/MinesweeperApp",
 ]);
 
 export const AdminAppImportPathAbsolutes = import.meta.glob([
   "$apps/admin/adminportal/AdminPortal",
   "$apps/admin/executequery/ExecuteQueryApp",
+  "$apps/admin/mailbrokermanagerapp/MailbrokerManagerApp",
 ]);
 
 export const appShortcuts: [number, AppKeyCombinations][] = [];

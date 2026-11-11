@@ -31,7 +31,7 @@
 }
 
 #IconEditorApp > div.body div.sidebar button span.lucide {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 #IconEditorApp > div.body div.sidebar button.selected {

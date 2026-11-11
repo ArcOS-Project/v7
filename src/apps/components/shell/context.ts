@@ -2,9 +2,9 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
-import { Daemon, Stack } from "$ts/env";
+import { Daemon, Env, Stack } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import type { AppContextMenu } from "$types/apps/app";
+import type { App, AppContextMenu } from "$types/apps/app";
 
 export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
   return {
@@ -30,6 +30,110 @@ export function ShellContextMenu(runtime: IShellRuntime): AppContextMenu {
         action: () => {
           runtime.spawnApp("systemSettings", runtime.pid, "shell");
         },
+      },
+    ],
+    "startmenu-app": [
+      {
+        caption: "Launch",
+        icon: "rocket",
+        action: (app: App) => {
+          if (!app) return;
+
+          runtime.spawnApp(app?.id, process.pid);
+        },
+      },
+      { sep: true },
+      {
+        caption: "Create shortcut",
+        icon: "arrow-up-right",
+        action: async (app: App) => {
+          const [path] = await Daemon!.files!.LoadSaveDialog({
+            title: "Choose where to save the app shortcut",
+            icon: "ShortcutMimeIcon",
+            startDir: UserPaths.Desktop,
+            isSave: true,
+            saveName: app.id,
+            extensions: [".arclnk"],
+          });
+
+          if (!path) return;
+
+          await Daemon?.shortcuts?.createShortcut(
+            {
+              icon: `@app::${app.id}`,
+              name: app.metadata.name,
+              type: "app",
+              target: app.id,
+            },
+            path
+          );
+        },
+      },
+      {
+        caption: "Pin app",
+        action: async (app: App) => {
+          if (!app) return;
+
+          if (runtime.userPreferences().pinnedApps?.includes(app?.id)) runtime.unpinApp(app?.id);
+          else await runtime.pinApp(app?.id);
+        },
+        disabled: async (app: App) => {
+          const x = runtime.appStore()?.getAppSynchronous(app?.id);
+
+          return !x;
+        },
+        isActive: (app: App) => runtime.userPreferences().pinnedApps?.includes(app?.id),
+        icon: "pin",
+      },
+      {
+        caption: "Open file location",
+        icon: "folder-open",
+        action: (app: App) => {
+          runtime.spawnApp(
+            "fileManager",
+            +Env.get("shell_pid"),
+            `U:/System/Start${app?.metadata?.appGroup ? `/$$${app?.metadata?.appGroup}` : ""}`
+          );
+        },
+      },
+      { sep: true },
+      {
+        caption: "Enable app groups",
+        action: (app: App) => {
+          runtime.userPreferences().shell.start.noGroups = !runtime.userPreferences().shell.start.noGroups;
+          setTimeout(() => {
+            runtime.startMenuOpened.set(true);
+          }, 0);
+        },
+        isActive: () => !runtime.userPreferences().shell.start.noGroups,
+        icon: "folder-tree",
+      },
+      {
+        caption: "Refresh start menu",
+        icon: "rotate-cw",
+        action: () => {
+          runtime.refreshStartMenu();
+        },
+      },
+      { sep: true },
+      {
+        caption: "App info",
+        icon: "info",
+        action: (app: App) => {
+          if (!app) return;
+
+          runtime.spawnOverlayApp("AppInfo", process.pid, app.id);
+        },
+      },
+      {
+        caption: "Uninstall",
+        icon: "trash-2",
+        action: (app: App) => {
+          if (!app) return;
+
+          Daemon?.appreg?.uninstallAppWithAck(app);
+        },
+        disabled: (app: App) => !app?.entrypoint && !app?.thirdParty,
       },
     ],
     "taskbar-openedapp": [

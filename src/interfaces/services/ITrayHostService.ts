@@ -4,11 +4,12 @@ import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ContextMenuItem } from "$types/apps/app";
 import type { TrayIconOptions, TrayPopup } from "$types/services/tray";
-import type { ReadableStore } from "$types/shared/writable";
+import type { BooleanStore, ReadableStore } from "$types/shared/writable";
 
 // !tpa
 export interface ITrayHostService extends IBaseService {
   trayIcons: ReadableStore<Record<`${number}#${string}`, ITrayIconProcess>>;
+  loading: BooleanStore;
   createTrayIcon(pid: number, identifier: string, options: TrayIconOptions, process?: Constructs<IProcess>): Promise<boolean>;
   disposeTrayIcon(pid: number, identifier: string): Promise<false | undefined>;
   disposeProcessTrayIcons(pid: number): void;

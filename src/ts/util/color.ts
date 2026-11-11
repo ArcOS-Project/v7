@@ -49,7 +49,7 @@ export function bestForeground(bgColor: string) {
 
   const difference = color1.deltaE(color2, "CMC");
 
-  return difference > 40 ? "white" : "black";
+  return difference > 30 ? "white" : "black";
 }
 
 export async function getReadableVibrantColor(url: string): Promise<string> {

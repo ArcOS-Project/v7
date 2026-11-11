@@ -2,7 +2,7 @@ import type { IShortcutPropertiesRuntime } from "$interfaces/runtimes/IShortcutP
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Env } from "$ts/env";
 import { getAllImages } from "$ts/images";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -47,7 +47,7 @@ export class ShortcutPropertiesRuntime extends AppProcess implements IShortcutPr
         message: "An error occurred while trying to save the shortcut. Please try again",
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
-        buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+        buttons: [BTN_OKAY_SUG],
       },
       this.parentPid,
       true

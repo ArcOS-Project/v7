@@ -58,7 +58,7 @@
   {style}
 >
   <div class="video-wrapper" class:show={$isVideo}>
-    <video bind:this={audio}>
+    <video bind:this={audio} disablepictureinpicture>
       <track kind="captions" />
     </video>
   </div>

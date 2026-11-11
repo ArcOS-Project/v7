@@ -13,7 +13,6 @@ export interface IInitialSetupRuntime extends IAppProcess {
   email: ReadableStore<string>;
   actionsDisabled: ReadableStore<boolean>;
   showMainContent: ReadableStore<boolean>;
-  displayName: ReadableStore<string>;
   server: IServerManager;
   readonly pages: Component<any>[];
   readonly pageButtons: PageButtons;

@@ -8,7 +8,6 @@
 
 {#if all?.length}
   <PackageGrid items={all} name="Everything" {process} />
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

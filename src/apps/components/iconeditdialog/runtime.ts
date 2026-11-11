@@ -1,13 +1,14 @@
 import type { IIconEditDialogRuntime } from "$interfaces/runtimes/IIconEditDialogRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { SysDispatch } from "$ts/env";
+import { getAllImages } from "$ts/images";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
 
 export class IconEditDialogRuntime extends AppProcess implements IIconEditDialogRuntime {
   iconName?: string;
   returnId?: string;
-  type = Store<string>();
+  type = Store<string>("@builtin");
   values = Store<Record<string, string>>({});
   currentIcon = Store<string>();
   defaultIcon?: string;
@@ -28,14 +29,24 @@ export class IconEditDialogRuntime extends AppProcess implements IIconEditDialog
 
     this.iconName = name;
     this.returnId = returnId;
-    if (initialValue && initialValue.startsWith("@") && initialValue.includes("::")) {
-      const split = initialValue.split("::");
-      this.type.set(split[0]);
-      this.values.update((v) => {
-        v[split[0]] = split[1];
-        return v;
-      });
+    
+    if (initialValue) {
+      if (initialValue.startsWith("@") && initialValue.includes("::")) {
+        const split = initialValue.split("::");
+        this.type.set(split[0]);
+        this.values.update((v) => {
+          v[split[0]] = split[1];
+          return v;
+        });
+      } else if (getAllImages()[initialValue]) {
+        this.type.set("@builtin");
+        this.values.update((v) => {
+          v["@builtin"] = initialValue;
+          return v;
+        });
+      }
     }
+
     this.defaultIcon = defaultIcon;
   }
 

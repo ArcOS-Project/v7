@@ -172,9 +172,10 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
       else if (!Daemon!.preferencesCtx?.syncLock) Daemon!.preferencesCtx?.commitPreferences(v);
 
       Daemon!.renderer?.setAppRendererClasses(v);
-      Daemon!.wallpaper?.updateWallpaper(v);
       Daemon!.workspaces?.syncVirtualDesktops(v);
+      Daemon!.wallpaper?.updateWallpaper(v);
       Daemon!.updateGlobalDispatch();
+      Daemon!.userInfo.preferences = v;
     });
 
     Daemon!.preferencesCtx!.preferencesUnsubscribe = unsubscribe;

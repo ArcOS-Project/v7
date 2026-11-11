@@ -4,54 +4,28 @@
   gap: 10px;
 }
 
-#AdvSystemSettings > div.body div.login div.list {
-  border: var(--win-border);
-  flex-grow: 1;
-  overflow-y: auto;
-  border-radius: 4px;
-  background-color: var(--win-bg);
-}
-
-#AdvSystemSettings > div.body div.login div.list::-webkit-scrollbar {
-  display: none;
-}
-
-#AdvSystemSettings > div.body div.login div.list div.row {
-  display: flex;
-  align-items: center;
-  border-bottom: var(--win-border);
-}
-
-#AdvSystemSettings > div.body div.login div.list div.row input,
-#AdvSystemSettings > div.body div.login div.list div.row select {
+#AdvSystemSettings > div.body div.login tr input,
+#AdvSystemSettings > div.body div.login tr select {
   margin: 0;
   padding: 0;
   border: none;
   height: 30px;
   border-radius: 0;
   background-color: var(--win-bg);
-  width: 0;
+  width: 100%;
 }
-#AdvSystemSettings > div.body div.login div.list div.row input {
-  flex-grow: 1;
+
+#AdvSystemSettings > div.body div.login td.type,
+#AdvSystemSettings > div.body div.login td.payload {
+  padding: 0;
+}
+
+#AdvSystemSettings > div.body div.login tr input {
   padding: 0 10px;
 }
 
-#AdvSystemSettings > div.body div.login div.list div.row select {
-  border-left: var(--win-border);
+#AdvSystemSettings > div.body div.login tr select {
   padding: 0 5px;
-  width: fit-content;
-}
-
-#AdvSystemSettings > div.body div.login div.list div.row button {
-  border-radius: 0;
-  border-left: var(--win-border);
-  background-color: var(--button-bg);
-  width: 31px;
-  height: 30px;
-  font-size: 16px;
-  padding: 0;
-  outline: none;
 }
 
 #AdvSystemSettings > div.body div.login hr {

@@ -2,7 +2,7 @@ import { DummyFileProgress, type FileProgressMutator, type FsProgressOperation }
 import type { LoadSaveDialogData } from "$apps/user/filemanager/types";
 import type { IFilesystemUserContext } from "$interfaces/contexts/IFilesystemUserContext";
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
-import type { IMemoryFilesystemDrive } from "$interfaces/drives/IMemoryFilesystemDrive";
+import type { ITemporaryFilesystemDrive } from "$interfaces/drives/ITemporaryFilesystemDrive";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
@@ -16,7 +16,7 @@ import { ZIPDrive } from "$ts/kernel/mods/fs/drives/zip";
 import { CommandResult } from "$ts/result";
 import { DefaultFileHandlers, SystemFolders, UserPathCaptions, UserPaths } from "$ts/user/store";
 import { Plural } from "$ts/util";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { applyDefaults } from "$ts/util/hierarchy";
 import { UUID } from "$ts/util/uuid";
@@ -30,7 +30,7 @@ import { UserContext } from "../context";
 
 export class FilesystemUserContext extends UserContext implements IFilesystemUserContext {
   private thumbnailCache: Record<string, string> = {};
-  public TempFs?: IMemoryFilesystemDrive;
+  public TempFs?: ITemporaryFilesystemDrive;
   public fileHandlers: Record<string, FileHandler>;
   public mountedDrives: string[] = [];
   private TempFsSnapshot: Record<string, any> = {};
@@ -46,7 +46,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
   }
 
   async _init() {
-    this.TempFs = Fs.getDriveById("temp") as IMemoryFilesystemDrive;
+    this.TempFs = Fs.getDriveById("temp") as ITemporaryFilesystemDrive;
     this.TempFsSnapshot = await this.TempFs.takeSnapshot();
   }
 
@@ -453,7 +453,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
                 await this.openWith(path);
               },
             },
-            { caption: "Okay", action: () => {}, suggested: true },
+            BTN_OKAY_SUG,
           ],
           sound: "arcos.dialog.warning",
           image: "ErrorIcon",
@@ -592,12 +592,13 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
             {
               caption: "Delete permanently",
               action: () => r("incinerate"),
-              hide: () => !isUserFs,
+              suggested: !isUserFs,
             },
             {
               caption: "Recycle",
               action: () => r("recycle"),
               suggested: true,
+              hide: () => !isUserFs,
             },
           ],
         },

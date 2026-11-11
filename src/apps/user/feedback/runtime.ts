@@ -13,6 +13,7 @@ export class FeedbackProcess extends Process {
 
   async start() {
     Daemon.helpers?.iHaveFeedback(Daemon.getShell()!);
+    return false; // Stop the FeedbackProcess: the child has been invoked. Mission accomplished.
   }
 
   //#endregion

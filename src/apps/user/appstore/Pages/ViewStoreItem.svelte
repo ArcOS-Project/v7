@@ -50,7 +50,6 @@
       </div>
     </div>
   </div>
-  <Screenshots {pkg} {process} />
   {#if pkg.deprecated}
     <div class="notice warning">
       <span class="lucide icon-triangle-alert"></span>
@@ -68,6 +67,7 @@
       </p>
     </div>
   {/if}
+  <Screenshots {pkg} {process} />
   <div class="markdown-body">
     <SvelteMarkdown source={readme} />
   </div>

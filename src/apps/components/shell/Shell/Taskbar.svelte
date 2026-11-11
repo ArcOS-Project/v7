@@ -9,6 +9,7 @@
   import StartButton from "./Taskbar/StartButton.svelte";
   import Clock from "./Taskbar/SystemArea/Clock.svelte";
   import SystemTray from "./Taskbar/SystemTray.svelte";
+  import TaskbarWeatherApplet from "./Taskbar/TaskbarWeatherApplet.svelte";
   import WorkspaceManagerButton from "./Taskbar/WorkspaceManagerButton.svelte";
 
   const { process }: { process: IShellRuntime } = $props();
@@ -20,39 +21,13 @@
   class:colored={$userPreferences.shell.taskbar.colored}
   class:docked={$userPreferences.shell.taskbar.docked}
   data-contextmenu="shell-taskbar"
-  use:contextMenu={[
-    [
-      {
-        caption: "Processes",
-        icon: "activity",
-        action: () => {
-          process.spawnApp("processManager", process.pid, "Processes");
-        },
-      },
-      {
-        caption: "Services",
-        icon: "hand-helping",
-        action: () => {
-          process.spawnApp("processManager", process.pid, "Services");
-        },
-      },
-      { sep: true },
-      {
-        caption: "Settings",
-        icon: "settings",
-        action: () => {
-          process.spawnApp("systemSettings", process.pid, "shell");
-        },
-      },
-    ],
-    process,
-  ]}
 >
   <StartButton {process} />
   <WorkspaceManagerButton {process} />
   <PinnedApps {process} />
   <OpenedApps {process} />
 
+  <TaskbarWeatherApplet {process} />
   <ServiceGate id="TrayHostSvc">
     {#snippet ifActive(service: ITrayHostService)}
       <SystemTray {process} {service} />

@@ -62,24 +62,28 @@
 #AppStore div.page.userPage div.pills {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
 }
 
 #AppStore div.page.userPage div.pills div.pill {
   display: flex;
   align-items: center;
   gap: 5px;
+  background-color: var(--accent);
+  padding: 1px 8px;
+  border-radius: 100vw;
+  color: var(--win-bg);
 }
-#AppStore div.page.userPage div.pills div.pill.admin span.lucide {
-  color: var(--clr-purple-fg);
+#AppStore div.page.userPage div.pills div.pill.admin {
+  background-color: var(--clr-purple-fg);
 }
 
-#AppStore div.page.userPage div.pills div.pill.developer span.lucide {
-  color: var(--clr-green-fg);
+#AppStore div.page.userPage div.pills div.pill.developer {
+  background-color: var(--clr-green-fg);
 }
 
-#AppStore div.page.userPage div.pills div.pill.certified span.lucide {
-  color: var(--clr-yellow-fg);
+#AppStore div.page.userPage div.pills div.pill.certified {
+  background-color: var(--clr-yellow-fg);
 }
 
 #AppStore div.page.userPage div.user-header div.pfprenderer.show-online.is-online::after {

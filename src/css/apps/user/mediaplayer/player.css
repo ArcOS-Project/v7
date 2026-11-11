@@ -31,9 +31,21 @@
 }
 
 #MediaPlayer.fullscreen div.audio-visual {
-  background: linear-gradient(to bottom, #0008 0%, #0008 100%), var(--cover-backdrop, var(--wallpaper));
+  background: linear-gradient(to bottom right, #0008 0%, #0008 100%), var(--cover-backdrop, var(--wallpaper));
   background-position: center;
   background-size: cover;
+  position: relative;
+}
+
+#MediaPlayer.fullscreen div.audio-visual::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #ffffff01;
+  backdrop-filter: blur(20px);
 }
 
 #MediaPlayer video {
@@ -120,10 +132,12 @@
   margin-bottom: 10px;
   width: fit-content;
   justify-content: center;
+  text-shadow: 0 0 9px #000a;
 }
 
 #MediaPlayer.fullscreen div.audio-visual > div.file p.author {
   font-size: 20px !important;
+  text-shadow: 0 0 4px #000d;
 }
 
 #MediaPlayer div.audio-visual > div.cover-art img {

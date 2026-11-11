@@ -14,7 +14,6 @@
       <PackageGrid {items} name={TimeFrames[frame]} {process} />
     {/if}
   {/each}
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

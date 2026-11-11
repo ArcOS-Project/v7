@@ -5,7 +5,7 @@ import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
@@ -150,7 +150,7 @@ export class CodRuntime extends AppProcess implements ICodRuntime {
         {
           title: "Failed to read file",
           message: `Cod was unable to open the file you requested: ${e}`,
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.error",
         },

@@ -5,7 +5,7 @@ import { Daemon, Env } from "$ts/env";
 import { NightlyLogo } from "$ts/images/branding";
 import { ArcBuild } from "$ts/metadata/build";
 import { Plural } from "$ts/util";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { StoreItemIcon } from "$ts/util/distrib";
 import { UserContext } from "../context";
 
@@ -117,7 +117,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
               location.href = "/";
             },
           },
-          { caption: "Okay", action: () => {}, suggested: true },
+          BTN_OKAY_SUG,
         ],
         image: NightlyLogo,
         sound: "arcos.dialog.warning",

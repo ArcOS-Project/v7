@@ -35,6 +35,10 @@ export class ServerManager extends KernelModule implements IServerManager {
   private readonly STORE = [UserConnector, TotpConnector, TpaConnector, StoreConnector, ShareConnector, MessagingConnector];
   private _store: Record<"" | string, IServerConnector[]> = {};
 
+  public get ConnectorNames() {
+    return this.STORE.map((s) => s.name);
+  }
+
   public GetConn<T extends IServerConnector>(id: string, token: "" | string = ""): T {
     this._store[token] ??= [];
 

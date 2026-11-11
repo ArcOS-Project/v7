@@ -5,7 +5,7 @@ import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { textToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
@@ -63,7 +63,7 @@ export class AdminPortalRuntime extends AppProcess implements IAdminPortalRuntim
           title: "Broken link",
           message:
             "The page you tried to navigate to isn't registered in the Admin Portal's page store. If you didn't do this yourself, please check in with Izaak.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ElevationIcon",
           sound: "arcos.dialog.warning",
         },

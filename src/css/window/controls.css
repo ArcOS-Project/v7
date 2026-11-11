@@ -63,7 +63,7 @@ div.window > div.titlebar div.alt-menu button:hover {
 }
 div.window > div.body div.titlebar.custom div.controls button:hover,
 div.window > div.titlebar div.controls button:hover {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 div.window > div.body div.titlebar.custom div.controls button:disabled,

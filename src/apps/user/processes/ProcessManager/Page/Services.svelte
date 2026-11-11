@@ -1,11 +1,11 @@
 <script lang="ts">
+  import type { ServiceIdentifier } from "$interfaces/IServiceHost";
+  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSeparator from "$lib/Window/ActionBar/ActionSeparator.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
-  import type { IProcessManagerRuntime } from "$interfaces/runtimes/IProcessManagerRuntime";
   import Service from "./Services/Service.svelte";
-  import type { ServiceIdentifier } from "$interfaces/IServiceHost";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
   const { Services } = process.host;

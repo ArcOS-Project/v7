@@ -2,8 +2,8 @@
   import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
   import type { IArcFindService } from "$interfaces/services/IArcFindService";
   import ServiceGate from "$lib/ServiceGate.svelte";
-  import type { UserPreferencesStore } from "$types/user";
   import type { BooleanStore, StringStore } from "$types/shared/writable";
+  import type { UserPreferencesStore } from "$types/user";
   import Bottom from "./StartMenu/Bottom.svelte";
   import LeftPane from "./StartMenu/LeftPane.svelte";
   import RightPane from "./StartMenu/RightPane.svelte";

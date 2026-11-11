@@ -2,12 +2,7 @@
   import type { IMigrationService } from "$interfaces/services/IMigrationService";
   import { Daemon } from "$ts/env";
 
-  const {
-    migrationService,
-    id,
-    version,
-    refresh,
-  }: { migrationService: IMigrationService; id: string; version: number; refresh: () => void } = $props();
+  let { migrationService, id, version }: { migrationService: IMigrationService; id: string; version: number } = $props();
   const migration = migrationService.MIGRATIONS.find((m) => m.name === id);
   const upToDate = migration?.version === version && !migration?.inversional;
 
@@ -19,22 +14,22 @@
     await migrationService.runMigration(migration, (c) => {
       gli?.caption.set(c);
     });
-    refresh();
     await gli?.stop();
+    version = migration.version;
   }
 </script>
 
 {#if migration}
-  <div class="row">
-    <div class="name" title={migration.name}>{migration.friendlyName}</div>
-    <div class="version local">{version}</div>
-    <div class="version current">{migration.version}</div>
-    <button
-      class="run-migration"
-      onclick={runMigration}
-      title={upToDate ? "This migration is up to date" : "Click to run this migration now"}
-    >
-      Run
-    </button>
-  </div>
+  <tr>
+    <td class="name" title={migration.name}>{migration.name}</td>
+    <td class="version latest">{migration.version}</td>
+    <td class="version installed">{version}</td>
+    <td class="run">
+      <button
+        class="run-migration"
+        onclick={runMigration}
+        title={upToDate ? "This migration is up to date" : "Click to update this migration"}>Run</button
+      >
+    </td>
+  </tr>
 {/if}

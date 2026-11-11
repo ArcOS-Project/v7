@@ -1,0 +1,31 @@
+@import url("./minesweeper/header.css");
+@import url("./minesweeper/grid.css");
+@import url("./minesweeper/besttimes.css");
+@import url("./minesweeper/highscore.css");
+
+#MinesweeperApp {
+  --digit-bg: #440000;
+  --digit-backdrop: #660000;
+  --digit-fg: #ff0000;
+  overflow: visible;
+}
+/* 
+#MinesweeperApp {
+  max-width: 80% !important;
+  max-height: 80% !important;
+} */
+
+#MinesweeperApp,
+#MinesweeperApp > div.body {
+  height: fit-content !important;
+  width: fit-content !important;
+}
+
+#MinesweeperApp > div.titlebar {
+  border-radius: 14px 14px 0 0;
+}
+
+#MinesweeperApp > div.body {
+  overflow: hidden;
+  border-radius: 0 0 14px 14px;
+}

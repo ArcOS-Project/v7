@@ -2,7 +2,7 @@ import type { IPdfViewerRuntime } from "$interfaces/runtimes/IPdfViewerRuntime";
 import { AppProcess } from "$ts/apps/process";
 import { Daemon, Fs } from "$ts/env";
 import { arrayBufferToBlob } from "$ts/util/convert";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppProcessData } from "$types/apps/app";
@@ -76,7 +76,7 @@ export class PdfViewerRuntime extends AppProcess implements IPdfViewerRuntime {
             message: "The file you tried to open could not be read.",
             image: "ErrorIcon",
             sound: "arcos.dialog.error",
-            buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+            buttons: [BTN_OKAY_SUG],
           },
           this.parentPid,
           true

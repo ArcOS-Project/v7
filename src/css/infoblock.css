@@ -69,7 +69,7 @@ div.window:not(.core) div.body div.info-block div.segment p.value {
 }
 
 div.window:not(.core) div.body div.info-block div.segment p.title button.help:hover {
-  color: var(--accent-light);
+  color: var(--accent-textual);
 }
 
 div.window:not(.core) div.body div.info-block div.segment.right {

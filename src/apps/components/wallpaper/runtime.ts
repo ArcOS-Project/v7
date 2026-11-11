@@ -3,8 +3,8 @@ import { AppProcess } from "$ts/apps/process";
 import { ConfigurationBuilder } from "$ts/config";
 import { Daemon, Fs, SysDispatch } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import { MessageBox } from "$ts/util/dialog";
-import { join } from "$ts/util/fs";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+import { getItemNameFromPath, join } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { AppContextMenu, AppProcessData } from "$types/apps/app";
 import { LogLevel } from "$types/shared/logging";
@@ -64,7 +64,7 @@ export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
         {
           title: "Failed to load the desktop",
           message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },

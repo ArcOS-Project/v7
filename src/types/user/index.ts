@@ -84,7 +84,7 @@ export interface ShellPreferences {
   visuals: VisualPreferences;
   customStyle: CustomStylePreferences;
   actionCenter: {
-    weatherLocation: {
+    weatherLocation?: { // made optional 2026-08-01
       latitude: number;
       longitude: number;
       name?: string;
@@ -94,6 +94,14 @@ export interface ShellPreferences {
     cardIndex: number;
     hideQuickSettings: boolean;
   };
+}
+
+export interface WeatherSettings {
+  latitude: number;
+  longitude: number;
+  name?: string;
+  displayMode: "withCity" | "withCondition" | "onlyTemperature" | "disabled";
+  migrated: boolean;
 }
 
 export interface TaskbarPreferences {

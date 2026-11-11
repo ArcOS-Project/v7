@@ -1,17 +1,28 @@
 <script lang="ts">
   import type { IAppStoreRuntime } from "$interfaces/runtimes/IAppStoreRuntime";
   import Icon from "$lib/Icon.svelte";
-  import { Env } from "$ts/env";
+  import { Env, SysDispatch } from "$ts/env";
   import { Plural } from "$ts/util";
   import { StoreItemIcon } from "$ts/util/distrib";
   import type { StoreItem, UpdateInfo } from "$types/tpa/package";
+  import { onDestroy } from "svelte";
   import PackageGrid from "../AppStore/PackageGrid.svelte";
   import PackageInstallAction from "../AppStore/PackageInstallAction.svelte";
 
   const { process, updates, installed }: { process: IAppStoreRuntime; updates: UpdateInfo[]; installed: StoreItem[] } = $props();
 
+  let subscriber = SysDispatch.subscribe(`store-item-update`, () => refresh());
+
+  onDestroy(() => {
+    SysDispatch.unsubscribeId(`store-item-update`, subscriber);
+  });
+
   function updateAll() {
     process.spawnOverlayApp("MultiUpdateGui", +Env.get("shell_pid") || process.pid, updates);
+  }
+
+  async function refresh() {
+    process.switchPage("installed", {}, true);
   }
 </script>
 
@@ -70,7 +81,6 @@
   {/if}
 
   <PackageGrid items={installed} name="Installed" {process} />
-  <p class="end">Looks like you've reached the end.</p>
 {:else}
   <div class="empty">
     <span class="lucide icon-circle-slash"></span>

@@ -34,6 +34,9 @@ import img35 from "$assets/bg/img35.jpg";
 import img36 from "$assets/bg/img36.jpg";
 import img37 from "$assets/bg/img37.png";
 import img38 from "$assets/bg/img38.png";
+import img39 from "$assets/bg/img39.png";
+import img40 from "$assets/bg/img40.jpg";
+import img41 from "$assets/bg/img41.jpg";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
 import img02Thumb from "$assets/bg/thumbnails/imgthumb02.png";
@@ -70,6 +73,9 @@ import img35Thumb from "$assets/bg/thumbnails/imgthumb35.jpg";
 import img36Thumb from "$assets/bg/thumbnails/imgthumb36.jpg";
 import img37Thumb from "$assets/bg/thumbnails/imgthumb37.png";
 import img38Thumb from "$assets/bg/thumbnails/imgthumb38.png";
+import img39Thumb from "$assets/bg/thumbnails/imgthumb39.png";
+import img40Thumb from "$assets/bg/thumbnails/imgthumb40.jpg";
+import img41Thumb from "$assets/bg/thumbnails/imgthumb41.jpg";
 import type { Wallpaper } from "$types/user/wallpaper";
 export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 
@@ -161,6 +167,23 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     source: "Sopot, Poland",
     builtin: true,
   },
+  /** JustNoone */
+  img40: {
+    url: img40,
+    thumb: img40Thumb,
+    author: "JustNoone",
+    name: "London Thunderstorm",
+    source: "London, United Kingdom",
+    builtin: true,
+  },
+  img41: {
+    url: img41,
+    thumb: img41Thumb,
+    author: "JustNoone",
+    name: "London Thunderstorm Clouds",
+    source: "London, United Kingdom",
+    builtin: true,
+  },
   /**SWHFotografie */
   img13: {
     url: img13,
@@ -248,23 +271,23 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     name: "Sunny Lake",
     builtin: true,
   },
-  /**Allucat1000 */
+  /**Huopa */
   img33: {
     url: img33,
     thumb: img33Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Snowy Mountains",
   },
   img34: {
     url: img34,
     thumb: img34Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Germanic Waterfall",
   },
   img37: {
     url: img37,
     thumb: img37Thumb,
-    author: "Allucat1000",
+    author: "Huopa",
     name: "Italian Bliss",
   },
   /**Blocky (Cy) */
@@ -297,6 +320,13 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     author: "Blocky (Cy)",
     name: "African Penguins",
     builtin: true,
+  },
+  img39: {
+    url: img39,
+    thumb: img39Thumb,
+    author: "Blocky (Cy)",
+    name: "A Forest's Edge",
+    source: "Arkensas, US",
   },
   /**Matteo Scaringi */
   img16: {

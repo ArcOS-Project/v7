@@ -1,0 +1,4 @@
+#MailbrokerManagerApp > div.body div.page-create-template {
+  display: flex;
+  flex-direction: column;
+}

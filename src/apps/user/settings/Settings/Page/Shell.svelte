@@ -30,14 +30,11 @@
     <Option caption="Show window titles">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.labels} />
     </Option>
-    <Option caption="Show battery percentage">
-      <input
-        type="checkbox"
-        class="switch"
-        bind:checked={$userPreferences.shell.taskbar.batteryPercentage}
-        disabled={!battery || !$battery}
-      />
-    </Option>
+    {#if $battery}
+      <Option caption="Show battery percentage">
+        <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.batteryPercentage} />
+      </Option>
+    {/if}
     <Option caption="Show clock...">
       <button
         class:suggested={$userPreferences.shell.taskbar.clock12hr}
@@ -59,10 +56,22 @@
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.accentedStartButton} />
     </Option>
   </Section>
-  <Section caption="Action Center">
-    <Option caption="Weather location">
-      <button onclick={() => process.showSlide("shell_weatherLocation")} disabled={process.safeMode}>Change...</button>
+
+  <Section caption="Weather">
+    <Option caption="Show...">
+      <select bind:value={$userPreferences.weatherSettings.displayMode}>
+        <option value="disabled">Nothing</option>
+        <option value="onlyTemperature">Just the temperature</option>
+        <option value="withCity">Temperature and the city</option>
+        <option value="withCondition">Temperature and the condition</option>
+      </select>
     </Option>
+    <Option caption="Weather location">
+      <button onclick={() => process.showSlide("shell_weatherLocation")} disabled={process.safeMode || $userPreferences.weatherSettings.displayMode === "disabled"}>Change...</button>
+    </Option>
+  </Section>
+
+  <Section caption="Action Center">
     <Option caption="Hide the quick settings">
       <input
         type="checkbox"

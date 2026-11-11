@@ -4,7 +4,7 @@
   import { Logo } from "$ts/branding";
   import { Daemon } from "$ts/env";
   import { sortByKey } from "$ts/util";
-  import { MessageBox } from "$ts/util/dialog";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import { Store } from "$ts/writable";
   import type { BugReport } from "$types/server/bughunt";
   import { onMount } from "svelte";
@@ -52,7 +52,7 @@
         {
           title: "Report ID not found",
           message: "Sorry, the report ID you entered doesn't match any records. Check it, and then try again.",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",
         },

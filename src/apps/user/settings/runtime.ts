@@ -7,7 +7,7 @@ import { ArcLicense } from "$ts/metadata/license";
 import { Sleep } from "$ts/sleep";
 import { UserPaths } from "$ts/user/store";
 import { htmlspecialchars } from "$ts/util";
-import { MessageBox } from "$ts/util/dialog";
+import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath } from "$ts/util/fs";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
@@ -195,7 +195,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
           title: "Failed to upload wallpaper",
           message: `An error occurred while uploading a wallpaper from your device: ${message}`,
           image: "ErrorIcon",
-          buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
+          buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
         },
         this.pid,

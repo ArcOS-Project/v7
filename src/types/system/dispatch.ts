@@ -8,4 +8,7 @@ export interface GlobalDispatchClient {
   authorized: boolean;
   ip?: string;
 }
+
+export type GlobalDispatchState = "connected" | "connecting" | "disconnected";
+
 // !endtpa

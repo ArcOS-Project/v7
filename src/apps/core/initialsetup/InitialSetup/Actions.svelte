@@ -1,6 +1,5 @@
 <script lang="ts">
   import ActionBar from "$lib/Window/ActionBar.svelte";
-  import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import { Sleep } from "$ts/sleep";
   import { Store } from "$ts/writable";
   import type { ReadableStore } from "$types/shared/writable";

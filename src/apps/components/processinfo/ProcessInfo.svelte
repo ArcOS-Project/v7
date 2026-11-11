@@ -59,6 +59,9 @@
     <InfoRow>
       <Segment title="Source Path">{proc.sourceUrl || import.meta.url}</Segment>
       <Segment title="Source Type">{proc.sourceUrl ? "Original" : "Interpreted"}</Segment>
+      {#if !ProcessesHelper.IsAnyAppProcess(proc)}
+        <Segment title="Class" alt={proc.constructor.name || "-"}>{proc.constructor.name || "-"}</Segment>
+      {/if}
     </InfoRow>
   </InfoBlock>
   {#if ProcessesHelper.IsAnyAppProcess(proc)}
@@ -66,7 +69,7 @@
       <InfoRow>
         <Segment title="App ID" alt={proc.app.id}>{proc.app.id}</Segment>
         <Segment title="Origin" alt={proc.app.data.originId}>{proc.app.data.originId}</Segment>
-        <Segment title="Desktop" alt={proc.app.desktop}>{proc.app.desktop || "-"}</Segment>
+        <Segment title="Class" alt={proc.constructor.name || "-"}>{proc.constructor.name || "-"}</Segment>
       </InfoRow>
     </InfoBlock>
   {/if}

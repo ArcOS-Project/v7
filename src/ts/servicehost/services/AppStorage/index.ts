@@ -114,10 +114,12 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
         const result = await this.loadAppFromViteModule(modules[path], path);
         const app = result.result!;
 
-        if (!result.success) {
+        if (!result.success && result.errorMessage !== "LOAD_CONDITION") {
           await this.error_appLoadError(result);
           return null;
         }
+
+        if (!app) return null;
 
         this.initBroadcast?.(`Loaded ${app.metadata.name}`);
         this.Log(result.successMessage!);
@@ -141,6 +143,8 @@ export class ApplicationStorage extends BaseService implements IApplicationStora
       const mod = (await fn()) as any;
       const app = mod.default as App;
       const originalPath = regex.exec(fn.toString())?.groups?.path;
+
+      if (app.loadCondition && !(await app.loadCondition(Daemon))) return CommandResult.Error(`LOAD_CONDITION`);
 
       if (app._internalMinVer && compareVersion(ArcOSVersion, app._internalMinVer) === "higher") {
         return CommandResult.Error(`This application expects a newer version of ArcOS`);

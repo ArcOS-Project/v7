@@ -20,11 +20,11 @@
   });
 
   function keydown(e: KeyboardEvent) {
-    if (e.key.toLowerCase().includes("shift")) shiftKey = true;
+    if (e?.key?.toLowerCase().includes("shift")) shiftKey = true;
   }
 
   function keyup(e: KeyboardEvent) {
-    if (e.key.toLowerCase().includes("shift")) shiftKey = false;
+    if (e?.key?.toLowerCase().includes("shift")) shiftKey = false;
   }
 </script>
 

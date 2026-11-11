@@ -6,6 +6,7 @@ import { authcode } from "$ts/util";
 import { toForm } from "$ts/util/form";
 import type { GlobalDispatchClient } from "$types/system/dispatch";
 import type { PublicUserInfo, UserInfo, UserPreferences } from "$types/user";
+import type { PswdResetConsumptionResult, PswdResetCreateResult, PswdResetVerificationResult } from "$types/user/pswdreset";
 import { ServerConnector } from ".";
 
 export class UserConnector extends ServerConnector implements IUserConnector {
@@ -29,7 +30,7 @@ export class UserConnector extends ServerConnector implements IUserConnector {
 
   async ChangePassword(newPassword: string): Promise<ICommandResult> {
     try {
-      return CommandResult.FromResponse(await this.server.patch("/changepswd", toForm({ newPassword })));
+      return CommandResult.FromResponse(await this.server.post("/changepswd", toForm({ newPassword })));
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
@@ -107,5 +108,35 @@ export class UserConnector extends ServerConnector implements IUserConnector {
   LoginBgUrl(userId: string) {
     const code = authcode();
     return `${Server.url}/user/loginbg/${userId}${code}${code ? "&" : "?"}${Date.now()}`;
+  }
+
+  async CreatePswdResetRequest(username: string): Promise<ICommandResult<PswdResetCreateResult>> {
+    try {
+      return CommandResult.FromResponse(await this.server.post("/pswdreset", toForm({ username })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async VerifyPswdResetRequest(userId: string, code: string): Promise<ICommandResult<PswdResetVerificationResult>> {
+    try {
+      return CommandResult.FromResponse(await this.server.post("/pswdreset/verify", toForm({ userId, code })));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async ConsumePswdResetRequest(
+    userId: string,
+    resetToken: string,
+    newPassword: string
+  ): Promise<ICommandResult<PswdResetConsumptionResult>> {
+    try {
+      return CommandResult.FromResponse(
+        await this.server.post("/pswdreset/consume", toForm({ userId, resetToken, newPassword }))
+      );
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 }

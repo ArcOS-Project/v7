@@ -35,6 +35,8 @@ export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntim
   async render() {
     if (await this.closeIfSecondInstance()) return false;
 
+    Env.set("contextmenu_pid", this.pid);
+
     this.assignContextMenuHooks();
   }
 
