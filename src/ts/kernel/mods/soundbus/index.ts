@@ -1,6 +1,6 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { ISoundbus } from "$interfaces/modules/ISoundbus";
-import { Env } from "$ts/env";
+import { Env, Kernel } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import type { SoundBusStore, SoundStore } from "$types/system/soundbus";
 import { ArcSounds } from "./store";
@@ -21,6 +21,7 @@ export class SoundBus extends KernelModule implements ISoundbus {
 
   public playSound(id: string, volume = 1) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "soundbus", "playSound");
     if (Env.get("safemode")) return;
     if (!this.store[id]) return false;
 
@@ -46,6 +47,7 @@ export class SoundBus extends KernelModule implements ISoundbus {
 
   public stopSound(id: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "soundbus", "stopSound");
 
     this.Log(`Stopping ${id}`);
 
@@ -64,12 +66,14 @@ export class SoundBus extends KernelModule implements ISoundbus {
 
   public getStore(): [string, string][] {
     this.isKmod();
+    Kernel.LogOperation("kmod", "soundbus", "getStore");
 
     return Object.entries(this.store);
   }
 
   public loadExternal(source: string, play: boolean = false) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "soundbus", "loadExernal");
 
     const uuid = `${Math.floor(Math.random() * 1e9)}`;
 

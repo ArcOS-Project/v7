@@ -52,6 +52,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
   }
 
   busyWithNot(thing: string) {
+    Kernel.LogOperation("kmod", "stack", "busyWithNot");
     return this.BUSY && this.BUSY !== thing;
   }
 
@@ -63,6 +64,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   async startRenderer(initPid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "startRenderer");
 
     this.renderer = await this.spawn(AppRenderer, undefined, "SYSTEM", initPid, "appRenderer");
   }
@@ -77,6 +79,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
     ...args: any[]
   ): Promise<T | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "spawn");
 
     if (Kernel?.PANICKED || this.busyWithNot("spawn")) return;
 
@@ -144,14 +147,17 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
   }
 
   getProcessContext(pid: number) {
+    Kernel.LogOperation("kmod", "stack", "getProcessContext");
     return this.processContexts.get(pid);
   }
 
   setProcessContext(pid: number, context: ProcessContext) {
+    Kernel.LogOperation("kmod", "stack", "setProcessContext");
     this.processContexts.set(pid, context);
   }
 
   async updateProcessContext(pid: number, cb: (context: ProcessContext) => ProcessContext) {
+    Kernel.LogOperation("kmod", "stack", "updateProcessContext");
     const context = this.getProcessContext(pid);
 
     if (!context) return false;
@@ -161,6 +167,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   async kill(pid: number, force = false): Promise<ProcessKillResult> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "kill");
 
     if (this.busyWithNot("kill") || Kernel?.PANICKED) return "err_disposed";
 
@@ -210,6 +217,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   public async _killSubProceses(pid: number, force = false) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "_killSubProcesses");
 
     if (Kernel?.PANICKED) return;
 
@@ -232,6 +240,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   public getSubProcesses(parentPid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "_getSubProcesses");
 
     const result = new Map<number, IProcess>([]);
 
@@ -248,6 +257,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   getProcess<T = IProcess>(pid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "getProcess");
 
     const proc = this.store().get(pid);
 
@@ -258,6 +268,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   getPid() {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "getPid");
 
     this.lastPid++;
 
@@ -266,12 +277,14 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
 
   isPid(pid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "isPid");
 
     return this.store().has(pid) && !this.store().get(pid)?._disposed;
   }
 
   ConnectDispatch(pid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "stack", "ConnectDispatch");
 
     const proc = this.getProcess(pid);
 
@@ -281,6 +294,7 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
   }
 
   async waitForAvailable(or?: string) {
+    Kernel.LogOperation("kmod", "stack", "waitForAvailable");
     this.Log("wait for available");
     return new Promise<void>((r) => {
       const interval = setInterval(() => {

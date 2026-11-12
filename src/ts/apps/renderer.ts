@@ -4,7 +4,7 @@ import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRunti
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import type { IIconService } from "$interfaces/services/IIconService";
 import { __Console__ } from "$ts/console";
-import { BETA, BugHunt, Daemon, Env, Stack, SysDispatch } from "$ts/env";
+import { BETA, BugHunt, Daemon, Env, Kernel, Stack, SysDispatch } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { BlankIcon } from "$ts/images/general";
 import { contextProps } from "$ts/ui/context/actions.svelte";
@@ -54,6 +54,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   disposedCheck() {
+    Kernel.LogOperation("kproc", "renderer", "disposedCheck");
     if (this._disposed) {
       throw new AppRendererError(`AppRenderer with PID ${this.pid} was killed`);
     }
@@ -63,6 +64,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   async render(process: IAppProcess, renderTarget: HTMLDivElement | undefined) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "render");
 
     if (process._disposed) return;
 
@@ -154,6 +156,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   _windowClasses(proc: IAppProcess, window: HTMLDivElement, data: App) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "_windowClasses");
 
     if (data.core) window.classList.add("core");
     else {
@@ -192,6 +195,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   async centerWindow(proc: IAppProcess) {
+    Kernel.LogOperation("kproc", "renderer", "centerWindow");
     await Sleep(0);
     const data = proc.app.data;
     const window = proc.getWindow();
@@ -210,6 +214,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   _windowDraggable(proc: IAppProcess, window: HTMLDivElement) {
+    Kernel.LogOperation("kproc", "renderer", "_windowDraggable");
     proc?.draggable?.destroy();
 
     const draggable = new Draggable(window, {
@@ -225,6 +230,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   _windowEvents(proc: IAppProcess, window: HTMLDivElement, titlebar: HTMLDivElement | undefined, data: App) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "_windowEvents");
 
     if (data.core || data.overlay) return;
 
@@ -248,6 +254,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   focusPid(pid: number) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "focusPid");
 
     const currentFocus = this.focusedPid.get();
     const window = document.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
@@ -264,6 +271,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   _renderTitlebar(process: IAppProcess) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "_renderTitlebar");
 
     if (process.app.data.core) return undefined;
 
@@ -357,6 +365,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   _renderAltMenu(process: IAppProcess) {
     const menu = document.createElement("div");
+    Kernel.LogOperation("kproc", "renderer", "_renderAltMenu");
 
     menu.className = "alt-menu nodrag";
 
@@ -417,6 +426,8 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   _renderToast(process: IAppProcess) {
+    Kernel.LogOperation("kproc", "renderer", "_renderToast");
+
     const toast = document.createElement("div");
     const content = document.createElement("span");
     const icon = document.createElement("span");
@@ -443,6 +454,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   _resizeGrabbers(process: IAppProcess, window: HTMLDivElement) {
+    Kernel.LogOperation("kproc", "renderer", "_resizeGrabbers");
     if (!process.app.data.state.resizable || process.app.data.core) return undefined;
 
     const RESIZERS: WindowResizer[] = [
@@ -464,6 +476,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   _resizer(window: HTMLDivElement, resizer: WindowResizer) {
+    Kernel.LogOperation("kproc", "renderer", "_resizer");
     const el = document.createElement("div");
     el.className = `resizer ${resizer.className}`;
 
@@ -558,6 +571,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   async remove(pid: number) {
     if (this._disposed) return;
+    Kernel.LogOperation("kproc", "renderer", "remove");
 
     this.Log(`Removing render state of PID ${pid}`);
 
@@ -586,6 +600,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   toggleMaximize(pid: number) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "toggleMaximize");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
     if (!window) return;
@@ -605,6 +620,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   updateDraggableDisabledState(pid: number, window: HTMLDivElement) {
+    Kernel.LogOperation("kproc", "renderer", "updateDraggableDisabledState");
     const process = Stack.getProcess<IAppProcess>(pid);
 
     if (!process || !process.draggable) return;
@@ -622,6 +638,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   unMinimize(pid: number) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "unMinimize");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
@@ -639,6 +656,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   unsnapWindow(pid: number, dispatch = true) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "unsnapWindow");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
@@ -658,6 +676,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   snapWindow(pid: number, variant: string) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "snapWindow");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
@@ -675,6 +694,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   toggleMinimize(pid: number) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "toggleMinimize");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
@@ -695,6 +715,7 @@ export class AppRenderer extends Process implements IAppRenderer {
 
   toggleFullscreen(pid: number) {
     this.disposedCheck();
+    Kernel.LogOperation("kproc", "renderer", "toggleFullscreen");
 
     const window = this.target.querySelector(`div.window[data-pid="${pid}"]`) as HTMLDivElement;
 
@@ -714,6 +735,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   getAppInstances(id: string, originPid?: number) {
+    Kernel.LogOperation("kproc", "renderer", "getAppInstances");
     const result = [];
 
     for (const pid of this.currentState) {
@@ -728,6 +750,7 @@ export class AppRenderer extends Process implements IAppRenderer {
   }
 
   async notifyCrash(data: App, reason: any, process?: IAppProcess) {
+    Kernel.LogOperation("kproc", "renderer", "notifyCrash");
     if (!data) return;
 
     this.Log(

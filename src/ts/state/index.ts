@@ -40,6 +40,7 @@ export class StateHandler extends Process implements IStateHandler {
   //#endregion
 
   async loadState(id: string, props: Record<string, any> = {}, instant = false) {
+    Kernel.LogOperation("kproc", "state", "loadState");
     if (this._disposed) return;
     if (Kernel?.PANICKED && id !== "crash-screen") return;
 
@@ -111,6 +112,7 @@ export class StateHandler extends Process implements IStateHandler {
   }
 
   async loadStateNormally(id: string, data: State, htmlLoader: HTMLDivElement, cssLoader: HTMLLinkElement) {
+    Kernel.LogOperation("kproc", "state", "loadStateNormally");
     if (this._disposed) return;
 
     this.Log(`BEGINNING NORMAL LOAD OF ${data.name} (${id})`);
@@ -131,6 +133,7 @@ export class StateHandler extends Process implements IStateHandler {
   }
 
   async loadStateAsApp(data: State, props: Record<string, any>) {
+    Kernel.LogOperation("kproc", "state", "loadStateAsApp");
     if (this._disposed) return;
 
     this.Log(`BEGINNING LOAD OF ${data.name} (${data.identifier}) IN APP MODE`);
@@ -160,6 +163,7 @@ export class StateHandler extends Process implements IStateHandler {
   }
 
   getStateLoaders() {
+    Kernel.LogOperation("kproc", "state", "getStateLoaders");
     const main = document.querySelector("#main") as HTMLDivElement;
     const cssLoader = document.getElementById("stateCSSLoader") as HTMLLinkElement;
     const htmlLoader = document.getElementById("stateLoader") as HTMLDivElement;

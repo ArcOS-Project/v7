@@ -3,7 +3,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IFilesystem } from "$interfaces/modules/IFilesystem";
-import { SysDispatch } from "$ts/env";
+import { Kernel, SysDispatch } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { CommandResult } from "$ts/result";
 import { sha256, sliceIntoChunks } from "$ts/util";
@@ -43,6 +43,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   getDriveById(id: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "getDriveById");
 
     return this.drives[id];
   }
@@ -55,6 +56,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     ...args: any[]
   ): Promise<T | false> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "mountDrive");
 
     this.Log(`Mounting drive '${id}' as letter ${letter || "<NONE>"}`);
 
@@ -78,6 +80,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   getDriveIdByIdentifier(identifier: string) {
+    Kernel.LogOperation("kmod", "fs", "getDriveIdByIdentifier");
     return Object.entries(this.drives)
       .filter(([id, drv]) => {
         return drv.driveLetter === identifier || drv.uuid === identifier;
@@ -87,7 +90,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async umountDrive(id: string, fromSystem = false, onProgress?: FilesystemProgressCallback) {
     this.isKmod();
-
+    Kernel.LogOperation("kmod", "fs", "umountDrive");
     this.Log(`Unmounting drive '${id}'`);
 
     if (!this.drives[id]) return false;
@@ -103,6 +106,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   async umountAllOfType(identifiesAs: string, fromSystem = false): Promise<ICommandResult> {
+    Kernel.LogOperation("kmod", "fs", "umountAllOfType");
     const drives = Object.fromEntries(Object.entries(this.drives).filter(([_, drive]) => drive.IDENTIFIES_AS === identifiesAs));
 
     this.freezeMountingDispatch = true;
@@ -122,11 +126,10 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   getDriveByLetter(letter: string, error = true) {
     this.isKmod();
-
     this.validateDriveLetter(letter);
+    Kernel.LogOperation("kmod", "fs", "getDriveByLetter");
 
     const result = Object.values(this.drives).filter((s) => s.driveLetter == letter || s.uuid == letter)[0];
-
     if (!result && error) throw new Error(`FilesystemGetDriveByLetter: Not mounted: ${letter}:/`);
 
     return result;
@@ -134,6 +137,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   getDriveIdentifier(path: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "getDriveIdentifier");
 
     this.validatePath(path);
 
@@ -142,11 +146,13 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   getDriveByPath(path: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "getDriveByPath");
 
     return this.getDriveByLetter(this.getDriveIdentifier(path));
   }
 
   validatePath(p: string) {
+    Kernel.LogOperation("kmod", "fs", "validatePath");
     this.isKmod();
 
     if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z]):\/(.*?)$/g.test(p))
@@ -154,8 +160,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   removeDriveLetter(p: string) {
+    Kernel.LogOperation("kmod", "fs", "removeDriveLetter");
     this.isKmod();
-
     this.validatePath(p);
 
     let newPath = p.replace(`${this.getDriveIdentifier(p)}:/`, "");
@@ -166,6 +172,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   validateDriveLetter(letter: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "validateDriveLetter");
 
     if (!/^([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|[a-zA-Z])$/g.test(letter))
       throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
@@ -173,6 +180,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   getProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "getProxyInfo");
 
     const regex = /::\{(?<id>[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})\}/g;
     const uuid = regex.exec(path)?.groups?.id;
@@ -195,6 +203,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   tryGetProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+    Kernel.LogOperation("kmod", "fs", "tryGetProxyInfo");
+
     try {
       return this.getProxyInfo(path, topLevel);
     } catch {
@@ -203,6 +213,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   async tryHandleProxyReadDir(path: string): Promise<DirectoryReadReturn | undefined> {
+    Kernel.LogOperation("kmod", "fs", "tryHandleProxyReadDir");
+
     const info = this.getProxyInfo(path);
     if (!info) return undefined;
 
@@ -210,6 +222,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   async tryHandleProxyReadFile(path: string): Promise<ArrayBuffer | undefined> {
+    Kernel.LogOperation("kmod", "fs", "tryHandleProxyReadFile");
+
     const info = this.getProxyInfo(path);
     if (!info) return undefined;
 
@@ -218,6 +232,8 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async readDir(path: string): Promise<DirectoryReadReturn | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "readDir");
+
     this.Log(`Reading directory '${path}'`);
     this.validatePath(path);
 
@@ -232,6 +248,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async bulk<T = any>(path: string, extension: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "bulk");
 
     this.Log(`Getting .${extension} files in bulk from '${path}'`);
 
@@ -246,6 +263,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async createDirectory(path: string, dispatch = true): Promise<boolean> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "createDirectory");
 
     this.Log(`Creating directory '${path}'`);
     this.validatePath(path);
@@ -264,6 +282,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async readFile(path: string, onProgress?: FilesystemProgressCallback): Promise<ArrayBuffer | undefined> {
     onProgress ||= this.defaultProgress.bind(this);
+    Kernel.LogOperation("kmod", "fs", "readFile");
 
     this.isKmod();
     this.Log(`Reading file '${path}'`);
@@ -281,9 +300,9 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async writeFile(path: string, data: Blob, onProgress?: FilesystemProgressCallback, dispatch = true): Promise<boolean> {
     onProgress ||= this.defaultProgress.bind(this);
-
     this.isKmod();
 
+    Kernel.LogOperation("kmod", "fs", "writeFile");
     this.Log(`Writing ${data.size} bytes to file '${path}'`);
     this.validatePath(path);
 
@@ -303,6 +322,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async tree(path: string): Promise<RecursiveDirectoryReadReturn | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "tree");
 
     this.Log(`Getting tree of '${path}'`);
     this.validatePath(path);
@@ -322,6 +342,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     onProgress?: FilesystemProgressCallback
   ): Promise<boolean> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "copyItem");
 
     this.Log(`Copying '${source}' to '${destination}'`);
     this.validatePath(source);
@@ -357,6 +378,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     onProgress?: FilesystemProgressCallback
   ): Promise<boolean> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "moveItem");
 
     this.Log(`Moving '${source}' to '${destination}'`);
     this.validatePath(source);
@@ -394,6 +416,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     onProgress?: FilesystemProgressCallback,
     keepSource = false
   ) {
+    Kernel.LogOperation("kmod", "fs", "transferFileBetweenDrives");
     const isDirectory = await this.isDirectory(source);
 
     if (isDirectory) {
@@ -490,6 +513,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async deleteItem(path: string, dispatch = true): Promise<boolean> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "deleteItem");
 
     this.Log(`Deleting item '${path}'`);
     this.validatePath(path);
@@ -514,6 +538,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
     onProgress ||= this.defaultProgress.bind(this);
 
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "uploadFiles");
 
     if (!(await this.isDirectory(target))) await this.createDirectory(target);
 
@@ -592,6 +617,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async lockFile(path: string, pid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "lockFile");
 
     this.Log(`Locking file '${path}' for process ${pid}`);
     this.validatePath(path);
@@ -604,6 +630,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async releaseLock(path: string, pid: number) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "releaseLock");
 
     this.Log(`Unlocking file '${path}'`);
     this.validatePath(path);
@@ -616,6 +643,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async direct(path: string): Promise<string | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "direct");
 
     this.Log(`Requesting direct access of '${path}'`);
     this.validatePath(path);
@@ -630,6 +658,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   nextAvailableDriveLetter() {
+    Kernel.LogOperation("kmod", "fs", "nextAvailableDriveLetter");
     const letters = "ABCDEFGHIJKLMNOPQRSTVWXYZ".split(""); // No U because U === userfs
 
     for (const letter of letters) {
@@ -641,6 +670,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
   }
 
   async isDirectory(path: string) {
+    Kernel.LogOperation("kmod", "fs", "isDirectory");
     try {
       const drive = this.getDriveByPath(path);
 
@@ -659,6 +689,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async stat(path: string): Promise<ExtendedStat | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "stat");
 
     this.Log(`stat '${path}'`);
     this.validatePath(path);
@@ -672,6 +703,7 @@ export class Filesystem extends KernelModule implements IFilesystem {
 
   async imageThumbnail(path: string, width: number, height?: number): Promise<string | undefined> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "fs", "imageThumbnail");
 
     this.Log(`imageThumbnail '${path}'`);
     this.validatePath(path);

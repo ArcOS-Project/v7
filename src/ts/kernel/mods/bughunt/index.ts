@@ -1,7 +1,7 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IWaveKernel, KernelOpModuleName } from "$interfaces/IWaveKernel";
 import type { IBugHunt } from "$interfaces/modules/IBugHunt";
-import { ArcOSVersion, Env, Server, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Kernel, Server, Stack } from "$ts/env";
 import { KernelLogs } from "$ts/kernel/getters";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { KernelModule } from "$ts/kernel/module";
@@ -23,6 +23,8 @@ export class BugHunt extends KernelModule implements IBugHunt {
   //#endregion
 
   createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
+    Kernel.LogOperation("kmod", "bughunt", "createReport");
+
     const server = URL.parse(Server.url || "https://arcapi.nl")?.host;
 
     return {
@@ -45,6 +47,8 @@ export class BugHunt extends KernelModule implements IBugHunt {
   }
 
   async sendReport(outgoing: OutgoingBugReport, token = this.getToken(), options = defaultReportOptions): Promise<boolean> {
+    Kernel.LogOperation("kmod", "bughunt", "sendReport");
+
     try {
       const response = await Backend.post("/bughunt/report", outgoing, {
         headers: { Authorization: `Bearer ${options.anonymous ? "" : token}` },
@@ -57,6 +61,8 @@ export class BugHunt extends KernelModule implements IBugHunt {
   }
 
   getToken() {
+    Kernel.LogOperation("kmod", "bughunt", "getToken");
+
     const daemonPid = +Env.get("userdaemon_pid");
     const userDaemon = Stack.getProcess<IUserDaemon>(daemonPid);
 
@@ -66,6 +72,8 @@ export class BugHunt extends KernelModule implements IBugHunt {
   }
 
   async getUserBugReports(token: string): Promise<BugReport[]> {
+    Kernel.LogOperation("kmod", "bughunt", "getUserBugReports");
+
     try {
       const response = await Backend.get("/bughunt/reports/private", { headers: { Authorization: `Bearer ${token}` } });
 
@@ -76,6 +84,8 @@ export class BugHunt extends KernelModule implements IBugHunt {
   }
 
   async getPublicBugReports(token: string): Promise<BugReport[]> {
+    Kernel.LogOperation("kmod", "bughunt", "getPublicBugReports");
+
     try {
       const response = await Backend.get(`/bughunt/reports/public`, { headers: { Authorization: `Bearer ${token}` } });
 

@@ -23,6 +23,7 @@ export class SystemDispatch extends KernelModule implements ISystemDispatch {
   //#endregion
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
+    Kernel.LogOperation("kmod", "dispatch", "subscribe");
     this.isKmod();
 
     const id = Math.floor(Math.random() * 1e6);
@@ -38,18 +39,21 @@ export class SystemDispatch extends KernelModule implements ISystemDispatch {
   }
 
   unsubscribeId(event: string, id: number) {
+    Kernel.LogOperation("kmod", "dispatch", "unsubscribeId");
     this.isKmod();
 
     delete this.subscribers[event][id];
   }
 
   discardEvent(event: string) {
+    Kernel.LogOperation("kmod", "dispatch", "discardEvent");
     this.isKmod();
 
     delete this.subscribers[event];
   }
 
   dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
+    Kernel.LogOperation("kmod", "dispatch", "dispatch");
     this.isKmod();
 
     const callers = this.subscribers[caller];

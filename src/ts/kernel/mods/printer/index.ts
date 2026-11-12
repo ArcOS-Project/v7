@@ -2,6 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
 import type { IPrinter, IPrinterLock, KernelPrintOptions } from "$interfaces/modules/IPrinterKernelModule";
+import { Kernel } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { CommandResult } from "$ts/result";
 import { Sleep } from "$ts/sleep";
@@ -38,6 +39,7 @@ export class Printer extends KernelModule implements IPrinter {
     options: KernelPrintOptions
   ): ICommandResult<IPrinterLock<TProc>> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "printer", "StartPrintTransaction");
 
     if (this.#printerLock) {
       return CommandResult.Error(`Invalid operation. A transaction is already active for PID ${this.#printerLock.pid}.`);
@@ -61,6 +63,7 @@ export class Printer extends KernelModule implements IPrinter {
 
   public CancelPrintTransaction(lockUuid: string): ICommandResult {
     this.isKmod();
+    Kernel.LogOperation("kmod", "printer", "CancelPrintTransaction");
 
     const validationResult = this.#ValidateLockUuid(lockUuid);
     if (!validationResult.success) return validationResult;
@@ -71,6 +74,7 @@ export class Printer extends KernelModule implements IPrinter {
 
   public async ProcessPrintTransaction(lockUuid: string, options: KernelPrintOptions): Promise<ICommandResult> {
     this.isKmod();
+    Kernel.LogOperation("kmod", "printer", "ProcessPrintTransaction");
 
     const validationResult = this.#ValidateLockUuid(lockUuid);
     if (!validationResult.success) return validationResult;
@@ -88,6 +92,7 @@ export class Printer extends KernelModule implements IPrinter {
 
   #ReleaseLock() {
     this.isKmod();
+    Kernel.LogOperation("kmod", "printer", "#ReleaseLock");
     this.#printerLockUuid = undefined;
     this.#printerLock = undefined;
     this.#ResetPrintArea();
@@ -96,11 +101,13 @@ export class Printer extends KernelModule implements IPrinter {
 
   #ExpireTransaction() {
     if (!this.isLocked) return;
+    Kernel.LogOperation("kmod", "printer", "#ExpireTransaction");
     this.#expiredUuid = this.#printerLockUuid!;
     this.#ReleaseLock();
   }
 
   #ResetPrintArea() {
+    Kernel.LogOperation("kmod", "printer", "#ResetPrintArea");
     if (this.#oldDocumentTitle) {
       document.title = this.#oldDocumentTitle!;
     }
@@ -115,6 +122,8 @@ export class Printer extends KernelModule implements IPrinter {
   }
 
   #PreparePrintArea(options: KernelPrintOptions) {
+    Kernel.LogOperation("kmod", "printer", "#PreparePrintArea");
+
     if (options.invert) {
       this.#printArea.classList.add("kpo-invert");
     }
@@ -142,6 +151,8 @@ export class Printer extends KernelModule implements IPrinter {
   }
 
   #ValidateLockUuid(lockUuid: string) {
+    Kernel.LogOperation("kmod", "printer", "#ValidateLockUuid");
+
     if (this.#expiredUuid === lockUuid) {
       return CommandResult.Error("The transaction expired.");
     }

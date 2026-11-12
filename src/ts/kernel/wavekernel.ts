@@ -1,5 +1,5 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
-import type { IWaveKernel } from "$interfaces/IWaveKernel";
+import type { IWaveKernel, KernelOperationLogItem, KernelOpModuleName, KernelOpModuleType } from "$interfaces/IWaveKernel";
 import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
 import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
 import { __Console__ } from "$ts/console";
@@ -20,6 +20,7 @@ export class WaveKernel implements IWaveKernel {
   public modules: string[] = [];
   public PANICKED = false;
   public Logs: LogItem[] = [];
+  public OperationLog: KernelOperationLogItem[] = [];
   public startMs: number;
   public init: InitProcess | undefined;
   public state: IStateHandler | undefined;
@@ -35,7 +36,6 @@ export class WaveKernel implements IWaveKernel {
     this.Log("KERNEL", "Constructing new Kernel. Have fun zottel.");
 
     handleGlobalErrors();
-
     SetCurrentKernel(this);
 
     if (import.meta.env.DEV) {
@@ -43,12 +43,15 @@ export class WaveKernel implements IWaveKernel {
       win.kernel = this;
       win.JsExec = JsExec;
     }
+
+    this.LogOperation("kernel", "$", "constructor");
   }
 
   async panic(reason: string, brief?: string) {
     if (this.PANICKED) return;
 
     this.PANICKED = true;
+    this.LogOperation("kernel", "$", "panic");
 
     const state = this.state;
 
@@ -67,6 +70,7 @@ export class WaveKernel implements IWaveKernel {
 
   async _init() {
     EchoIntro();
+    this.LogOperation("kernel", "$", "_init");
 
     window.__DW_STATUS__ = "async WaveKernel._init";
     window.__DW_INIT__ = true;
@@ -99,6 +103,7 @@ export class WaveKernel implements IWaveKernel {
   }
 
   getModule<T = any>(id: string, dontCrash = false): T {
+    this.LogOperation("kernel", "$", "getModule");
     const mod = (this as any)[id];
     const result = this.modules.includes(id) && mod && mod.id === id ? (mod as T) : undefined;
 
@@ -108,6 +113,7 @@ export class WaveKernel implements IWaveKernel {
   }
 
   private async _kernelModules() {
+    this.LogOperation("kernel", "$", "_kernelModules");
     this.Log(`KERNEL`, `Loading kernel modules`);
 
     for (const [id, mod] of Object.entries(KernelModules)) {
@@ -147,5 +153,18 @@ export class WaveKernel implements IWaveKernel {
     mapping[level](
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
     );
+  }
+
+  public LogOperation(modType: KernelOpModuleType, module: KernelOpModuleName, event: string): void {
+    const timestamp = this.startMs;
+
+    console.log(`[${(timestamp - this.startMs).toString().padStart(10, "0")}] OPERATION ${modType}::${module}_${event}`);
+
+    this.OperationLog.push({
+      timestamp: new Date(),
+      moduleType: modType,
+      module,
+      event,
+    });
   }
 }
