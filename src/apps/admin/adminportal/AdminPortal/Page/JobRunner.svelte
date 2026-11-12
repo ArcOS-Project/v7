@@ -9,12 +9,14 @@
   let output = $state<HTMLDivElement>();
   let running = $state(false);
   let result = $state<ICommandResult | undefined>();
+  let startTime = $state<number>(0);
 
   const jobs = process.admin.Jobs;
 
   async function runJob() {
     if (!jobName) return;
 
+    startTime = performance.now();
     lines = [];
 
     running = true;
@@ -23,7 +25,8 @@
   }
 
   async function broadcast(message: string) {
-    lines.push(message);
+    const timeDiff = performance.now() - startTime;
+    lines.push(`${("+" + timeDiff.toFixed(2)).padStart(11)} : ${message}`);
     await Sleep(1);
 
     output!.scrollTop = output!.scrollHeight;
@@ -54,7 +57,7 @@
 </div>
 
 <div class="output" bind:this={output}>
-  {#each lines as line, i}
-    <p>{i.toString().padStart(4)}: {line}</p>
+  {#each lines as line}
+    <p>{line}</p>
   {/each}
 </div>

@@ -53,6 +53,7 @@ import { parse } from "stacktrace-parser";
 import { IndexAllJob } from "./jobs/IndexAllJob";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import { GetFsIndexDuplicates } from "./jobs/GetFsIndexDuplicates";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
@@ -68,7 +69,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
   //#region LIFECYCLE
 
-  public Jobs: IAdminBootstrapperJobConstructor[] = [IndexAllJob];
+  public Jobs: IAdminBootstrapperJobConstructor[] = [IndexAllJob, GetFsIndexDuplicates];
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
