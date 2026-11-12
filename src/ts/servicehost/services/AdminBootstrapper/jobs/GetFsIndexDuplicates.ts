@@ -1,5 +1,5 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
-import { Fs } from "$ts/env";
+import { Daemon, Fs } from "$ts/env";
 import { CommandResult } from "$ts/result";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
@@ -62,16 +62,16 @@ export class GetFsIndexDuplicates extends AdminBootstrapperJob {
     broadcast?.(`  Directories = ${amountDirectories}`);
     broadcast?.(`  Total = ${totalDuplicates.length}`);
 
+    const filePrefix = join(this.OUTPUT_FOLDER, "__ids");
+    const itemIds = totalDuplicates.map((i) => i._id);
+
+    await Fs.writeFile(`${filePrefix}.json`, textToBlob(JSON.stringify(itemIds, null, 4)));
     await Fs.writeFile(
-      join(this.OUTPUT_FOLDER, "__ids.json"),
-      textToBlob(
-        JSON.stringify(
-          totalDuplicates.map((i) => i._id),
-          null,
-          4
-        )
-      )
+      `${filePrefix}_query.json`,
+      textToBlob(`{ _id: { $in: [${itemIds.map((i) => `ObjectId("${i}")`).join(",")}] }}`)
     );
+
+    await Daemon.spawn?.spawnApp("fileManager", Daemon.getShell()?.pid, {}, this.OUTPUT_FOLDER);
 
     return CommandResult.Ok();
   }
