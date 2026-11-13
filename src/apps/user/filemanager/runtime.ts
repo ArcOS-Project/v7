@@ -485,6 +485,7 @@ export class FileManagerRuntime extends AppProcess implements IFileManagerRuntim
 
       // Check if the user is trying to download a folder
       if (!file && dir) {
+        prog.stop();
         return;
       }
 
