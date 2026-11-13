@@ -1,7 +1,7 @@
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa
-export interface IEnvironment extends IKernelModule {
+export interface IEnvironmentKernelModule extends IKernelModule {
   _init(): Promise<void>;
   delete(key: string): boolean;
   get(key: string): any;

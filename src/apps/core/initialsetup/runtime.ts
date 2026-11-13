@@ -1,7 +1,6 @@
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { getKMod, Server, Stack, State } from "$ts/env";
+import { Server, Stack, State } from "$ts/env";
 import { ErrorIcon, QuestionIcon, WarningIcon } from "$ts/images/dialog";
 import { AccountIcon, SecurityMediumIcon } from "$ts/images/general";
 import { ArcLicense } from "$ts/metadata/license";
@@ -30,7 +29,6 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
   public email = Store<string>();
   public actionsDisabled = Store<boolean>(false);
   public showMainContent = Store<boolean>(false);
-  public server: IServerManager;
 
   public readonly pages = [Welcome, License, Identity, CheckInbox, Finish, FreshDeployment];
 
@@ -41,7 +39,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
         action: async () => {
           State?.loadState("login");
         },
-        disabled: () => !!this.server?.serverInfo?.freshBackend,
+        disabled: () => !!Server.serverInfo?.freshBackend,
       },
       previous: {
         disabled: () => true,
@@ -141,15 +139,13 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       this.actionsDisabled.set(false);
     });
 
-    this.server = getKMod<IServerManager>("server");
-
-    this.pageNumber.set(this.server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
+    this.pageNumber.set(Server.serverInfo?.freshBackend ? this.pages.length - 1 : 0);
 
     this.setSource(__SOURCE__);
   }
 
   async render() {
-    if (this.server.serverInfo?.disableRegistration) {
+    if (Server.serverInfo?.disableRegistration) {
       throw new Error("InitialSetupRuntime.render: Registration is disabled on this server");
     }
 

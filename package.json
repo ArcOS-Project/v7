@@ -79,7 +79,7 @@
     "music-metadata": "^11.10.3",
     "openmeteo": "^1.1.4",
     "socket.io-client": "^4.8.1",
-    "sql.js": "^1.13.0",
+    "sql.js": "^1.15.2",
     "stacktrace-parser": "^0.1.11",
     "string-width": "^7.2.0",
     "svelte-image-viewer": "^7.1.0",

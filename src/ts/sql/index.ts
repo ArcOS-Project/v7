@@ -23,7 +23,7 @@ export class SqlInterfaceProcess extends Process implements ISqlInterfaceProcess
 
   async start() {
     this.sql = await initSqlJs({
-      locateFile: (file) => `https://sql.js.org/dist/${file}`,
+      locateFile: (file) => `https://sql.js.org/dist/sql-wasm.wasm`,
     });
     await this.initialize();
   }

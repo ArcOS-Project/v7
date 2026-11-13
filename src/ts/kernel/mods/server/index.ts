@@ -1,9 +1,8 @@
 import type { Constructs } from "$interfaces/common";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IServerConnector, IServerManagerKernelModule } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-import { getKMod } from "$ts/env";
+import { Kernel, Server, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
 import type { ServerInfo, ServerOption } from "$types/server";
 import axios from "axios";
@@ -18,7 +17,7 @@ import { UserConnector } from "./connectors/UserConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
-export class ServerManager extends KernelModule implements IServerManager {
+export class ServerManagerKernelModule extends KernelModule implements IServerManagerKernelModule {
   private get SERVERS_LOCALSTORAGE_KEY() {
     return "v7-servers";
   }
@@ -26,7 +25,6 @@ export class ServerManager extends KernelModule implements IServerManager {
     return "v7-currentserver";
   }
   private currentServer?: ServerOption;
-  private dispatch: ISystemDispatch;
   public connected: boolean = false;
   public serverInfo: ServerInfo | undefined;
   public previewBranch?: string;
@@ -73,22 +71,20 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   public static isConnected() {
-    const server = getKMod<IServerManager>("server", true);
-
-    return server && server.connected;
+    // Server is the live instance of this kmod
+    Kernel.LogOperation("kmod", "server", "isConnected");
+    return Server && Server.connected;
   }
   public static url() {
-    const server = getKMod<IServerManager>("server", true);
-
-    return server ? server.url : undefined;
+    // Server is the live instance of this kmod
+    Kernel.LogOperation("kmod", "server", "url");
+    return Server?.url ?? undefined;
   }
 
   //#region LIFECYCLE
 
   constructor(kernel: IWaveKernel, id: string) {
     super(kernel, id);
-
-    this.dispatch = getKMod<ISystemDispatch>("dispatch");
   }
 
   async _init() {
@@ -113,6 +109,7 @@ export class ServerManager extends KernelModule implements IServerManager {
     this.Log(`testConnection: ${server.url}`);
 
     this.isKmod();
+    Kernel.LogOperation("kmod", "server", "testConnection");
 
     const response = await axios.get(`/ping`, {
       timeout: 3000,
@@ -135,15 +132,18 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   async checkUsernameAvailability(username: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "server", "checkUsernameAvailability");
     return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityUsername(username)).success;
   }
 
   async checkEmailAvailability(email: string) {
     this.isKmod();
+    Kernel.LogOperation("kmod", "server", "checkEmailAvailability");
     return (await this.GetConn<IUserConnector>("UserConnector").AvailabilityEmail(email)).success;
   }
 
   private checkIfPreviewDeployment() {
+    Kernel.LogOperation("kmod", "server", "checkIfPreviewDeployment");
     const previewBranchName = import.meta.env.DW_PREVIEW_DEP_BRANCH;
 
     if (!previewBranchName) return false;
@@ -154,6 +154,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
   async switchServer(url: string) {
     this.Log(`switchServer: ${url}`);
+    Kernel.LogOperation("kmod", "server", "switchServer");
 
     this.connected = false;
 
@@ -165,7 +166,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       await this.testConnection(server);
 
-      this.dispatch.dispatch("server-connected");
+      SysDispatch.dispatch("server-connected");
       this.connected = true;
       localStorage.setItem(this.CURRENT_LOCALSTORAGE_KEY, server.url);
 
@@ -178,7 +179,7 @@ export class ServerManager extends KernelModule implements IServerManager {
 
       return true;
     } catch (e) {
-      this.dispatch.dispatch("server-connection-failed");
+      SysDispatch.dispatch("server-connection-failed");
 
       this.Log(`${e}`);
       return false;
@@ -186,6 +187,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   loadServers() {
+    Kernel.LogOperation("kmod", "server", "loadServers");
     this.Log(`loadServers`);
 
     const stored = localStorage.getItem(this.SERVERS_LOCALSTORAGE_KEY);
@@ -198,8 +200,9 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   writeServers(servers: ServerOption[]) {
+    Kernel.LogOperation("kmod", "server", "writeServers");
     this.Log(`writeServers`);
-    this.dispatch.dispatch("server-updated", [servers], true);
+    SysDispatch.dispatch("server-updated", [servers], true);
 
     const string = JSON.stringify(servers, null, 0);
     localStorage.setItem(this.SERVERS_LOCALSTORAGE_KEY, string);
@@ -208,6 +211,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   resetServers() {
+    Kernel.LogOperation("kmod", "server", "resetServers");
     this.Log(`resetServers`);
 
     this.writeServers([
@@ -222,6 +226,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   addServer(config: ServerOption) {
+    Kernel.LogOperation("kmod", "server", "addServer");
     this.Log(`addServer: ${config.url} (${config.authCode ? "Private" : "Public"})`);
 
     if (this.servers.length >= 8) return false;
@@ -233,6 +238,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   removeServer(url: string) {
+    Kernel.LogOperation("kmod", "server", "removeServer");
     this.Log(`removeServer: ${url}`);
     if (!this.isAdded(url)) return false;
 
@@ -242,6 +248,7 @@ export class ServerManager extends KernelModule implements IServerManager {
   }
 
   isAdded(url: string) {
+    Kernel.LogOperation("kmod", "server", "isAdded");
     return !!this.servers.find((s) => url === s.url);
   }
 }

@@ -13,7 +13,10 @@ export class GlobalLoadIndicatorRuntime extends AppProcess implements IGlobalLoa
   constructor(pid: number, parentPid: number, app: AppProcessData, caption: string, progress?: GlobalLoadIndicatorProgress) {
     super(pid, parentPid, app);
 
-    if (caption) this.caption.set(caption);
+    if (caption) {
+      this.caption.set(caption);
+      this.windowTitle.set(caption);
+    }
     if (progress) this.progress.set(progress);
 
     this.setSource(__SOURCE__);

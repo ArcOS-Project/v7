@@ -8,11 +8,9 @@ import type {
   UserQuota,
 } from "$types/system/fs";
 import type { Constructs } from "./common";
-import type { IServerManager } from "./modules/IServerManager";
 
 // !tpa
 export interface IFilesystemDrive {
-  server: IServerManager;
   driveLetter: string | undefined;
   label: string;
   uuid: string;

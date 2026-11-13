@@ -467,9 +467,23 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
 
     this.RecentFiles?.addToRecents(path);
 
-    if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
+    try {
+      if (result.handledBy.handler) return await result.handledBy.handler.handle(path);
 
-    return await Daemon!.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), {}, path);
+      return await Daemon!.spawn?.spawnApp(result.handledBy.app?.id!, +Env.get("shell_pid"), {}, path);
+    } catch (e) {
+      MessageBox(
+        {
+          title: "An error occurred",
+          message: `The file could not be opened. ${e}`,
+          buttons: [BTN_OKAY_SUG],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        this.shell?.pid ?? this.pid,
+        true
+      );
+    }
   }
 
   async openWith(path: string) {

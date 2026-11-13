@@ -19,15 +19,21 @@
 </script>
 
 <div class="top">
-  <div class="row header service">
-    <div class="segment name">Service Name</div>
-    <div class="segment description">Description</div>
-    <div class="segment pid">PID</div>
-    <div class="segment status">Status</div>
-  </div>
-  {#each [...$Services] as [id, service] (id)}
-    <Service {process} {id} {service} />
-  {/each}
+  <table>
+    <thead>
+      <tr>
+        <th>Service Name</th>
+        <th>Description</th>
+        <th>PID</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each [...$Services] as [id, service] (id)}
+        <Service {process} {id} {service} />
+      {/each}
+    </tbody>
+  </table>
 </div>
 
 <ActionBar>

@@ -1,0 +1,59 @@
+#AdminPortal .container.jobRunner > div.page-content {
+  display: flex;
+  flex-direction: column;
+
+  div.header {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding-left: 10px;
+    gap: 10px;
+
+    h1 {
+      font-weight: bold;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-right: auto;
+    }
+
+    button {
+      height: 30px;
+      border-radius: 0;
+      font-size: 12px;
+      min-width: 80px;
+      padding: 5px 15px;
+      border-left: var(--win-border);
+    }
+
+    select {
+      background-color: var(--win-bg);
+      color: var(--fg);
+      border-radius: 0;
+      border: none;
+      border-left: var(--win-border);
+    }
+
+    div.status {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      border-radius: 4px;
+    }
+  }
+
+  div.output {
+    border-top: var(--win-border);
+    height: 0;
+    flex-grow: 1;
+    padding: 10px;
+    font-family: "Source Code Pro";
+    overflow-y: auto;
+    white-space: pre-wrap;
+
+    * {
+      user-select: text;
+    }
+  }
+}

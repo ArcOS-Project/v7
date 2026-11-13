@@ -1,6 +1,5 @@
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
-import { Daemon, getKMod, Server } from "$ts/env";
+import { Daemon, Env, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { ArcBuild } from "$ts/metadata/build";
@@ -43,7 +42,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
   constructor(uuid: string, letter: string) {
     super(uuid, letter);
 
-    this.isNightly = !!getKMod<IEnvironment>("env").get(`NIGHTLY_WHODIS_${ArcBuild()}`);
+    this.isNightly = !!Env.get(`NIGHTLY_WHODIS_${ArcBuild()}`);
   }
 
   async readDir(path: string = ""): Promise<DirectoryReadReturn | undefined> {
@@ -220,7 +219,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
 
       const data = response.data as FsAccess;
 
-      return `${this.server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
+      return `${Server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
     }

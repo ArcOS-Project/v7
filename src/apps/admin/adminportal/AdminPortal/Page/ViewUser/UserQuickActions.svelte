@@ -1,0 +1,213 @@
+<script lang="ts">
+  import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
+  import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
+  import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
+  import type { ExpandedUserInfo } from "$types/user";
+
+  let { process, user }: { process: IAdminPortalRuntime; user: ExpandedUserInfo } = $props();
+
+  function logout() {
+    MessageBox(
+      {
+        title: "Log out user?",
+        message: "Are you sure you want to invalidate all of this user's tokens? They'll have to log in again everywhere.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Confirm",
+            action: async () => {
+              await process.admin.purgeUserTokens(user._id.toString());
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+            suggested: true,
+          },
+        ],
+        image: "PasswordIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
+
+  function toggleApproved() {
+    MessageBox(
+      {
+        title: user.approved ? "Disapprove user?" : "Approve user?",
+        message: user.approved
+          ? "Are you sure you want to disapprove this user? They'll have to be manually approved again should they need to regain access to their account."
+          : "Are you sure you want to manually approve this user? This goes against the core principle of email activation: never approve spam accounts!",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: user.approved ? "Disapprove" : "Approve",
+            suggested: true,
+            action: async () => {
+              if (user.approved) await process.admin.disapproveUser(user.username);
+              else await process.admin.approveUser(user.username);
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+          },
+        ],
+        image: "SecurityLowIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
+  function toggleAdmin() {
+    MessageBox(
+      {
+        title: user.admin ? "Revoke admin?" : "Grant admin?",
+        message: user.admin
+          ? "Are you absolutely certain you wish to revoke the administrative privileges from this user? If this action is unjust your privileges may be revoked."
+          : "This might be a security vulnerability. Are you sure you want to grant this user admin? ArcOS could be comprimised if this person has any malicious intent.",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: user.admin ? "Revoke" : "Grant",
+            suggested: true,
+            action: async () => {
+              if (user.admin) await process.admin.revokeAdmin(user.username);
+              else await process.admin.grantAdmin(user.username);
+
+              process.switchPage("viewUser", { user: await process.admin.getUserByUsername(user.username) }, true);
+            },
+          },
+        ],
+        image: "SecurityLowIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
+
+  async function deleteUser() {
+    MessageBox(
+      {
+        title: "Delete user?",
+        message: "Are you sure you want to delete this user? THIS CANNOT BE REVERTED!",
+        buttons: [
+          { caption: "Cancel", action: () => {} },
+          {
+            caption: "Delete",
+            action: async () => {
+              await process.admin.deleteUser(user.username);
+              process.switchPage("users");
+            },
+            suggested: true,
+          },
+        ],
+        image: "TrashIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
+
+  function copy() {
+    MessageBox(
+      {
+        title: `Copy from ${user.username}`,
+        message:
+          "Choose the information that you would like to copy from this user. It goes without saying that none of this should ever be pasted anywhere except the team, so <b>be careful</b>.",
+        buttons: [
+          { caption: "ID", action: () => navigator.clipboard.writeText(user._id) },
+          { caption: "Username", action: () => navigator.clipboard.writeText(user.username) },
+          { caption: "Email address", action: () => navigator.clipboard.writeText(user.email) },
+          { caption: "Preferences", action: () => navigator.clipboard.writeText(JSON.stringify(user.preferences, null, 2)) },
+          { caption: "Cancel", action: () => {}, suggested: true },
+        ],
+        image: "ElevationIcon",
+        sound: "arcos.dialog.warning",
+      },
+      process.pid,
+      true
+    );
+  }
+
+  async function createTemporaryLogin() {
+    const result = await process.admin.createTemporaryLogin(user._id);
+
+    if (!result.success) {
+      MessageBox(
+        {
+          title: "Temporary login - Error",
+          message: `An error occurred while trying to create a temporary login for this user account. ${result.errorMessage ?? "Unknown error"}`,
+          buttons: [BTN_OKAY_SUG],
+          sound: "arcos.dialog.error",
+          image: "ErrorIcon",
+        },
+        process.pid,
+        true
+      );
+      return;
+    }
+
+    MessageBox(
+      {
+        title: "Temporary login",
+        message: `Use the following password to log in to <b>${user.username}</b>:<br><code class="block"><span class="redacted">${result.result?.passwordValue}</span></code><br>Click <b>Copy</b> to copy the password. This password will expire in <i>15 minutes</i>. Certain ArcOS features will behave differently under administrative access.`,
+        buttons: [
+          {
+            caption: "Copy",
+            action: () => {
+              navigator.clipboard.writeText(result.result!.passwordValue);
+            },
+            suggested: true,
+          },
+        ],
+        sound: "arcos.dialog.warning",
+        image: "WarningIcon",
+      },
+      process.pid,
+      true
+    );
+  }
+</script>
+
+<div class="quick-actions">
+  <button
+    class="lucide icon-log-out"
+    aria-label="Log out"
+    onclick={logout}
+    disabled={!user.approved || !process.admin.canAccess(AdminScopes.adminTokensPurgeUserDelete)}
+    title="Log user out"
+  ></button>
+  <button class="lucide icon-copy" aria-label="Copy..." onclick={copy} title="Copy..."></button>
+  <button
+    class="lucide icon-user-minus"
+    class:icon-user-plus={!user.approved}
+    aria-label={user.approved ? "Disapprove" : "Approve"}
+    onclick={toggleApproved}
+    title={user.approved ? "Disapprove" : "Approve"}
+    disabled={!process.admin.canAccess(user.approved ? AdminScopes.adminUsersDisapprove : AdminScopes.adminUsersApprove)}
+  ></button>
+  <button
+    class="lucide icon-shield-minus"
+    class:icon-shield-plus={!user.admin}
+    aria-label={user.admin ? "Revoke admin" : "Grant admin"}
+    title={user.admin ? "Revoke admin" : "Grant admin"}
+    onclick={toggleAdmin}
+    disabled={!user.approved || !process.admin.canAccess(user.admin ? AdminScopes.adminRevoke : AdminScopes.adminGrant)}
+  ></button>
+  <button
+    class="clr-orange lucide icon-eye"
+    aria-label="Create temporary password"
+    title="Create temporary password"
+    onclick={createTemporaryLogin}
+    disabled={!process.admin.canAccess(AdminScopes.adminTemporaryLogin)}
+  ></button>
+  <button
+    class="clr-red lucide icon-trash-2"
+    aria-label="Delete user"
+    title="Delete user"
+    onclick={deleteUser}
+    disabled={!process.admin.canAccess(AdminScopes.adminUsersDelete)}
+  ></button>
+</div>

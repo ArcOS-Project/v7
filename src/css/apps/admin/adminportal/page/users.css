@@ -1,3 +1,8 @@
+#AdminPortal div.container.users > div.page-content {
+  display: flex;
+  flex-direction: column;
+}
+
 #AdminPortal div.container.users > div.page-content > div.header {
   display: flex;
   align-items: center;
@@ -31,7 +36,8 @@
   opacity: 0.5;
 }
 #AdminPortal div.container.users div.user-list {
-  height: calc(100% - 30px - 30px);
+  height: 0;
+  flex-grow: 1;
   border-top: var(--win-border);
   border-bottom: var(--win-border);
   overflow-y: auto;
@@ -121,56 +127,6 @@
 #AdminPortal div.container.users div.user-row:last-child {
   border-bottom: none;
   height: 35px;
-}
-
-#AdminPortal div.container.users div.user-row div.segment {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#AdminPortal div.container.users div.user-row div.segment.username {
-  width: 200px;
-}
-#AdminPortal div.container.users div.user-row div.segment.email {
-  width: 0;
-  flex-grow: 1;
-  margin-right: auto;
-}
-
-#AdminPortal div.container.users div.user-row div.segment.created {
-  width: 80px;
-}
-
-#AdminPortal div.container.users div.user-list.compact div.segment.created {
-  margin-left: auto;
-}
-
-#AdminPortal div.container.users div.user-row div.segment.system,
-#AdminPortal div.container.users div.user-row div.segment.admin,
-#AdminPortal div.container.users div.user-row div.segment.approved {
-  width: 35px;
-  height: 35px;
-  line-height: 35px;
-  text-align: center;
-  border-left: var(--win-border);
-  margin-right: -10px;
-  background-color: var(--button-bg);
-}
-
-#AdminPortal div.container.users div.user-row div.segment.approved.is-approved {
-  background-color: var(--clr-green-bg);
-  color: var(--clr-green-fg);
-}
-
-#AdminPortal div.container.users div.user-row div.segment.admin.is-admin {
-  background-color: var(--clr-orange-bg);
-  color: var(--clr-orange-fg);
-}
-
-#AdminPortal div.container.users div.user-row div.segment.system.is-system {
-  background-color: var(--clr-blue-bg);
-  color: var(--clr-blue-fg);
 }
 
 #AdminPortal div.container.users div.user-row img {

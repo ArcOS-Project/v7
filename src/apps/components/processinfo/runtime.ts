@@ -89,4 +89,14 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
       true
     );
   }
+
+  async peek(proc: IProcess): Promise<void> {
+    await Daemon.helpers!.ViewGenericObject(proc, {
+      spawnOptions: { asOverlay: false },
+      windowTitle: `Peek ${proc.name} [${proc.pid},${proc.parentPid}]`,
+      windowIcon: "@builtin::ProcessManagerIcon",
+      dataName: proc.name,
+    });
+    this.closeWindow();
+  }
 }

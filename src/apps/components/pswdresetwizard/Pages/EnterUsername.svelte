@@ -1,9 +1,12 @@
 <script lang="ts">
   import type { IPswdResetWizardRuntime } from "$interfaces/runtimes/IPswdResetWizardRuntime";
+  import ProcessPsa from "$lib/ProcessPsa.svelte";
 
   let { process }: { process: IPswdResetWizardRuntime } = $props();
   const { RecoveryUsername, ErrorMessage } = process;
 </script>
+
+<ProcessPsa {process} location="enterUsername" />
 
 <p class="instruction">
   First, we need your username. To verify that it’s you, we’ll send an email with a verification code to the email address of your

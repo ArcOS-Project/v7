@@ -1,0 +1,84 @@
+#AdminPortal > div.body .table-wrapper {
+  overflow: auto;
+  height: 0;
+  flex-grow: 1;
+
+  &.shrink > table {
+    max-width: 100% !important;
+    width: 100% !important;
+
+    td {
+      white-space: initial !important;
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+  }
+}
+
+#AdminPortal > div.body .table-wrapper table {
+  border-collapse: collapse;
+  min-width: fit-content;
+  width: 100%;
+  margin: -1px;
+
+  & tr > td,
+  & tr > th {
+    padding: 0 8px;
+    height: 30px;
+    border: var(--win-border);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    & > * {
+      vertical-align: middle;
+    }
+
+    &.actions {
+      text-align: right !important;
+    }
+  }
+
+  & tr > .icon-col {
+    /* height=30px, img=24, so 3px vertical padding */
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: center;
+
+    & > .lucide {
+      color: var(--accent-light);
+    }
+  }
+
+  & tbody > tr:nth-child(even) {
+    background-color: var(--button-bg);
+  }
+
+  & tbody > tr:hover,
+  & tbody > tr.selected {
+    background-color: var(--button-glass-hover-bg);
+  }
+
+  & tr > th {
+    text-align: left;
+    border: none;
+    font-weight: bold;
+
+    &:not(:has(button)) {
+      opacity: 0.5;
+    }
+
+    & button {
+      height: 20px;
+      padding: 0 8px;
+      border-radius: 4px;
+      translate: -8px;
+    }
+  }
+
+  & tr > td button:not(.link) {
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 4px;
+  }
+}

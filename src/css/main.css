@@ -133,3 +133,47 @@ span.beta-pill {
 [class*="theme-"] {
   color: var(--fg);
 }
+
+div.system-print-area {
+  width: 100vw;
+  height: 100vh;
+  color: #000 !important;
+}
+
+@media screen {
+  body > div.system-print-area {
+    display: none;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background-color: #fff;
+    height: fit-content !important;
+    overflow-y: scroll;
+  }
+
+  body:has(.kpo-invert) {
+    filter: invert(100%);
+  }
+
+  body > :not(.system-print-area) {
+    background-color: #fff;
+    display: none !important;
+  }
+
+  body > div.kernel-print-area {
+    display: block !important;
+    padding: var(--kpo-padding, 0px);
+    zoom: var(--kpo-zoom, 100%);
+    white-space: var(--kpo-whitespace, normal);
+    color: #000;
+    background-color: #fff;
+
+    &.kpo-monospace,
+    &.kpo-monospace * {
+      font-family: "Source Code Pro" !important;
+    }
+  }
+}

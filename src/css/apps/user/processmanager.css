@@ -78,124 +78,8 @@
   gap: 2px;
 }
 
-#processManager > div.body div.row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 5px;
-  border-radius: var(--button-border-rad);
-  gap: 10px;
-  background-color: var(--win-bg);
-  height: 26px;
-}
-
-#processManager > div.body div.row.selected {
-  background-color: var(--accent-transparent);
-}
-
-#processManager > div.body div.row.selected:hover {
-  background-color: var(--accent-light-transparent);
-}
-
-#processManager > div.body div.row:not(.header):not(.selected):hover {
-  background-color: var(--button-glass-bg);
-}
-
-#processManager > div.body div.row div.segment.name {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-#processManager > div.body div.row div.segment.name span.lucide {
-  font-size: 10px;
-  opacity: 0.5;
-}
-
-#processManager > div.body div.row div.segment img {
+#processManager > div.body table img {
   height: 16px;
-}
-
-#processManager > div.body div.row:not(.header) div.segment:not(.name) {
-  opacity: 0.5;
-}
-
-#processManager > div.body div.row:not(.service):not(.header) div.segment.pid {
-  transform: translate(-34px);
-}
-
-#processManager > div.body div.row div.segment.pid:not(.flagged) img {
-  opacity: 0;
-  pointer-events: none;
-}
-
-#processManager > div.body div.row div.segment.pid {
-  width: 70px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#processManager > div.body div.row div.segment.name {
-  margin-right: auto;
-}
-
-#processManager > div.body div.row div.segment.description {
-  width: fit-content;
-  width: 40%;
-  margin-left: auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#processManager > div.body div.row div.segment.status {
-  text-align: left;
-  width: 70px;
-}
-
-#processManager > div.body div.row div.segment.memory {
-  width: 80px;
-  text-align: left;
-}
-
-#processManager > div.body div.row div.segment.app-id {
-  width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#processManager > div.body div.indent {
-  padding-left: 25px;
-}
-
-#processManager > div.body div.row.header {
-  font-weight: bold;
-  margin-bottom: 10px;
-  padding: 0 5px;
-  height: 20px;
-}
-
-#processManager > div.body div.row.closing {
-  transition:
-    opacity 0.3s,
-    margin-bottom 0.3s;
-  margin-bottom: -28px;
-  opacity: 0;
-}
-
-#processManager > div.body div.row.orphan {
-  /* background-color: var(--clr-red-bg); */
-  opacity: 0.5;
-}
-
-#processManager > div.body div.row.orphan * {
-  color: var(--clr-red-fg);
-}
-
-#processManager > div.body div.row.critical * {
-  color: var(--clr-orange-fg);
 }
 
 #processManager > div.body button.stop {
@@ -218,4 +102,73 @@
 
 #processManager > div.body div.window-action-bar {
   background-color: var(--win-bg);
+}
+
+#processManager > div.body table {
+  border-collapse: collapse;
+  width: 100%;
+
+  tr {
+    height: 26px;
+
+    th {
+      text-align: left;
+    }
+
+    &.critical td {
+      color: var(--clr-orange-fg);
+    }
+
+    td > div {
+      display: Flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    td:first-child,
+    th:first-child {
+      border-radius: 6px 0 0 6px;
+      padding: 0 8px;
+    }
+
+    td:last-child,
+    th:last-child {
+      border-radius: 0 6px 6px 0;
+      padding: 0 8px;
+    }
+
+    td:first-child {
+      padding-left: calc(8px + calc(var(--indent, 0) * 25px));
+    }
+
+    td.pid div {
+      translate: -24px;
+    }
+
+    td:not(.name) span {
+      opacity: 0.5;
+    }
+
+    &:hover td {
+      background-color: var(--button-glass-bg);
+    }
+
+    &.selected td {
+      background-color: var(--accent-transparent);
+    }
+
+    td.name span.lucide {
+      font-size: 10px;
+      opacity: 0.5;
+    }
+
+    td.pid:not(.flagged) img {
+      opacity: 0;
+    }
+
+    &.closing {
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { ISystemDispatchKernelModule } from "$interfaces/modules/ISystemDispatch";
 import { Kernel } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/colors";
 import { logItemToStr } from "$ts/util";
@@ -11,7 +11,7 @@ import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
 import { SystemOnlyDispatches } from "./store";
 
-export class SystemDispatch extends KernelModule implements ISystemDispatch {
+export class SystemDispatchKernelModule extends KernelModule implements ISystemDispatchKernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
   //#region LIFECYCLE
@@ -23,6 +23,7 @@ export class SystemDispatch extends KernelModule implements ISystemDispatch {
   //#endregion
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number {
+    Kernel.LogOperation("kmod", "dispatch", "subscribe");
     this.isKmod();
 
     const id = Math.floor(Math.random() * 1e6);
@@ -38,18 +39,21 @@ export class SystemDispatch extends KernelModule implements ISystemDispatch {
   }
 
   unsubscribeId(event: string, id: number) {
+    Kernel.LogOperation("kmod", "dispatch", "unsubscribeId");
     this.isKmod();
 
     delete this.subscribers[event][id];
   }
 
   discardEvent(event: string) {
+    Kernel.LogOperation("kmod", "dispatch", "discardEvent");
     this.isKmod();
 
     delete this.subscribers[event];
   }
 
   dispatch<T = any[]>(caller: string, data?: T, system = true): SystemDispatchResult {
+    Kernel.LogOperation("kmod", "dispatch", "dispatch");
     this.isKmod();
 
     const callers = this.subscribers[caller];

@@ -1,6 +1,5 @@
 import type { IZipDrive } from "$interfaces/drives/IZipDrive";
-import type { IFilesystem } from "$interfaces/modules/IFilesystem";
-import { getKMod } from "$ts/env";
+import { Fs } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import type {
   DirectoryReadReturn,
@@ -41,8 +40,7 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   }
 
   async _spinUp(onProgress?: FilesystemProgressCallback): Promise<boolean> {
-    const fs = getKMod<IFilesystem>("fs");
-    const contents = await fs.readFile(this._path, onProgress);
+    const contents = await Fs.readFile(this._path, onProgress);
 
     if (!contents) {
       return false;
@@ -181,10 +179,8 @@ export class ZIPDrive extends FilesystemDrive implements IZipDrive {
   async _sync(progress?: FilesystemProgressCallback) {
     this.Log("Syncing " + this._path);
     const file = await this._buffer?.generateAsync({ type: "blob" });
-    const fs = getKMod<IFilesystem>("fs");
-
     if (!file) throw new Error(`Failed to sync to file '${this._path}'`);
 
-    await fs.writeFile(this._path, file, progress);
+    await Fs.writeFile(this._path, file, progress);
   }
 }

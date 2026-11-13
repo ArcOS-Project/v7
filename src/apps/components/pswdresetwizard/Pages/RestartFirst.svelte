@@ -1,3 +1,12 @@
+<script lang="ts">
+  import type { IPswdResetWizardRuntime } from "$interfaces/runtimes/IPswdResetWizardRuntime";
+  import ProcessPsa from "$lib/ProcessPsa.svelte";
+
+  let { process }: { process: IPswdResetWizardRuntime } = $props();
+</script>
+
+<ProcessPsa {process} location="restartFirst" />
+
 <div class="warning-message">
   <span class="lucide icon-triangle-alert"></span>
   <span>You have to restart ArcOS first.</span>

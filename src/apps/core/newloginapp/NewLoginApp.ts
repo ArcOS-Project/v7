@@ -17,7 +17,7 @@ const NewLoginApp: App = {
   position: {},
   state: {
     minimized: false,
-    maximized: false,
+    maximized: false, 
     resizable: false,
     fullscreen: true,
     headless: true,

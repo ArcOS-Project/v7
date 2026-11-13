@@ -2,7 +2,7 @@ import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IStoreConnector } from "$interfaces/modules/server/IStoreConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
-import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import type { IAdminBootstrapper, IAdminBootstrapperJobConstructor } from "$interfaces/services/IAdminBootstrapper";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
 import type { IProtocolServiceProcess } from "$interfaces/services/IProtocolServiceProcess";
@@ -50,12 +50,14 @@ import { fromExtension } from "human-filetypes";
 import beautify from "js-beautify";
 import JSZip from "jszip";
 import { parse } from "stacktrace-parser";
+import { IndexAllJob } from "./jobs/IndexAllJob";
 import { AdminProtocolHandlers } from "./proto";
 import { AdminScopes } from "./store";
+import { GetFsIndexDuplicates } from "./jobs/GetFsIndexDuplicates";
 
 export class AdminBootstrapper extends BaseService implements IAdminBootstrapper {
   private userInfo: UserInfo | undefined;
-  private get adminClient() {
+  get adminClient() {
     return Backend.create({
       headers: {
         Authorization: `Bearer ${Daemon.token}`,
@@ -66,6 +68,8 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
   }
 
   //#region LIFECYCLE
+
+  public Jobs: IAdminBootstrapperJobConstructor[] = [IndexAllJob, GetFsIndexDuplicates];
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
@@ -1474,6 +1478,14 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     } catch (e) {
       return CommandResult.AxiosError(e);
     }
+  }
+
+  async RunJob(jobName: string, broadcast: (message: string) => void): Promise<ICommandResult> {
+    const job = this.Jobs.find((job) => job.name === jobName);
+    if (!job) return CommandResult.Error(`Unknown job '${jobName}'`);
+
+    const instance = new job(job.name);
+    return await instance._run(broadcast);
   }
 }
 

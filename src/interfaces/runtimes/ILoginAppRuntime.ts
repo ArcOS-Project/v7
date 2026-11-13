@@ -1,7 +1,6 @@
 import type { LoginAppProps, PersistenceInfo } from "$apps/core/loginapp/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { ServerInfo } from "$types/server";
 import type { ReadableStore } from "$types/shared/writable";
 import type { UserInfo } from "$types/user";
@@ -16,7 +15,6 @@ export interface ILoginAppRuntime extends IAppProcess {
   hideProfileImage: ReadableStore<boolean>;
   persistence: ReadableStore<PersistenceInfo | undefined>;
   serverInfo: ReadableStore<ServerInfo>;
-  server: IServerManager;
   safeMode: boolean;
   loginProps?: LoginAppProps;
   start(): Promise<void>;

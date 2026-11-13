@@ -7,9 +7,9 @@ import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
 import type { IThirdPartyProcess } from "$interfaces/IThirdPartyProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
-import type { IFilesystem } from "$interfaces/modules/IFilesystem";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IEnvironmentKernelModule } from "$interfaces/modules/IEnvironment";
+import type { IFilesystemKernelModule } from "$interfaces/modules/IFilesystem";
+import type { IStackKernelModule } from "$interfaces/modules/IStackKernelModule";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import type { App } from "../apps/app";
 import type { AxiosInstance } from "../libraries/axios";
@@ -17,9 +17,9 @@ import type { MessageBoxData } from "../shared/messagebox";
 import type { ReadableStore } from "../shared/writable";
 
 export interface ThirdPartyPropMap {
-  env: IEnvironment;
-  handler: IProcessHandler;
-  fs: IFilesystem;
+  env: IEnvironmentKernelModule;
+  handler: IStackKernelModule;
+  fs: IFilesystemKernelModule;
   daemon: IUserDaemon;
   serviceHost: IServiceHost | undefined;
   MessageBox: (data: MessageBoxData, parentPid: number, overlay?: boolean) => Promise<void>;

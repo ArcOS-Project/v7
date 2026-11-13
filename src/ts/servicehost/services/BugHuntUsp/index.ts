@@ -1,7 +1,6 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
-import type { IBugHunt } from "$interfaces/modules/IBugHunt";
 import type { IBugHuntUserSpaceProcess } from "$interfaces/services/IBugHuntUserSpaceProcess";
-import { Daemon, getKMod } from "$ts/env";
+import { BugHunt, Daemon } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import type { BugReport, ReportOptions } from "$types/server/bughunt";
 import type { Service } from "$types/services/service";
@@ -12,14 +11,11 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
   publicCache: BugReport[] = [];
   cachedPrivateResponseCount = 0;
   cachedPublicResponseCount = 0;
-  module: IBugHunt;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost, initBroadcast?: (msg: string) => void) {
     super(pid, parentPid, name, host, initBroadcast);
-
-    this.module = getKMod<IBugHunt>("bughunt");
 
     this.setSource(__SOURCE__);
   }
@@ -35,9 +31,9 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
   //#endregion
 
   async sendBugReport(options: ReportOptions): Promise<boolean> {
-    const data = this.module.createReport(options);
+    const data = BugHunt.createReport(options);
 
-    return await this.module.sendReport(data, Daemon!.token, options);
+    return await BugHunt.sendReport(data, Daemon!.token, options);
   }
 
   async getPrivateReports(forceInvalidate = false) {
@@ -52,7 +48,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getUserBugReports(Daemon.token)).reverse();
+    const reports = (await BugHunt.getUserBugReports(Daemon.token)).reverse();
 
     this.privateCache = reports;
 
@@ -71,7 +67,7 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
       }
     }
 
-    const reports = (await this.module.getPublicBugReports(Daemon.token)).reverse();
+    const reports = (await BugHunt.getPublicBugReports(Daemon.token)).reverse();
 
     this.publicCache = reports;
 

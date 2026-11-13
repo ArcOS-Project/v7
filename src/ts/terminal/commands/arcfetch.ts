@@ -1,6 +1,5 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
-import { ArcOSVersion, Env, getKMod, State } from "$ts/env";
+import { ArcOSVersion, Env, Server, State } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { authcode } from "$ts/util";
@@ -35,13 +34,12 @@ export class ArcFetchCommand extends TerminalProcess {
   }
 
   getItems(term: IArcTerminal) {
-    const server = getKMod<IServerManager>("server", true);
     const info = getDeviceInfo();
     const state = State?.currentState;
 
     return Object.entries({
       OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
-      Host: `${server?.hostname ?? server?.url} ${BRBLACK}(${authcode() ? "Protected" : "Open"})${RESET}`,
+      Host: `${Server.hostname ?? Server.url} ${BRBLACK}(${authcode() ? "Protected" : "Open"})${RESET}`,
       Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,
       Terminal: `PID ${term.pid} (${term.name}) on parent PID ${term.parentPid}`,

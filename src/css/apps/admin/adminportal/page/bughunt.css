@@ -23,6 +23,8 @@
 #AdminPortal div.container.bughunt div.list-wrapper {
   width: calc(100% - 100px);
   border-right: var(--win-border);
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.container.bughunt div.list-wrapper select {
@@ -63,7 +65,8 @@
 #AdminPortal div.container.bughunt div.list-wrapper div.listing {
   border-top: var(--win-border);
   border-bottom: var(--win-border);
-  height: calc(100% - 30px - 30px);
+  height: 0;
+  flex-grow: 1;
   overflow-y: scroll;
 }
 
@@ -106,78 +109,12 @@
   filter: brightness(50%);
 }
 
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 35px;
-  border-bottom: var(--win-border);
-  padding: 0 10px;
+#AdminPortal div.container.bughunt tr img {
+  height: 20px;
 }
 
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row * {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment {
-  min-width: fit-content;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.title {
-  min-width: unset;
-  font-family: "Source Code Pro";
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.author,
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.timestamp {
-  min-width: 130px;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.mode-icon,
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row img {
-  height: 24px;
-  width: 24px;
-  min-width: 24px;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row div.segment.author {
-  margin-left: auto;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing::-webkit-scrollbar {
-  display: none;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.selected {
-  background-color: var(--accent-transparent);
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.selected-multi {
-  background-color: var(--accent-transparent);
-  font-weight: bold;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row:last-child {
-  border-bottom: none;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.head {
-  background-color: var(--button-bg);
-  border-bottom: var(--win-border);
-  font-weight: bold;
-  position: sticky;
-  top: 0.1px;
-  z-index: 10000;
-}
-
-#AdminPortal div.container.bughunt div.list-wrapper div.listing div.row.head div.segment.title {
-  font-family: "Nunito Sans";
+#AdminPortal div.container.bughunt tr.selected-multi {
+  background-color: var(--clr-orange-bg) !important;
 }
 
 #AdminPortal div.container.bughunt p.no-results {

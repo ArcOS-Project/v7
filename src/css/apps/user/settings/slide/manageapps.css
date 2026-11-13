@@ -161,3 +161,7 @@
   left: 0;
   width: 100%;
 }
+
+#systemSettings div.apps_manageApps div.window-action-bar {
+  padding: 0 20px;
+}

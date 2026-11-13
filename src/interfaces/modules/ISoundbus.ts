@@ -1,7 +1,7 @@
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa
-export interface ISoundbus extends IKernelModule {
+export interface ISoundbusKernelModule extends IKernelModule {
   playSound(id: string, volume?: number): boolean | undefined;
   stopSound(id: string): boolean;
   getStore(): [string, string][];
