@@ -13,15 +13,15 @@ const PswdResetWizardApp: App = {
   position: { centered: true },
   size: {
     w: 480,
-    h: 400,
+    h: 450,
   },
   minSize: {
     w: 480,
-    h: 400,
+    h: 450,
   },
   maxSize: {
     w: 480,
-    h: 400,
+    h: 450,
   },
   controls: {
     minimize: false,

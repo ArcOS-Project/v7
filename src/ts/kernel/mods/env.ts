@@ -1,9 +1,9 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IEnvironmentKernelModule } from "$interfaces/modules/IEnvironment";
 import { Kernel } from "$ts/env";
 import { KernelModule } from "../module";
 
-export class Environment extends KernelModule implements IEnvironment {
+export class EnvironmentKernelModule extends KernelModule implements IEnvironmentKernelModule {
   private store: Map<string, any> = new Map([]);
   private readOnlyValues: string[] = [];
 

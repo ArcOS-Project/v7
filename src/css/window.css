@@ -18,6 +18,7 @@
 @import url("./window/statusbar.css");
 @import url("./window/newtabs.css");
 @import url("./window/jsonviewer.css");
+@import url("./window/psa.css");
 @import url("./window/sidebar/symbolic.css");
 
 div.window:not(.core) {

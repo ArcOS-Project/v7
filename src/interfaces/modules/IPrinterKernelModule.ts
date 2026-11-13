@@ -3,7 +3,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { Component } from "svelte";
 import type { IKernelModule } from "./IKernelModule";
 
-export interface IPrinter extends IKernelModule {
+export interface IPrinterKernelModule extends IKernelModule {
   get isLocked(): boolean;
   StartPrintTransaction<TProc extends IProcess = IProcess>(
     process: TProc,

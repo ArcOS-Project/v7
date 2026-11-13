@@ -6,7 +6,7 @@ import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa
-export interface IProcessHandler extends IKernelModule {
+export interface IStackKernelModule extends IKernelModule {
   BUSY: string;
   IS_BUSY: boolean;
   get MEMORY(): number;

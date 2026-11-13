@@ -33,6 +33,7 @@ export const KernelOpModuleNames = [
   "printer",
   "renderer",
   "state",
+  "psa",
   "$",
 ] as const;
 export const KernelOpModuleTypes = ["kernel", "kmod", "kproc", "dom"] as const;

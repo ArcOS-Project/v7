@@ -1,6 +1,6 @@
 import type { Constructs } from "$interfaces/common";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IServerConnector, IServerManager } from "$interfaces/modules/IServerManager";
+import type { IServerConnector, IServerManagerKernelModule } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { Kernel, Server, SysDispatch } from "$ts/env";
 import { tryJsonParse } from "$ts/util/json";
@@ -17,7 +17,7 @@ import { UserConnector } from "./connectors/UserConnector";
 
 export const VALIDATION_STR = "thisWonderfulArcOSServerIdentifiedByTheseWordsPleaseDontSteal(c)IzKuipers";
 
-export class ServerManager extends KernelModule implements IServerManager {
+export class ServerManagerKernelModule extends KernelModule implements IServerManagerKernelModule {
   private get SERVERS_LOCALSTORAGE_KEY() {
     return "v7-servers";
   }

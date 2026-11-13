@@ -2,7 +2,7 @@ import type { SystemDispatchResult } from "$types/system/dispatch";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa
-export interface ISystemDispatch extends IKernelModule {
+export interface ISystemDispatchKernelModule extends IKernelModule {
   subscribers: Record<string, Record<number, (data: any) => void>>;
 
   subscribe<T = any[]>(event: string, callback: (data: T) => void): number;

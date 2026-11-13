@@ -3,7 +3,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IAppRenderer } from "$interfaces/IAppRenderer";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IStackKernelModule } from "$interfaces/modules/IStackKernelModule";
 import { AppProcess } from "$ts/apps/process";
 import { AppRenderer } from "$ts/apps/renderer";
 import { __Console__ } from "$ts/console";
@@ -15,7 +15,7 @@ import type { ProcessContext, ProcessKillResult } from "$types/system/process";
 import { parse } from "stacktrace-parser";
 import { KernelModule } from "../../module";
 
-export class ProcessHandler extends KernelModule implements IProcessHandler {
+export class StackKernelModule extends KernelModule implements IStackKernelModule {
   private _busy: string = "";
   private lastPid: number = 0;
   public store = Store<Map<number, IProcess>>(new Map([]));
@@ -259,8 +259,9 @@ export class ProcessHandler extends KernelModule implements IProcessHandler {
     this.isKmod();
     Kernel.LogOperation("kmod", "stack", "getProcess");
 
-    const proc = this.store().get(pid);
+    console.trace();
 
+    const proc = this.store().get(pid);
     if (!proc) return undefined;
 
     return proc._disposed ? undefined : (proc as T);

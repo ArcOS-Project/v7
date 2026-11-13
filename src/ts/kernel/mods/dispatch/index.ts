@@ -1,5 +1,5 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { ISystemDispatchKernelModule } from "$interfaces/modules/ISystemDispatch";
 import { Kernel } from "$ts/env";
 import { DefaultColors } from "$ts/terminal/colors";
 import { logItemToStr } from "$ts/util";
@@ -11,7 +11,7 @@ import { Terminal } from "@xterm/xterm";
 import { KernelModule } from "../../module";
 import { SystemOnlyDispatches } from "./store";
 
-export class SystemDispatch extends KernelModule implements ISystemDispatch {
+export class SystemDispatchKernelModule extends KernelModule implements ISystemDispatchKernelModule {
   public subscribers: Record<string, Record<number, (data: any) => void>> = {};
 
   //#region LIFECYCLE

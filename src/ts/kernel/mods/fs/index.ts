@@ -2,7 +2,7 @@ import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive, IFilesystemProxy, IFilesystemProxyConstructor } from "$interfaces/IFilesystemDrive";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IFilesystem } from "$interfaces/modules/IFilesystem";
+import type { IFilesystemKernelModule } from "$interfaces/modules/IFilesystem";
 import { Kernel, SysDispatch } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { CommandResult } from "$ts/result";
@@ -21,7 +21,7 @@ import {
 import { MountsFilesystemProxy } from "./proxies/mounts";
 import { SourceFilesystemProxy } from "./proxies/src";
 
-export class Filesystem extends KernelModule implements IFilesystem {
+export class FilesystemKernelModule extends KernelModule implements IFilesystemKernelModule {
   private readonly PROXIES: IFilesystemProxyConstructor[] = [SourceFilesystemProxy, MountsFilesystemProxy];
   private freezeMountingDispatch = false;
   public drives: Record<string, IFilesystemDrive> = {};

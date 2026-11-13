@@ -1,7 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IPrinter, IPrinterLock, KernelPrintOptions } from "$interfaces/modules/IPrinterKernelModule";
+import type { IPrinterKernelModule, IPrinterLock, KernelPrintOptions } from "$interfaces/modules/IPrinterKernelModule";
 import { Kernel } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import { CommandResult } from "$ts/result";
@@ -10,7 +10,7 @@ import { UUID } from "$ts/util/uuid";
 import { Process } from "../stack/process/instance";
 import { PrinterLock } from "./lock";
 
-export class Printer extends KernelModule implements IPrinter {
+export class PrinterKernelModule extends KernelModule implements IPrinterKernelModule {
   public static get TRANSACTION_TIMEOUT() {
     return 1000 * 60 * 5; // 5min
   }
@@ -55,7 +55,7 @@ export class Printer extends KernelModule implements IPrinter {
     this.#printerLockUuid = uuid;
     this.#printerLock = lockInstance;
     this.#expiredUuid = undefined;
-    this.#lockTimeout = setTimeout(() => this.#ExpireTransaction(), Printer.TRANSACTION_TIMEOUT);
+    this.#lockTimeout = setTimeout(() => this.#ExpireTransaction(), PrinterKernelModule.TRANSACTION_TIMEOUT);
     lockInstance.SetOptions(process, options);
 
     return CommandResult.Ok(lockInstance);

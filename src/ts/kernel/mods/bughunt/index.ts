@@ -1,6 +1,6 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IWaveKernel, KernelOpModuleName } from "$interfaces/IWaveKernel";
-import type { IBugHunt } from "$interfaces/modules/IBugHunt";
+import type { IBugHuntKernelModule } from "$interfaces/modules/IBugHunt";
 import { ArcOSVersion, Env, Kernel, Server, Stack } from "$ts/env";
 import { KernelLogs } from "$ts/kernel/getters";
 import { Backend } from "$ts/kernel/mods/server/axios";
@@ -11,7 +11,7 @@ import type { App } from "$types/apps/app";
 import type { BugReport, OutgoingBugReport } from "$types/server/bughunt";
 import { defaultReportOptions } from "./store";
 
-export class BugHunt extends KernelModule implements IBugHunt {
+export class BugHuntKernelModule extends KernelModule implements IBugHuntKernelModule {
   //#region LIFECYCLE
 
   constructor(kernel: IWaveKernel, id: string) {

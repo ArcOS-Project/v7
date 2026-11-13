@@ -1,7 +1,7 @@
 import type { IProcess } from "$interfaces/IProcess";
 import {
   PrintWhiteSpaceOptions,
-  type IPrinter,
+  type IPrinterKernelModule,
   type IPrinterLock,
   type KernelPrintOptions,
   type PrinterLockComponentProps,
@@ -10,13 +10,13 @@ import { mount, unmount, type Component } from "svelte";
 
 export class PrinterLock<TProc extends IProcess = IProcess> implements IPrinterLock<TProc> {
   #process: TProc;
-  #kmod: IPrinter;
+  #kmod: IPrinterKernelModule;
   #uuid: string;
   #options: KernelPrintOptions = {};
   #printArea: HTMLDivElement;
   #componentMount?: Record<string, any>;
 
-  constructor(process: TProc, kmod: IPrinter, uuid: string, printArea: HTMLDivElement) {
+  constructor(process: TProc, kmod: IPrinterKernelModule, uuid: string, printArea: HTMLDivElement) {
     this.#process = process;
     this.#kmod = kmod;
     this.#uuid = uuid;

@@ -1,11 +1,11 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { ISoundbus } from "$interfaces/modules/ISoundbus";
+import type { ISoundbusKernelModule } from "$interfaces/modules/ISoundbus";
 import { Env, Kernel } from "$ts/env";
 import { KernelModule } from "$ts/kernel/module";
 import type { SoundBusStore, SoundStore } from "$types/system/soundbus";
 import { ArcSounds } from "./store";
 
-export class SoundBus extends KernelModule implements ISoundbus {
+export class SoundBusKernelModule extends KernelModule implements ISoundbusKernelModule {
   private store: SoundStore = {};
   private _bus: SoundBusStore = {};
 

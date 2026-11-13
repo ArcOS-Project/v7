@@ -1,9 +1,10 @@
 import type { IAppProcess, IAppProcessConstructor } from "$interfaces/IAppProcess";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
+import type { ParsedPsaItem } from "$interfaces/modules/IPsaKernelModule";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
-import { Daemon, Env, Kernel, Stack, State, SysDispatch } from "$ts/env";
+import { Daemon, Env, Psa, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
 import type { AppKeyCombinations } from "$types/apps/accelerator";
@@ -395,5 +396,9 @@ export class AppProcess extends Process implements IAppProcess {
 
   blink() {
     this.blinking.set(!this.blinking());
+  }
+
+  GetPsa(location?: string): ParsedPsaItem | undefined {
+    return Psa.GetPsaFor(this.app.id, location);
   }
 }

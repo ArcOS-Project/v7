@@ -22,7 +22,7 @@
   </div>
   {#if $Loading}
     <div class="loading-overlay">
-      <Spinner height={32} />
+      <Spinner height={48} />
     </div>
   {/if}
 </div>

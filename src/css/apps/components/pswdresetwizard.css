@@ -34,10 +34,6 @@
       font-size: 12px;
     }
 
-    p.instruction {
-      margin-bottom: auto;
-    }
-
     div.page {
       height: 0;
       flex-grow: 1;
@@ -56,7 +52,7 @@
     div.field-wrapper {
       height: 100px;
       margin-top: 30px;
-      margin-bottom: 20px;
+      margin-bottom: auto;
 
       h2 {
         opacity: 0.5;
@@ -94,6 +90,27 @@
           font-family: "Source Code Pro";
         }
       }
+    }
+
+    div.loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--win-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    div.error-message {
+      color: var(--clr-red-fg);
+      display: Flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
     }
   }
 }

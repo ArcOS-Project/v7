@@ -1,9 +1,8 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IWaveKernel, KernelOperationLogItem, KernelOpModuleName, KernelOpModuleType } from "$interfaces/IWaveKernel";
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
-import type { ISystemDispatch } from "$interfaces/modules/ISystemDispatch";
+import type { IStackKernelModule } from "$interfaces/modules/IStackKernelModule";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel, UpdateKernelExports } from "$ts/env";
+import { ArcOSVersion, SetCurrentKernel, SysDispatch, UpdateKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
@@ -91,7 +90,7 @@ export class WaveKernel implements IWaveKernel {
 
     // SetKernelExports(this);
 
-    const stack = this.getModule<IProcessHandler>("stack");
+    const stack = this.getModule<IStackKernelModule>("stack");
 
     this.init = await stack.spawn<InitProcess>(InitProcess, undefined, "SYSTEM");
     this.initPid = this.init?.pid ?? 0;
@@ -147,8 +146,7 @@ export class WaveKernel implements IWaveKernel {
       [LogLevel.critical]: __Console__.error.bind(__Console__),
     };
 
-    const dispatch = this.getModule<ISystemDispatch>("dispatch", true);
-    dispatch?.dispatch<[LogItem]>("kernel-log", [data]);
+    SysDispatch?.dispatch<[LogItem]>("kernel-log", [data]);
 
     mapping[level](
       `[${(timestamp - this.startMs).toString().padStart(10, "0")}] ${ShortLogLevelCaptions[level]} ${source}: ${message}`
@@ -156,9 +154,9 @@ export class WaveKernel implements IWaveKernel {
   }
 
   public LogOperation(modType: KernelOpModuleType, module: KernelOpModuleName, event: string): void {
-    const timestamp = this.startMs;
+    const timestamp = new Date().getTime();
 
-    console.log(`[${(timestamp - this.startMs).toString().padStart(10, "0")}] OPERATION ${modType}::${module}_${event}`);
+    __Console__.log(`[${(timestamp - this.startMs).toString().padStart(10, "0")}] OPERATION ${modType}::${module}_${event}`);
 
     this.OperationLog.push({
       timestamp: new Date(),
