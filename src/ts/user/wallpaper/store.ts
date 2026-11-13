@@ -35,6 +35,8 @@ import img36 from "$assets/bg/img36.jpg";
 import img37 from "$assets/bg/img37.png";
 import img38 from "$assets/bg/img38.png";
 import img39 from "$assets/bg/img39.png";
+import img40 from "$assets/bg/img40.jpg";
+import img41 from "$assets/bg/img41.jpg";
 import img0Thumb from "$assets/bg/thumbnails/imgthumb0.png";
 import img01Thumb from "$assets/bg/thumbnails/imgthumb01.jpeg";
 import img02Thumb from "$assets/bg/thumbnails/imgthumb02.png";
@@ -72,6 +74,8 @@ import img36Thumb from "$assets/bg/thumbnails/imgthumb36.jpg";
 import img37Thumb from "$assets/bg/thumbnails/imgthumb37.png";
 import img38Thumb from "$assets/bg/thumbnails/imgthumb38.png";
 import img39Thumb from "$assets/bg/thumbnails/imgthumb39.png";
+import img40Thumb from "$assets/bg/thumbnails/imgthumb40.jpg";
+import img41Thumb from "$assets/bg/thumbnails/imgthumb41.jpg";
 import type { Wallpaper } from "$types/user/wallpaper";
 export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 
@@ -161,6 +165,23 @@ export const Wallpapers: { [key: string]: Wallpaper } = {
     author: "Nik Nikovsky",
     name: "Evangelical Church of Sopot",
     source: "Sopot, Poland",
+    builtin: true,
+  },
+  /** JustNoone */
+  img40: {
+    url: img40,
+    thumb: img40Thumb,
+    author: "JustNoone",
+    name: "London Thunderstorm",
+    source: "London, United Kingdom",
+    builtin: true,
+  },
+  img41: {
+    url: img41,
+    thumb: img41Thumb,
+    author: "JustNoone",
+    name: "London Thunderstorm Clouds",
+    source: "London, United Kingdom",
     builtin: true,
   },
   /**SWHFotografie */

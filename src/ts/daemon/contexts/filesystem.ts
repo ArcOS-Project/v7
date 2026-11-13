@@ -592,12 +592,13 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
             {
               caption: "Delete permanently",
               action: () => r("incinerate"),
-              hide: () => !isUserFs,
+              suggested: !isUserFs,
             },
             {
               caption: "Recycle",
               action: () => r("recycle"),
               suggested: true,
+              hide: () => !isUserFs,
             },
           ],
         },

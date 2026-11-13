@@ -261,6 +261,11 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
           runtime.createShortcut(file.name, path);
         },
       },
+      {
+        caption: "Download",
+        icon: "download",
+        action: () => runtime.downloadSelected(),
+      },
       { sep: true },
       {
         caption: "Cut",
