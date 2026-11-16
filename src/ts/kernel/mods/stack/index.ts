@@ -259,8 +259,6 @@ export class StackKernelModule extends KernelModule implements IStackKernelModul
     this.isKmod();
     Kernel.LogOperation("kmod", "stack", "getProcess");
 
-    console.trace();
-
     const proc = this.store().get(pid);
     if (!proc) return undefined;
 

@@ -154,10 +154,6 @@ export class WaveKernel implements IWaveKernel {
   }
 
   public LogOperation(modType: KernelOpModuleType, module: KernelOpModuleName, event: string): void {
-    const timestamp = new Date().getTime();
-
-    __Console__.log(`[${(timestamp - this.startMs).toString().padStart(10, "0")}] OPERATION ${modType}::${module}_${event}`);
-
     this.OperationLog.push({
       timestamp: new Date(),
       moduleType: modType,
