@@ -6,7 +6,7 @@
   import { BlankIcon } from "$ts/images/general";
   import { contextProps } from "$ts/ui/context/actions.svelte";
 
-  const { openedProcess, pid, process }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
+  const { openedProcess, pid, process, ...props }: { openedProcess: IAppProcess; pid: number; process: IShellRuntime } = $props();
   const { windowTitle, windowIcon, blinking } = openedProcess;
   const { userPreferences } = process;
   const { focusedPid } = Stack.renderer!;
@@ -19,6 +19,7 @@
 </script>
 
 <button
+  {...props}
   class="opened-app"
   onclick={focus}
   class:active={$focusedPid == openedProcess.pid}
@@ -28,9 +29,11 @@
   data-contextmenu="taskbar-openedapp"
   use:contextProps={[openedProcess]}
 >
-  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} className="backdrop" />
-  <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} />
-  {#if $userPreferences.shell.taskbar.labels}
-    <span class="title">{$windowTitle}</span>
-  {/if}
+  <div class="inner-contents">
+    <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} className="backdrop" />
+    <Icon icon={$windowIcon || "ComponentIcon"} fallback={BlankIcon} />
+    {#if $userPreferences.shell.taskbar.labels}
+      <span class="title">{$windowTitle}</span>
+    {/if}
+  </div>
 </button>
