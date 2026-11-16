@@ -3,14 +3,14 @@ import type { MaybePromise } from "$types/shared/common";
 import type { ReadableStore, StringStore } from "$types/shared/writable";
 import type { UserPreferencesStore } from "$types/user";
 import type { IProcess } from "./IProcess";
-import type { IProcessHandler } from "./modules/IProcessHandler";
+import type { IStackKernelModule } from "./modules/IStackKernelModule";
 
 // !tpa
 export interface IThirdPartyProcess extends IProcess {
   workingDirectory: string;
   operationId: string;
   mutationLock: boolean;
-  handler: IProcessHandler;
+  handler: IStackKernelModule;
   app: AppProcessData;
   args: any[];
   userPreferences: UserPreferencesStore;

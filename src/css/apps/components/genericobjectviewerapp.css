@@ -1,0 +1,9 @@
+#GenericObjectViewerApp > div.body {
+  padding: 10px;
+  overflow: auto;
+
+  div.json-viewer {
+    width: 100%;
+    height: 100%;
+  }
+}

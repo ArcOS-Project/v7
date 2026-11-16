@@ -11,4 +11,5 @@ export interface IProcessInfoRuntime extends IAppProcess {
 
   kill(proc: IProcess): Promise<void>;
   killError(name: string, result: ProcessKillResult): void;
+  peek(proc: IProcess): Promise<void>
 }

@@ -1,8 +1,8 @@
-import type { IProcessHandler } from "$interfaces/modules/IProcessHandler";
+import type { IStackKernelModule } from "$interfaces/modules/IStackKernelModule";
 import * as stackTraceParser from "stacktrace-parser";
 import { __Console__ } from "./console";
 import { Crash } from "./crash";
-import { Kernel } from "./env";
+import { Kernel, Stack } from "./env";
 import { Log } from "./logging";
 
 export function handleGlobalErrors() {
@@ -61,23 +61,22 @@ export function interceptTpaErrors(stack: string, e: Error): boolean {
   parsed = parsed.filter((p) => !p.file?.includes("<anonymous>"));
   const isTpa = !!parsed[0]?.file?.includes(`localhost:3128`) || !!parsed[0]?.file?.includes(`/tpa/`);
   const isFpa = parsed[0]?.file && FPA_TEST_REGEXP.test(parsed[0].file);
-  const handler = Kernel!.getModule<IProcessHandler>?.("stack", true);
-  const renderer = handler?.renderer;
+  const renderer = Stack?.renderer;
 
   if (renderer?.lastInteract) {
     if (isTpa && parsed[0]?.file?.includes(`/${renderer.lastInteract.app.id}@`)) {
       Log("interceptTpaErrors", `Not crashing for ${e instanceof PromiseRejectionEvent ? e.reason : e}: source is a TPA`);
-      handler.BUSY = "";
+      Stack.BUSY = "";
       renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
-      handler.kill(renderer.lastInteract.pid);
+      Stack.kill(renderer.lastInteract.pid);
       renderer.lastInteract = undefined;
     } else if (!isTpa && isFpa) {
       const parsedAppId = parsed[0]?.file?.match(FPA_TEST_REGEXP)?.groups?.appId;
 
       if (parsedAppId) {
-        handler.BUSY = "";
+        Stack.BUSY = "";
         renderer.notifyCrash(renderer.lastInteract.app.data, e, renderer.lastInteract);
-        handler.kill(renderer.lastInteract.pid);
+        Stack.kill(renderer.lastInteract.pid);
         renderer.lastInteract = undefined;
       }
     }

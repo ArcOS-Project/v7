@@ -5,7 +5,6 @@ import type { Component } from "svelte";
 
 // !tpa
 export interface IAdvSysSetRuntime extends IAppProcess {
-  currentTab: ReadableStore<string>;
   tabs: Record<string, Component>;
   preferencesBuffer: ReadableStore<UserPreferences>;
   syncInitialized: boolean;
@@ -14,6 +13,7 @@ export interface IAdvSysSetRuntime extends IAppProcess {
   displayingDesync: boolean;
   preferencesSub?: Unsubscriber;
   bufferSub?: Unsubscriber;
+  initialTab?: string;
 
   apply(close?: boolean): void;
 }

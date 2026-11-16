@@ -1,6 +1,5 @@
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
-import { getKMod } from "$ts/env";
+import { Env } from "$ts/env";
 import { Log } from "$ts/logging";
 import { LogLevel } from "$types/shared/logging";
 import type { AxiosInstance } from "axios";
@@ -32,7 +31,7 @@ export abstract class ServerConnector implements IServerConnector {
     });
 
     backend.interceptors.request.use((config) => {
-      config.headers.set("X-Request-ID", getKMod<IEnvironment>("env").get("dispatch_sock_id"));
+      config.headers.set("X-Request-ID", Env.get("dispatch_sock_id"));
       return config;
     });
 

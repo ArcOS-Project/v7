@@ -1,7 +1,6 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, Env, Fs, getKMod, Kernel, SetCurrentStateHandler, Stack } from "$ts/env";
+import { ArcOSVersion, Env, Fs, Kernel, Server, SetCurrentStateHandler, Stack } from "$ts/env";
 import { TemporaryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -13,7 +12,9 @@ import { Process } from "./mods/stack/process/instance";
 
 export class InitProcess extends Process {
   public _criticalProcess: boolean = true;
+
   //#region LIFECYCLE
+
   constructor(pid: number, parentPid = undefined) {
     super(pid, parentPid);
 
@@ -25,31 +26,25 @@ export class InitProcess extends Process {
   }
 
   async jumpstart() {
+    this.name = "InitProcess";
     __Console__.time("** Init jumpstart");
     this.Log("Jumpstarting init process!");
     this.parseBrowserInfo();
 
     await Stack.startRenderer(this.pid);
 
-    const server = getKMod<IServerManager>("server");
-    const connected = server.connected;
     const state = await Stack.spawn<IStateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
-    const kernel = Kernel;
-
     if (!state) throw new Error("State handler failed to spawn");
 
-    kernel!.state = state;
-
     SetCurrentStateHandler(state);
+    Kernel.state = state;
 
     await this.initializeTempFs();
-    await kernel!.state?.loadState(connected ? "boot" : "serverdown", {}, true);
+    await state.loadState(Server.connected ? "boot" : "serverdown", {}, true);
+
     __Console__.timeEnd("** Init jumpstart");
-    this.name = "InitProcess";
 
     if (ArcMode() === "nightly") this.nightly();
-
-    this.setSource(__SOURCE__);
   }
 
   //#endregion
@@ -70,6 +65,10 @@ export class InitProcess extends Process {
     } catch {}
   }
 
+  /**
+   * @deprecated Nightly is no longer supported
+   * @todo Remove from codebase
+   */
   nightly() {
     document.title = `NIGHTLY - ArcOS v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
     Env.set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
@@ -79,8 +78,8 @@ export class InitProcess extends Process {
     const ua = UAParser(navigator.userAgent);
 
     document.body.classList.add(
-      `browser-${ua.browser?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g,"-"),
-      `host-${ua.os?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g,"-")
+      `browser-${ua.browser?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g, "-"),
+      `host-${ua.os?.name ?? "unknown"}`.toLowerCase().replaceAll(/[ _\+()]/g, "-")
     );
   }
 }

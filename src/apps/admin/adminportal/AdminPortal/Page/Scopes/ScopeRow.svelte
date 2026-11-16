@@ -2,10 +2,10 @@
   import { AdminPortalPageStore } from "$apps/admin/adminportal/store";
   import type { AdminPortalPage } from "$apps/admin/adminportal/types";
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
-  import ProfilePicture from "$lib/ProfilePicture.svelte";
   import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
   import type { ExpandedUserInfo } from "$types/user";
   import { onMount } from "svelte";
+  import UsernameDisplay from "../../UsernameDisplay.svelte";
 
   const { process, admin }: { process: IAdminPortalRuntime; admin: ExpandedUserInfo } = $props();
   let pages = $state<AdminPortalPage[]>([]);
@@ -15,23 +15,24 @@
   });
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="row" onclick={() => process.switchPage("viewScopes", { admin })}>
-  <div class="segment pfp">
-    <ProfilePicture fallback={admin.profile.profilePicture} height={20} />
-  </div>
-  <div class="segment username">{admin.username}</div>
-  <div class="segment pages">
-    {#each pages as page}
-      {#if !page.hidden}
-        <div class="page">
-          <span class="lucide page-icon icon-{page.icon}" title={page.name}></span>
-          <span>{page.name}</span>
-        </div>
-      {/if}
-    {/each}
-  </div>
-  <div class="segment count">{admin.adminScopes.length}</div>
-  <div class="segment god">{admin.adminScopes.includes(AdminScopes.adminGod) ? "Yes" : "No"}</div>
-</div>
+<tr onclick={() => process.switchPage("viewScopes", { admin })}>
+  <td>
+    <UsernameDisplay user={admin} {process} />
+  </td>
+  <td>
+    <div class="pages">
+      {#each pages as page}
+        {#if !page.hidden}
+          <div class="page">
+            <span class="lucide page-icon icon-{page.icon}" title={page.name}></span>
+            <span>{page.name}</span>
+          </div>
+        {/if}
+      {/each}
+    </div>
+  </td>
+  <td>{admin.adminScopes.length}</td>
+  <td class:clr-red={process.admin.canAccessP(admin, AdminScopes.adminGod)}>
+    {process.admin.canAccessP(admin, AdminScopes.adminGod) ? "Yes" : "No"}
+  </td>
+</tr>

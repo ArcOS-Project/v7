@@ -1,0 +1,70 @@
+div.json-viewer div.row {
+  font-family: "Source Code Pro";
+  margin-bottom: 4px;
+
+  * {
+    user-select: text !important;
+  }
+
+  details > :not(summary) {
+    padding-left: 30px;
+  }
+
+  details > summary {
+    padding: 0 5px;
+    border-radius: 3px;
+  }
+
+  details > summary:hover {
+    background-color: var(--accent-transparent);
+  }
+
+  details[open] > summary {
+    margin-bottom: 4px;
+
+    & + div {
+      margin-top: 4px;
+    }
+  }
+
+  p.empty {
+    font-style: italic;
+    opacity: 0.5;
+    margin: 2px 0;
+  }
+
+  .complex-datatype {
+    opacity: 0.8;
+    color: var(--clr-purple-fg);
+    font-style: italic;
+  }
+
+  .empty-value {
+    opacity: 0.5;
+  }
+  .function-body {
+    white-space: pre-wrap;
+  }
+
+  .src-url {
+    opacity: 0.3;
+    font-style: italic;
+
+    &:hover {
+        opacity: 1;
+    }
+  }
+
+  button.link {
+    &:not(:hover) {
+      text-decoration: none;
+    }
+
+    color: var(--clr-orange-fg);
+    & * {
+      color: var(--fg) !important;
+    }
+
+    font-style: italic;
+  }
+}

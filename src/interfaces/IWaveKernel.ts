@@ -18,5 +18,31 @@ export interface IWaveKernel {
   _init(): Promise<void>;
   getModule<T = any>(id: string, dontCrash?: boolean): T;
   Log(source: string, message: string, level?: LogLevel): void;
+  LogOperation(modType: KernelOpModuleType, module: KernelOpModuleName, event: string): void;
   panic(reason: string, brief?: string): Promise<void>;
+}
+
+export const KernelOpModuleNames = [
+  "env",
+  "dispatch",
+  "soundbus",
+  "stack",
+  "server",
+  "bughunt",
+  "fs",
+  "printer",
+  "renderer",
+  "state",
+  "psa",
+  "$",
+] as const;
+export const KernelOpModuleTypes = ["kernel", "kmod", "kproc", "dom"] as const;
+export type KernelOpModuleName = (typeof KernelOpModuleNames)[number];
+export type KernelOpModuleType = (typeof KernelOpModuleTypes)[number];
+
+export interface KernelOperationLogItem {
+  moduleType: KernelOpModuleType;
+  module: KernelOpModuleName;
+  event: string;
+  timestamp: Date;
 }

@@ -4,6 +4,7 @@
   import type { ReadableStore } from "$types/shared/writable";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
+  import UsernameDisplay from "../../UsernameDisplay.svelte";
 
   const {
     process,
@@ -18,19 +19,21 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
+<tr
   class="user-row"
   onclick={() => ($selection = user._id)}
   class:selected={$selection === user._id}
   ondblclick={() => process.switchPage("viewUser", { user })}
 >
-  <ProfilePicture fallback={profile.profilePicture} height={20} showOnline online={profile.dispatchClients > 0} />
-  <div class="segment username" class:redacted={$redacted}>{profile.username}</div>
+  <td>
+    <UsernameDisplay {user} {process} />
+  </td>
+
   {#if !compact}
-    <div class="segment email" class:redacted={$redacted}>{user.email}</div>
+    <td class:redacted={$redacted}>{user.email}</td>
   {/if}
-  <div class="segment created">{created}</div>
-  <div class="segment approved" class:is-approved={user.approved}>{user.approved ? "Yes" : "No"}</div>
-  <div class="segment admin" class:is-admin={user.admin}>{user.admin ? "Yes" : "No"}</div>
-  <div class="segment system" class:is-system={user.isSystem}>{user.isSystem ? "Yes" : "No"}</div>
-</div>
+  <td>{created}</td>
+  <td class:clr-green={user.approved}>{user.approved ? "Yes" : "No"}</td>
+  <td class:clr-orange={user.admin}>{user.admin ? "Yes" : "No"}</td>
+  <td class:clr-blue={user.isSystem}>{user.isSystem ? "Yes" : "No"}</td>
+</tr>

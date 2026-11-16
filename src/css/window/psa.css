@@ -1,0 +1,31 @@
+div.window-psa-message {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  min-height: 30px;
+  padding: 10px;
+  border-radius: 7px;
+  background-color: var(--button-glass-bg);
+  margin: 10px 0;
+}
+
+div.window-psa-message span.lucide {
+  margin: 2px 0;
+  height: 15px;
+}
+
+div.window-psa-message.severity-medium {
+  background-color: var(--clr-orange-bg);
+}
+
+div.window-psa-message.severity-critical {
+  background-color: var(--clr-purple-bg);
+}
+
+div.window-psa-message.severity-high {
+  background-color: var(--clr-red-bg);
+}
+
+div.window-psa-message * {
+  color:inherit !important;
+}

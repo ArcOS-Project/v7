@@ -1,8 +1,9 @@
 import type { IWaveKernel } from "$interfaces/IWaveKernel";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
+import type { IEnvironmentKernelModule } from "$interfaces/modules/IEnvironment";
+import { Kernel } from "$ts/env";
 import { KernelModule } from "../module";
 
-export class Environment extends KernelModule implements IEnvironment {
+export class EnvironmentKernelModule extends KernelModule implements IEnvironmentKernelModule {
   private store: Map<string, any> = new Map([]);
   private readOnlyValues: string[] = [];
 
@@ -20,6 +21,7 @@ export class Environment extends KernelModule implements IEnvironment {
 
   set(key: string, value: any): boolean {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "set");
 
     key &&= key.toUpperCase();
 
@@ -42,6 +44,7 @@ export class Environment extends KernelModule implements IEnvironment {
 
   setMultiple(entries: [string, any][]): void {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "setMultiple");
 
     for (const [key, value] of entries) {
       this.set(key, value);
@@ -50,6 +53,7 @@ export class Environment extends KernelModule implements IEnvironment {
 
   delete(key: string): boolean {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "delete");
 
     key &&= key.toUpperCase();
 
@@ -62,12 +66,14 @@ export class Environment extends KernelModule implements IEnvironment {
 
   get(key: string): any {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "get");
 
     return this.store.get(key.toUpperCase());
   }
 
   getMultiple(keys: string[]): any[] {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "getMultiple");
 
     let result = [];
 
@@ -80,6 +86,7 @@ export class Environment extends KernelModule implements IEnvironment {
 
   setReadonly(key: string): void {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "setReadOnly");
 
     key &&= key.toUpperCase();
 
@@ -92,6 +99,7 @@ export class Environment extends KernelModule implements IEnvironment {
 
   setWritable(key: string): void {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "setWritable");
 
     key &&= key.toUpperCase();
 
@@ -104,12 +112,14 @@ export class Environment extends KernelModule implements IEnvironment {
 
   reset(): void {
     this.isKmod();
+    Kernel.LogOperation("kmod", "env", "reset");
 
     this.Log("Resetting!");
     this.store = new Map([]);
   }
 
   getAll(): Record<string, string> {
+    Kernel.LogOperation("kmod", "env", "getAll");
     return Object.fromEntries([...this.store]);
   }
 }

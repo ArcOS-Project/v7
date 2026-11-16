@@ -13,7 +13,6 @@ import Recycling from "./AdvancedSystemSettings/Recycling.svelte";
 import Startup from "./AdvancedSystemSettings/Startup.svelte";
 
 export class AdvSysSetRuntime extends AppProcess implements IAdvSysSetRuntime {
-  public currentTab = Store<string>("Main");
   public tabs: Record<string, Component> = {
     Main: Main as any,
     Recycling: Recycling as any,
@@ -28,13 +27,16 @@ export class AdvSysSetRuntime extends AppProcess implements IAdvSysSetRuntime {
   displayingDesync = false;
   preferencesSub?: Unsubscriber;
   bufferSub?: Unsubscriber;
+  initialTab?: string;
 
   //#region LIFECYCLE
 
   constructor(pid: number, parentPid: number, app: AppProcessData, tab?: string) {
     super(pid, parentPid, app);
 
-    if (tab && this.tabs[tab]) this.currentTab.set(tab);
+    if (tab && this.tabs[tab]) {
+      this.initialTab = tab;
+    }
 
     this.setSource(__SOURCE__);
   }

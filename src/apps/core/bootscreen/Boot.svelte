@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { IBootScreenRuntime } from "$interfaces/runtimes/IBootScreenRuntime";
   import Icon from "$lib/Icon.svelte";
+  import ProcessPsa from "$lib/ProcessPsa.svelte";
   import Spinner from "$lib/Spinner.svelte";
   import { Logo } from "$ts/branding";
   import { ArcOSVersion, BETA, Server } from "$ts/env";
@@ -50,6 +51,7 @@
 <div class="bottom">
   <Spinner height={30} stopped={!$progress} />
   <p class="status">{@html $status}</p>
+  <ProcessPsa {process} location="belowStatus"></ProcessPsa>
 </div>
 
 <div class="version">
