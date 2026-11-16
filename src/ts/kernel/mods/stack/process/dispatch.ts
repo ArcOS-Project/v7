@@ -5,6 +5,7 @@ import type { DispatchCallback } from "$types/system/dispatch";
 export class ProcessDispatch implements IProcessDispatch {
   private store: Record<string, DispatchCallback[]> = {};
   private parent: IProcess;
+  private _disposed = false;
 
   constructor(process: IProcess) {
     Log(`ProcessDispatch::'${process.name}'`, `Constructing new dispatch for ${process.name}`);
@@ -12,18 +13,18 @@ export class ProcessDispatch implements IProcessDispatch {
   }
 
   subscribe(event: string, callback: DispatchCallback) {
-    Log(`ProcessDispatch::'${this.parent.name}'`, `Subscribing to event "${event}"`);
+    if (this._disposed) return;
+    this.#Log(`Subscribing to event "${event}"`);
 
     if (!this.store[event]) this.store[event] = [];
-
     this.store[event].push(callback);
   }
 
   async dispatch(event: string, ...args: any[]) {
-    Log(`ProcessDispatch::'${this.parent.name}'`, `Dispatching event "${event}"`);
+    if (this._disposed) return true;
+    this.#Log(`Dispatching event "${event}"`);
 
     const callbacks = this.store[event];
-
     if (!callbacks) return false;
 
     for (const callback of callbacks) {
@@ -31,5 +32,15 @@ export class ProcessDispatch implements IProcessDispatch {
     }
 
     return true;
+  }
+
+  dispose() {
+    this.#Log("Disposing");
+    this.store = {};
+    this._disposed = true;
+  }
+
+  #Log(message: string) {
+    Log(`ProcessDispatch::'${this.parent.name}'`, message);
   }
 }

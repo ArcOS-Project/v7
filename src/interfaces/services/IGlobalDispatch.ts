@@ -1,5 +1,4 @@
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { ReadableStore } from "$types/shared/writable";
 import type { GlobalDispatchClient, GlobalDispatchState } from "$types/system/dispatch";
 import type { Socket } from "socket.io-client";
@@ -7,7 +6,6 @@ import type { Socket } from "socket.io-client";
 // !tpa
 export interface IGlobalDispatch extends IBaseService {
   client: Socket | undefined;
-  server: IServerManager;
   authorized: boolean;
   ConnectionState: ReadableStore<GlobalDispatchState>;
   start(): Promise<void>;

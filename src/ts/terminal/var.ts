@@ -1,6 +1,5 @@
 import type { IArcTerminal, IArcTermVariables } from "$interfaces/IArcTerminal";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
-import { getKMod } from "$ts/env";
+import { Env } from "$ts/env";
 import type { StaticVariableStore, Variable, VariableStore } from "$types/terminal";
 import { getArcTermStore } from "./var/store";
 
@@ -70,7 +69,7 @@ export class ArcTermVariables implements IArcTermVariables {
 
   replace(str: string) {
     const all = this.getAll();
-    const envVars = getKMod<IEnvironment>("env").getAll();
+    const envVars = Env.getAll();
 
     for (const key in envVars) {
       all[`$${key}`] = {

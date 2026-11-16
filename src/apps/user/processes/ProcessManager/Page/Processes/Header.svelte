@@ -1,6 +1,6 @@
-<div class="row header">
-  <div class="segment name">Process Name</div>
-  <div class="segment pid">PID</div>
-  <div class="segment memory">Memory</div>
-  <div class="segment app-id">App ID</div>
-</div>
+<tr class="row header">
+  <th class="name">Process Name</th>
+  <th class="pid">PID</th>
+  <th class="memory">Memory</th>
+  <th class="app-id">App ID</th>
+</tr>

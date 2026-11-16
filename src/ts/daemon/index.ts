@@ -21,7 +21,6 @@ import type { IWallpaperUserContext } from "$interfaces/contexts/IWallpaperUserC
 import type { IWorkspaceUserContext } from "$interfaces/contexts/IWorkspaceUserContext";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IUserContext, IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import type { IServerConnector } from "$interfaces/modules/IServerManager";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
@@ -29,7 +28,7 @@ import type { IFileAssocService } from "$interfaces/services/IFileAssocService";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import type { ILibraryManagement } from "$interfaces/services/ILibraryManagement";
 import type { IMessagingInterface } from "$interfaces/services/IMessagingInterface";
-import { Daemon, Env, Fs, GetConnector, SetDaemon, Stack, State, getKMod } from "$ts/env";
+import { Daemon, Env, Fs, GetConnector, SetDaemon, Stack, State } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { Log } from "$ts/logging";
 import { CommandResult } from "$ts/result";
@@ -219,7 +218,7 @@ export class UserDaemon extends Process implements IUserDaemon {
   }
 
   getShell(): IShellRuntime | undefined {
-    return Stack.getProcess(+getKMod<IEnvironment>("env").get("shell_pid"));
+    return Stack.getProcess(+Env.get("shell_pid"));
   }
 
   //#endregion INIT

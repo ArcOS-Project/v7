@@ -12,21 +12,36 @@
 
 <div class="section members">
   <h1>MEMBERS</h1>
-  <div class="member-list">
-    {#if members.length}
-      <div class="member-row header">
-        <div class="segment pfp"><Icon icon={Logo()} /></div>
-        <div class="segment username">Username</div>
-        <div class="segment created">Created</div>
-        <div class="segment approved">APP</div>
-        <div class="segment admin">ADM</div>
-        <div class="segment kick">KCK</div>
-      </div>
-      {#each members as member (member._id)}
-        <MemberRow {process} {member} {share} />
-      {/each}
-    {:else}
-      <p class="error-text">No members!</p>
-    {/if}
+  <div class="table-wrapper member-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Created</th>
+          <th>Approved</th>
+          <th>Admin</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <colgroup>
+        <col width="20%" />
+        <col width="20%" />
+        <col width="1%" />
+        <col width="1%" />
+        <col width="1%" />
+      </colgroup>
+      <tbody>
+        {#each members as member (member._id)}
+          <MemberRow {process} {member} {share} />
+        {/each}
+        {#if !members.length}
+          <tr>
+            <td colspan="5">
+              <p class="error-text">No members!</p>
+            </td>
+          </tr>
+        {/if}
+      </tbody>
+    </table>
   </div>
 </div>

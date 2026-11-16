@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { IInitialSetupRuntime } from "$interfaces/runtimes/IIntialSetupRuntime";
-
-  const { process }: { process: IInitialSetupRuntime } = $props();
+  import { Server } from "$ts/env";
 </script>
 
 <div class="fresh-deployment">
@@ -12,7 +10,7 @@
     owner of this account is then automatically seen as the owner of the server. Also, please check the server configuration:
   </p>
   <ul>
-    {#each Object.entries(process.server?.serverInfo!) as [key, value]}
+    {#each Object.entries(Server?.serverInfo!) as [key, value]}
       <li><b>{key}</b>: <code>{JSON.stringify(value)}</code></li>
     {/each}
   </ul>

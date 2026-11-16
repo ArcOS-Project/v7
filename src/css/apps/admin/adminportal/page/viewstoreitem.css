@@ -124,6 +124,8 @@
   height: 100%;
   border-left: var(--win-border);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.container.viewStoreItem div.info-block {
@@ -137,8 +139,15 @@
   border-top: none;
 }
 #AdminPortal div.container.viewStoreItem div.installed-by {
-  border-bottom: var(--win-border);
-  min-height: 100px;
+  height: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#AdminPortal div.container.viewStoreItem div.installed-by div.page-content {
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.container.viewStoreItem div.installed-by.empty {

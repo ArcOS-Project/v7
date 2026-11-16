@@ -195,7 +195,7 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
 
       const data = response.data as FsAccess;
 
-      return `${this.server.url}/admin/afs/direct/${data.userId}/${data.accessor}${authcode()}`;
+      return `${Server.url}/admin/afs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
       return undefined;
     }

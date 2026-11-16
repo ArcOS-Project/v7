@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { IAdminPortalRuntime } from "$interfaces/runtimes/IAdminPortalRuntime";
   import Spinner from "$lib/Spinner.svelte";
-  import { Daemon } from "$ts/env";
-  import { Backend } from "$ts/kernel/mods/server/axios";
   import type { StoreItem } from "$types/tpa/package";
   import type { ExpandedUserInfo } from "$types/user";
-  import Users from "../../Users.svelte";
+  import { onMount } from "svelte";
+  import AdminUsersPage from "../../AdminUsersPage.svelte";
 
   const { item, process }: { item: StoreItem; process: IAdminPortalRuntime } = $props();
 
@@ -21,25 +20,38 @@
     loadingMax = users.length;
     loadingDone = 0;
 
-    for (const user of users) {
-      try {
-        const response = await Backend.get(`/admin/fs/file/${user.username}/System/Config/DistribSvc/Installed.json`, {
-          headers: { Authorization: `Bearer ${Daemon!.token}` },
-          responseType: "json",
-        });
+    const promises = users.map(
+      (user) =>
+        new Promise<void>(async (resolve) => {
+          try {
+            const response = await process.admin.adminClient.get(
+              `/fs/file/${user.username}/System/Config/DistribSvc/Installed.json`
+            );
 
-        if (typeof response.data !== "object" || !Array.isArray(response.data)) throw "";
+            if (
+              typeof response.data !== "object" ||
+              !Array.isArray(response.data) ||
+              !response.data.find((i) => i?._id === item._id)
+            ) {
+              throw "";
+            }
 
-        if (response.data.find((i) => i?._id === item._id)) installed.push(user);
-      } catch {
-        continue;
-      } finally {
-        loadingDone++;
-      }
-    }
+            installed.push(user);
+          } catch {
+            return;
+          } finally {
+            loadingDone++;
+            resolve();
+          }
+        })
+    );
+
+    await Promise.all(promises);
 
     loading = false;
   }
+
+  onMount(collect);
 </script>
 
 <div class="installed-by container users" class:empty={!installed?.length || loading}>
@@ -48,7 +60,7 @@
     <p>{((100 / loadingMax) * loadingDone).toFixed(2)}%</p>
   {:else if installed.length}
     <div class="page-content">
-      <Users {process} data={{ users: installed }} compact />
+      <AdminUsersPage {process} data={{ users: installed }} compact />
     </div>
   {:else}
     <p class="error-text">ERR_NO_INSTALLS</p>

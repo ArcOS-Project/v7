@@ -23,5 +23,6 @@ export interface IProcess {
 export interface IProcessDispatch {
   subscribe(event: string, callback: DispatchCallback): void;
   dispatch(event: string, ...args: any[]): Promise<boolean>;
+  dispose(): void;
 }
 // !endtpa

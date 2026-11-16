@@ -69,6 +69,8 @@ export class Process implements IProcess {
     this.Log(`STOPPING PROCESS`);
 
     const result = await this.stop();
+
+    this.dispatch.dispose();
     this.STATE = "disposed";
     return result;
   }

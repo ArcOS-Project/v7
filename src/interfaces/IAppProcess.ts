@@ -8,6 +8,8 @@ import type { Draggable } from "@neodrag/vanilla";
 import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";
 import type { IApplicationStorage } from "./services/IApplicationStorage";
+import type { ParsedPsaItem } from "./modules/IPsaKernelModule";
+import type { IShellRuntime } from "./runtimes/IShellRuntime";
 
 // !tpa
 export interface IAppProcess extends IProcess {
@@ -28,6 +30,7 @@ export interface IAppProcess extends IProcess {
   windowFullscreen: ReadableStore<boolean>;
   draggable: Draggable | undefined;
   blinking: ReadableStore<boolean>;
+  get shell(): IShellRuntime | undefined;
   onClose(): Promise<boolean>;
   ShowToast(toast: ToastMessage, durationMs?: number): Promise<void>;
   HideToast(): Promise<void>;
@@ -61,6 +64,7 @@ export interface IAppProcess extends IProcess {
   getIconCached(id: string): string;
   getIconStore(id: string): ReadableStore<string>;
   blink(): void;
+  GetPsa(location?: string): ParsedPsaItem | undefined;
 }
 
 export interface IAppProcessConstructor extends Constructs<IAppProcess> {

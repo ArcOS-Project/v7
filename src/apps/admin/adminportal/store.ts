@@ -2,26 +2,27 @@ import { DevelopmentLogo, EsrLogo, RcLogo, ReleaseLogo, UnstableLogo } from "$ts
 import { AdminScopes } from "$ts/servicehost/services/AdminBootstrapper/store";
 import { IsBeta } from "$ts/util";
 import type { PartialUserTotp, Token } from "$types/server/admin";
-import Activities from "./AdminPortal/Page/Activities.svelte";
-import AuditLogQueryable from "./AdminPortal/Page/AuditLogQueryable.svelte";
-import BetaFeedback from "./AdminPortal/Page/BetaFeedback.svelte";
-import BugHunt from "./AdminPortal/Page/BugHunt.svelte";
-import Dashboard from "./AdminPortal/Page/Dashboard.svelte";
-import Filesystems from "./AdminPortal/Page/Filesystems.svelte";
-import Logs from "./AdminPortal/Page/Logs.svelte";
-import NoAdminBootstrapper from "./AdminPortal/Page/NoAdminBootstrapper.svelte";
-import Scopes from "./AdminPortal/Page/Scopes.svelte";
-import Shares from "./AdminPortal/Page/Shares.svelte";
-import Store from "./AdminPortal/Page/Store.svelte";
-import Tokens from "./AdminPortal/Page/Tokens.svelte";
-import Users from "./AdminPortal/Page/Users.svelte";
-import Versioning from "./AdminPortal/Page/Versioning.svelte";
-import ViewBugReport from "./AdminPortal/Page/ViewBugReport.svelte";
-import ViewBugReportSource from "./AdminPortal/Page/ViewBugReportSource.svelte";
-import ViewScopes from "./AdminPortal/Page/ViewScopes.svelte";
-import ViewShare from "./AdminPortal/Page/ViewShare.svelte";
-import ViewStoreItem from "./AdminPortal/Page/ViewStoreItem.svelte";
-import ViewUser from "./AdminPortal/Page/ViewUser.svelte";
+import AdminActivitiesPage from "./AdminPortal/Page/AdminActivitiesPage.svelte";
+import AdminAuditLogQueryablePage from "./AdminPortal/Page/AdminAuditLogQueryablePage.svelte";
+import AdminBetaFeedbackPage from "./AdminPortal/Page/AdminBetaFeedbackPage.svelte";
+import AdminBugHuntPage from "./AdminPortal/Page/AdminBugHuntPage.svelte";
+import AdminDashboardPage from "./AdminPortal/Page/AdminDashboardPage.svelte";
+import AdminFilesystemsPage from "./AdminPortal/Page/AdminFilesystemsPage.svelte";
+import AdminLogsPage from "./AdminPortal/Page/AdminLogsPage.svelte";
+import AdminNoAdminBootstrapperPage from "./AdminPortal/Page/AdminNoAdminBootstrapperPage.svelte";
+import AdminScopesPage from "./AdminPortal/Page/AdminScopesPage.svelte";
+import AdminSharesPage from "./AdminPortal/Page/AdminSharesPage.svelte";
+import AdminStorePage from "./AdminPortal/Page/AdminStorePage.svelte";
+import AdminTokensPage from "./AdminPortal/Page/AdminTokensPage.svelte";
+import AdminUsersPage from "./AdminPortal/Page/AdminUsersPage.svelte";
+import AdminVersioningPage from "./AdminPortal/Page/AdminVersioningPage.svelte";
+import AdminViewBugReportPage from "./AdminPortal/Page/AdminViewBugReportPage.svelte";
+import AdminViewBugReportSourcePage from "./AdminPortal/Page/AdminViewBugReportSourcePage.svelte";
+import AdminViewScopesPage from "./AdminPortal/Page/AdminViewScopesPage.svelte";
+import AdminViewSharePage from "./AdminPortal/Page/AdminViewSharePage.svelte";
+import AdminViewStoreItemPage from "./AdminPortal/Page/AdminViewStoreItemPage.svelte";
+import AdminViewUserPage from "./AdminPortal/Page/AdminViewUserPage.svelte";
+import JobRunner from "./AdminPortal/Page/JobRunner.svelte";
 import type { AdminPortalPage, AdminPortalPages, SpecificAdminActions } from "./types";
 
 export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPortalPage>([
@@ -30,7 +31,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Dashboard",
       icon: "layout-dashboard",
-      content: Dashboard,
+      content: AdminDashboardPage,
       props: async (process) => {
         const stats = await process.admin.getStatistics();
         const logs = (await process.admin.getServerLogs()).reverse(); // Newest log first
@@ -45,7 +46,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Bug Hunt",
       icon: "bug",
-      content: BugHunt,
+      content: AdminBugHuntPage,
       scopes: [AdminScopes.adminBugHuntList, AdminScopes.adminBugHuntStats],
       props: async (process) => {
         const reports = await process.admin.getAllBugReports();
@@ -60,7 +61,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     "viewBugReport",
     {
       name: "View Bug Report",
-      content: ViewBugReport,
+      content: AdminViewBugReportPage,
       hidden: true,
       scopes: [
         AdminScopes.adminBugHuntGet,
@@ -81,7 +82,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     "viewBugReportSource",
     {
       name: "View Source Code for Bug Report",
-      content: ViewBugReportSource,
+      content: AdminViewBugReportSourcePage,
       hidden: true,
       scopes: [AdminScopes.adminBugHuntGet],
       icon: "",
@@ -101,7 +102,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     "betaFeedback",
     {
       name: "Beta feedback",
-      content: BetaFeedback,
+      content: AdminBetaFeedbackPage,
       hidden: !IsBeta(),
       scopes: [],
       icon: "flask-conical",
@@ -118,7 +119,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Users",
       icon: "user",
-      content: Users,
+      content: AdminUsersPage,
       separator: true,
       props: async (process) => {
         const users = await process.admin.getAllUsers();
@@ -134,7 +135,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "View User",
       hidden: true,
       icon: "",
-      content: ViewUser,
+      content: AdminViewUserPage,
       props: async (process) => {
         const username = process.switchPageProps().user.username;
 
@@ -153,7 +154,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Shares",
       icon: "network",
-      content: Shares,
+      content: AdminSharesPage,
       props: async (process) => {
         return { shares: await process.admin.getAllShares(), users: await process.admin.getAllUsers() };
       },
@@ -166,7 +167,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "View share",
       hidden: true,
       icon: "",
-      content: ViewShare,
+      content: AdminViewSharePage,
       props: async (process) => {
         return { users: await process.admin.getAllUsers(), accessors: await process.admin.getAllFsAccessors() };
       },
@@ -179,7 +180,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Filesystems",
       icon: "server",
-      content: Filesystems,
+      content: AdminFilesystemsPage,
       props: async (process) => {
         return { users: (await process.admin.getAllUsers()).reverse() }; // Newest users first
       },
@@ -191,7 +192,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "App Store",
       icon: "shopping-bag",
-      content: Store,
+      content: AdminStorePage,
       props: async (process) => {
         return { items: await process.admin.getAllStoreItems(), users: await process.admin.getAllUsers() };
       },
@@ -205,7 +206,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "View Store Item",
       icon: "",
       hidden: true,
-      content: ViewStoreItem,
+      content: AdminViewStoreItemPage,
       props: async (process) => {
         const id = process.switchPageProps().id;
 
@@ -231,7 +232,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Tokens",
       icon: "key",
-      content: Tokens,
+      content: AdminTokensPage,
       props: async (process) => {
         return { tokens: await process.admin.getAllTokens(), users: await process.admin.getAllUsers() };
       },
@@ -243,7 +244,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Activities",
       icon: "shield-ellipsis",
-      content: Activities,
+      content: AdminActivitiesPage,
       props: async (process) => {
         return { activities: await process.admin.getAllActivity(), users: await process.admin.getAllUsers() };
       },
@@ -255,7 +256,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Versioning",
       icon: "git-branch",
-      content: Versioning,
+      content: AdminVersioningPage,
       scopes: [AdminScopes.adminUserfsFile, AdminScopes.adminUsersList],
       props: async (process) => {
         return { users: await process.admin.getAllUsers() };
@@ -268,7 +269,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Scopes",
       icon: "telescope",
-      content: Scopes,
+      content: AdminScopesPage,
       props: async (process) => {
         return { admins: (await process.admin.getAllUsers()).filter((u) => u.admin) }; // Filter
       },
@@ -286,7 +287,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
       name: "View scopes",
       icon: "",
       parent: "scopes",
-      content: ViewScopes,
+      content: AdminViewScopesPage,
       hidden: true,
       props: async (process) => {
         return { scopes: await process.admin.getAvailableScopes() };
@@ -295,11 +296,19 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     },
   ],
   [
+    "jobRunner",
+    {
+      name: "Job runner",
+      icon: "sport-shoe",
+      content: JobRunner,
+    },
+  ],
+  [
     "auditLog",
     {
       name: "Audit log",
       icon: "scroll-text",
-      content: AuditLogQueryable,
+      content: AdminAuditLogQueryablePage,
       props: async (process) => {
         return {
           users: await process.admin.getAllUsers(),
@@ -313,7 +322,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     {
       name: "Logs",
       icon: "layout-list",
-      content: Logs,
+      content: AdminLogsPage,
       scopes: [AdminScopes.adminLogs],
       props: async (process) => {
         const logs = (await process.admin.getServerLogs()).reverse(); // Newest first
@@ -328,7 +337,7 @@ export const AdminPortalPageStore: AdminPortalPages = new Map<string, AdminPorta
     "noAdminBootstrapper",
     {
       name: "No admin bootstrapper",
-      content: NoAdminBootstrapper,
+      content: AdminNoAdminBootstrapperPage,
       props: async () => ({}),
       hidden: true,
       icon: "",

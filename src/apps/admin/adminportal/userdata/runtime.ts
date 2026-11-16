@@ -2,14 +2,10 @@ import type { IBugHuntUserDataRuntime } from "$interfaces/runtimes/IBugHuntUserD
 import { AppProcess } from "$ts/apps/process";
 import type { AppProcessData } from "$types/apps/app";
 import type { UserInfo } from "$types/user";
-import hljs, { type HLJSApi } from "highlight.js";
-import json from "highlight.js/lib/languages/json";
 
 // TODO: generalize the two dodgy UserData viewers into one good quality application
 export class BugHuntUserDataRuntime extends AppProcess implements IBugHuntUserDataRuntime {
   data: UserInfo;
-  hljs: HLJSApi;
-  html: string;
 
   //#region LIFECYCLE
 
@@ -17,11 +13,6 @@ export class BugHuntUserDataRuntime extends AppProcess implements IBugHuntUserDa
     super(pid, parentPid, app);
 
     this.data = data;
-    this.hljs = hljs;
-
-    this.hljs.registerLanguage("json", json);
-    this.html = this.hljs.highlight(JSON.stringify(this.data, null, 2), { language: "json" }).value; // Stringify and syntax highlight user info
-
     this.setSource(__SOURCE__);
   }
 

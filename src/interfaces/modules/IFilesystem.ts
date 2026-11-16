@@ -13,7 +13,7 @@ import type {
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa
-export interface IFilesystem extends IKernelModule {
+export interface IFilesystemKernelModule extends IKernelModule {
   drives: Record<string, IFilesystemDrive>;
   loadedProxies: IFilesystemProxy[];
   _init(): Promise<void>;

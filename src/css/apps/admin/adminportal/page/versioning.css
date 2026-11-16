@@ -52,21 +52,6 @@
   z-index: 100;
 }
 
-#AdminPortal .container.versioning div.version-list div.row div.segment.username {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#AdminPortal .container.versioning div.version-list div.row div.segment.os-version {
-  margin-right: auto;
-}
-
-#AdminPortal .container.versioning div.version-list div.row div.segment.migration {
-  width: 100px;
-}
-
 #AdminPortal .container.versioning div.version-list div.row img {
   height: 20px;
 }

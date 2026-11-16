@@ -10,6 +10,7 @@ export function Store<T>(initial?: T): ReadableStore<T> {
   fn.set = obj.set;
   fn.update = obj.update;
   fn.subscribe = obj.subscribe;
+  fn.__STORE__ = true;
 
   return fn;
 }

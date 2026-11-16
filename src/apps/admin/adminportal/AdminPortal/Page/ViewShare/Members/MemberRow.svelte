@@ -5,6 +5,7 @@
   import type { SharedDriveType } from "$types/server/shares";
   import type { ExpandedUserInfo } from "$types/user";
   import dayjs from "dayjs";
+  import UsernameDisplay from "../../../UsernameDisplay.svelte";
 
   const { member, process, share }: { member: ExpandedUserInfo; process: IAdminPortalRuntime; share: SharedDriveType } = $props();
   const { profile } = member;
@@ -40,16 +41,14 @@
   }
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="member-row" ondblclick={() => process.switchPage("viewUser", { user: member })}>
-  <div class="segment pfp">
-    <ProfilePicture height={20} fallback={profile.profilePicture} showOnline online={profile.dispatchClients > 0} />
-  </div>
-  <div class="segment username">{profile.username}</div>
-  <div class="segment created">{created}</div>
-  <div class="segment approved">{member.approved ? "Yes" : "No"}</div>
-  <div class="segment admin">{member.admin ? "Yes" : "No"}</div>
-  <div class="segment kick">
-    <button class="lucide icon-log-out" title="Kick user" aria-label="Kick user" onclick={kick}></button>
-  </div>
-</div>
+<tr ondblclick={() => process.switchPage("viewUser", { user: member })}>
+  <td>
+    <UsernameDisplay user={member} {process} />
+  </td>
+  <td>{created}</td>
+  <td>{member.approved ? "Yes" : "No"}</td>
+  <td>{member.admin ? "Yes" : "No"}</td>
+  <td class="actions">
+    <button title="Kick user" aria-label="Kick user" onclick={kick}>Kick</button>
+  </td>
+</tr>

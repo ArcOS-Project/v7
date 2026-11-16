@@ -1,10 +1,12 @@
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { IFirstRunRuntime } from "$interfaces/runtimes/IFirstRunRuntime";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon } from "$ts/env";
+import { Daemon, Fs, Kernel } from "$ts/env";
+import { textToBlob } from "$ts/util/convert";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { Store } from "$ts/writable";
 import type { App, AppProcessData } from "$types/apps/app";
+import dayjs from "dayjs";
 import { ChooseProfilePictureApp } from "./ChooseProfilePicture/metadata";
 import { FirstRunPages, FirstRunShortcuts } from "./store";
 import type { FirstRunPage } from "./types";
@@ -42,8 +44,14 @@ export class FirstRunRuntime extends AppProcess implements IFirstRunRuntime {
       await Daemon?.shortcuts?.createShortcut(payload, path);
     }
 
-    await Daemon?.appreg?.updateStartMenuFolder();
+    await Daemon?.appreg?.updateStartMenuFolder(false, this.parentPid);
     await Daemon?.version?.updateRegisteredVersion();
+    await Fs.writeFile(
+      `U:/System/LICENSE`,
+      textToBlob(
+        `-------\n\nDumped from IWaveKernel.ARCOS_LICENSE by IFirstRunRuntime on ${dayjs("DD-MM-YYYY HH:mm:ss.SSS")}\n\n-------\n\n${Kernel.ARCOS_LICENSE}`
+      )
+    );
     await stop();
 
     this.done.set(true);

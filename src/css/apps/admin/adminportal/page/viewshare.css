@@ -6,10 +6,14 @@
   border-right: var(--win-border);
   width: calc(100% - 430px);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.viewShare div.rightpanel {
   width: 430px;
+  display: flex;
+  flex-direction: column;
 }
 
 #AdminPortal div.viewShare div.leftpanel::-webkit-scrollbar {
@@ -83,48 +87,6 @@
   align-items: center;
 }
 
-#AdminPortal div.viewShare div.section div.accessor-row,
-#AdminPortal div.viewShare div.section div.member-row {
-  display: Flex;
-  height: 36px;
-  border-bottom: var(--win-border);
-  padding: 0;
-  padding-right: 0;
-  line-height: 35px;
-}
-
-#AdminPortal div.viewShare div.section div.member-row:hover,
-#AdminPortal div.viewShare div.section div.accessor-row:hover {
-  background-color: var(--button-glass-bg);
-}
-
-#AdminPortal div.viewShare div.section div.accessor-row.header,
-#AdminPortal div.viewShare div.section div.member-row.header {
-  font-weight: bold;
-  background-color: var(--button-bg);
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.pfp {
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 35px;
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.username {
-  margin-right: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-#AdminPortal div.viewShare div.section div.member-row div.segment.created {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 #AdminPortal div.viewShare div.section div.member-row button.lucide {
   width: 36px;
   height: 35px;
@@ -132,32 +94,6 @@
   border-radius: 0;
   font-size: 16px;
   min-width: 36px;
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.approved,
-#AdminPortal div.viewShare div.section div.member-row div.segment.admin {
-  width: 36px;
-  height: 35px;
-  padding: 0;
-  border-radius: 0;
-  border-left: var(--win-border);
-  text-align: center;
-  min-width: 36px;
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.kick {
-  width: 36px;
-  min-width: 36px;
-  text-align: center;
-  border-left: var(--win-border);
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.created {
-  margin-right: 10px;
-}
-
-#AdminPortal div.viewShare div.section div.member-row div.segment.pfp img {
-  height: 20px;
 }
 
 #AdminPortal div.viewShare div.rightpanel div.section:not(.accessors) > div {
@@ -225,29 +161,10 @@
   flex-grow: 1;
 }
 
-#AdminPortal div.viewShare div.accessor-row div.segment.icon {
-  width: 36px;
-  min-width: 36px;
-  height: 35px;
-  text-align: center;
-  line-height: 35px;
-  border-right: var(--win-border);
-}
-
-#AdminPortal div.viewShare div.accessor-row div.segment.icon span.lucide {
-  color: var(--accent-textual);
-  font-weight: normal;
-  font-size: 16px;
-}
-
-#AdminPortal div.viewShare div.accessor-row div.segment.path {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 10px;
-  margin-right: auto;
-}
-
-#AdminPortal div.viewShare div.accessor-row div.segment.ttl {
-  width: 80px;
+#AdminPortal div.viewShare div.leftpanel div.section.members,
+#AdminPortal div.viewShare div.rightpanel div.section.accessors {
+  height: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }

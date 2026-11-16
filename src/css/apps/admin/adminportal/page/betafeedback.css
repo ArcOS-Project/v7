@@ -77,39 +77,6 @@
   top: 0;
 }
 
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.title {
-  flex-grow: 1;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.username {
-  width: 120px;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.server {
-  width: 100px;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.date {
-  width: 150px;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.read {
-  width: 40px;
-  display: flex;
-  justify-content: center;
-}
-
-#AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row div.segment.read span.lucide {
-  font-size: 16px;
-  color: var(--clr-green-fg);
-}
-
 #AdminPortal div.container.betaFeedback > div.page-content div.beta-list div.beta-row:hover {
   background-color: var(--button-bg);
 }

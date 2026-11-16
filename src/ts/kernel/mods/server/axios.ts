@@ -1,6 +1,5 @@
-import type { IEnvironment } from "$interfaces/modules/IEnvironment";
 import { __Console__ } from "$ts/console";
-import { Kernel } from "$ts/env";
+import { Env } from "$ts/env";
 import { ArcMode } from "$ts/metadata/mode";
 import { UUID } from "$ts/util/uuid";
 import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig } from "axios";
@@ -15,7 +14,7 @@ export const Backend = axios.create({
 
 Backend.interceptors.request.use(
   (config) => {
-    config.headers.set("X-Request-ID", Kernel?.getModule<IEnvironment>("env").get("dispatch_sock_id"));
+    config.headers.set("X-Request-ID", Env?.get("dispatch_sock_id"));
     return config;
   },
   (error) => {

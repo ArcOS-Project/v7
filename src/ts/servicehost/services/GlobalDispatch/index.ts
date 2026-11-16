@@ -1,10 +1,9 @@
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IServerManager } from "$interfaces/modules/IServerManager";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import type { IGlobalDispatch } from "$interfaces/services/IGlobalDispatch";
 import { AppProcess } from "$ts/apps/process";
-import { Daemon, Env, getKMod, Stack } from "$ts/env";
+import { Daemon, Env, Server, Stack } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
@@ -17,7 +16,6 @@ import io, { Socket } from "socket.io-client";
 export class GlobalDispatch extends BaseService implements IGlobalDispatch {
   stackUnsubscribe?: Unsubscriber;
   client: Socket | undefined;
-  server: IServerManager;
   authorized = false;
   public ConnectionState = Store<GlobalDispatchState>("connecting");
 
@@ -25,8 +23,6 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   constructor(pid: number, parentPid: number, name: string, host: IServiceHost) {
     super(pid, parentPid, name, host);
-
-    this.server = getKMod<IServerManager>("server");
 
     window.addEventListener("beforeunload", () => {
       this.stop();
@@ -37,7 +33,7 @@ export class GlobalDispatch extends BaseService implements IGlobalDispatch {
 
   async start() {
     this.initBroadcast?.("Connecting global dispatch");
-    this.client = io(this.server.url, { transports: ["websocket"] });
+    this.client = io(Server.url, { transports: ["websocket"] });
     this.client.on("connect", () => {
       this.ConnectionState.set("connecting");
       this.connected();

@@ -7,6 +7,7 @@
   import Segment from "$lib/InfoBlock/InfoRow/Segment.svelte";
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
+  import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import { Daemon, Env, Stack } from "$ts/env";
   import { ProcessesHelper } from "$ts/helpers/processes";
   import { Sleep } from "$ts/sleep";
@@ -75,7 +76,8 @@
   {/if}
   <ActionBar floating>
     {#snippet leftContent()}
-      <ActionButton className="kill" onclick={() => process.kill(proc)}>Kill</ActionButton>
+      <ActionIconButton className="kill" onclick={() => process.kill(proc)} icon="power" title="Kill process" />
+      <ActionIconButton onclick={() => process.peek(proc)} icon="bug" title="Peek process" />
     {/snippet}
     {#snippet rightContent()}
       {#if proc.sourceUrl && proc.sourceUrl !== "undetermined"}

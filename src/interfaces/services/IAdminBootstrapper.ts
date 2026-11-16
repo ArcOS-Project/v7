@@ -1,3 +1,4 @@
+import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IBaseService } from "$interfaces/IServiceHost";
@@ -18,15 +19,18 @@ import type {
   UserTotp,
 } from "$types/server/admin";
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
+import type { Mailbroker } from "$types/server/mailbroker";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
 import type { BetaFeedback } from "$types/system/beta";
-import type { Mailbroker } from "$types/server/mailbroker";
 import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
+import type { AxiosInstance } from "axios";
 
 export interface IAdminBootstrapper extends IBaseService {
+  Jobs: IAdminBootstrapperJobConstructor[];
+  get adminClient(): AxiosInstance;
   start(): Promise<void>;
   getUserInfo(): Promise<UserInfo | undefined>;
   mountUserDrive(
@@ -152,4 +156,17 @@ export interface IAdminBootstrapper extends IBaseService {
   deleteMailbrokerTemplate(id: string): Promise<ICommandResult>;
   updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult>;
   createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult>;
+  RunJob(jobName: string, broadcast: (message: string) => void): Promise<ICommandResult>;
+}
+
+export interface IAdminBootstrapperJob {
+  RequiredScopes: string[];
+  jobName: string;
+  get bootstrapper(): IAdminBootstrapper;
+  _run(broadcast?: (message: string) => void): Promise<ICommandResult>;
+  run(broadcast?: (message: string) => void): Promise<ICommandResult>;
+}
+
+export interface IAdminBootstrapperJobConstructor extends Constructs<IAdminBootstrapperJob> {
+  name: string;
 }

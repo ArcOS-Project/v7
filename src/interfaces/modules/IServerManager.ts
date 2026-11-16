@@ -3,7 +3,7 @@ import type { AxiosInstance } from "axios";
 import type { IKernelModule } from "./IKernelModule";
 
 // !tpa-props
-export interface IServerManager extends IKernelModule {
+export interface IServerManagerKernelModule extends IKernelModule {
   connected: boolean;
   serverInfo?: ServerInfo;
   previewBranch?: string;

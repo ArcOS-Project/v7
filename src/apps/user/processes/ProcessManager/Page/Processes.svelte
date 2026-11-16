@@ -9,7 +9,6 @@
   import { Stack } from "$ts/env";
   import { ProcessesHelper } from "$ts/helpers/processes";
   import { Plural } from "$ts/util";
-  import Header from "./Processes/Header.svelte";
   import Tree from "./Processes/Tree.svelte";
 
   const { process }: { process: IProcessManagerRuntime } = $props();
@@ -23,7 +22,6 @@
 </script>
 
 <div class="top">
-  <Header />
   <Tree {process} />
 </div>
 

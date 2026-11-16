@@ -30,14 +30,29 @@
 
     p.help {
       opacity: 0.5;
-      font-style:italic;
+      font-style: italic;
       font-size: 12px;
+    }
+
+    div.page {
+      height: 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    div.warning-message {
+      color: var(--clr-orange-fg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
     div.field-wrapper {
       height: 100px;
       margin-top: 30px;
-      margin-bottom: 20px;
+      margin-bottom: auto;
 
       h2 {
         opacity: 0.5;
@@ -68,13 +83,34 @@
           border: none;
           border-radius: 0;
         }
-        
+
         &.verification-code input {
           text-align: center;
           font-size: 18px;
           font-family: "Source Code Pro";
         }
       }
+    }
+
+    div.loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--win-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    div.error-message {
+      color: var(--clr-red-fg);
+      display: Flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
     }
   }
 }
