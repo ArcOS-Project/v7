@@ -205,3 +205,43 @@ export interface BugHuntGetResponse {
   report: BugReport;
   reportId: string;
 }
+
+export interface DbQuery {
+  selectColumns: string[];
+  fromCollection: string;
+  whereClauses: DbQueryWhere[];
+}
+
+export const DB_QUERY_WHERE_MODES = [
+  "isEqualTo",
+  "isNotEqualTo",
+  "includes",
+  "doesNotInclude",
+  "isDefined",
+  "isNotDefined",
+  "isBoolean",
+  "isGreaterThan",
+  "isGreaterThanOrEqualTo",
+  "isLessThan",
+  "isLessThanOrEqualTo",
+] as const;
+
+export type DbQueryWhereMode = (typeof DB_QUERY_WHERE_MODES)[number];
+
+export interface DbQueryWhere {
+  columnName: string;
+  mode: DbQueryWhereMode;
+  value?: any;
+}
+
+export interface DbQueryCollectionColumn {
+  column: string;
+  required: boolean;
+  dataType: string;
+  normalizedType: TypeOf;
+  sensitive?: boolean;
+}
+
+export type DbQueryCollection = Record<string, DbQueryCollectionColumn[]>;
+
+export type TypeOf = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";

@@ -1,0 +1,13 @@
+@import url("./newexecutequery/overlays/selectcolumns.css");
+
+#NewExecuteQuery > div.body {
+  padding: 0;
+  display: flex;
+
+  div.container {
+    width: 0;
+    flex-grow: 1;
+    background-color: var(--win-bg);
+    position: relative;
+  }
+}

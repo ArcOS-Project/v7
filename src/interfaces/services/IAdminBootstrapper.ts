@@ -9,6 +9,8 @@ import type {
   AuditLogQueryOptions,
   BugHuntGetResponse,
   BugReportSourceInformation,
+  DbQuery,
+  DbQueryCollectionColumn,
   FSItem,
   IpAddress,
   PartialUserTotp,
@@ -157,6 +159,9 @@ export interface IAdminBootstrapper extends IBaseService {
   updateMailbrokerTemplate(id: string, update: Mailbroker.MailTemplateUpdate): Promise<ICommandResult>;
   createMailbrokerTemplate(data: Mailbroker.MailTemplateCreate): Promise<ICommandResult>;
   RunJob(jobName: string, broadcast: (message: string) => void): Promise<ICommandResult>;
+  DbQueryCollections(): Promise<ICommandResult<string[]>>;
+  DbQueryColumns(collection: string): Promise<ICommandResult<DbQueryCollectionColumn[]>>;
+  DbQueryExecute<T = any>(query: DbQuery): Promise<ICommandResult<T[]>>;
 }
 
 export interface IAdminBootstrapperJob {
