@@ -30,6 +30,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
+    font-family: "Source Code Pro";
 
     &:has(input:disabled) > span span:not(.lucide) {
       opacity: 0.5;

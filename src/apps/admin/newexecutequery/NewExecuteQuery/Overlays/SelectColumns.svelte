@@ -9,7 +9,10 @@
   } = process;
 
   function selectAll() {
-    $selectedColumns[$selectedCollection] = $columns.filter((c) => !c.column.startsWith("_")).map((c) => c.column);
+    $selectedColumns[$selectedCollection] = $columns.filter((column) => {
+      if (column.sensitive && !allowSensitiveColumns) return false;
+      return !column.column.startsWith("_");
+    });
   }
 
   function selectNone() {
@@ -28,7 +31,7 @@
             type="checkbox"
             disabled={column.sensitive && !allowSensitiveColumns}
             bind:group={$selectedColumns[$selectedCollection]}
-            value={column.column}
+            value={column}
           />
           <span>
             <span class="column-name">{column.column}</span>

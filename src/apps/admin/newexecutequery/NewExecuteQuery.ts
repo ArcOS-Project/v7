@@ -12,9 +12,9 @@ const NewExecuteQuery: App = {
     appGroup: "adminTools",
   },
   position: { centered: true },
-  size: { w: 800, h: 600 },
-  minSize: { w: 800, h: 600 },
-  maxSize: { w: 800, h: 600 },
+  size: { w: 1200, h: 800 },
+  minSize: { w: 1200, h: 800 },
+  maxSize: { w: NaN, h: NaN },
   state: {
     maximized: false,
     minimized: false,
