@@ -57,7 +57,7 @@ export function LanguageMenu(runtime: ICodRuntime): ContextMenuItem {
         isActive: () => runtime.language() === "sql",
       },
       {
-        caption: "ArcBasic",
+        caption: "Sacruda BASIC",
         action: () => runtime.language.set("basic"),
         isActive: () => runtime.language() === "basic",
       },

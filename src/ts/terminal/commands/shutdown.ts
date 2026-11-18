@@ -6,7 +6,7 @@ import { TerminalProcess } from "../process";
 
 export class ShutdownCommand extends TerminalProcess {
   public static keyword = "shutdown";
-  public static description = "Shut down ArcOS";
+  public static description = "Shut down Sacruda";
 
   //#region LIFECYCLE
 

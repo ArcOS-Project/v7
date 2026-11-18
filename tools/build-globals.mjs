@@ -1,8 +1,8 @@
 /**
- * ArcOS proprietary type build process
+ * Sacruda proprietary type build process
  *
- * This file is part of the other files in the tools/ directory, and is responsible for generating and altering the ArcOS v7
- * type declarations to make them compatible with ArcOS third-party app development using v7cli. The code in this file is not
+ * This file is part of the other files in the tools/ directory, and is responsible for generating and altering the Sacruda v7
+ * type declarations to make them compatible with Sacruda third-party app development using v7cli. The code in this file is not
  * to be compared to any ordinary build systems, because it is far from usual.
  *
  * © IzKuipers 2025. Licensed under GPLv3.

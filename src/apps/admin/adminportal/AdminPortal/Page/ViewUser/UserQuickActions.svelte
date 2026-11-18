@@ -64,7 +64,7 @@
         title: user.admin ? "Revoke admin?" : "Grant admin?",
         message: user.admin
           ? "Are you absolutely certain you wish to revoke the administrative privileges from this user? If this action is unjust your privileges may be revoked."
-          : "This might be a security vulnerability. Are you sure you want to grant this user admin? ArcOS could be comprimised if this person has any malicious intent.",
+          : "This might be a security vulnerability. Are you sure you want to grant this user admin? Sacruda could be comprimised if this person has any malicious intent.",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -152,7 +152,7 @@
     MessageBox(
       {
         title: "Temporary login",
-        message: `Use the following password to log in to <b>${user.username}</b>:<br><code class="block"><span class="redacted">${result.result?.passwordValue}</span></code><br>Click <b>Copy</b> to copy the password. This password will expire in <i>15 minutes</i>. Certain ArcOS features will behave differently under administrative access.`,
+        message: `Use the following password to log in to <b>${user.username}</b>:<br><code class="block"><span class="redacted">${result.result?.passwordValue}</span></code><br>Click <b>Copy</b> to copy the password. This password will expire in <i>15 minutes</i>. Certain Sacruda features will behave differently under administrative access.`,
         buttons: [
           {
             caption: "Copy",

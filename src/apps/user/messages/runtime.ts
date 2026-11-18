@@ -406,7 +406,7 @@ export class MessagingAppRuntime extends AppProcess implements IMessagingAppRunt
     MessageBox(
       {
         title: "Failed to get messages",
-        message: `ArcOS failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
+        message: `Sacruda failed to get the messages for ${this.page()?.name || "an unknown page"}. Please refresh to try again.`,
         buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",

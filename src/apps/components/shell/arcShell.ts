@@ -5,7 +5,7 @@ import Shell from "./Shell.svelte";
 
 export const ArcShellApp: App = {
   metadata: {
-    name: "ArcOS Shell",
+    name: "Sacruda Shell",
     author: "Izaak Kuipers",
     version: "4.1.1",
     icon: "ComponentIcon",

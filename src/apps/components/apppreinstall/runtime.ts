@@ -65,7 +65,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
       {
         type: "size",
         icon: "DownloadIcon",
-        caption: "Reading ArcOS package",
+        caption: "Reading Sacruda package",
         subtitle: this.pkgPath,
       },
       +Env.get("shell_pid")
@@ -109,7 +109,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
     MessageBox(
       {
         title: "Failed to open package",
-        message: `ArcOS failed to open the specified package. ${reason}`,
+        message: `Sacruda failed to open the specified package. ${reason}`,
         buttons: [BTN_OKAY_SUG],
         image: "ErrorIcon",
         sound: "arcos.dialog.error",
@@ -125,7 +125,7 @@ export class AppPreInstallRuntime extends AppProcess implements IAppPreInstallRu
 
     const meta = this.metadata();
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS wants to install an application",
+      what: "Sacruda wants to install an application",
       title: meta.name,
       description: `${meta.author} - ${meta.version}`,
       image: "ArcAppMimeIcon",

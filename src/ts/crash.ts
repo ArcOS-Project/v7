@@ -11,9 +11,9 @@ export function Crash(reason: ErrorEvent | PromiseRejectionEvent) {
   const HEADER = [
     ...ASCII_ART,
     ``,
-    `---! [ ArcOS Crashed ] !---`,
+    `---! [ Sacruda Crashed ] !---`,
     ``,
-    `An exception took place that wasn't handled. ArcOS has been halted.`,
+    `An exception took place that wasn't handled. Sacruda has been halted.`,
     `Details of the error and the system log up to the crash can be found below.`,
     `Newest log item is at the top.`,
     ``,

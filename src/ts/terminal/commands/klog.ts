@@ -5,7 +5,7 @@ import { TerminalProcess } from "../process";
 
 export class KlogCommand extends TerminalProcess {
   static override keyword: string = "klog";
-  static override description: string = "Continuously reads the ArcOS kernel log";
+  static override description: string = "Continuously reads the Sacruda kernel log";
   static override allowInterrupt: boolean = true;
   private eventId: number = -1;
 

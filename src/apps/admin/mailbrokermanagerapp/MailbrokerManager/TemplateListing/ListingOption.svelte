@@ -13,7 +13,7 @@
 <button class="template-listing-option" onclick={viewTemplate}>
   <span class="lucide icon-book-dashed"></span>
   <div class="info">
-    <h2>{template.name} - ArcOS {template.fromSuffix}</h2>
+    <h2>{template.name} - Sacruda {template.fromSuffix}</h2>
     <p class="subject">Subject: {template.subjectContent}</p>
     <TemplatePills {template} deprecated={template.deprecated} />
   </div>

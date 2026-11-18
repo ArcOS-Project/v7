@@ -5,7 +5,7 @@ import UrlLoginBackgroundSvelte from "../Settings/Overlays/UrlLoginWallpaper.sve
 export const UrlLoginBackground: App = {
   metadata: {
     name: "URL Login Background",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "3.0.0",
     icon: "DesktopIcon",
   },

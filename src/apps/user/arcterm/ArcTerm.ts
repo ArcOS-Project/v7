@@ -3,7 +3,7 @@ import { ArcTermRuntime } from "./process";
 
 export const ArcTermApp: App = {
   metadata: {
-    name: "ArcTerm",
+    name: "Sacruda Terminal",
     version: "4.0.4",
     author: "Izaak Kuipers",
     icon: "ArcTermIcon",

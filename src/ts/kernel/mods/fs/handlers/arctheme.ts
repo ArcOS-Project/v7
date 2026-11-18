@@ -11,7 +11,7 @@ const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
   opens: {
     extensions: [".arctheme"],
   },
-  name: "ArcOS Theme",
+  name: "Sacruda Theme",
   description: "Apply this theme to your desktop",
   icon: "ThemesIcon",
   async handle(path) {
@@ -19,7 +19,7 @@ const applyArcTheme: (d: IUserDaemon) => FileHandler = (daemon) => ({
       MessageBox(
         {
           title: "Can't apply theme",
-          message: `ArcOS was unable to load the theme file you're trying to apply. ${reason}. Please check the file, and then try again.`,
+          message: `Sacruda was unable to load the theme file you're trying to apply. ${reason}. Please check the file, and then try again.`,
           buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ThemesIcon",

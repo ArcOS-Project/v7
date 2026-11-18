@@ -33,15 +33,15 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     icon: "TextMimeIcon",
   },
   "arcterm.conf": {
-    friendlyName: "ArcTerm configuration",
+    friendlyName: "Sacruda Terminal configuration",
     icon: "TextMimeIcon",
   },
   ".arcterm": {
-    friendlyName: "ArcTerm script (unsupported)",
+    friendlyName: "ArcTerm script (v6, unsupported)",
     icon: "TextMimeIcon",
   },
   ".arctheme": {
-    friendlyName: "ArcOS theme",
+    friendlyName: "Sacruda theme",
     icon: "TextMimeIcon",
   },
   ".md": {
@@ -77,7 +77,7 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     icon: "XmlMimeIcon",
   },
   ".arcpl": {
-    friendlyName: "ArcOS playlist",
+    friendlyName: "Sacruda playlist",
     icon: "PlaylistMimeIcon",
   },
   ".arclnk": {
@@ -85,11 +85,11 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     icon: "ShortcutMimeIcon",
   },
   ".arc": {
-    friendlyName: "ArcOS package",
+    friendlyName: "Sacruda package",
     icon: "ArcAppMimeIcon",
   },
   ".msg": {
-    friendlyName: "ArcOS message",
+    friendlyName: "Sacruda message",
     icon: "MessagingIcon",
   },
   ".css": {
@@ -141,11 +141,11 @@ export const DefaultFileDefinitions: Record<string, FileDefinition> = {
     icon: "UnknownFileIcon",
   },
   ".atc": {
-    friendlyName: "ArcTerm Color Preset",
+    friendlyName: "Sacruda Terminal Color Preset",
     icon: "ArcTermIcon",
   },
   ".bas": {
-    friendlyName: "ArcOS BASIC script file",
+    friendlyName: "Sacruda BASIC script file",
     icon: "SaveIcon",
   },
   ...AudioFileDefinitions, // AudioMimeIcon

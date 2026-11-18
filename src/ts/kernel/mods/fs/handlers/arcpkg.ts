@@ -5,7 +5,7 @@ import type { FileHandler } from "$types/system/fs";
 const installArcPkg: (d: IUserDaemon) => FileHandler = (daemon) => ({
   isHandler: true,
   name: "Install package",
-  description: "Installs this ArcOS package on your account",
+  description: "Installs this Sacruda package on your account",
   icon: "DownloadIcon",
   opens: {
     extensions: [".arc"],

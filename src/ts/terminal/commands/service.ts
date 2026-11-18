@@ -9,7 +9,7 @@ import { TerminalProcess } from "../process";
 
 export class ServiceCommand extends TerminalProcess {
   static keyword = "service";
-  static description = "Manage ArcOS services";
+  static description = "Manage Sacruda services";
 
   //#region LIFECYCLE
 

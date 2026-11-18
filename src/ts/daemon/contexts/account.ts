@@ -69,7 +69,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     this.Log(`Changing username to "${newUsername}"`);
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
-      what: "ArcOS needs your permission to change your username:",
+      what: "Sacruda needs your permission to change your username:",
       image: "AccountIcon",
       title: "Change username",
       description: `To ${newUsername}`,
@@ -97,7 +97,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
     this.Log(`Changing password to [REDACTED]`);
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
-      what: "ArcOS needs your permission to change your password:",
+      what: "Sacruda needs your permission to change your password:",
       image: "PasswordIcon",
       title: "Change password",
       description: `of ${this.username}`,
@@ -125,7 +125,7 @@ export class AccountUserContext extends UserContext implements IAccountUserConte
   async deleteAccount() {
     MessageBox(
       {
-        title: "Delete ArcOS Account",
+        title: "Delete Sacruda Account",
         content: DeleteUser,
         image: "TrashIcon",
         buttons: [

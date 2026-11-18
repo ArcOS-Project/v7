@@ -43,7 +43,7 @@
 </script>
 
 <p>
-  ArcOS has a recycle bin which holds files or folders that you've deleted from your drive. This page manages the settings related
+  Sacruda has a recycle bin which holds files or folders that you've deleted from your drive. This page manages the settings related
   to recycling.
 </p>
 

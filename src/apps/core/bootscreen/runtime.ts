@@ -50,7 +50,7 @@ export class BootScreenRuntime extends AppProcess implements IBootScreenRuntime 
       this.status.set("Opening server selector");
       State?.loadState("switchServer", { safeMode: true });
     } else if (e?.key.toLowerCase() === "a") {
-      this.status.set("Starting ArcTerm");
+      this.status.set("Starting Sacruda Terminal");
       State?.loadState("arcterm");
     } else {
       this.status.set("&nbsp;");

@@ -171,7 +171,7 @@ export class ArcTermColorsRuntime extends AppProcess implements IArcTermColorsRu
     return new Promise<boolean>((r) => {
       MessageBox(
         {
-          title: "ArcTerm colors",
+          title: "Sacruda Terminal Colors",
           message: "The color file specified could not be opened. It may not exist, or the file content could not be parsed.",
           buttons: [
             {

@@ -26,7 +26,7 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
     if (window.matchMedia("(prefers-reduced-motion)").matches) {
       Daemon!.notifications?.sendNotification({
         title: "Disable animations?",
-        message: "ArcOS has detected that your device has Reduced Motion activated. Do you want ArcOS to reduce animations also?",
+        message: "Sacruda has detected that your device has Reduced Motion activated. Do you want Sacruda to reduce animations also?",
         buttons: [
           {
             caption: "Don't show again",
@@ -107,9 +107,9 @@ export class ChecksUserContext extends UserContext implements IChecksUserContext
 
     MessageBox(
       {
-        title: "ArcOS Nightly",
+        title: "Sacruda Nightly",
         message:
-          "You're running a nightly build of ArcOS. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release. Nightly is NOT recommended for daily use (looking at you, Nik).<br><br>Just a reminder: ArcOS developers cannot be held accountable for breakages when using unstable ArcOS builds. We can however assist and resolve problems when something does go wrong.",
+          "You're running a nightly build of Sacruda. Because of potentially major changes, user preference committing and file writes have been disabled to prevent your account from breaking when you return to the stable release. Nightly is NOT recommended for daily use (looking at you, Nik).<br><br>Just a reminder: Sacruda developers cannot be held accountable for breakages when using unstable Sacruda builds. We can however assist and resolve problems when something does go wrong.",
         buttons: [
           {
             caption: "Jump to stable",

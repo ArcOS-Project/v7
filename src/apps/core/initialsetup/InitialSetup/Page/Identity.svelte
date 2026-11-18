@@ -121,8 +121,8 @@
 </script>
 
 <div class="form-page identity">
-  <h1>Your ArcOS Identity</h1>
-  <p class="subtitle">We'll use this information to create your ArcOS account.</p>
+  <h1>Your Sacruda Identity</h1>
+  <p class="subtitle">We'll use this information to create your Sacruda account.</p>
   <div class="fields">
     <div class="field username">
       <p class="name">Username</p>

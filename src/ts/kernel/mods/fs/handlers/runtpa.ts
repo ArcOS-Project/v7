@@ -10,7 +10,7 @@ const runTpaFile: (d: IUserDaemon) => FileHandler = (daemon) => ({
     extensions: [".tpa"],
   },
   icon: "ArcAppMimeIcon",
-  name: "Run ArcOS app",
+  name: "Run Sacruda app",
   description: "Run this TPA file as an application",
   handle: async (path: string) => {
     const text = arrayBufferToText((await Fs.readFile(path))!);

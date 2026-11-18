@@ -10,7 +10,7 @@
   const { mode, arcTermConfiguration, changed } = process;
 </script>
 
-<h1>ArcTerm Colors</h1>
+<h1>Sacruda Terminal Colors</h1>
 
 <div class="mode-selector">
   <button class="mode" onclick={() => ($mode = "presets")} class:active={$mode === "presets"}>Presets</button>

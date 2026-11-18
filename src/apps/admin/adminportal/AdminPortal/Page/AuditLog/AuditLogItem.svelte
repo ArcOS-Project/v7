@@ -11,7 +11,7 @@
 
   const DEFAULT: ExpandedUserInfo = {
     _id: "SERVER",
-    username: "ArcOS",
+    username: "Sacruda",
     admin: true,
     adminScopes: ["admin.god"],
     approved: true,
@@ -23,7 +23,7 @@
     restricted: false,
     storageSize: 0,
     profile: {
-      username: "ArcOS",
+      username: "Sacruda",
       profilePicture: ServerPfp,
       admin: true,
       dispatchClients: 0,

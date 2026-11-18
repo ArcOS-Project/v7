@@ -1,4 +1,4 @@
-import { ArcOSVersion } from "$ts/env";
+import { SacrudaVersion } from "$ts/env";
 import { BugReportIcon } from "$ts/images/general";
 import { RegisteredProcess } from "$ts/util/apps";
 import { FeedbackProcess } from "./runtime";
@@ -6,8 +6,8 @@ import { FeedbackProcess } from "./runtime";
 const feedbackApp = RegisteredProcess({
   metadata: {
     name: "Give feedback",
-    version: ArcOSVersion,
-    author: "ArcOS Team",
+    version: SacrudaVersion,
+    author: "Sacruda Team",
     icon: BugReportIcon,
   },
   assets: {

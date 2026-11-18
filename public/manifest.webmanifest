@@ -1,6 +1,6 @@
 {
-  "short_name": "ArcOS",
-  "name": "ArcOS v7",
+  "short_name": "Sacruda",
+  "name": "Sacruda v7",
   "icons": [
     {
       "src": "./logo.png",
@@ -16,9 +16,9 @@
   "theme_color": "#000",
   "shortcuts": [
     {
-      "name": "ArcOS",
-      "short_name": "ArcOS",
-      "description": "The ArcOS Project",
+      "name": "Sacruda",
+      "short_name": "Sacruda",
+      "description": "The Sacruda Project",
       "url": "/",
       "icons": [
         {
@@ -28,5 +28,5 @@
       ]
     }
   ],
-  "description": "The ArcOS Project"
+  "description": "The Sacruda Project"
 }

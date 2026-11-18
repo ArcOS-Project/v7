@@ -53,7 +53,7 @@ export const States: Record<string, State> = {
   desktop: {
     render: DesktopRender,
     html: DesktopHtml,
-    name: "ArcOS Desktop",
+    name: "Sacruda Desktop",
     identifier: "desktop",
   },
   initialSetup: {
@@ -68,7 +68,7 @@ export const States: Record<string, State> = {
     html: TurnedOffHtml,
   },
   arcterm: {
-    name: "ArcTerm",
+    name: "Sacruda Terminal",
     identifier: "arcterm",
     render: ArcTermRender,
     html: ArcTermHtml,

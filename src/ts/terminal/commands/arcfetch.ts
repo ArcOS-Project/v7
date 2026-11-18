@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
-import { ArcOSVersion, Env, Server, State } from "$ts/env";
+import { SacrudaVersion, Env, Server, State } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { authcode } from "$ts/util";
@@ -10,7 +10,7 @@ import { TerminalProcess } from "../process";
 
 export class ArcFetchCommand extends TerminalProcess {
   static keyword: string = "arcfetch";
-  static description: string = "View information about your device and ArcOS";
+  static description: string = "View information about your device and Sacruda";
 
   //#region LIFECYCLE
 
@@ -38,7 +38,7 @@ export class ArcFetchCommand extends TerminalProcess {
     const state = State?.currentState;
 
     return Object.entries({
-      OS: `ArcOS ${ArcOSVersion}-${ArcMode()} (${ArcBuild()})`,
+      OS: `Sacruda ${SacrudaVersion}-${ArcMode()} (${ArcBuild()})`,
       Host: `${Server.hostname ?? Server.url} ${BRBLACK}(${authcode() ? "Protected" : "Open"})${RESET}`,
       Username: `${Env.get("currentuser")} ${BRBLACK}(${Env.get("administrator") ? "Administrator" : "Regular User"})${RESET}`,
       Mode: `Browser ${BRBLACK}(on state ${state?.toUpperCase()})${RESET}`,

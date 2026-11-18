@@ -414,7 +414,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
           {
             title: "Failed to load file",
             message:
-              "ArcOS failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
+              "Sacruda failed to open the file you requested. It might be moved or the drive doesn't support direct file access.",
             buttons: [BTN_OKAY_SUG],
             image: "MediaPlayerIcon",
             sound: "arcos.dialog.error",
@@ -702,7 +702,7 @@ export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntim
       const albumCoverMime = metadata?.coverImagePath ? mime.getType(metadata!.coverImagePath!) : null;
 
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: metadata?.title ?? "ArcOS Media Player",
+        title: metadata?.title ?? "Sacruda Media Player",
         artist: metadata?.artist ?? "Unknown Artist",
         album: metadata?.album ?? "Unknown Album",
         artwork: [

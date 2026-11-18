@@ -1,8 +1,8 @@
 /**
- * ArcOS JavaScript Execution Engine
+ * Sacruda JavaScript Execution Engine
  *
- * This file executes JS files in ArcOS under a relatively controlled environment.
- * It is part of the ArcOS TPA framework: a system for running third-party apps.
+ * This file executes JS files in Sacruda under a relatively controlled environment.
+ * It is part of the Sacruda TPA framework: a system for running third-party apps.
  *
  * All rights belong to their respective authors.
  *
@@ -73,7 +73,7 @@ export class JsExec extends Process {
   }
 
   getTpaUrlInfo() {
-    const appId = this.app?.id || "ArcOS";
+    const appId = this.app?.id || "Sacruda";
     const userId = Daemon?.userInfo?._id || "SYSTEM";
     const filename = getItemNameFromPath(this.filePath!);
 
@@ -124,7 +124,7 @@ export class JsExec extends Process {
 
     if (app.tpaRevision && app.tpaRevision > this.TPA_REVISION)
       throw new JsExecError(
-        `This application expects a newer version of the TPA framework than what ArcOS can supply. Please update your ArcOS version and try again.`
+        `This application expects a newer version of the TPA framework than what Sacruda can supply. Please update your Sacruda version and try again.`
       );
 
     this.app = app;
@@ -169,9 +169,9 @@ export class JsExec extends Process {
       const hasImport = ast.body.some((node) => node.type.startsWith("Import"));
       const hasDebugger = ast.body.some((node) => node.type.startsWith("Debugger"));
 
-      if (hasExport) throw new JsExecError("Export statements are not valid inside of ArcOS");
-      if (hasImport) throw new JsExecError("Import statements are not valid inside of ArcOS");
-      if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of ArcOS");
+      if (hasExport) throw new JsExecError("Export statements are not valid inside of Sacruda");
+      if (hasImport) throw new JsExecError("Import statements are not valid inside of Sacruda");
+      if (hasDebugger) throw new JsExecError("Debugger triggers are not valid inside of Sacruda");
     } catch (e) {
       throw new JsExecError(`An error occurred while parsing the source file: ${e}`);
     }

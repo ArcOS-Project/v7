@@ -37,7 +37,7 @@ export class ShareConnGuiRuntime extends AppProcess implements IShareConnGuiRunt
         {
           title: "Failed to join share",
           message:
-            "ArcOS failed to add you to the requested share. Please check the information you entered, and then try again. If the problem persists, ask the owner of the share for new credentials.",
+            "Sacruda failed to add you to the requested share. Please check the information you entered, and then try again. If the problem persists, ask the owner of the share for new credentials.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",

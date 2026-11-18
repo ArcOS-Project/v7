@@ -205,7 +205,7 @@ export const ActivityCaptionTranslations = {
   unknown: "Unknown activity",
   login: "Logged in",
   logout: "Logged out",
-  shutdown: "Shut down ArcOS",
+  shutdown: "Shut down Sacruda",
 };
 
 export const TimeFrames: Record<string, string> = {

@@ -80,7 +80,7 @@ import type { Wallpaper } from "$types/user/wallpaper";
 export { default as NoDaemon } from "$assets/bg/nodaemon.svg";
 
 export const Wallpapers: { [key: string]: Wallpaper } = {
-  /**ArcOS Team */
+  /**Sacruda Team */
   img04: {
     url: img04,
     thumb: img04Thumb,

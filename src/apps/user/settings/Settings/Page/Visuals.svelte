@@ -12,7 +12,7 @@
   <div class="header">
     <Icon icon="PersonalizationIcon" />
     <h1>Visual settings</h1>
-    <p>Fine-tune the appearance of ArcOS</p>
+    <p>Fine-tune the appearance of Sacruda</p>
   </div>
 
   {#if process.safeMode}
@@ -22,7 +22,7 @@
   {/if}
 
   <Section caption="Effects">
-    <Option caption="Reduce animations throughout ArcOS">
+    <Option caption="Reduce animations throughout Sacruda">
       <input
         type="checkbox"
         class="switch"
@@ -55,7 +55,7 @@
     <Option caption="Show accent colors on glass surfaces">
       <input type="checkbox" class="switch" bind:checked={$userPreferences.shell.taskbar.colored} />
     </Option>
-    <Option caption="Add your own CSS to ArcOS">
+    <Option caption="Add your own CSS to Sacruda">
       <button
         class="lucide icon-pencil"
         aria-label="Edit custom CSS"

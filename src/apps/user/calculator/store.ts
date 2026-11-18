@@ -2,7 +2,7 @@
  * CalculatorApp 1.0.0
  *
  * Authored by Izaak Kuipers, development started January 20th 2023.
- * Port to ArcOS v7 started on March 26th 2025.
+ * Port to Sacruda v7 started on March 26th 2025.
  *
  * All code in this file is written by the author and licensed under GPLv3.
  *

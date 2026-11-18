@@ -5,8 +5,8 @@
 </script>
 
 <p>
-  Migrations take care of keeping your configuration files up to date when ArcOS updates. The below list contains the migrations
-  that ArcOS has, along with versions installed on your system.
+  Migrations take care of keeping your configuration files up to date when Sacruda updates. The below list contains the migrations
+  that Sacruda has, along with versions installed on your system.
 </p>
 <div class="table-wrapper">
   <ServiceGate id="MigrationSvc">

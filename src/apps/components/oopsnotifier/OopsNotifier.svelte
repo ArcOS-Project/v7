@@ -8,10 +8,10 @@
 
 <div class="header">
   <Icon icon="@app::{data.id}" fallback="ErrorIcon" />
-  <h1>{data?.id === "ArcOS" ? "System error occurred" : `${data?.metadata?.name || "Something"} crashed`}</h1>
+  <h1>{data?.id === "Sacruda" ? "System error occurred" : `${data?.metadata?.name || "Something"} crashed`}</h1>
   <p>
-    {#if data?.id === "ArcOS"}
-      An error occurred while running some system code. ArcOS might be unstable until you restart, the stack trace might tell you
+    {#if data?.id === "Sacruda"}
+      An error occurred while running some system code. Sacruda might be unstable until you restart, the stack trace might tell you
       why the error occurred.
     {:else if !process.parseFailed}
       If you were in the middle of something, the information you were working on might be lost. You can view the stack trace,

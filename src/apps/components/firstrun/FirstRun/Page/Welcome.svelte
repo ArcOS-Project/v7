@@ -4,5 +4,5 @@
 </script>
 
 <Icon icon="WaveIcon" fallback={WaveIcon} />
-<h1>Welcome to ArcOS!</h1>
+<h1>Welcome to Sacruda!</h1>
 <p>Let's customize your account.</p>

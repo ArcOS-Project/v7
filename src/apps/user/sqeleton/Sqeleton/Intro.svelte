@@ -15,7 +15,7 @@
       <span class="name">{app.metadata.name}</span>
       <span class="version">v{app.metadata.version}</span>
     </h1>
-    <p>SQLite editor for ArcOS</p>
+    <p>SQLite editor for Sacruda</p>
   </div>
   <div class="actions">
     <button class="open-file" onclick={() => process.openDatabase()}>

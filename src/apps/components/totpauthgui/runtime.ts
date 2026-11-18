@@ -60,9 +60,9 @@ export class TotpAuthGuiRuntime extends AppProcess implements ITotpAuthGuiRuntim
 
     MessageBox(
       {
-        title: "ArcOS Security",
+        title: "Sacruda Security",
         message:
-          "Lost access to your authenticator app? Not a problem! Please contact an ArcOS System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
+          "Lost access to your authenticator app? Not a problem! Please contact an Sacruda System Admin in the Discord server to get your 2FA removed. We'll ask you questions to verify you own the account, and after that you can access it again.",
         buttons: [{ caption: "Okay", action: () => this.cancel(), suggested: true }],
         sound: "arcos.dialog.info",
         image: InfoIcon,

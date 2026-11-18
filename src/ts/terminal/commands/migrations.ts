@@ -7,7 +7,7 @@ import { TerminalProcess } from "../process";
 
 export class MigrationsCommand extends TerminalProcess {
   static keyword = "migrations";
-  static description = "Manage ArcOS configuration migrations";
+  static description = "Manage Sacruda configuration migrations";
   private service?: IMigrationService;
 
   //#region LIFECYCLE

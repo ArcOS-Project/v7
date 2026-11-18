@@ -13,7 +13,7 @@ import type { ISystemDispatchKernelModule } from "$interfaces/modules/ISystemDis
 import packageJson from "../../package.json";
 import { Log } from "./logging";
 
-export const ArcOSVersion = packageJson.version as `${number}.${number}.${number}`;
+export const SacrudaVersion = packageJson.version as `${number}.${number}.${number}`;
 export const BETA = true;
 export const USERFS_UUID = "233D-CE74-18C0-0B08";
 export let Kernel: IWaveKernel;

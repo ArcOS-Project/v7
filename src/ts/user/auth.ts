@@ -27,7 +27,7 @@ export async function LoginUser(identity: string, password: string): Promise<ICo
 
     return CommandResult.AxiosError(
       e,
-      "An unknown error occurred. Please check your credentials, and then try again. If the problem persists, please contact an ArcOS administrator."
+      "An unknown error occurred. Please check your credentials, and then try again. If the problem persists, please contact an Sacruda administrator."
     );
   }
 }

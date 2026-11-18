@@ -7,7 +7,7 @@ import type { ArcTermColorPreset } from "./types";
 
 export const DarkColorPresets: ArcTermColorPreset[] = [
   {
-    name: "ArcTerm dark",
+    name: "Sacruda dark",
     author: "Izaak Kuipers",
     ...DefaultColors,
   },

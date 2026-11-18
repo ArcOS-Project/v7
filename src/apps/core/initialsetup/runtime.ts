@@ -176,7 +176,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
       {
         title: "Just making sure...",
         message:
-          "By using ArcOS, you agree to the License Agreement. You may not violate any of the rules contained within this license. Continue?",
+          "By using Sacruda, you agree to the License Agreement. You may not violate any of the rules contained within this license. Continue?",
         buttons: [
           {
             caption: "Decline",
@@ -200,13 +200,13 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
   }
 
   async viewLicense() {
-    this.Log("Opening ArcOS license message box");
+    this.Log("Opening Sacruda license message box");
 
     MessageBox(
       {
         image: SecurityMediumIcon,
-        title: "ArcOS License - GPLv3",
-        message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
+        title: "Sacruda License - GPLv3",
+        message: `By using Sacruda, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
           ArcLicense()
         )}</code>`,
         buttons: [
@@ -267,7 +267,7 @@ export class InitialSetupRuntime extends AppProcess implements IInitialSetupRunt
 
     const confirmed = await new Promise<boolean>((r) => {
       const emailNotice = !Server.serverInfo?.noEmailVerify
-        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account. Deactivated accounts will be manually deleted by an ArcOS administrator after 24 hours.`
+        ? ` Please note that you <b>need</b> a valid email address in order to activate your account. Entering a non-existent email address will prevent you from creating your account. Deactivated accounts will be manually deleted by an Sacruda administrator after 24 hours.`
         : ``;
 
       MessageBox(

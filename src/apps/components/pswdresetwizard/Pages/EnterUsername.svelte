@@ -28,6 +28,6 @@
 </div>
 
 <p class="help">
-  If you forgot your username, please talk to an Administrator in the ArcOS Discord server, and we'll help you recover your
+  If you forgot your username, please talk to an Administrator in the Sacruda Discord server, and we'll help you recover your
   account.
 </p>

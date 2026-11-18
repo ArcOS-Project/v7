@@ -30,7 +30,7 @@
       errored = true;
       MessageBox(
         {
-          title: "ArcOS Security",
+          title: "Sacruda Security",
           message: "The 2FA code you entered is incorrect! Please try again.",
           buttons: [
             {

@@ -36,7 +36,7 @@ export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerD
     used: 0,
     max: 0,
     free: 0,
-    username: "ArcOS",
+    username: "Sacruda",
   };
 
   public override CAPABILITIES: Record<DriveCapabilities, boolean> = {

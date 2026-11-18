@@ -1,4 +1,4 @@
-You can use Safe Mode to fix problems that prevent ArcOS from logging in correctly. Safe mode:
+You can use Safe Mode to fix problems that prevent Sacruda from logging in correctly. Safe mode:
 <ul>
   <li>Disables third-party applications,</li>
   <li>Removes animations and transparency effects,</li>
@@ -6,6 +6,6 @@ You can use Safe Mode to fix problems that prevent ArcOS from logging in correct
   <li>Unloads various non-crucial apps</li>
 </ul>
 <p>
-  If you didn't activate Safe Mode on purpose, simply restart ArcOS. Safe Mode can always be activated by pressing <b>F8</b> on the
+  If you didn't activate Safe Mode on purpose, simply restart Sacruda. Safe Mode can always be activated by pressing <b>F8</b> on the
   boot screen.
 </p>

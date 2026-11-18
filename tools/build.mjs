@@ -15,7 +15,7 @@ export const ASCII_ART = [
   "  / _ \\| '_/ _| (_) \\__ \\",
   " /_/ \\_\\_| \\__|\\___/|___/",
   "",
-  `ArcOS build script for v${packageJson.version}`,
+  `Sacruda build script for v${packageJson.version}`,
   "Copyright © 2026 Izaak Kuipers. All rights belong to their respective authors.",
   "",
   "Use --help to see available options",
@@ -25,12 +25,12 @@ export const EchoIntro = () => console.log(ASCII_ART.join(`\n`));
 
 const flags = program
   .name("tools/build.mjs")
-  .description("Build ArcOS in style")
+  .description("Build Sacruda in style")
   .option("-c, --no-checks", "Specify to skip code quality/integrity checks")
   .option("-h, --no-hash", "Skip obtaining the hash and writing it to the build file")
   .option("-m, --no-minify", "Don't minify the compiled JS")
-  .option("-t, --build-types", "Build type definitions instead of building ArcOS")
-  .option("-b, --no-build", "Skip building ArcOS itself")
+  .option("-t, --build-types", "Build type definitions instead of building Sacruda")
+  .option("-b, --no-build", "Skip building Sacruda itself")
   .parse()
   .opts();
 
@@ -62,7 +62,7 @@ async function runSvelteChecks() {
 }
 
 async function buildIt() {
-  console.log(`Building ArcOS ${packageJson.version}...`);
+  console.log(`Building Sacruda ${packageJson.version}...`);
 
   await build({
     build: {

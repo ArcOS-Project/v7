@@ -19,7 +19,7 @@ const typeCaptions: Record<string, string> = {
 
 export class PkgCommand extends TerminalProcess {
   public static keyword: string = "pkg";
-  public static description: string = "ArcOS package manager commandline";
+  public static description: string = "Sacruda package manager commandline";
   private distrib?: IDistributionServiceProcess;
 
   //#region LIFECYCLE
@@ -435,7 +435,7 @@ export class PkgCommand extends TerminalProcess {
   }
 
   async help(): Promise<number> {
-    this.rl!.println("ArcOS Package Manager\n\nUsage: pkg <command> [...]\n");
+    this.rl!.println("Sacruda Package Manager\n\nUsage: pkg <command> [...]\n");
     this.rl!.println("Commands:");
     this.rl!.println("- install <name>      Installs the specified package");
     this.rl!.println("- remove <name>       Removes a package, if installed");
@@ -476,10 +476,10 @@ export class PkgCommand extends TerminalProcess {
 
   async elevate(): Promise<boolean> {
     return await this.term!.elevate({
-      what: "ArcOS needs your permission to run the pkg command.",
+      what: "Sacruda needs your permission to run the pkg command.",
       image: "ArcTermIcon",
       title: "Package manager",
-      description: "ArcTerm command",
+      description: "Terminal command",
       level: ElevationLevel.medium,
     });
   }

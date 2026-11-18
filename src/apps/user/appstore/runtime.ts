@@ -46,7 +46,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
         {
           title: "App store unavailable",
           message:
-            "The Distribution Service isn't running anymore. Please restart ArcOS, and then try again. If this keeps happening, contact an ArcOS Administrator.",
+            "The Distribution Service isn't running anymore. Please restart Sacruda, and then try again. If this keeps happening, contact an Sacruda Administrator.",
           buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
@@ -127,7 +127,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       MessageBox(
         {
           title: "Can't install package",
-          message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
+          message: `The Sacruda administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can install it.`,
           buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
@@ -140,7 +140,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     }
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to install a package",
+      what: "Sacruda needs your permission to install a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
       image: StoreItemIcon(freshPkg),
@@ -185,7 +185,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
       MessageBox(
         {
           title: "Can't update package",
-          message: `The ArcOS administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
+          message: `The Sacruda administrators haven't yet verified version <b>${freshPkg.pkg.version}</b> of this package! This package has to be verified before you can update it.`,
           buttons: [BTN_OKAY_SUG],
           sound: "arcos.dialog.error",
           image: StoreItemIcon(freshPkg),
@@ -198,7 +198,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     }
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to update a package",
+      what: "Sacruda needs your permission to update a package",
       title: freshPkg.pkg.name,
       description: `By ${freshPkg.user?.displayName || freshPkg.user?.username || freshPkg.pkg.author}`,
       image: StoreItemIcon(pkg),
@@ -224,7 +224,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     this.Log(`deprecatePackage: ${pkg._id}`);
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to deprecate one of your packages",
+      what: "Sacruda needs your permission to deprecate one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
       image: StoreItemIcon(pkg),
@@ -244,7 +244,7 @@ export class AppStoreRuntime extends AppProcess implements IAppStoreRuntime {
     this.Log(`deletePackage: ${pkg._id}`);
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to delete one of your packages",
+      what: "Sacruda needs your permission to delete one of your packages",
       title: pkg.pkg.name,
       description: pkg.pkg.appId,
       image: StoreItemIcon(pkg),

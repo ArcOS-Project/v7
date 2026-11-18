@@ -1,6 +1,6 @@
 import type { IStateHandler } from "$interfaces/IStateHandler";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, Env, Fs, Kernel, Server, SetCurrentStateHandler, Stack } from "$ts/env";
+import { SacrudaVersion, Env, Fs, Kernel, Server, SetCurrentStateHandler, Stack } from "$ts/env";
 import { TemporaryFilesystemDrive } from "$ts/kernel/mods/fs/drives/temp";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -33,7 +33,7 @@ export class InitProcess extends Process {
 
     await Stack.startRenderer(this.pid);
 
-    const state = await Stack.spawn<IStateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "ArcOS", States);
+    const state = await Stack.spawn<IStateHandler>(StateHandler, undefined, "SYSTEM", this.pid, "Sacruda", States);
     if (!state) throw new Error("State handler failed to spawn");
 
     SetCurrentStateHandler(state);
@@ -58,7 +58,7 @@ export class InitProcess extends Process {
       await Fs.createDirectory("T:/Meta");
       await Fs.writeFile("T:/Meta/ARCOS_BUILD", textToBlob(ArcBuild()));
       await Fs.writeFile("T:/Meta/ARCOS_MODE", textToBlob(ArcMode()));
-      await Fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(ArcOSVersion));
+      await Fs.writeFile("T:/Meta/ARCOS_VERSION", textToBlob(SacrudaVersion));
       for (const proxy of Fs.loadedProxies) {
         await Fs.createDirectory(`T:/::{${proxy.uuid}}`);
       }
@@ -70,7 +70,7 @@ export class InitProcess extends Process {
    * @todo Remove from codebase
    */
   nightly() {
-    document.title = `NIGHTLY - ArcOS v${ArcOSVersion}-${ArcMode()}_${ArcBuild()}`;
+    document.title = `NIGHTLY - Sacruda v${SacrudaVersion}-${ArcMode()}_${ArcBuild()}`;
     Env.set(`NIGHTLY_WHODIS_${ArcBuild()}`, 1);
   }
 

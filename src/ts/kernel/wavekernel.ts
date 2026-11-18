@@ -2,7 +2,7 @@ import type { IStateHandler } from "$interfaces/IStateHandler";
 import type { IWaveKernel, KernelOperationLogItem, KernelOpModuleName, KernelOpModuleType } from "$interfaces/IWaveKernel";
 import type { IStackKernelModule } from "$interfaces/modules/IStackKernelModule";
 import { __Console__ } from "$ts/console";
-import { ArcOSVersion, SetCurrentKernel, SysDispatch, UpdateKernelExports } from "$ts/env";
+import { SacrudaVersion, SetCurrentKernel, SysDispatch, UpdateKernelExports } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
@@ -84,7 +84,7 @@ export class WaveKernel implements IWaveKernel {
     await getLicense();
     await ChangeLogs.refreshChangelogs();
 
-    this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
+    this.Log(`Sacruda`, `***** [v7 -> Sacruda InDev v${SacrudaVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 
     await this._kernelModules();
 

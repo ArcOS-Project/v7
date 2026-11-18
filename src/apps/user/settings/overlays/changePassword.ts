@@ -5,7 +5,7 @@ import ChangePassword from "../Settings/Overlays/ChangePassword.svelte";
 export const ChangePasswordApp: App = {
   metadata: {
     name: "Change Password",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "3.0.0",
     icon: "PasswordIcon",
   },

@@ -4,7 +4,7 @@ import { TerminalProcess } from "../process";
 
 export class ConfigCommand extends TerminalProcess {
   public static keyword = "config";
-  public static description = "List the ArcTerm configuration";
+  public static description = "List the Sacruda Terminal configuration";
 
   //#region LIFECYCLE
 

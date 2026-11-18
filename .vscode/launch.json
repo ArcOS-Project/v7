@@ -7,7 +7,7 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Debug ArcOS in Chrome",
+      "name": "Debug Sacruda in Chrome",
       "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}"
     }

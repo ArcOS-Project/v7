@@ -59,7 +59,7 @@ export class DevenvCommand extends TerminalProcess {
     if (result === "success") {
       if (ArcMode() === "betabranch") {
         term.Warning(
-          `You're running the development environment on a ${BRYELLOW}Beta${RESET} build of ArcOS, and as such, a mismatching build hash between your project and ArcOS is ignored. If anything goes wrong, please contact an ArcOS developer as soon as you can.\n\n`,
+          `You're running the development environment on a ${BRYELLOW}Beta${RESET} build of Sacruda, and as such, a mismatching build hash between your project and Sacruda is ignored. If anything goes wrong, please contact an Sacruda developer as soon as you can.\n\n`,
           "WARNING"
         );
       }

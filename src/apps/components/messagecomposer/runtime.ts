@@ -110,7 +110,7 @@ export class MessageComposerRuntime extends AppProcess implements IMessageCompos
 
   sendFailed(errorMessage?: string) {
     errorMessage ||=
-      "It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an ArcOS administrator.";
+      "It might be too large, or none of the recipients exist. Please check the recipients or try shrinking it down, and then resend it. If it still doesn't work, contact an Sacruda administrator.";
 
     this.Log(`sendFailed`);
 

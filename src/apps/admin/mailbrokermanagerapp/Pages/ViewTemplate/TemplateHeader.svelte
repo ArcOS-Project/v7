@@ -21,7 +21,7 @@
 <div class="template-header">
   <span class="lucide icon-book-dashed"></span>
   <div class="info">
-    <h1>{$updateData.name} - ArcOS {$updateData.fromSuffix}</h1>
+    <h1>{$updateData.name} - Sacruda {$updateData.fromSuffix}</h1>
     <p class="subject">{$updateData.subjectContent}</p>
     <TemplatePills {template} {deprecated} />
   </div>

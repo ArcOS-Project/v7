@@ -2,7 +2,7 @@ import type { IVersionUserContext } from "$interfaces/contexts/IVersionUserConte
 import type { IFilesystemDrive } from "$interfaces/IFilesystemDrive";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import SourceDriveEnable from "$lib/Daemon/SourceDriveEnable.svelte";
-import { ArcOSVersion, Daemon, Env, Fs, Kernel } from "$ts/env";
+import { SacrudaVersion, Daemon, Env, Fs, Kernel } from "$ts/env";
 import { SourceFilesystemDrive } from "$ts/kernel/mods/fs/drives/src";
 import { UserPaths } from "$ts/user/store";
 import { arrayBufferToText, textToBlob } from "$ts/util/convert";
@@ -18,7 +18,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
   async isRegisteredVersionOutdated() {
     try {
       const contents = await Fs.readFile(join(UserPaths.System, "RegisteredVersion"));
-      const isOutdated = !contents || arrayBufferToText(contents) !== ArcOSVersion;
+      const isOutdated = !contents || arrayBufferToText(contents) !== SacrudaVersion;
 
       return isOutdated;
     } catch {
@@ -28,7 +28,7 @@ export class VersionUserContext extends UserContext implements IVersionUserConte
 
   async updateRegisteredVersion() {
     try {
-      await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(ArcOSVersion));
+      await Fs.writeFile(join(UserPaths.System, "RegisteredVersion"), textToBlob(SacrudaVersion));
     } catch {
       return;
     }

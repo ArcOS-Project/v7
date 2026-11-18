@@ -99,7 +99,7 @@ export const StartMenuActions: Record<string, StartMenuAction> = {
     icon: "hand-helping",
   },
   exit: {
-    caption: "Exit ArcOS",
+    caption: "Exit Sacruda",
     action: (process) => process.exit(),
     icon: "power",
   },

@@ -32,7 +32,7 @@
       MessageBox(
         {
           title: "Change username",
-          message: "Your username has been updated! You might have to restart ArcOS before the changes take effect everywhere.",
+          message: "Your username has been updated! You might have to restart Sacruda before the changes take effect everywhere.",
           buttons: [BTN_OKAY_SUG],
           image: "GoodStatusIcon",
           sound: "arcos.dialog.info",

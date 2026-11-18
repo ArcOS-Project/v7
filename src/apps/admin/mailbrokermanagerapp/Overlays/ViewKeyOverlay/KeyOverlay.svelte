@@ -19,7 +19,7 @@
       {
         title: "Delete server key?",
         message:
-          "Are you absolutely sure that you want to delete this disabled server key? This cannot be reverted, and may have unforseen consequences if the key is still used by ArcOS systems.",
+          "Are you absolutely sure that you want to delete this disabled server key? This cannot be reverted, and may have unforseen consequences if the key is still used by Sacruda systems.",
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },

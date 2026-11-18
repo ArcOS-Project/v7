@@ -1,5 +1,5 @@
 export const ICON_GROUP_CAPTIONS = {
-  Branding: "ArcOS logos",
+  Branding: "Sacruda logos",
   General: "General icons",
   Apps: "Application icons",
   Filesystem: "Filesystem-related icons",

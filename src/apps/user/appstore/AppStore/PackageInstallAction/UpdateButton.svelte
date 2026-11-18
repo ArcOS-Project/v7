@@ -40,7 +40,7 @@
         {
           title: "Failed to update item",
           message:
-            "ArcOS failed to download the package of this store item. The distribution service might already be installing or updating a package. Please try again later.",
+            "Sacruda failed to download the package of this store item. The distribution service might already be installing or updating a package. Please try again later.",
           buttons: [
             {
               caption: "Okay",

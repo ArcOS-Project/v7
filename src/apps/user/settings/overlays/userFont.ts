@@ -5,7 +5,7 @@ import UserFont from "../Settings/Overlays/UserFont.svelte";
 export const UserFontApp: App = {
   metadata: {
     name: "Change Font",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "1.0.0",
     icon: "ComponentIcon",
   },

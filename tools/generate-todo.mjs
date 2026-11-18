@@ -16,7 +16,7 @@ const OUTPUT = `COMMENTING_TODO_${getDateStamp()}.md`;
 
 const HEADER = `# COMMENTING TODO
 
-This file illustrates the source code that still has to be commented. When commenting code for ArcOS v7, follow these simple guidelines:
+This file illustrates the source code that still has to be commented. When commenting code for Sacruda v7, follow these simple guidelines:
 
 - If the code can be understood by anybody, don't comment it
 - If there's already a comment in place that isn't correct anymore, change it

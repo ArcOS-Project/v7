@@ -38,7 +38,7 @@
   <div class="header">
     <Icon icon="SecurityMediumIcon" />
     <h1>Security Center</h1>
-    <p>Manage the security of ArcOS</p>
+    <p>Manage the security of Sacruda</p>
   </div>
 
   <Section caption="Options">

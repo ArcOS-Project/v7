@@ -27,7 +27,7 @@ export class AdminCommand extends TerminalProcess {
 
   protected async main(term: IArcTerminal): Promise<number> {
     const elevated = await term.elevate({
-      what: "ArcTerm wants to open the Administrator Console",
+      what: "Terminal wants to open the Administrator Console",
       title: "Administrator Console",
       description: "Izaak Kuipers",
       image: "ElevationIcon",
@@ -40,7 +40,7 @@ export class AdminCommand extends TerminalProcess {
     const admin = term.daemon?.serviceHost?.getService<IAdminBootstrapper>("AdminBootstrapper");
 
     term.term.clear();
-    this.rl?.println(`ArcOS Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${Server.url}\r\n`);
+    this.rl?.println(`Sacruda Administrator Console version 1.0.0\r\n\r\n© 2025 Izaak Z. Kuipers\r\nOn server: ${Server.url}\r\n`);
 
     if (!admin) {
       term.Error("Access is denied.");

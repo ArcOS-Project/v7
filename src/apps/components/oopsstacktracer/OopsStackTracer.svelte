@@ -21,7 +21,7 @@
     <div class="no-trace">
       <span class="lucide icon-circle-slash"></span>
       <h1>No stack trace</h1>
-      <p>ArcOS failed to parse the stack trace of this crash.</p>
+      <p>Sacruda failed to parse the stack trace of this crash.</p>
     </div>
   {:else if original}
     <code class="block stack-trace">{trace}</code>
@@ -57,7 +57,7 @@
       {/if}
       <div class="stack-frame" class:internal={!frame.parsed}>
         <Icon icon={!i ? "BadStatusIcon" : "DefaultIcon"} />
-        <p class="source">{frame.parsed?.filename || "ArcOS Internal"}</p>
+        <p class="source">{frame.parsed?.filename || "Sacruda Internal"}</p>
         <p class="method" title={frame.methodName || ""} class:anonymous={!frame.methodName}>
           {frame.methodName || "(anonymous)"}
         </p>

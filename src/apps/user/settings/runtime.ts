@@ -41,21 +41,21 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
 
   protected override elevations: Record<string, ElevationData> = {
     showLoginActivity: {
-      what: "ArcOS needs your permission to view security activity",
+      what: "Sacruda needs your permission to view security activity",
       title: "View security activity",
       description: "System Settings",
       image: "WaveIcon",
       level: ElevationLevel.medium,
     },
     disableSecurityPassword: {
-      what: "ArcOS needs your permission to disable passwords in the <b>Secure Context</b>:",
+      what: "Sacruda needs your permission to disable passwords in the <b>Secure Context</b>:",
       image: "PasswordIcon",
       title: "Disable secure context password",
       description: "This will make your account less secure",
       level: ElevationLevel.medium,
     },
     turnOffSysSec: {
-      what: "ArcOS needs your permission to turn off System Security. We strongly advise against this.",
+      what: "Sacruda needs your permission to turn off System Security. We strongly advise against this.",
       image: "SecurityHighIcon",
       title: "Disable System Security",
       description: "We do NOT recommend this",
@@ -151,7 +151,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
       {
         title: "Log out everywhere?",
         message:
-          "Are you sure you want to log out of all your devices? You'll have to log in again for each device, and any opened ArcOS instances will stop working immediately.",
+          "Are you sure you want to log out of all your devices? You'll have to log in again for each device, and any opened Sacruda instances will stop working immediately.",
         buttons: [
           { caption: "Cancel", action: () => {} },
           {
@@ -205,13 +205,13 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
   }
 
   async viewLicense() {
-    this.Log("Opening ArcOS license message box");
+    this.Log("Opening Sacruda license message box");
 
     MessageBox(
       {
         image: "SecurityMediumIcon",
-        title: "ArcOS License - GPLv3",
-        message: `By using ArcOS, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
+        title: "Sacruda License - GPLv3",
+        message: `By using Sacruda, you agree to the GPLv3 License contained within: <code class='block'>${htmlspecialchars(
           ArcLicense()
         )}</code>`,
         buttons: [
@@ -315,7 +315,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
     if (this.safeMode) return;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to set up two-factor authentication",
+      what: "Sacruda needs your permission to set up two-factor authentication",
       image: "ElevationIcon",
       title: "Set up 2FA",
       description: `For ${this.username}`,
@@ -331,7 +331,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
     if (this.safeMode) return;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to disable two-factor authentication",
+      what: "Sacruda needs your permission to disable two-factor authentication",
       image: "ElevationIcon",
       title: "Disable 2FA",
       description: `For ${this.username}`,
@@ -346,7 +346,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
       MessageBox(
         {
           title: "Something went wrong",
-          message: "An error occurred while disabling two-factor authentication for your account. Please contact ArcOS support.",
+          message: "An error occurred while disabling two-factor authentication for your account. Please contact Sacruda support.",
           buttons: [{ caption: "Okay", suggested: true, action: () => {} }],
           sound: "arcos.dialog.error",
           image: "ErrorIcon",
@@ -359,7 +359,7 @@ export class SettingsRuntime extends AppProcess implements ISettingsRuntime {
 
     MessageBox(
       {
-        title: "ArcOS Security",
+        title: "Sacruda Security",
         message:
           "Two-factor authentication has now been disabled for your account. You must restart for the changes to fully take effect.",
         buttons: [

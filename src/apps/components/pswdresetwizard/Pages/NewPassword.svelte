@@ -6,7 +6,7 @@
 </script>
 
 <p class="instruction">
-  We’re almost there, {$RecoveryUsername}! To finish off, think of a strong password for your ArcOS account. Save it in your password
+  We’re almost there, {$RecoveryUsername}! To finish off, think of a strong password for your Sacruda account. Save it in your password
   manager so that you don’t lose it.
 </p>
 

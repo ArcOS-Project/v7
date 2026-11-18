@@ -56,7 +56,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     if (!app || this.isVital(app)) return;
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to disable an application",
+      what: "Sacruda needs your permission to disable an application",
       image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
@@ -94,7 +94,7 @@ export class ApplicationsUserContext extends UserContext implements IApplication
     if (!app) return;
 
     const elevated = await Daemon!.elevation?.manuallyElevate({
-      what: "ArcOS needs your permission to enable an application",
+      what: "Sacruda needs your permission to enable an application",
       image: `@app::${app.id}`,
       title: app.metadata.name,
       description: `By ${app.metadata.author}`,
@@ -115,9 +115,9 @@ export class ApplicationsUserContext extends UserContext implements IApplication
 
   async enableThirdParty() {
     const elevated = await Daemon!.elevation?.manuallyElevate({
-      what: "ArcOS wants to enable third-party applications",
+      what: "Sacruda wants to enable third-party applications",
       title: "Enable Third-party",
-      description: "ArcOS System",
+      description: "Sacruda System",
       image: "AppsIcon",
       level: ElevationLevel.medium,
     });
@@ -132,9 +132,9 @@ export class ApplicationsUserContext extends UserContext implements IApplication
 
   async disableThirdParty() {
     const elevated = await Daemon!.elevation?.manuallyElevate({
-      what: "ArcOS wants to disable third-party applications and kill any running third-party apps",
+      what: "Sacruda wants to disable third-party applications and kill any running third-party apps",
       title: "Disable Third-party",
-      description: "ArcOS System",
+      description: "Sacruda System",
       image: "AppsIcon",
       level: ElevationLevel.medium,
     });

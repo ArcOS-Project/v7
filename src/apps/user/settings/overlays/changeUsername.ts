@@ -5,7 +5,7 @@ import ChangeUsername from "../Settings/Overlays/ChangeUsername.svelte";
 export const ChangeUsernameApp: App = {
   metadata: {
     name: "Change Username",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "3.0.0",
     icon: "AccountIcon",
   },

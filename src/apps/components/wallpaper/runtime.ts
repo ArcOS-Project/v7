@@ -63,7 +63,7 @@ export class WallpaperRuntime extends AppProcess implements IWallpaperRuntime {
       MessageBox(
         {
           title: "Failed to load the desktop",
-          message: "ArcOS wasn't able to load your desktop icons. Please restart to try again.",
+          message: "Sacruda wasn't able to load your desktop icons. Please restart to try again.",
           buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",

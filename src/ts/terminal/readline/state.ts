@@ -3,7 +3,7 @@
  *
  * a library for building command-line interfaces with XtermJS
  *
- * Ported to ArcOS by Izaak Kuipers on March 23rd 2025.
+ * Ported to Sacruda by Izaak Kuipers on March 23rd 2025.
  *
  * ORIGINAL REPOSITORY: https://github.com/strtok/xterm-readline
  * COMMIT: cdb0940c98a4bad9388f9a44f8917fb00df2423c

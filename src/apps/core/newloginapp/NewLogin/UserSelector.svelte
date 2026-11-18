@@ -14,7 +14,7 @@
           <ProfilePicture height={48} fallback={user.profilePictureUrl} />
           <div class="info">
             <h1>{user.displayName}</h1>
-            <p class="role">{user.administrator ? "Administrator" : "ArcOS User"}</p>
+            <p class="role">{user.administrator ? "Administrator" : "Sacruda User"}</p>
           </div>
         </button>
         <button

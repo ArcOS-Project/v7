@@ -590,7 +590,7 @@ export class DistributionServiceProcess extends BaseService implements IDistribu
 
 export const distributionService: Service = {
   name: "DistribSvc",
-  description: "Handles the installation and distribution of ArcOS packages",
+  description: "Handles the installation and distribution of Sacruda packages",
   process: DistributionServiceProcess,
   initialState: "started",
 };

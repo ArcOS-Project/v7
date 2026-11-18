@@ -66,7 +66,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     const elevated =
       fromSystem ||
       (await Daemon!.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to mount a ZIP file",
+        what: "Sacruda needs your permission to mount a ZIP file",
         title: getItemNameFromPath(path),
         description: letter ? `As ${letter}:/` : "As a drive",
         image: "DriveIcon",
@@ -445,7 +445,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
       await MessageBox(
         {
           title: `Unknown file type`,
-          message: `ArcOS doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
+          message: `Sacruda doesn't have an app that can open '${filename}'. Click <b>Open With</b> to pick from a list of applications.`,
           buttons: [
             {
               caption: "Open With",
@@ -720,7 +720,7 @@ export class FilesystemUserContext extends UserContext implements IFilesystemUse
     MessageBox(
       {
         title: `${name}`,
-        message: `This folder is required for ArcOS to run properly. If it or any of its files are missing, ArcOS might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
+        message: `This folder is required for Sacruda to run properly. If it or any of its files are missing, Sacruda might crash or become unstable. You cannot delete this item.<br><br><details><summary>Show path</summary><code class='block'>${path}</code></details>`,
         buttons: [{ caption: "Okay", action: () => {}, suggested: true }],
         sound: "arcos.dialog.warning",
         image: "InfoIcon",

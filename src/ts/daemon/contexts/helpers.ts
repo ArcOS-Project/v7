@@ -7,7 +7,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { GenericObjectViewerOptions, IGenericObjectViewerRuntime } from "$interfaces/runtimes/IGenericObjectViewerRuntime";
 import type { IGlobalLoadIndicatorRuntime } from "$interfaces/runtimes/IGlobalLoadIndicatorRuntime";
 import SafeModeNotice from "$lib/Daemon/SafeModeNotice.svelte";
-import { ArcOSVersion, Daemon, Env, Server, Stack, SysDispatch } from "$ts/env";
+import { SacrudaVersion, Daemon, Env, Server, Stack, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { CommandResult } from "$ts/result";
@@ -179,7 +179,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
   safeModeNotice() {
     MessageBox(
       {
-        title: "ArcOS is running in safe mode",
+        title: "Sacruda is running in safe mode",
         content: SafeModeNotice,
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
@@ -196,7 +196,7 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
       undefined,
       {},
       `[${process.app.id}] Feedback report - ${process.windowTitle()}`,
-      `Thank you for submitting feedback to ArcOS! Any feedback is of great help to make ArcOS the best we can. Please write your feedback in between the lines:
+      `Thank you for submitting feedback to Sacruda! Any feedback is of great help to make Sacruda the best we can. Please write your feedback in between the lines:
 
 ------
 
@@ -206,11 +206,11 @@ export class HelpersUserContext extends UserContext implements IHelpersUserConte
 
 - Username: ${this.userInfo?.username}
 - User ID: ${this.userInfo?._id}
-- ArcOS version: ${ArcOSVersion}-${ArcMode()}-${ArcBuild()}
+- Sacruda version: ${SacrudaVersion}-${ArcMode()}-${ArcBuild()}
 
 # DISCLAIMER
 
-The information provided in this report is subject for review by Izaak or another ArcOS team member. We may contact you using the ArcOS Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being. Feedback reports are PUBLIC and ANONYMOUS. They do NOT contain any system logs.`,
+The information provided in this report is subject for review by Izaak or another Sacruda team member. We may contact you using the Sacruda Messages app if we have any additional questions. It's also possible that the feedback you've provided will be converted into a GitHub issue for communication with other developers. By submitting this feedback, you agree to that. The issue will not contain any personal information, any personal information will be filtered out by a human being. Feedback reports are PUBLIC and ANONYMOUS. They do NOT contain any system logs.`,
       {
         sendAnonymously: true,
         excludeLogs: true,
@@ -223,7 +223,7 @@ The information provided in this report is subject for review by Izaak or anothe
     if (!IsBeta()) return CommandResult.Error("Function unavailable outside beta");
 
     const request: BetaFeedbackRequest = {
-      version: ArcOSVersion,
+      version: SacrudaVersion,
       userId: this.userInfo._id,
       username: this.username,
       serverName: Server.hostname!,
@@ -243,7 +243,7 @@ The information provided in this report is subject for review by Izaak or anothe
     MessageBox(
       {
         title: "Open this page?",
-        message: `You're about to leave ArcOS to navigate to <code>${href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
+        message: `You're about to leave Sacruda to navigate to <code>${href}</code> in a <b>new tab</b>. Are you sure you want to continue?`,
         buttons: [
           {
             caption: "Stay here",

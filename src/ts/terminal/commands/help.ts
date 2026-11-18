@@ -6,7 +6,7 @@ import { TerminalProcess } from "../process";
 import { TerminalCommandStore } from "../store";
 
 export class HelpCommand extends TerminalProcess {
-  public static description: string = "Shows a list of built-in ArcTerm commands";
+  public static description: string = "Shows a list of built-in terminal commands";
   public static keyword: string = "help";
 
   //#region LIFECYCLE

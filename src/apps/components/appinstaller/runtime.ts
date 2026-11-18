@@ -38,7 +38,7 @@ export class AppInstallerRuntime extends AppProcess implements IAppInstallerRunt
       MessageBox(
         {
           title: "Can't install package",
-          message: "The Distribution Service isn't running anymore. Please restart ArcOS to fix this problem.",
+          message: "The Distribution Service isn't running anymore. Please restart Sacruda to fix this problem.",
           buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",

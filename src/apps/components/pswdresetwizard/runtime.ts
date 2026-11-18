@@ -114,7 +114,7 @@ export class PswdResetWizardRuntime extends AppProcess implements IPswdResetWiza
     MessageBox(
       {
         title: "Password changed",
-        message: "Good news! Your ArcOS account password has been changed. Click Okay to return to the login screen.",
+        message: "Good news! Your Sacruda account password has been changed. Click Okay to return to the login screen.",
         buttons: [
           {
             caption: "Okay",

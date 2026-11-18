@@ -47,7 +47,7 @@ export class AppInfoRuntime extends AppProcess implements IAppInfoRuntime {
     this.Log(`killAll`);
 
     const elevated = await Daemon?.elevation?.manuallyElevate({
-      what: `ArcOS needs your permission to kill all instances of an app`,
+      what: `Sacruda needs your permission to kill all instances of an app`,
       image: `@app::${this.targetAppId}`,
       title: this.targetApp().metadata.name,
       description: this.targetAppId,

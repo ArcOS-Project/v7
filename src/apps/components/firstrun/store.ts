@@ -259,7 +259,7 @@ export const FirstRunShortcuts: Record<string, ArcShortcut> = {
   },
   [join(UserPaths.Desktop, "1_my_arcos.arclnk")]: {
     icon: "DesktopIcon",
-    name: "My ArcOS",
+    name: "My Sacruda",
     type: "folder",
     target: "::my_arcos",
   },

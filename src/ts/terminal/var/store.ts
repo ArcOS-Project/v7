@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
-import { ArcOSVersion, Env } from "$ts/env";
+import { SacrudaVersion, Env } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
 import { UserPaths } from "$ts/user/store";
@@ -37,7 +37,7 @@ export function getArcTermStore(term: IArcTerminal): VariableStore {
       canDelete: false,
     },
     version: {
-      get: () => ArcOSVersion,
+      get: () => SacrudaVersion,
       readOnly: true,
       canDelete: false,
     },

@@ -69,7 +69,7 @@ export default function ArcBasicHighlighter(hljs: HLJSApi): Language {
   };
 
   return {
-    name: "ArcBasic",
+    name: "Sacruda BASIC",
     case_insensitive: true,
     keywords: {
       $pattern: "[a-zA-Z]+",

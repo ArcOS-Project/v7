@@ -45,7 +45,7 @@ export class ArcTermRuntime extends Process {
     if (!proc) return false;
 
     proc.app = this.app;
-    proc.windowTitle.set("ArcTerm");
+    proc.windowTitle.set("Terminal");
     proc.windowIcon.set(this.app.data.metadata.icon);
 
     proc.term!.options.theme = {

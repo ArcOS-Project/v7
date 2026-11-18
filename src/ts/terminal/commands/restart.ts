@@ -7,7 +7,7 @@ import { TerminalProcess } from "../process";
 
 export class RestartCommand extends TerminalProcess {
   public static keyword = "restart";
-  public static description = "Restart ArcOS";
+  public static description = "Restart Sacruda";
 
   //#region LIFECYCLE
 

@@ -6,7 +6,7 @@ import { TerminalProcess } from "../process";
 
 export class QuotaCommand extends TerminalProcess {
   public static keyword = "quota";
-  public static description = "Display your ArcOS filesystem quota";
+  public static description = "Display your Sacruda filesystem quota";
 
   //#region LIFECYCLE
 

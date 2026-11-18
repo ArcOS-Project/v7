@@ -15,10 +15,10 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
     "account",
     {
       hidden: true,
-      name: "Your ArcOS Identity",
+      name: "Your Sacruda Identity",
       icon: "AccountIcon",
       content: Account,
-      description: "Manage your ArcOS account",
+      description: "Manage your Sacruda account",
     },
   ],
   [
@@ -27,7 +27,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Themes",
       icon: "ThemesIcon",
       content: Themes,
-      description: "Personalize your ArcOS with themes",
+      description: "Personalize your Sacruda with themes",
       noSafeMode: true,
     },
   ],
@@ -58,7 +58,7 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       icon: "PersonalizationIcon",
       content: Visuals,
       separator: true,
-      description: "Fine-tune the appearance of ArcOS",
+      description: "Fine-tune the appearance of Sacruda",
     },
   ],
   [
@@ -73,10 +73,10 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
   [
     "search",
     {
-      name: "ArcOS Search",
+      name: "Sacruda Search",
       icon: "ArcFindIcon",
       content: Search,
-      description: "The search functionality of ArcOS",
+      description: "The search functionality of Sacruda",
       noSafeMode: true,
     },
   ],
@@ -96,16 +96,16 @@ export const settingsPageStore: SettingsPages = new Map<string, SettingsPage>([
       name: "Security Center",
       icon: "SecurityMediumIcon",
       content: Security,
-      description: "Manage the security of ArcOS",
+      description: "Manage the security of Sacruda",
     },
   ],
   [
     "about",
     {
-      name: "About ArcOS",
+      name: "About Sacruda",
       icon: "InfoIcon",
       content: About,
-      description: "ArcOS version information",
+      description: "Sacruda version information",
     },
   ],
 ]);

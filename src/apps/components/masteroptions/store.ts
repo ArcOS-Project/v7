@@ -23,7 +23,7 @@ export const MasterOptionStore: MasterOption[] = [
     action: async (runtime) => await runtime.clearProcessCache(),
   },
   {
-    caption: "Launch ArcTerm",
+    caption: "Sacruda Terminal",
     image: "ArcTermIcon",
     action: async (runtime) => await runtime.spawnApp("ArcTerm", +Env.get("shell_pid")),
   },

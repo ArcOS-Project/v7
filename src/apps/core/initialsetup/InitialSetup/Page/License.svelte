@@ -6,5 +6,5 @@
   <Scale />
   <h1>License Agreement</h1>
   <p class="subtitle">Scary stuff, I know</p>
-  <p class="message">By using ArcOS, you agree to the GPLv3 license.</p>
+  <p class="message">By using Sacruda, you agree to the GPLv3 license.</p>
 </div>

@@ -3,7 +3,7 @@ import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import type { ITotpConnector } from "$interfaces/modules/server/ITotpConnector";
 import type { IUserConnector } from "$interfaces/modules/server/IUserConnector";
 import { UserDaemon } from "$ts/daemon";
-import { ArcOSVersion, GetConnector, Server, Stack } from "$ts/env";
+import { SacrudaVersion, GetConnector, Server, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { ArcBuild } from "$ts/metadata/build";
 import { ArcMode } from "$ts/metadata/mode";
@@ -124,8 +124,8 @@ export class TerminalMode extends Process implements ITerminalMode {
     } catch (e) {
       const stack = e instanceof PromiseRejectionEvent ? e.reason.stack : e instanceof Error ? e.stack : "Unknown error";
 
-      this.rl?.println(`\n${BRRED}Failed to start ArcTerm Mode:\n\n${stack}${RESET}`);
-      this.rl?.println(`\nArcTerm Mode couldn't start, and ArcOS has been halted.\nTo try again, please reload the page.`);
+      this.rl?.println(`\n${BRRED}Failed to start Terminal Mode:\n\n${stack}${RESET}`);
+      this.rl?.println(`\nTerminal Mode couldn't start, and Sacruda has been halted.\nTo try again, please reload the page.`);
 
       return true;
     }
@@ -173,7 +173,7 @@ export class TerminalMode extends Process implements ITerminalMode {
 
   async serverPrompt(): Promise<boolean> {
     this.term?.clear();
-    this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()}\n`);
+    this.rl?.println(`Terminal ${SacrudaVersion}-${ArcMode()}_${ArcBuild()}\n`);
 
     const hostname = await this.rl?.read(`Hostname: `);
     const server = Server.servers.find((s) => s.url.includes(hostname!));
@@ -198,10 +198,10 @@ export class TerminalMode extends Process implements ITerminalMode {
   async loginPrompt(clear = true): Promise<boolean> {
     if (clear) {
       this.term?.clear();
-      this.rl?.println(`ArcTerm ${ArcOSVersion}-${ArcMode()}_${ArcBuild()} ${Server.hostname ?? "unknown"}\n`);
+      this.rl?.println(`Terminal ${SacrudaVersion}-${ArcMode()}_${ArcBuild()} ${Server.hostname ?? "unknown"}\n`);
     }
 
-    const username = await this.rl?.read(`${Server.hostname ?? "ArcOS"} login: `);
+    const username = await this.rl?.read(`${Server.hostname ?? "Sacruda"} login: `);
     const password = await this.rl?.read(`Password: `, true);
 
     if (!username || !password) {

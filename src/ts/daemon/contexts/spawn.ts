@@ -5,7 +5,7 @@ import type { IProcess } from "$interfaces/IProcess";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
 import { ThirdPartyAppProcess } from "$ts/apps/thirdparty";
 import { ThirdPartyProcess } from "$ts/apps/tpa/process";
-import { ArcOSVersion, Daemon, Env, Stack } from "$ts/env";
+import { SacrudaVersion, Daemon, Env, Stack } from "$ts/env";
 import { JsExec } from "$ts/jsexec";
 import { CommandResult } from "$ts/result";
 import { cloneAppMeta } from "$ts/util/apps";
@@ -123,7 +123,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     if (!app) {
       Daemon.notifications?.sendNotification({
         title: "App not found",
-        message: `ArcOS tried to launch an application with ID <b>${id}</b>, but it could not be found. Is it installed?`,
+        message: `Sacruda tried to launch an application with ID <b>${id}</b>, but it could not be found. Is it installed?`,
         image: "QuestionIcon",
         timeout: 3000,
       });
@@ -178,7 +178,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         MessageBox(
           {
             title: `${app.metadata.name} - TPA revision error`,
-            message: `This application expects a newer version of the ArcOS TPA framework. Please contact the developer for a version compatible with ArcOS version ${ArcOSVersion}.`,
+            message: `This application expects a newer version of the Sacruda TPA framework. Please contact the developer for a version compatible with Sacruda version ${SacrudaVersion}.`,
             buttons: [
               {
                 caption: "Okay",
@@ -221,7 +221,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
   async check_elevation(app: App) {
     if (app.elevated) {
       const elevated = await Daemon!.elevation?.manuallyElevate({
-        what: "ArcOS needs your permission to open the following application:",
+        what: "Sacruda needs your permission to open the following application:",
         title: app.metadata.name,
         description: `by ${app.metadata.author}`,
         image: app.metadata.icon,
@@ -239,7 +239,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
     MessageBox(
       {
         title: "Third-party application error",
-        message: `ArcOS tried to launch ${app.metadata.name} by ${app.metadata.author} as a third-party application, but the app does not contain sufficient information to run as a TPA. Please try to reinstall the application to fix this problem.`,
+        message: `Sacruda tried to launch ${app.metadata.name} by ${app.metadata.author} as a third-party application, but the app does not contain sufficient information to run as a TPA. Please try to reinstall the application to fix this problem.`,
         buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
@@ -255,7 +255,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         {
           title: "Safe Mode",
           message:
-            "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running ArcOS normally.",
+            "Third-party applications are disabled in Safe Mode in case one of them caused a problem that prevents you from logging in. You can run third-party apps by restarting and running Sacruda normally.",
           buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
         },
@@ -270,7 +270,7 @@ export class SpawnUserContext extends UserContext implements ISpawnUserContext {
         {
           title: "Third-party apps",
           message:
-            "ArcOS can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
+            "Sacruda can't run third-party apps without your permission. Please enable third-party apps in Settings to access this app.",
           image: "AppsIcon",
           sound: "arcos.dialog.warning",
           buttons: [

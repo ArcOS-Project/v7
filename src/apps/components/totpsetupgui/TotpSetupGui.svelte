@@ -30,7 +30,7 @@
       errored = true;
       MessageBox(
         {
-          title: "ArcOS Security",
+          title: "Sacruda Security",
           message:
             "The 2FA code you entered is incorrect! Please enter the code displayed in your authenticator app to enable two-factor authentication.",
           buttons: [
@@ -54,7 +54,7 @@
       if (firstTimeSetup) {
         await MessageBox(
           {
-            title: "ArcOS Security",
+            title: "Sacruda Security",
             message: "Two-factor authentication has now been enabled on your account.",
             buttons: [
               {
@@ -75,7 +75,7 @@
 
       MessageBox(
         {
-          title: "ArcOS Security",
+          title: "Sacruda Security",
           message:
             "Two-factor authentication has now been enabled on your account. You must restart for the changes to fully take effect.",
           buttons: [

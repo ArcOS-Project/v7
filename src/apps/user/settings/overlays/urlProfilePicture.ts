@@ -5,7 +5,7 @@ import UrlProfilePictureSvelte from "../Settings/Overlays/UrlProfilePicture.svel
 export const UrlProfilePicture: App = {
   metadata: {
     name: "URL Profile Picture",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "3.0.0",
     icon: "AccountIcon",
   },

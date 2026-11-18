@@ -2,7 +2,7 @@
   import type { IAdvSysSetRuntime } from "$interfaces/runtimes/IAdvSysSetRuntime";
   import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
   import Icon from "$lib/Icon.svelte";
-  import { ArcOSVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
+  import { SacrudaVersion, Daemon, Env, Server, Stack, State } from "$ts/env";
   import { KernelModules } from "$ts/kernel/getters";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
@@ -24,15 +24,15 @@
   <section>
     <h1>Version:</h1>
     <ul>
-      <li>ArcOS v7</li>
+      <li>Sacruda v7</li>
       <li>{ArcMode()}_{ArcBuild()}</li>
-      <li>Version {ArcOSVersion}</li>
+      <li>Version {SacrudaVersion}</li>
       <li>{location.hostname}</li>
     </ul>
   </section>
 
   <section>
-    <h1>ArcOS System:</h1>
+    <h1>Sacruda System:</h1>
     <ul>
       <li title={KernelModules().join(", ")}>Kernel modules: {KernelModules().length} loaded</li>
       <li title={Object.keys(State?.store || {}).join(", ")}>

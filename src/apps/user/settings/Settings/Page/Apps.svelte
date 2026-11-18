@@ -42,7 +42,7 @@
       <img src={Glow} alt="" />
       <div>
         <h1>Enable third-party apps</h1>
-        <p>Click the button to allow third-party applications to run on your ArcOS account.</p>
+        <p>Click the button to allow third-party applications to run on your Sacruda account.</p>
         <button class="suggested" onclick={() => Daemon?.apps?.enableThirdParty()}>Enable Third-party</button>
       </div>
     </Section>

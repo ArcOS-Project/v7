@@ -292,7 +292,7 @@ export class MessagingInterface extends BaseService implements IMessagingInterfa
 
 export const messagingService: Service = {
   name: "Messaging service",
-  description: "Handles the ArcOS messaging system",
+  description: "Handles the Sacruda messaging system",
   initialState: "started",
   process: MessagingInterface,
   startCondition: () => !Env.get("safemode"),

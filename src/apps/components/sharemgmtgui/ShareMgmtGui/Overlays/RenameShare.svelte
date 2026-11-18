@@ -19,7 +19,7 @@
         {
           title: "Rename failed",
           message:
-            "ArcOS failed to change the name of your share. You might already have a share with that name. Please try something else.",
+            "Sacruda failed to change the name of your share. You might already have a share with that name. Please try something else.",
           buttons: [BTN_OKAY_SUG],
           image: "WarningIcon",
           sound: "arcos.dialog.warning",

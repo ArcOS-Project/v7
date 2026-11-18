@@ -3,7 +3,7 @@ import { TerminalProcess } from "../process";
 
 export class AtConfCommand extends TerminalProcess {
   public static keyword = "atconf";
-  public static description = "Edit the ArcTerm configuration file";
+  public static description = "Edit the Sacruda Terminal configuration file";
 
   //#region LIFECYCLE
 

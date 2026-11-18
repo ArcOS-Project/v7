@@ -24,7 +24,7 @@ export const DevEnvActivationResultCaptions: Record<DevEnvActivationResult, stri
   success: "Connected successfully",
   ping_failed: "Tried to ping the ArcDev server, but got no response",
   port_mismatch: "Reported port doesn't match actual port",
-  build_mismatch: "Project build differs from ArcOS build",
+  build_mismatch: "Project build differs from Sacruda build",
   already_connected: "Service is already connected",
   websock_failed: "Connection to websocket failed",
   drivemnt_failed: "ArcDev drive failed to mount",

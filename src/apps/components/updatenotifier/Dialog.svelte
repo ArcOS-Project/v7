@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ArcOSVersion } from "$ts/env";
+  import { SacrudaVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { onMount } from "svelte";
   import SvelteMarkdown from "svelte-markdown";
@@ -7,7 +7,7 @@
   let source = $state<string>("");
 
   onMount(async () => {
-    source = (await ChangeLogs.readChangelog(ArcOSVersion)) || "";
+    source = (await ChangeLogs.readChangelog(SacrudaVersion)) || "";
   });
 </script>
 

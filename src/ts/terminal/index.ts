@@ -105,7 +105,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
   async readline() {
     if (this._disposed) return;
 
-    this.window?.windowTitle.set(`ArcTerm - ${this.path}`);
+    this.window?.windowTitle.set(`ATerminalrcTerm - ${this.path}`);
     const line = await this.rl?.read(this.var?.replace(this.config.prompt || "$")!);
     await this.processLine(line);
   }
@@ -145,7 +145,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     const [flags, args] = this.parseFlags(str);
     const argv = args.split(" ");
     const cmd = text.split(" ")[0];
-    this.window?.windowTitle.set(`ArcTerm - ${cmd} ${this.path}`);
+    this.window?.windowTitle.set(`Terminal - ${cmd} ${this.path}`);
 
     argv.shift();
 
@@ -293,7 +293,7 @@ export class ArcTerminal extends Process implements IArcTerminal {
     }
 
     this.path = path;
-    this.window?.windowTitle.set(`ArcTerm - ${path}`);
+    this.window?.windowTitle.set(`Terminal - ${path}`);
 
     return true;
   }

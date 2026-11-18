@@ -15,7 +15,7 @@
   </div>
   <div class="row">
     <p>With...</p>
-    <input type="text" placeholder="ArcOS" bind:value={$replace} />
+    <input type="text" placeholder="Sacruda" bind:value={$replace} />
   </div>
 </div>
 

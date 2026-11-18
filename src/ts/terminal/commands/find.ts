@@ -7,7 +7,7 @@ import { SelectionList } from "../select";
 
 export class FindCommand extends TerminalProcess {
   public static keyword = "find";
-  public static description = "Find files, folders and shortcuts in ArcOS";
+  public static description = "Find files, folders and shortcuts in Sacruda";
 
   //#region LIFECYCLE
 

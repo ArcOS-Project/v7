@@ -91,7 +91,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
       items.push(
         {
           caption: "Shut down",
-          description: "Leave the desktop and turn off ArcOS",
+          description: "Leave the desktop and turn off Sacruda",
           image: "ShutdownIcon",
           action: () => {
             Daemon?.power?.shutdown();
@@ -99,7 +99,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         },
         {
           caption: "Restart",
-          description: "Leave the desktop and restart ArcOS",
+          description: "Leave the desktop and restart Sacruda",
           image: "RestartIcon",
           action: () => {
             Daemon?.power?.restart();
@@ -107,7 +107,7 @@ export class ArcFindService extends BaseService implements IArcFindService {
         },
         {
           caption: "Log off",
-          description: "Leave the desktop and log out ArcOS",
+          description: "Leave the desktop and log out Sacruda",
           image: "LogoutIcon",
           action: () => {
             Daemon?.power?.logoff();
@@ -290,8 +290,8 @@ export class ArcFindService extends BaseService implements IArcFindService {
 }
 
 export const arcFindService: Service = {
-  name: "ArcFindSvc",
+  name: "SacrudaSearchSvc",
   initialState: "started",
-  description: "Search the world of ArcOS",
+  description: "Search the world of Sacruda",
   process: ArcFindService,
 };

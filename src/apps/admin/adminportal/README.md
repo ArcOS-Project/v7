@@ -1,3 +1,3 @@
-# ArcOS Admin Portal
+# Sacruda Admin Portal
 
-This application allows ArcOS administrators to manage the ArcOS server and its users.
+This application allows Sacruda administrators to manage the Sacruda server and its users.

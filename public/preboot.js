@@ -10,7 +10,7 @@ onload = function () {
     const url = "https://docs.arcapi.nl/general-information/troubleshooting#the-dots-of-doom";
     const pre = document.createElement("pre");
 
-    pre.innerHTML = `Unable to load ArcOS -- your browser might not be compatible.<br><br>`;
+    pre.innerHTML = `Unable to load Sacruda -- your browser might not be compatible.<br><br>`;
     pre.innerHTML += r;
     pre.innerHTML += `<br><br><a class="troubleshooting" href="${url}" target="_blank">${url}</a>`;
     pre.className = "system-load-fail";

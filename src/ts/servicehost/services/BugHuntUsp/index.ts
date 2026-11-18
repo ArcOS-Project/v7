@@ -95,6 +95,6 @@ export class BugHuntUserSpaceProcess extends BaseService implements IBugHuntUser
 export const bhuspService: Service = {
   initialState: "started",
   name: "User process for bug reports",
-  description: "Manages your ArcOS bug reports",
+  description: "Manages your Sacruda bug reports",
   process: BugHuntUserSpaceProcess,
 };

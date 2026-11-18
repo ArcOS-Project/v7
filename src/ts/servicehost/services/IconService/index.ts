@@ -210,7 +210,7 @@ export class IconService extends BaseService implements IIconService {
 
 const iconService: Service = {
   name: "Icon service",
-  description: "Manages icons in ArcOS",
+  description: "Manages icons in Sacruda",
   process: IconService,
   initialState: "started",
 };

@@ -15,7 +15,7 @@
 </script>
 
 <p>
-  Are you sure you want to delete your ArcOS account? This will delete any and all user data associated with this account. These
+  Are you sure you want to delete your Sacruda account? This will delete any and all user data associated with this account. These
   changes cannot be reverted!<br /><br />
   Type <code>I want to delete my account</code> to continue.
 </p>

@@ -11,7 +11,7 @@ export class MigrationNode implements IMigrationNode {
   public static inversional = false;
   public static deprecated = false;
 
-  // float, defaults to ArcOS version (more or less)
+  // float, defaults to Sacruda version (more or less)
   public static version =
     Number(
       `0x${packageJson.version

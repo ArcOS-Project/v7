@@ -1,7 +1,7 @@
 import type { ProcessKillResult } from "$types/system/process";
 
 export const ProcessKillResultCaptions: Record<ProcessKillResult, string> = {
-  err_criticalProcess: "The process is required for ArcOS to run properly.",
+  err_criticalProcess: "The process is required for Sacruda to run properly.",
   err_disposed: "The process is already killed.",
   err_elevation: "Elevation was required, but wasn't provided.",
   err_noExist: "The process doesn't exist.",

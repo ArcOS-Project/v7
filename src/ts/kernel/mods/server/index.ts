@@ -90,9 +90,9 @@ export class ServerManagerKernelModule extends KernelModule implements IServerMa
   async _init() {
     const fromMeta = import.meta.env.DW_SERVER_URL;
 
-    if (!fromMeta) throw new Error("This ArcOS instance is improperly configured. DW_SERVER_URL is not set.");
+    if (!fromMeta) throw new Error("This Sacruda instance is improperly configured. DW_SERVER_URL is not set.");
     if (!fromMeta.startsWith("http") || fromMeta.endsWith("/"))
-      throw new Error("This ArcOS instance is improperly configured. DW_SERVER_URL is malformed.");
+      throw new Error("This Sacruda instance is improperly configured. DW_SERVER_URL is malformed.");
 
     this.loadServers();
 
@@ -148,7 +148,7 @@ export class ServerManagerKernelModule extends KernelModule implements IServerMa
 
     if (!previewBranchName) return false;
 
-    document.title = `ArcOS - PREVIEW ${previewBranchName}`;
+    document.title = `Sacruda - PREVIEW ${previewBranchName}`;
     this.previewBranch = previewBranchName;
   }
 
@@ -174,8 +174,8 @@ export class ServerManagerKernelModule extends KernelModule implements IServerMa
       Backend.defaults.baseURL = server.url;
       this._store = {};
 
-      if (!server.system) document.title = `ArcOS - ${server.name || new URL(server.url).hostname}`;
-      else document.title = "ArcOS";
+      if (!server.system) document.title = `Sacruda - ${server.name || new URL(server.url).hostname}`;
+      else document.title = "Sacruda";
 
       return true;
     } catch (e) {

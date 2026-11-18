@@ -5,7 +5,7 @@ import { TerminalProcess } from "../process";
 
 export class LogoutCommand extends TerminalProcess {
   public static keyword = "logout";
-  public static description = "Log out of ArcOS";
+  public static description = "Log out of Sacruda";
 
   //#region LIFECYCLE
 

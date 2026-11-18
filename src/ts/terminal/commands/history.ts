@@ -4,7 +4,7 @@ import { TerminalProcess } from "../process";
 
 export class HistoryCommand extends TerminalProcess {
   public static keyword = "history";
-  public static description = "Show your ArcTerm history";
+  public static description = "Show your terminal history";
 
   //#region LIFECYCLE
 

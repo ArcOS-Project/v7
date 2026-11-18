@@ -121,7 +121,7 @@ export class DevelopmentEnvironment extends BaseService implements IDevelopmentE
       this.client.on("disconnect", (reason) => {
         MessageBox(
           {
-            title: "ArcDev stopped",
+            title: "SacrudaDev stopped",
             message: `The websocket connection was lost. Please reconnect to continue development. Disconnect reason was '${reason}'`,
             image: "ErrorIcon",
             sound: "arcos.dialog.error",

@@ -1,7 +1,7 @@
 <p>Before you continue, please beware of the following warnings and disclaimers:</p>
 <ol>
   <li>
-    User styles can make your ArcOS account unusable if you change the wrong thing. If you can't access your account normally, you
+    User styles can make your Sacruda account unusable if you change the wrong thing. If you can't access your account normally, you
     can change the user styles via Safe Mode.
   </li>
   <li>
@@ -9,7 +9,7 @@
     load a theme that contains user styles.
   </li>
   <li>
-    ArcOS and its team members cannot be held accountable for breakages <i>in-</i>
+    Sacruda and its team members cannot be held accountable for breakages <i>in-</i>
     or
     <i>the malfunction of</i>
     your account. We can however provide support if anything goes wrong.

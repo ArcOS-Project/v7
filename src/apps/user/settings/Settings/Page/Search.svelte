@@ -11,8 +11,8 @@
 <div class="centered-layout">
   <div class="header">
     <Icon icon="ArcFindIcon" />
-    <h1>ArcFind options</h1>
-    <p>The search functionality of ArcOS</p>
+    <h1>Sacruda Search options</h1>
+    <p>The search functionality of Sacruda</p>
   </div>
   {#if !process.safeMode}
     <Section caption="Options">
@@ -58,7 +58,7 @@
     </Section>
   {:else}
     <Section>
-      <Option caption="ArcFind is disabled in Safe Mode" image="WarningIcon"></Option>
+      <Option caption="Sacruda Search is disabled in Safe Mode" image="WarningIcon"></Option>
     </Section>
   {/if}
 </div>

@@ -15,7 +15,7 @@
 
     process.spawnOverlayApp("MessageComposer", process.pid, {
       title: "A question about your beta feedback",
-      body: `Hi, ${item.username}! I have a question about the beta feedback you sent in for ArcOS ${item.version}.`,
+      body: `Hi, ${item.username}! I have a question about the beta feedback you sent in for Sacruda ${item.version}.`,
       recipients: [item.username],
       attachments: [],
     });

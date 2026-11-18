@@ -51,7 +51,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
         {
           title: "Failed to connect",
           message:
-            "ArcOS called the server you specified, but nobody picked up. Please check the information, and then try again.",
+            "Sacruda called the server you specified, but nobody picked up. Please check the information, and then try again.",
           buttons: [BTN_OKAY_SUG],
           image: ErrorIcon,
         },
@@ -115,7 +115,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
         {
           title: "Failed to connect",
           message:
-            "ArcOS called the server you specified, but nobody picked up. Please check the information, and then try again.",
+            "Sacruda called the server you specified, but nobody picked up. Please check the information, and then try again.",
           buttons: [BTN_OKAY_SUG],
           image: ErrorIcon,
         },
@@ -127,7 +127,7 @@ export class AddServerRuntime extends AppProcess implements IAddServerRuntime {
         {
           title: "Connection established!",
           message:
-            "ArcOS called the server, they picked up, and we're now having a lovely conversation. Click <b>Add</b> to add this server to the list.",
+            "Sacruda called the server, they picked up, and we're now having a lovely conversation. Click <b>Add</b> to add this server to the list.",
           buttons: [BTN_OKAY_SUG],
           image: GoodStatusIcon,
         },

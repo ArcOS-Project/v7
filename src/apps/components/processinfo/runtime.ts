@@ -34,7 +34,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
     this.Log(`kill: ${proc.pid}`);
 
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: `ArcOS needs your permission to kill a process`,
+      what: `Sacruda needs your permission to kill a process`,
       image: (ProcessesHelper.IsAnyAppProcess(proc) ? proc.windowIcon() || "ComponentIcon" : "DefaultIcon") || "ComponentIcon",
       title: proc.name,
       description: ProcessesHelper.IsAnyAppProcess(proc) ? "Application" : "Process",
@@ -49,7 +49,7 @@ export class ProcessInfoRuntime extends AppProcess implements IProcessInfoRuntim
       {
         title: `Do you want to end ${name}?`,
         message:
-          "By killing this process, its window will close and you will lose any unsaved information. If you end a system process, ArcOS might crash or become unstable. Are you sure you want to continue?",
+          "By killing this process, its window will close and you will lose any unsaved information. If you end a system process, Sacruda might crash or become unstable. Are you sure you want to continue?",
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
         buttons: [

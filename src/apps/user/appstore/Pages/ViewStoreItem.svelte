@@ -62,7 +62,7 @@
     <div class="notice warning">
       <span class="lucide icon-triangle-alert"></span>
       <p>
-        The current version of this package hasn't yet been verified by an ArcOS administrator! Unverified apps can contain bugs,
+        The current version of this package hasn't yet been verified by an Sacruda administrator! Unverified apps can contain bugs,
         malicious code or security vulnerabilities.
       </p>
     </div>

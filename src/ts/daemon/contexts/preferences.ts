@@ -130,7 +130,7 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
 
     const proceed = await Daemon?.helpers?.Confirm(
       "Change your shell",
-      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your ArcOS shell. Do you allow this?`,
+      `${newShell.metadata.name} by ${newShell.metadata.author} wants to act as your Sacruda shell. Do you allow this?`,
       "Deny",
       "Allow"
     );
@@ -144,7 +144,7 @@ export class PreferencesUserContext extends UserContext implements IPreferencesU
 
     const restartNow = await Daemon?.helpers?.Confirm(
       "Restart now?",
-      "ArcOS has to restart before the changes will apply. Do you want to restart now?",
+      "Sacruda has to restart before the changes will apply. Do you want to restart now?",
       "Not now",
       "Restart",
       "RestartIcon"

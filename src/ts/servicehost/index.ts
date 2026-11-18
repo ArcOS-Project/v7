@@ -65,7 +65,7 @@ export class ServiceHost extends Process implements IServiceHost {
       MessageBox(
         {
           title: "Service Host",
-          message: `One or more services failed to start. ArcOS might not behave as usual. You can choose to restart to try again.<br><br><ul>${list}</ul>`,
+          message: `One or more services failed to start. Sacruda might not behave as usual. You can choose to restart to try again.<br><br><ul>${list}</ul>`,
           buttons: [
             { caption: "Restart", action: () => {} },
             { caption: "Ignore", action: () => {}, suggested: true },

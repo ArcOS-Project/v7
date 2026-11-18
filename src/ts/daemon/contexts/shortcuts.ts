@@ -29,7 +29,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
           MessageBox(
             {
               title: "Broken Shortcut",
-              message: `ArcOS doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
+              message: `Sacruda doesn't know how to open shortcut '${shortcut.name}' (${filename}) of type ${shortcut.type}.`,
               buttons: [BTN_OKAY_SUG],
               sound: "arcos.dialog.warning",
               image: "WarningIcon",
@@ -42,7 +42,7 @@ export class ShortcutsUserContext extends UserContext implements IShortcutsUserC
       MessageBox(
         {
           title: "Failed to open shortcut",
-          message: `ArcOS failed to open the shortcut you requested.<br><br> ${e}`,
+          message: `Sacruda failed to open the shortcut you requested.<br><br> ${e}`,
           image: "ShortcutMimeIcon",
           sound: "arcos.dialog.error",
           buttons: [BTN_OKAY_SUG],

@@ -198,7 +198,7 @@
     if (item.official) {
       const confirm = await Daemon?.helpers?.Confirm(
         "Mark store item?",
-        "Are you sure you want to mark this store item as NOT official? This implies that the package was not made by ArcOS administrators and does NOT act as an official utility or optional feature for ArcOS",
+        "Are you sure you want to mark this store item as NOT official? This implies that the package was not made by Sacruda administrators and does NOT act as an official utility or optional feature for Sacruda",
         "Cancel",
         "Mark unofficial",
         "WarningIcon"
@@ -211,7 +211,7 @@
     } else {
       const confirm = await Daemon?.helpers?.Confirm(
         "Mark store item?",
-        "Are you sure you want to mark this store item as official? This implies that the package was made by ArcOS administrators and acts as an official utility or optional feature for ArcOS",
+        "Are you sure you want to mark this store item as official? This implies that the package was made by Sacruda administrators and acts as an official utility or optional feature for Sacruda",
         "Cancel",
         "Mark official",
         "WarningIcon"

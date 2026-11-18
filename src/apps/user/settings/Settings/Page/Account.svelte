@@ -54,7 +54,7 @@
   <Section>
     <Option caption="View login activity" image={"WaveIcon"} chevron onclick={() => process.loginActivity()}></Option>
     <Option caption="Log out everywhere" image={"LogoutIcon"} chevron onclick={() => process.logOutEverywhere()}></Option>
-    <Option caption="Delete ArcOS account..." image={"TrashIcon"} chevron onclick={() => Daemon?.account?.deleteAccount()}
+    <Option caption="Delete Sacruda account..." image={"TrashIcon"} chevron onclick={() => Daemon?.account?.deleteAccount()}
     ></Option>
   </Section>
 </div>

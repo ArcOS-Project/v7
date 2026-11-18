@@ -4,7 +4,7 @@ import { DefaultColors } from "./colors";
 export const DefaultArcTermConfiguration: ArcTermConfiguration = {
   prompt: `$BRGREEN$username$RESET: $BRGREEN$pwd $RESULTCOLOR$ $RESET`,
   greeting:
-    "ArcTerm & ArcOS $BRBLUEv$version$RESET\r\n\r\nLicensed under $BRBLUEGPLv3$RESET. Created by Izaak Kuipers.\r\nType $BRBLUEHELP$RESET for a list of commands.\r\n",
+    "Sacruda Terminal $BRBLUEv$version$RESET\r\n\r\nLicensed under $BRBLUEGPLv3$RESET. Created by Izaak Kuipers.\r\nType $BRBLUEHELP$RESET for a list of commands.\r\n",
   noLogo: false,
   red: DefaultColors.red,
   green: DefaultColors.green,

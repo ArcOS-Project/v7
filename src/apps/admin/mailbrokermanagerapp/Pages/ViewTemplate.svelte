@@ -68,7 +68,7 @@
       {
         title: "Delete template?",
         message:
-          "Are you absolutely sure that you want to delete this deprecated mailbroker template? This cannot be reverted, and may have unforseen consequences if the template is still used by ArcOS systems.",
+          "Are you absolutely sure that you want to delete this deprecated mailbroker template? This cannot be reverted, and may have unforseen consequences if the template is still used by Sacruda systems.",
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
       },

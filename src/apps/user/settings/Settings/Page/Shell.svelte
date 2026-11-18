@@ -13,7 +13,7 @@
 <div class="centered-layout">
   <div class="header">
     <Icon icon="TaskbarIcon" />
-    <h1>The ArcOS Shell</h1>
+    <h1>The Sacruda Shell</h1>
     <p>The taskbar, start menu and action center</p>
   </div>
 

@@ -281,7 +281,7 @@ export class UserDaemon extends Process implements IUserDaemon {
 
     await performStartStage("firstRun", "", async () => {
       if (!Daemon.preferences().firstRunDone && !Daemon.preferences().appPreferences.arcShell) {
-        broadcast("Welcome to ArcOS");
+        broadcast("Welcome to Sacruda");
 
         await this.init!.firstRun();
       }

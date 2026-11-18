@@ -95,7 +95,7 @@ export class IconEditorRuntime extends AppProcess implements IIconEditorRuntime 
     MessageBox(
       {
         title: this.app.data.metadata.name,
-        message: "You have to restart ArcOS for the changes to the icons to take effect.",
+        message: "You have to restart Sacruda for the changes to the icons to take effect.",
         buttons: [
           { caption: "Restart later", action: () => {} },
           { caption: "Restart now", action: () => Daemon?.power?.restart(), suggested: true },

@@ -8,5 +8,5 @@
 
 <div class="header level-{ElevationLevel[data.level]}">
   <Icon icon={ElevationLevelIcons[data.level]} title={ElevationLevel[data.level]} />
-  <p>ArcOS Secure Context</p>
+  <p>Sacruda Secure Context</p>
 </div>

@@ -15,7 +15,7 @@
 
 <div class="header">
   <Icon icon="ElevationIcon" />
-  <h1>ArcOS Master Options</h1>
+  <h1>Sacruda Master Options</h1>
 </div>
 <div class="content">
   <p>Choose one of the following options to continue:</p>

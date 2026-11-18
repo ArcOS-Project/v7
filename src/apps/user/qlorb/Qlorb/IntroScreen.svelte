@@ -28,7 +28,7 @@
     <div class="stage2">
       <h1>
         <Icon icon={Logo()} />
-        <span>Written for ArcOS</span>
+        <span>Written for Sacruda</span>
       </h1>
     </div>
     <div class="stage3">

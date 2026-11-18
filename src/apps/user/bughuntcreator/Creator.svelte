@@ -3,7 +3,7 @@
   import ActionBar from "$lib/Window/ActionBar.svelte";
   import ActionButton from "$lib/Window/ActionBar/ActionButton.svelte";
   import ActionSubtle from "$lib/Window/ActionBar/ActionSubtle.svelte";
-  import { ArcOSVersion } from "$ts/env";
+  import { SacrudaVersion } from "$ts/env";
   import { ArcBuild } from "$ts/metadata/build";
   import { ArcMode } from "$ts/metadata/mode";
   import Fields from "./Creator/Fields.svelte";
@@ -15,7 +15,7 @@
 <Fields {process} />
 <ActionBar>
   {#snippet leftContent()}
-    <ActionSubtle text="ArcOS {ArcOSVersion}-{ArcMode()}_{ArcBuild()}" />
+    <ActionSubtle text="Sacruda {SacrudaVersion}-{ArcMode()}_{ArcBuild()}" />
   {/snippet}
   {#snippet rightContent()}
     <ActionButton onclick={() => process.dataPrivacy()} disabled={$loading}>Data Privacy</ActionButton>

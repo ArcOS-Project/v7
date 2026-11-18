@@ -1,5 +1,5 @@
 import type { IArcTerminal } from "$interfaces/IArcTerminal";
-import { ArcOSVersion } from "$ts/env";
+import { SacrudaVersion } from "$ts/env";
 import { BRRED, RESET } from "$ts/terminal/colors";
 import { unescapeEscapeChars } from "$ts/util";
 import { arrayBufferToText } from "$ts/util/convert";
@@ -10,7 +10,7 @@ import { BasicBuiltinVariables } from "./variables";
 
 export function ArcTermBasicConfig(term: IArcTerminal): BasicLang.Config {
   return {
-    version: ArcOSVersion,
+    version: SacrudaVersion,
     stdin: async () => {
       // TODO: FIND SOMETHING BETTER
       return new Promise((resolve) => {

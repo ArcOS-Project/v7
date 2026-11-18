@@ -9,7 +9,7 @@ import { TerminalProcess } from "../process";
 
 export class DispatchCommand extends TerminalProcess {
   public static keyword: string = "dispatch";
-  public static description: string = "Dispatch events to ArcOS or a specific process";
+  public static description: string = "Dispatch events to Sacruda or a specific process";
 
   //#region LIFECYCLE
 
@@ -28,7 +28,7 @@ export class DispatchCommand extends TerminalProcess {
     const list = flags.list;
 
     if (list) {
-      this.rl?.println("Global dispatches known to ArcOS:");
+      this.rl?.println("Global dispatches known to Sacruda:");
 
       for (const key of KnownSystemDispatchers) {
         const keyStr = key.padEnd(25, " ");

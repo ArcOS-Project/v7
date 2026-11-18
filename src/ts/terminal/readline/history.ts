@@ -6,7 +6,7 @@ import { Process } from "$ts/kernel/mods/stack/process/instance";
  *
  * a library for building command-line interfaces with XtermJS
  *
- * Ported to ArcOS by Izaak Kuipers on March 23rd 2025.
+ * Ported to Sacruda by Izaak Kuipers on March 23rd 2025.
  *
  * ORIGINAL REPOSITORY: https://github.com/strtok/xterm-readline
  * COMMIT: cdb0940c98a4bad9388f9a44f8917fb00df2423c
@@ -37,7 +37,7 @@ export class History extends Process {
 
   async start() {
     if (!this.terminal) {
-      this.Log("Not running under ArcTerm, history disabled.");
+      this.Log("Not running under terminal, history disabled.");
 
       return false;
     }

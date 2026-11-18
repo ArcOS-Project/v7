@@ -17,7 +17,7 @@ export function PswdResetPages(runtime: IPswdResetWizardRuntime): Record<string,
           },
         },
         {
-          caption: "Restart ArcOS",
+          caption: "Restart Sacruda",
           action: () => {
             runtime.closeWindow();
             runtime.LoginRuntime.PerformRestart();

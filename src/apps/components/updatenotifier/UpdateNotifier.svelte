@@ -2,7 +2,7 @@
   import type { IAppProcess } from "$interfaces/IAppProcess";
   import HtmlSpinner from "$lib/HtmlSpinner.svelte";
   import Icon from "$lib/Icon.svelte";
-  import { ArcOSVersion } from "$ts/env";
+  import { SacrudaVersion } from "$ts/env";
   import { ChangeLogs } from "$ts/metadata/changelog";
   import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
   import { onMount } from "svelte";
@@ -14,14 +14,14 @@
   let changelog = $state<string>("");
 
   onMount(async () => {
-    changelog = (await ChangeLogs.readChangelog(ArcOSVersion)) || "";
+    changelog = (await ChangeLogs.readChangelog(SacrudaVersion)) || "";
     loading = false;
   });
 
   function readChangelog() {
     MessageBox(
       {
-        title: `Changelog of ArcOS ${ArcOSVersion}`,
+        title: `Changelog of Sacruda ${SacrudaVersion}`,
         content: Dialog,
         image: "UpdateIcon",
         sound: "arcos.dialog.info",
@@ -37,12 +37,12 @@
 
 <div class="header">
   <Icon icon="UpdateIcon" />
-  <h1>ArcOS has been updated</h1>
-  <p>Welcome to ArcOS {ArcOSVersion}!</p>
+  <h1>Sacruda has been updated</h1>
+  <p>Welcome to Sacruda {SacrudaVersion}!</p>
 </div>
 
 <p>
-  A new version of ArcOS has been released with more features, bug fixes and security improvements. To see exactly what changed,
+  A new version of Sacruda has been released with more features, bug fixes and security improvements. To see exactly what changed,
   click View Changelog.
 </p>
 
@@ -56,5 +56,5 @@
       Changelog not available yet!
     {/if}
   </button>
-  <button onclick={() => process.closeWindow()}>Start using ArcOS {ArcOSVersion}</button>
+  <button onclick={() => process.closeWindow()}>Start using Sacruda {SacrudaVersion}</button>
 </div>

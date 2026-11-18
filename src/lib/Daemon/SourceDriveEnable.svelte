@@ -13,7 +13,7 @@
 </script>
 
 <p>
-  By accessing the source code of ArcOS v7, you agree to the terms and conditions outlined in the GPLv3 license bundled with the
+  By accessing the source code of Sacruda v7, you agree to the terms and conditions outlined in the GPLv3 license bundled with the
   operating system. The LICENSE file illustrates the rights of both you, the user, and us, the authors. Click <b>View License</b> to
   read through the license before proceeding.
 </p>

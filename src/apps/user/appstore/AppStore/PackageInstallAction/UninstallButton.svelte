@@ -23,7 +23,7 @@
 
   async function go() {
     const elevated = await Daemon!.elevation!.manuallyElevate({
-      what: "ArcOS needs your permission to remove a package",
+      what: "Sacruda needs your permission to remove a package",
       title: $pkg.pkg.name,
       description: `By ${$pkg.user?.displayName || $pkg.user?.username || $pkg.pkg.author}`,
       image: "TrashIcon",

@@ -24,7 +24,7 @@ export function NewLoginUserDaemonStartOptions(runtime: INewLoginAppRuntime): Us
 
       if (info.isSystem) {
         await runtime.ShowErrorAndWait(
-          "This is a system account. Changes you make here can cause external ArcOS services to stop working. To continue, click Okay."
+          "This is a system account. Changes you make here can cause external Sacruda services to stop working. To continue, click Okay."
         );
       }
 

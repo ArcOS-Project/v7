@@ -5,7 +5,7 @@ import UrlWallpaperSvelte from "../Settings/Overlays/UrlWallpaper.svelte";
 export const UrlWallpaper: App = {
   metadata: {
     name: "URL Wallpaper",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "3.0.0",
     icon: "DesktopIcon",
   },

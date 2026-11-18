@@ -7,7 +7,7 @@
 </script>
 
 <h1>Change the display font</h1>
-<p>The fonts in this list are ArcOS Certified; they're known to work with ArcOS' user interface.</p>
+<p>The fonts in this list are Sacruda Certified; they're known to work with Sacruda' user interface.</p>
 
 <button
   class="reset-font"

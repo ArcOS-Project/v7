@@ -5,7 +5,7 @@ import { ArcTermColorsRuntime } from "./runtime";
 
 const ArcTermColorsApp: App = {
   metadata: {
-    name: "ArcTerm Colors",
+    name: "Sacruda Terminal Colors",
     version: "1.0.0",
     author: "Izaak Kuipers",
     icon: "ArcTermIcon",

@@ -209,7 +209,7 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
       },
       { sep: true },
       {
-        caption: "Open in ArcTerm",
+        caption: "Open in Terminal",
         icon: "terminal",
         action: () => {
           runtime.spawnApp("ArcTerm", +Env.get("shell_pid"), runtime.path());
@@ -481,7 +481,7 @@ export function FileManagerContextMenu(runtime: IFileManagerRuntime): AppContext
       },
       { sep: true },
       {
-        caption: "Manage ArcOS",
+        caption: "Manage Sacruda",
         icon: "cog",
         subItems: [
           {

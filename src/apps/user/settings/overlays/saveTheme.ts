@@ -5,7 +5,7 @@ import SaveTheme from "../Settings/Overlays/SaveTheme.svelte";
 export const SaveThemeApp: App = {
   metadata: {
     name: "Save Theme",
-    author: "ArcOS Team",
+    author: "Sacruda Team",
     version: "2.0.0",
     icon: "SaveIcon",
   },

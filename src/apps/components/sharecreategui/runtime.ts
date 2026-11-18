@@ -39,7 +39,7 @@ export class ShareCreateGuiRuntime extends AppProcess implements IShareCreateGui
       MessageBox(
         {
           title: "Failed to create share",
-          message: `ArcOS was unable to create the share you requested. ${createResult.errorMessage ?? "An unknown error occurred while attempting to create the share. Please contact support."}`,
+          message: `Sacruda was unable to create the share you requested. ${createResult.errorMessage ?? "An unknown error occurred while attempting to create the share. Please contact support."}`,
           buttons: [BTN_OKAY_SUG],
           image: "ErrorIcon",
           sound: "arcos.dialog.error",

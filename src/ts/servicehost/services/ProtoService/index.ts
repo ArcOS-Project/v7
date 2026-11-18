@@ -142,7 +142,7 @@ export class ProtocolServiceProcess extends BaseService implements IProtocolServ
 
 export const protoService: Service = {
   name: "Protocol Handler",
-  description: "Handles parsing and rendering of ArcOS Protocol Links",
+  description: "Handles parsing and rendering of Sacruda Protocol Links",
   process: ProtocolServiceProcess,
   initialState: "started",
 };
