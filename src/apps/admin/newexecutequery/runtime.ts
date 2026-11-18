@@ -317,7 +317,7 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
     return await MessageBox(
       {
         title: "Some warnings occurred",
-        message: `<ol>${warnings.map((warning) => `<li>${warning}</li>`)}</ol>`,
+        message: `<ol>${warnings.map((warning) => `<li>${warning}</li>`).join("")}</ol>`,
         buttons: [BTN_OKAY_SUG],
         image: "WarningIcon",
         sound: "arcos.dialog.warning",
