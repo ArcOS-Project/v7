@@ -112,7 +112,7 @@ export class ServiceHost extends Process implements IServiceHost {
     ["TrashSvc", { ...trashService }],
     ["BugHuntUsp", { ...bhuspService }],
     ["ShareMgmt", { ...shareService }],
-    ["ArcFindSvc", { ...arcFindService }],
+    ["SacrudaSearchSvc", { ...arcFindService }],
     ["SystemShortcutsSvc", { ...systemShortcutsService }],
     ["AppStorage", { ...appStoreService }],
     ["ProtoService", { ...protoService }],

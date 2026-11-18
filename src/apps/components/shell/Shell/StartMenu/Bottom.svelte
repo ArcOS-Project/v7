@@ -32,7 +32,7 @@
     }}
     autocomplete="off"
   >
-    <ServiceGate id="ArcFindSvc">
+    <ServiceGate id="SacrudaSearchSvc">
       {#snippet ifActive(service: IArcFindService)}
         <Search bind:searchBar {service} safeMode={process.safeMode} />
       {/snippet}

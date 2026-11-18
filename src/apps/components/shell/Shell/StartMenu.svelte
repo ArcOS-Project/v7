@@ -30,7 +30,7 @@
   class:searching={searchQuery && $searchQuery}
 >
   <div class="top">
-    <ServiceGate id="ArcFindSvc">
+    <ServiceGate id="SacrudaSearchSvc">
       {#snippet ifActive(service: IArcFindService)}
         <LeftPane {process} {service} bind:searchQuery />
       {/snippet}
