@@ -9,10 +9,7 @@
   } = process;
 
   function selectAll() {
-    $selectedColumns[$selectedCollection] = $columns.filter((column) => {
-      if (column.sensitive && !allowSensitiveColumns) return false;
-      return !column.column.startsWith("_");
-    });
+    $selectedColumns[$selectedCollection] = $columns.filter((column) => !column.sensitive || !allowSensitiveColumns);
   }
 
   function selectNone() {
@@ -25,22 +22,20 @@
   <p>Select the columns that you want to query from <b>{$selectedCollection}</b>:</p>
   <div class="selection">
     {#each $columns as column (column.column)}
-      {#if !column.column.startsWith("_")}
-        <label for="">
-          <input
-            type="checkbox"
-            disabled={column.sensitive && !allowSensitiveColumns}
-            bind:group={$selectedColumns[$selectedCollection]}
-            value={column}
-          />
-          <span>
-            <span class="column-name">{column.column}</span>
-            {#if column.sensitive}
-              <span class="lucide icon-triangle-alert" title="This column holds sensitive data"></span>
-            {/if}
-          </span>
-        </label>
-      {/if}
+      <label for="">
+        <input
+          type="checkbox"
+          disabled={column.sensitive && !allowSensitiveColumns}
+          bind:group={$selectedColumns[$selectedCollection]}
+          value={column}
+        />
+        <span>
+          <span class="column-name">{column.column}</span>
+          {#if column.sensitive}
+            <span class="lucide icon-triangle-alert" title="This column holds sensitive data"></span>
+          {/if}
+        </span>
+      </label>
     {/each}
   </div>
 </div>

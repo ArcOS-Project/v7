@@ -8,13 +8,17 @@
   import WhereClauses from "./NewExecuteQuery/WhereClauses.svelte";
 
   let { process }: { process: INewExecuteQueryRuntime } = $props();
-  const { loading, selectedCollection, selectedColumns } = process;
+  const { loading, selectedCollection } = process;
 </script>
 
 <Sidebar {process} />
 <div class="container" class:loading={$loading}>
   <CustomTitlebar {process} />
-  {#if !$loading}
+  {#if $loading}
+    <div class="spinner-center">
+      <Spinner height={32} />
+    </div>
+  {:else if $selectedCollection}
     <ColumnsBar {process} />
     <div class="bar">
       <h1>From:</h1>
@@ -23,8 +27,6 @@
     <WhereClauses {process} />
     <QueryActions {process} />
   {:else}
-    <div class="spinner-center">
-      <Spinner height={32} />
-    </div>
+    <p class="no-collection">Select a collection</p>
   {/if}
 </div>

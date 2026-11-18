@@ -7,5 +7,5 @@
 
 <label for="">
   <input type="checkbox" bind:checked={$whereClauses[$selectedCollection][i].value as boolean} />
-  <span>{$whereClauses[$selectedCollection][i].value}</span>
+  <span>{!!$whereClauses[$selectedCollection][i].value}</span>
 </label>

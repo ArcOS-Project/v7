@@ -66,10 +66,6 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
     }
 
     this.collections.set(collectionsResult.result!);
-
-    if (!this.selectedCollection()) {
-      this.SelectCollection(collectionsResult.result![0]);
-    }
   }
 
   async SelectCollection(collection: string) {

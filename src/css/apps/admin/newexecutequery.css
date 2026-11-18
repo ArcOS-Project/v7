@@ -1,5 +1,5 @@
 @import url("./newexecutequery/overlays/selectcolumns.css");
-
+@import url("./newexecutequery/whereclause.css");
 #NewExecuteQuery > div.body {
   padding: 0;
   display: flex;
@@ -11,6 +11,17 @@
     position: relative;
     display: flex;
     flex-direction: column;
+
+    > p.no-collection {
+      height: 0;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0.5;
+      font-weight: bold;
+      border-top: var(--win-border);
+    }
 
     div.bar {
       display: flex;

@@ -39,7 +39,7 @@
   });
 </script>
 
-{#if clauseInfo?.mode}
+{#if clauseInfo?.mode && clauseInfo.columnName}
   {#if isUserColumn}
     <UserValueEntry {process} {i} />
   {:else if clauseInfo.mode === "isBoolean"}
