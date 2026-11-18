@@ -5,7 +5,7 @@
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
 
   let { process }: { process: INewExecuteQueryRuntime } = $props();
-  const { selectedCollection, selectedColumns, whereClauses } = process;
+  const { selectedCollection, selectedColumns, loading, whereClauses } = process;
 
   function clear() {
     $whereClauses[$selectedCollection] = [];
@@ -15,14 +15,27 @@
 
 <ActionBar>
   {#snippet leftContent()}
-    <ActionIconButton icon="folder-open" title="Load query..."></ActionIconButton>
-    <ActionIconButton icon="save" title="Save query..."></ActionIconButton>
+    <ActionIconButton icon="folder-open" title="Load query..." onclick={() => process.DoLoadQueryFromFile()} />
+    <ActionIconButton icon="save" title="Save query..." onclick={() => process.DoSaveQueryToFile()} />
   {/snippet}
   {#snippet rightContent()}
-    <ActionButton onclick={() => ($selectedColumns[$selectedCollection] = [])}>Clear</ActionButton>
-    <ActionButton icon="plus" onclick={() => process.AddWhereClause()} disabled={!$selectedColumns[$selectedCollection]?.length}>
-      Add where
-    </ActionButton>
-    <ActionButton icon="play" suggested onclick={() => process.Execute()}>Execute</ActionButton>
+    {#if !$loading && $selectedCollection}
+      <ActionButton onclick={clear}>Clear</ActionButton>
+      <ActionButton
+        icon="plus"
+        onclick={() => process.AddWhereClause()}
+        disabled={!$selectedColumns[$selectedCollection]?.length}
+      >
+        Add where
+      </ActionButton>
+      <ActionButton
+        icon="play"
+        suggested
+        onclick={() => process.Execute()}
+        disabled={!$selectedColumns[$selectedCollection]?.length || !$whereClauses[$selectedCollection]}
+      >
+        Execute
+      </ActionButton>
+    {/if}
   {/snippet}
 </ActionBar>

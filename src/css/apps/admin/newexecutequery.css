@@ -55,6 +55,14 @@
       }
     }
 
+    div.loading-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 0;
+      flex-grow: 1;
+    }
+
     div.where-clauses {
       height: 0;
       flex-grow: 1;
@@ -81,6 +89,25 @@
         white-space: nowrap;
         font-family: "Source Code Pro";
       }
+    }
+
+    div.order-by {
+      align-items: center;
+      gap: 20px;
+
+      select {
+        border: var(--win-border);
+        border-radius: 5px;
+        height: 26px;
+        background-color: var(--button-bg);
+        padding: 0 8px;
+      }
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
   }
 }

@@ -6,7 +6,7 @@
   const { whereClauses, selectedCollection } = process;
 
   function onchange() {
-    $whereClauses[$selectedCollection][i].value = undefined;
+    $whereClauses[$selectedCollection][i].value = $whereClauses[$selectedCollection][i].mode === "isBoolean" ? false : undefined;
   }
 </script>
 

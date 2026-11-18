@@ -2,8 +2,8 @@
   import type { INewExecuteQueryRuntime } from "$interfaces/runtimes/INewExecuteQueryRuntime";
   import ActionIconButton from "$lib/Window/ActionBar/ActionIconButton.svelte";
   import ColumnSelector from "./WhereClause/ColumnSelector.svelte";
-  import WhereClauseModeSelector from "./WhereClauseModeSelector.svelte";
-  import WhereClauseValueEntry from "./WhereClauseValueEntry.svelte";
+  import ModeSelector from "./WhereClause/ModeSelector.svelte";
+  import ValueEntry from "./WhereClause/ValueEntry.svelte";
 
   let { process, i }: { process: INewExecuteQueryRuntime; i: number } = $props();
   const { whereClauses, selectedCollection } = process;
@@ -25,10 +25,10 @@
     {/if}
 
     {#if $whereClauses[$selectedCollection][i].columnName}
-      <WhereClauseModeSelector {process} {i} />
+      <ModeSelector {process} {i} />
     {/if}
 
-    <WhereClauseValueEntry {process} {i} bind:isHierarchial />
+    <ValueEntry {process} {i} bind:isHierarchial />
   </div>
   <div class="actions">
     <ActionIconButton icon="copy" onclick={() => process.DuplicateClause(i)} title="Duplicate clause"></ActionIconButton>

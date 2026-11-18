@@ -210,6 +210,12 @@ export interface DbQuery {
   selectColumns: string[];
   fromCollection: string;
   whereClauses: DbQueryWhere[];
+  orderBy?: DbQueryOrderBy;
+}
+
+export interface DbQueryOrderBy {
+  column?: string;
+  descending?: boolean;
 }
 
 export const DB_QUERY_WHERE_MODES = [
