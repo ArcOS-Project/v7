@@ -37,7 +37,7 @@
   <div class="right">
     <h1>New server key</h1>
     <p>Enter the name of the server for which you want to create the server key:</p>
-    <input type="text" bind:value={serverName} placeholder="*.arcapi.nl" />
+    <input type="text" bind:value={serverName} placeholder="*.sacruda.nl" />
   </div>
 </div>
 

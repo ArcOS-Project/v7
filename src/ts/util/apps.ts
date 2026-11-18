@@ -11,7 +11,7 @@ export function RegisteredProcess(process: RegisteredProcess): App {
 
 /**
  * Reliably clones Sacruda App Metadata to mitigate object inheritance. Written by humans.
- * Based off of ArcOS v6' getAppById: https://github.com/ArcOS-Project/v6/blob/main/src/ts/apps/utils/get.ts#L6
+ * Based off of ArcOS (Sacruda) v6' getAppById: https://github.com/Sacruda/v6/blob/main/src/ts/apps/utils/get.ts#L6
  * @param {App} app the app to clone
  * @returns {App} A clone of the app
  */

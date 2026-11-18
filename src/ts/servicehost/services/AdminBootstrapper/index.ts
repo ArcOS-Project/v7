@@ -1162,7 +1162,7 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     if (!fileUrl?.startsWith("https")) url.pathname = fileUrl?.replace("./", "/") ?? "/";
     else url = new URL(fileUrl);
 
-    if (url.toString().includes("team.arcweb.nl")) {
+    if (url.toString().includes("team.sacruda.nl")) {
       return CommandResult.Error("Previews are not supported because their JS files aren't retained");
     }
 

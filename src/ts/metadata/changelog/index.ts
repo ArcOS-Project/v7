@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class changeLogs {
-  private CHANGELOG_URL = "https://cdn.arcapi.nl/changelogs";
+  private CHANGELOG_URL = "https://cdn.sacruda.nl/changelogs";
   ChangeLogUrls: Record<string, string> = {};
   ChangeLogCache: Record<string, string> = {};
 

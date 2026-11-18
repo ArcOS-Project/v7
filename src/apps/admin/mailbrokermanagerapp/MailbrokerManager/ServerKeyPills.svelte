@@ -15,7 +15,7 @@
       <span>Enabled</span>
     </div>
   {/if}
-  {#if serverKey.serverName === "arcapi.nl"}
+  {#if serverKey.serverName === "api.sacruda.nl"}
     <div class="pill clr-purple">Master key</div>
   {/if}
   {#if Server.hostname === serverKey.serverName}

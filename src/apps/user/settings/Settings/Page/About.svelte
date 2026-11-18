@@ -29,7 +29,7 @@
 </p>
 
 <p class="contact">
-  Want to contact us? <a href="mailto:contact@arcweb.nl">Here you go</a>.
+  Want to contact us? <a href="mailto:support@sacruda.nl">Here you go</a>.
 </p>
 
 <p class="version">

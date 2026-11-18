@@ -70,7 +70,7 @@ export class DevenvCommand extends TerminalProcess {
     }
 
     term.Error(
-      `${DevEnvActivationResultCaptions[result]}.\n\nVisit https://go.arcapi.nl/devclient_connfail for more info.`,
+      `${DevEnvActivationResultCaptions[result]}.\n\nVisit https://go.sacruda.nl/devclient_connfail for more info.`,
       result.toUpperCase()
     );
     await service.disconnect();

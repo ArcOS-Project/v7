@@ -12,7 +12,7 @@ import { KernelModule } from "$ts/kernel/module";
 import axios from "axios";
 
 export class PsaKernelModule extends KernelModule implements IPsaKernelModule {
-  #FEED_URL = "https://pb.arcapi.nl/api/collections/psa/records";
+  #FEED_URL = "https://pb.sacruda.nl/api/collections/psa/records";
   #psaAvailable = false;
   #items: ParsedPsaItem[] = [];
 

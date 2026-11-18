@@ -4,7 +4,7 @@ This is the main repository for the Sacruda v7 project. All of the frontend code
 
 ## Getting started
 
-You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed Sacruda backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/IzK-ArcOS/ReArc-Backend-v1) (this only applies to team members)
+You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git](https://git-scm.com/). If you don't want to use the deployed Sacruda backend, you'll have to clone it yourself. For more information, go to [ReArc-Backend-v1](https://github.com/Sacruda/ReArc-Backend-v1) (this only applies to team members)
 
 > [!WARNING]
 > Sacruda v7 only works when using Yarn. Dependency conflicts occur if using npm, pnpm or other managers like bun.
@@ -12,7 +12,7 @@ You'll need the latest version of [NodeJS](https://nodejs.org/), along with [Git
 1. Clone the repository:
 
 ```bash
-$ git clone git@github.com:ArcOS-Project/v7
+$ git clone git@github.com:Sacruda/v7
 ```
 
 2. Satisfy dependencies:
@@ -45,7 +45,7 @@ The compiled copy of Sacruda v7 will be in the `dist/` directory.
 
 If you don't have a backend and you're not able to host one yourself, use these credentials in your `.env` file to connect to the deployed ReArc backend:
 
-- set `DW_SERVER_URL` to `https://arcapi.nl`
+- set `DW_SERVER_URL` to `https://api.sacruda.nl`
 
 ## License
 

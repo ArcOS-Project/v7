@@ -18,7 +18,7 @@ export class SourceFilesystemDrive extends FilesystemDrive {
   override HIDDEN: boolean = true;
 
   private readonly GIT_BRANCH = "main";
-  private readonly GIT_REPO = "ArcOS-Project/v7";
+  private readonly GIT_REPO = "Sacruda/v7";
   private readonly GIT_API = "https://api.github.com";
   private readonly GIT_RAW = "https://raw.githubusercontent.com";
 

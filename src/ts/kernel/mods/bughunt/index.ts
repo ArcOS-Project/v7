@@ -25,7 +25,7 @@ export class BugHuntKernelModule extends KernelModule implements IBugHuntKernelM
   createReport(options = defaultReportOptions, app?: App, storeItemId?: string): OutgoingBugReport {
     Kernel.LogOperation("kmod", "bughunt", "createReport");
 
-    const server = URL.parse(Server.url || "https://arcapi.nl")?.host;
+    const server = URL.parse(Server.url || "https://api.sacruda.nl")?.host;
 
     return {
       title: options.title,

@@ -330,7 +330,7 @@ export function ToAxiosProgress(
 export const IsBeta = () =>
   !import.meta.env.DEV &&
   ArcMode() === "betabranch" &&
-  (location.hostname === "beta.arcweb.nl" || location.hostname === "localhost");
+  (location.hostname === "beta.sacruda.nl" || location.hostname === "localhost");
 
 const escapeMap: Record<string, string> = {
   "\\n": "\n",

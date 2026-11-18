@@ -17,7 +17,7 @@ export function prematurePanic(reason?: string) {
   const shortcutHintText = document.createElement("span");
 
   icon.className = "lucide icon-hand";
-  text.innerText = "arcweb.nl/support";
+  text.innerText = "sacruda.nl/support";
   header.innerText = "The kernel failed prematurely";
 
   shortcutHint.className = "shortcut-hint";
