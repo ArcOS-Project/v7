@@ -1,4 +1,4 @@
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
 export const BuiltinAppImportPathAbsolutes = import.meta.glob([
   "$apps/components/acceleratoroverview/AcceleratorOverview",
@@ -75,7 +75,7 @@ export const AdminAppImportPathAbsolutes = import.meta.glob([
   "$apps/admin/mailbrokermanagerapp/MailbrokerManagerApp",
 ]);
 
-export const appShortcuts: [number, AppKeyCombinations][] = [];
+export const appShortcuts: [number, AppKeyboardCombinations][] = [];
 export const AppOrigins: Record<string, string> = {
   builtin: "Built-in",
   userApps: "Third-party",

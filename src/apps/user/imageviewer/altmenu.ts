@@ -1,7 +1,7 @@
 import type { IImageViewerRuntime } from "$interfaces/runtimes/IImageViewerRuntime";
 import { Daemon } from "$ts/env";
 import { getParentDirectory } from "$ts/util/fs";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 
 export function ImageViewerAltMenu(runtime: IImageViewerRuntime): ContextMenuItem[] {
   return [

@@ -1,7 +1,8 @@
 import type { MaybePromise } from "$types/shared/common";
 
-// !tpa
-export interface AppKeyCombination {
+// !tp
+
+export interface AppKeyboardCombination {
   alt?: boolean;
   ctrl?: boolean;
   shift?: boolean;
@@ -10,5 +11,6 @@ export interface AppKeyCombination {
   global?: boolean;
 }
 
-export type AppKeyCombinations = AppKeyCombination[];
+export type AppKeyboardCombinations = AppKeyboardCombination[];
+
 // !endtpa

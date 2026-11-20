@@ -3,16 +3,15 @@ import { Daemon, Server } from "$ts/env";
 import { FilesystemDrive } from "$ts/kernel/mods/fs/drives/generic";
 import { Backend } from "$ts/kernel/mods/server/axios";
 import { authcode, ToAxiosProgress } from "$ts/util";
-import { arrayBufferToBlob } from "$ts/util/convert";
 import { toForm } from "$ts/util/form";
 import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
   ExtendedStat,
+  FileAccessor,
   FilesystemProgressCallback,
   FilesystemStat,
-  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
@@ -34,7 +33,7 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
     deleteItem: true,
     tree: true,
     direct: true,
-    bulk: false,
+    bulk: true,
     stat: true,
     quota: true,
   };
@@ -182,7 +181,19 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
   }
 
   async bulk<T = any>(path: string, extension: string): Promise<Record<string, T>> {
-    return {};
+    try {
+      const response = await Backend.get(`/admin/afs/bulk/${extension}/${path}`, {
+        headers: { Authorization: `Bearer ${Daemon!.token}` },
+      });
+
+      if (response.status !== 200) return {};
+
+      const data = response.data as Record<string, T>;
+
+      return data;
+    } catch {
+      return {};
+    }
   }
 
   async direct(path: string): Promise<string | undefined> {
@@ -193,7 +204,7 @@ export class AdminFileSystem extends FilesystemDrive implements IFilesystemDrive
         { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
-      const data = response.data as FsAccess;
+      const data = response.data as FileAccessor;
 
       return `${Server.url}/admin/afs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {

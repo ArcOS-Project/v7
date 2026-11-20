@@ -7,7 +7,8 @@ import type { IApplicationStorage } from "$interfaces/services/IApplicationStora
 import { Daemon, Env, Psa, Stack, State, SysDispatch } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 import { DefaultUserPreferences } from "$ts/user/default";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppContextMenu, ContextMenuItem } from "$types/apps";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 import type { MaybePromise } from "$types/shared/common";
 import { LogLevel } from "$types/shared/logging";
 import type { ReadableStore } from "$types/shared/writable";
@@ -18,9 +19,7 @@ import type { Draggable } from "@neodrag/vanilla";
 import { mount } from "svelte";
 import {
   type App,
-  type AppContextMenu,
   type AppProcessData,
-  type ContextMenuItem,
   type ToastMessage,
 } from "../../types/apps/app";
 import { Sleep } from "../sleep";
@@ -44,7 +43,7 @@ export class AppProcess extends Process implements IAppProcess {
   protected overlayStore: Record<string, App> = {};
   protected elevations: Record<string, ElevationData> = {};
   public renderArgs: RenderArgs = {};
-  public acceleratorStore: AppKeyCombinations = [];
+  public acceleratorStore: AppKeyboardCombinations = [];
   public readonly contextMenu: AppContextMenu = {};
   public altMenu = Store<ContextMenuItem[]>([]);
   public windowFullscreen = Store<boolean>(false);

@@ -19,9 +19,13 @@ import type { NewExecuteQueryWhereClauses, SavedQuery } from "./types";
 export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQueryRuntime {
   //#region LIFECYCLE
 
+  private readonly SAVED_QUERIES_PATH = "A:/NewQueries";
   public readonly USER_COLUMNS = ["userId", "authorId", "recipient", "repliesTo"];
   public users: ExpandedUserInfo[] = [];
-  public loading = Store(true);
+  public refreshing = Store<boolean>(true);
+  public executing = Store<boolean>(false);
+  public selectSavedQuery = Store<boolean>(false);
+  public savedQueryList = Store<Record<string, SavedQuery>>({});
   public allowSensitiveColumns = false;
 
   public collections = Store<string[]>([]);
@@ -54,17 +58,21 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
   async stop() {}
 
   async render() {
+    this.refreshing.set(true);
     this.users = await this.admin.getAllUsers();
     await this.RefreshCollections();
-    this.loading.set(false);
+    await this.RefreshSavedQueryList();
+    this.refreshing.set(false);
   }
 
   async Execute(): Promise<void> {
+    this.executing.set(true);
+
     // TODO: make a proper result dialog or something
     const query = this.CompileDbQuery();
     const result = await this.admin.DbQueryExecute(query);
 
-    Daemon.helpers?.ViewGenericObject(
+    await Daemon.helpers?.ViewGenericObject(
       result,
       {
         dataName: "DbQuery_Result",
@@ -73,6 +81,8 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
       },
       this.pid
     );
+
+    this.executing.set(false);
   }
 
   //#endregion LIFECYCLE
@@ -90,10 +100,10 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
   }
 
   async SelectCollection(collection: string, quiet = false): Promise<ICommandResult> {
-    this.loading.set(true);
+    this.refreshing.set(true);
     const columnsResult = await this.admin.DbQueryColumns(collection);
 
-    this.loading.set(false);
+    this.refreshing.set(false);
 
     if (!columnsResult.success) {
       if (!quiet) await this.DisplayError(columnsResult);
@@ -116,6 +126,16 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
 
   async ShowSelectColumns(): Promise<void> {
     await this.spawnOverlay("selectColumns", this);
+  }
+
+  SelectAllColumns() {
+    const collection = this.selectedCollection();
+    const columns = this.columns();
+
+    this.selectedColumns.update((selectedColumns) => {
+      selectedColumns[collection] = columns.filter((column) => !column.sensitive || this.allowSensitiveColumns);
+      return selectedColumns;
+    });
   }
 
   //#endregion
@@ -243,6 +263,8 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
       return v;
     });
 
+    this.selectSavedQuery.set(false);
+
     return CommandResult.Ok(warnings);
   }
 
@@ -294,6 +316,11 @@ export class NewExecuteQueryRuntime extends AppProcess implements INewExecuteQue
     if (!result.success) {
       return this.DisplayError(result);
     }
+  }
+
+  private async RefreshSavedQueryList() {
+    const result = await Fs.bulk<SavedQuery>(this.SAVED_QUERIES_PATH, "json");
+    this.savedQueryList.set(result);
   }
 
   //#endregion

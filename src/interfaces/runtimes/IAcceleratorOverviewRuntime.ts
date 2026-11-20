@@ -1,5 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { AppStorage } from "$types/apps/app";
+import type { AppStorage } from "$interfaces/services/IApplicationStorage";
 import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
@@ -9,3 +9,4 @@ export interface IAcceleratorOverviewRuntime extends IAppProcess {
   apps: ReadableStore<AppStorage>;
   splitAcceleratorString(accelerator: string): string[];
 }
+// !endtpa

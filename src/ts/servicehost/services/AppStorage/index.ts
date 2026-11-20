@@ -2,7 +2,7 @@ import type { Constructs } from "$interfaces/common";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IServiceHost } from "$interfaces/IServiceHost";
 import type { IThirdPartyAppProcess } from "$interfaces/IThirdPartyAppProcess";
-import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { AppStorage, AppStoreCb, IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import { BuiltinAppImportPathAbsolutes } from "$ts/apps/store";
 import { ArcOSVersion, Daemon, Env, Fs, State, SysDispatch } from "$ts/env";
 import { ArcBuild } from "$ts/metadata/build";
@@ -17,7 +17,8 @@ import { join } from "$ts/util/fs";
 import { validateObject } from "$ts/util/json";
 import { compareVersion } from "$ts/util/version";
 import { Store } from "$ts/writable";
-import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/apps/app";
+import type { InstalledApp } from "$types/apps";
+import type { App } from "$types/apps/app";
 import type { Service } from "$types/services/service";
 
 export class ApplicationStorage extends BaseService implements IApplicationStorage {

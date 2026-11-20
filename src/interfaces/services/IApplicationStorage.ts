@@ -1,6 +1,7 @@
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IBaseService } from "$interfaces/IServiceHost";
-import type { App, AppStorage, AppStoreCb, InstalledApp } from "$types/apps/app";
+import type { InstalledApp ,App } from "$types/apps";
+import type { MaybePromise } from "$types/shared/common";
 import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
@@ -20,3 +21,6 @@ export interface IApplicationStorage extends IBaseService {
   loadAppsFromViteModules(modules: Record<string, () => Promise<unknown>>): Promise<AppStorage>;
   loadAppFromViteModule(fn: () => Promise<unknown>, path?: string): Promise<ICommandResult<App>>;
 }
+
+export type AppStorage = (InstalledApp & { originId?: string })[];
+export type AppStoreCb = () => MaybePromise<AppStorage>;

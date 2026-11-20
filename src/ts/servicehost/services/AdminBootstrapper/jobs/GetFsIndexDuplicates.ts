@@ -4,7 +4,7 @@ import { CommandResult } from "$ts/result";
 import { textToBlob } from "$ts/util/convert";
 import { join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
-import type { FSItem } from "$types/server/admin";
+import type { FilesystemIndexingItem } from "$types/server/admin";
 import { AdminBootstrapperJob } from ".";
 import { AdminScopes } from "../store";
 
@@ -24,13 +24,13 @@ export class GetFsIndexDuplicates extends AdminBootstrapperJob {
     await Fs.createDirectory(this.OUTPUT_FOLDER);
     broadcast?.("");
 
-    const totalDuplicates: FSItem[] = [];
+    const totalDuplicates: FilesystemIndexingItem[] = [];
 
     for (const user of users) {
       broadcast?.(`Scanning ${user.username} (${user._id})`);
 
-      const seen: FSItem[] = [];
-      const duplicates: FSItem[] = [];
+      const seen: FilesystemIndexingItem[] = [];
+      const duplicates: FilesystemIndexingItem[] = [];
       const all = indexes.filter((index) => index.userId === user._id);
 
       for (const item of all) {

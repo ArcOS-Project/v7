@@ -21,5 +21,6 @@
       <p class="empty">(nothing)</p>
     {/if}
   </div>
+  <button onclick={() => process.SelectAllColumns()}>All</button>
   <button onclick={() => process.ShowSelectColumns()}>Choose...</button>
 </div>

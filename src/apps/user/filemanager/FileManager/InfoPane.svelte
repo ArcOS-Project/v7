@@ -4,7 +4,7 @@
   import { Sleep } from "$ts/sleep";
   import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
   import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
-  import type { ExtendedStat, SummarizedFsModifiers } from "$types/system/fs";
+  import type { ExtendedStat, SummarizedFilesystemModifiers } from "$types/system/fs";
   import { onMount } from "svelte";
   import type { QuotedDrive } from "../types";
   import Drive from "./InfoPane/Drive.svelte";
@@ -17,7 +17,7 @@
   let currentDrive: QuotedDrive | undefined = $state(undefined);
   let singleSelectionAssoc: ExpandedFileAssociationInfo | undefined = $state(undefined);
   let singleSelectionFilename = $state<string>();
-  let singleSelectionModifiers = $state<SummarizedFsModifiers | undefined>();
+  let singleSelectionModifiers = $state<SummarizedFilesystemModifiers | undefined>();
   let singleSelectionThumbnail = $state<string>();
   let singleSelectionStat = $state<ExtendedStat>();
   let multipleFiles = $state<boolean>(false);

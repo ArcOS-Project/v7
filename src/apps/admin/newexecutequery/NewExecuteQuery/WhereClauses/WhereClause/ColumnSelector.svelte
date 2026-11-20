@@ -12,6 +12,8 @@
 <select bind:value={$whereClauses[$selectedCollection][i].columnName} {onchange}>
   <option value="" selected disabled>(column)</option>
   {#each $selectedColumns[$selectedCollection] as column (column.column)}
-    <option value={column.column} disabled={column.sensitive && !allowSensitiveColumns}>{column.column}</option>
+    <option value={column.column} disabled={column.sensitive && !allowSensitiveColumns}>
+      {column.column}{!column.required ? "?" : ""}
+    </option>
   {/each}
 </select>

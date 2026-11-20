@@ -12,7 +12,7 @@ import type {
   DriveCapabilities,
   ExtendedStat,
   FilesystemProgressCallback,
-  FsAccess,
+  FileAccessor,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
@@ -217,7 +217,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
     try {
       const response = await Backend.post(`/fs/accessors/${path}`, {}, { headers: { Authorization: `Bearer ${Daemon!.token}` } });
 
-      const data = response.data as FsAccess;
+      const data = response.data as FileAccessor;
 
       return `${Server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {
@@ -233,7 +233,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
 
       if (response.status !== 200) return {};
 
-      const data = response.data as Record<string, any>;
+      const data = response.data as Record<string, T>;
 
       return data;
     } catch {

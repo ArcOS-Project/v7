@@ -1,5 +1,5 @@
 import type { IDonutAppRuntime } from "$interfaces/runtimes/IDonutAppRuntime";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 
 export function DonutAltMenu(runtime: IDonutAppRuntime): ContextMenuItem[] {
   return [

@@ -1,5 +1,5 @@
 import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import { EditMenu } from "./altmenu/Edit";
 import { FileMenu } from "./altmenu/File";
 import { ViewMenu } from "./altmenu/View";

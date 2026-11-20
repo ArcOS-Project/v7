@@ -28,8 +28,8 @@ import type {
   BugReportSourceInformation,
   DbQuery,
   DbQueryCollectionColumn,
-  FsAccess,
-  FSItem,
+  DirectFilesystemAccessor,
+  FilesystemIndexingItem,
   IpAddress,
   PartialUserTotp,
   ServerLogItem,
@@ -583,18 +583,18 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
-  async getAllFsAccessors(): Promise<FsAccess[]> {
+  async getAllFsAccessors(): Promise<DirectFilesystemAccessor[]> {
     if (this._disposed) return [];
     try {
       const response = await this.adminClient.get("/accessors");
 
-      return response.data as FsAccess[];
+      return response.data as DirectFilesystemAccessor[];
     } catch {
       return [];
     }
   }
 
-  async getFsAccessorsOf(username: string): Promise<FsAccess[]> {
+  async getFsAccessorsOf(username: string): Promise<DirectFilesystemAccessor[]> {
     if (this._disposed) return [];
     try {
       const response = await this.adminClient.get(`/accessors/${username}`);
@@ -627,23 +627,23 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
-  async getAllIndexingNodes(): Promise<FSItem[]> {
+  async getAllIndexingNodes(): Promise<FilesystemIndexingItem[]> {
     if (this._disposed) return [];
     try {
       const response = await this.adminClient.get(`/index`);
 
-      return response.data as FSItem[];
+      return response.data as FilesystemIndexingItem[];
     } catch {
       return [];
     }
   }
 
-  async getIndexingNodesOf(username: string): Promise<FSItem[]> {
+  async getIndexingNodesOf(username: string): Promise<FilesystemIndexingItem[]> {
     if (this._disposed) return [];
     try {
       const response = await this.adminClient.get(`/index/${username}`);
 
-      return response.data as FSItem[];
+      return response.data as FilesystemIndexingItem[];
     } catch {
       return [];
     }
@@ -756,12 +756,12 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
     }
   }
 
-  async getShareAccessors(shareId: string): Promise<FSItem[]> {
+  async getShareAccessors(shareId: string): Promise<FilesystemIndexingItem[]> {
     if (this._disposed) return [];
     try {
       const response = await this.adminClient.get(`/share/accessors/${shareId}`);
 
-      return response.data as FSItem[];
+      return response.data as FilesystemIndexingItem[];
     } catch {
       return [];
     }

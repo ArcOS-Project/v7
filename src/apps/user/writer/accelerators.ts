@@ -1,7 +1,7 @@
 import type { IWriterRuntime } from "$interfaces/runtimes/IWriterRuntime";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export function WriterAccelerators(runtime: IWriterRuntime): AppKeyCombinations {
+export function WriterAccelerators(runtime: IWriterRuntime): AppKeyboardCombinations {
   return [
     {
       alt: true,

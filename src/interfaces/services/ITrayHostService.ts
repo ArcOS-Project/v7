@@ -2,7 +2,7 @@ import type { Constructs } from "$interfaces/common";
 import type { IProcess } from "$interfaces/IProcess";
 import type { IBaseService } from "$interfaces/IServiceHost";
 import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import type { TrayIconOptions, TrayPopup } from "$types/services/tray";
 import type { BooleanStore, ReadableStore } from "$types/shared/writable";
 

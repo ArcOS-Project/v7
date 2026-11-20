@@ -29,8 +29,9 @@ export class StateHandler extends Process implements IStateHandler {
 
   async start() {
     const { htmlLoader } = this.getStateLoaders();
+    htmlLoader.innerText += ".";
 
-    htmlLoader.innerText = "...";
+    await Sleep(100);
   }
 
   protected async stop(): Promise<any> {
@@ -57,6 +58,7 @@ export class StateHandler extends Process implements IStateHandler {
     const { htmlLoader, cssLoader, main } = this.getStateLoaders();
 
     htmlLoader.innerHTML = "";
+    htmlLoader.classList.remove("dw-init");
     cssLoader.href = "";
 
     if (!data.appModule && !data.html) {

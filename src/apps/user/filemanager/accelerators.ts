@@ -1,7 +1,7 @@
 import type { IFileManagerRuntime } from "$interfaces/runtimes/IFileManagerRuntime";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export function FileManagerAccelerators(runtime: IFileManagerRuntime): AppKeyCombinations {
+export function FileManagerAccelerators(runtime: IFileManagerRuntime): AppKeyboardCombinations {
   return [
     {
       key: "Delete",

@@ -4,7 +4,8 @@ import { AppProcess } from "$ts/apps/process";
 import { Env, Stack } from "$ts/env";
 import { Sleep } from "$ts/sleep";
 import { Store } from "$ts/writable";
-import type { AppProcessData, ContextMenuInstance, ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuInstance, ContextMenuItem } from "$types/apps";
+import type { AppProcessData } from "$types/apps/app";
 import { WindowSystemContextMenu } from "./system";
 
 export class ContextMenuRuntime extends AppProcess implements IContextMenuRuntime {

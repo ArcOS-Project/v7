@@ -1,5 +1,5 @@
 import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import { FileMenu } from "./altmenu/file";
 import { PlaylistAltMenu } from "./altmenu/playlist";
 

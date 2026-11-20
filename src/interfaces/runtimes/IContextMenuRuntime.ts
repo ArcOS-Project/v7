@@ -1,5 +1,5 @@
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { ContextMenuInstance, ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuInstance, ContextMenuItem } from "$types/apps";
 import type { ReadableStore, StringStore } from "$types/shared/writable";
 
 // !tpa

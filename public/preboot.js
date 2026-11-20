@@ -3,6 +3,16 @@ onload = function () {
   window.__DW_STATUS__ = "window.onload";
   const stateLoader = this.document.querySelector("#stateLoader");
 
+  /** @type {Record<EffectiveConnectionType, number>} */
+  const timeoutMapping = {
+    "slow-2g": 60000 * 4, // 4 minutes
+    "2g": 60000 * 2, // 2 minutes
+    "3g": 60000, // 1 minute
+    "4g": 30000, // 30 seconds
+  };
+
+  stateLoader.innerText += ".";
+
   function loadFail(r) {
     if (prebooted) return;
     prebooted = true;
@@ -34,7 +44,7 @@ onload = function () {
     loadFail(
       `Timeout for load routine failed.<br>Last reported status was: <b>${window.__DW_STATUS__}<b><br><br>Reload to try again.`
     );
-  }, 5000);
+  }, timeoutMapping[navigator?.connection?.effectiveType] ?? 5000);
 
   window.addEventListener("unhandledrejection", event, { once: true });
   window.addEventListener("error", event, { once: true });

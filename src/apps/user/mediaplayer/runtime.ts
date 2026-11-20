@@ -13,7 +13,7 @@ import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory, join } from "$ts/util/fs";
 import { UUID } from "$ts/util/uuid";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { FileEntry } from "$types/system/fs";
 import type { RenderArgs } from "$types/system/process";
 import mime from "mime";
@@ -22,6 +22,7 @@ import { MediaPlayerAccelerators } from "./accelerators";
 import { MediaPlayerAltMenu } from "./altmenu";
 import TrayPopup from "./MediaPlayer/TrayPopup.svelte";
 import { LoopMode, type AudioFileMetadata, type MetadataConfiguration, type PlayerState } from "./types";
+import type { AppContextMenu } from "$types/apps";
 
 export class MediaPlayerRuntime extends AppProcess implements IMediaPlayerRuntime {
   private readonly METADATA_PATH = join(UserPaths.Configuration, "MediaPlayer", "Metadata.json");

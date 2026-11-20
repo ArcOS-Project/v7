@@ -8,7 +8,7 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 import type { AppProcessData } from "$types/apps/app";
 import { CodAccelerators } from "./accelerators";
 import { CodAltMenu } from "./altmenu";
@@ -25,7 +25,7 @@ export class CodRuntime extends AppProcess implements ICodRuntime {
   original = Store<string>("");
   drive = Store<IFilesystemDrive | undefined>();
   mimeIcon = Store<string>("DefaultMimeIcon");
-  public acceleratorStore: AppKeyCombinations = CodAccelerators(this);
+  public acceleratorStore: AppKeyboardCombinations = CodAccelerators(this);
 
   //#region LIFECYCLE
 

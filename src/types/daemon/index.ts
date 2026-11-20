@@ -17,6 +17,7 @@ export type UserDaemonInitStage =
   | "letsGo"
   | "workspaces"
   | "autorun";
+
 export type UserDaemonInitStagesSelection = Partial<UserDaemonInitStage[]>;
 export type UserDaemonInitCallbacks = Partial<Record<UserDaemonInitStage, UserDaemonInitCallback>>;
 

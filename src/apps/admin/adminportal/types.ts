@@ -12,7 +12,7 @@ import type {
 import type { BugReport, ReportStatistics } from "$types/server/bughunt";
 import type { SharedDriveType } from "$types/server/shares";
 import type { ReadableStore } from "$types/shared/writable";
-import type { FsAccess } from "$types/system/fs";
+import type { FileAccessor } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo } from "$types/user";
 import type { Component } from "svelte";
@@ -84,7 +84,7 @@ export type SharesData = {
 
 export type ViewShareData = {
   share: SharedDriveType;
-  accessors: FsAccess[];
+  accessors: FileAccessor[];
   users: ExpandedUserInfo[];
 };
 

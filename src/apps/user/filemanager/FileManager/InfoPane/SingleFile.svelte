@@ -3,7 +3,7 @@
   import Icon from "$lib/Icon.svelte";
   import UserLink from "$lib/UserLink.svelte";
   import type { ExpandedFileAssociationInfo } from "$types/system/assoc";
-  import type { SummarizedFsModifiers } from "$types/system/fs";
+  import type { SummarizedFilesystemModifiers } from "$types/system/fs";
   import dayjs from "dayjs";
 
   const {
@@ -15,7 +15,7 @@
     dateModified,
     process,
   }: {
-    modifiers: SummarizedFsModifiers | undefined;
+    modifiers: SummarizedFilesystemModifiers | undefined;
     association: ExpandedFileAssociationInfo;
     dateCreated: number;
     dateModified: number;

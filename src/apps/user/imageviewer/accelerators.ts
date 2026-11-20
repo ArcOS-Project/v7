@@ -1,9 +1,9 @@
 import type { IImageViewerRuntime } from "$interfaces/runtimes/IImageViewerRuntime";
 import { Daemon } from "$ts/env";
 import { getParentDirectory } from "$ts/util/fs";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export function ImageViewerAccelerators(runtime: IImageViewerRuntime): AppKeyCombinations {
+export function ImageViewerAccelerators(runtime: IImageViewerRuntime): AppKeyboardCombinations {
   return [
     {
       key: "O",

@@ -7,8 +7,9 @@ import { Daemon, Env, Fs, Stack, SysDispatch } from "$ts/env";
 import { ProcessesHelper } from "$ts/helpers/processes";
 import { UserPaths } from "$ts/user/store";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
-import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { AppContextMenu } from "$types/apps";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
+import type { AppProcessData } from "$types/apps/app";
 import type { RecursiveDirectoryReadReturn } from "$types/system/fs";
 import { ShellAccelerators } from "./accelerators";
 import { ShellContextMenu } from "./context";
@@ -28,7 +29,7 @@ export class ShellRuntime extends AppProcess implements IShellRuntime {
   public selectedAppGroup = Store<string>("");
 
   override contextMenu: AppContextMenu = ShellContextMenu(this);
-  override acceleratorStore: AppKeyCombinations = ShellAccelerators(this);
+  override acceleratorStore: AppKeyboardCombinations = ShellAccelerators(this);
 
   get trayHost() {
     return Daemon.serviceHost?.getService<ITrayHostService>("TrayHostSvc");

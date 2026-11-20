@@ -6,19 +6,19 @@ export interface LegacyConnectionInfo {
   password: string;
 }
 
-export interface UserDirectory {
+export interface LegacyUserDirectory {
   name: string;
   scopedPath: string;
-  files: PartialArcFile[];
-  directories: PartialUserDir[];
+  files: LegacyPartialArcFile[];
+  directories: LegacyPartialUserDir[];
 }
 
-export interface PartialUserDir {
+export interface LegacyPartialUserDir {
   name: string;
   scopedPath: string;
 }
 
-export interface PartialArcFile {
+export interface LegacyPartialArcFile {
   size?: number;
   mime: string;
   filename: string;
@@ -27,7 +27,7 @@ export interface PartialArcFile {
   dateModified: number;
 }
 
-export interface FSQuota {
+export interface LegacyFilesystemQuota {
   username: string;
   max: number;
   free: number;

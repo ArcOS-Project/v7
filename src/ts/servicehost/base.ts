@@ -5,6 +5,7 @@ import { Daemon, Env, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
 
 export class BaseService extends Process implements IBaseService {
+  public static readonly identifier: string = ""
   host: IServiceHost;
   activated: boolean = false;
   initBroadcast?: (msg: string) => void;

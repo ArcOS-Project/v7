@@ -1,7 +1,7 @@
 import type { IMediaPlayerRuntime } from "$interfaces/runtimes/IMediaPlayerRuntime";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export const MediaPlayerAccelerators: (runtime: IMediaPlayerRuntime) => AppKeyCombinations = (runtime) => {
+export const MediaPlayerAccelerators: (runtime: IMediaPlayerRuntime) => AppKeyboardCombinations = (runtime) => {
   return [
     {
       key: "o",

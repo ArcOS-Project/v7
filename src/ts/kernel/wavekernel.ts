@@ -8,6 +8,7 @@ import { getBuild } from "$ts/metadata/build";
 import { ChangeLogs } from "$ts/metadata/changelog";
 import { getLicense } from "$ts/metadata/license";
 import { getMode } from "$ts/metadata/mode";
+import { HtmlUtil } from "$ts/util/html";
 import { LogLevel, ShortLogLevelCaptions, type LogItem } from "../../types/shared/logging";
 import { handleGlobalErrors } from "../error";
 import { InitProcess } from "./init";
@@ -83,6 +84,8 @@ export class WaveKernel implements IWaveKernel {
     await getBuild();
     await getLicense();
     await ChangeLogs.refreshChangelogs();
+
+    HtmlUtil.GetStateLoader().innerText += ".";
 
     this.Log(`ArcOS`, `***** [v7 -> ArcOS InDev v${ArcOSVersion}-${this.ARCOS_MODE}_${this.ARCOS_BUILD}] *****`);
 

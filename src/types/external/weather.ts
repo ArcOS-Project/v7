@@ -37,12 +37,10 @@ export type WeatherInformation =
       condition: string;
       code: number;
       className: string;
-      gradient:
-        | {
-            start: string;
-            end: string;
-          }
-        | undefined;
+      gradient?: {
+        start: string;
+        end: string;
+      };
       icon: string;
       iconColor: string;
       isNight: boolean;

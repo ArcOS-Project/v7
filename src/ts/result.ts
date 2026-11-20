@@ -3,6 +3,8 @@ import { LogLevel } from "$types/shared/logging";
 import { DefaultCommandResultOptions, type CommandResultOptions } from "$types/shared/result";
 import { AxiosError, type AxiosResponse } from "axios";
 import { Log } from "./logging";
+import { tryJsonStringify } from "./util/json";
+import { formatBytes } from "./util/fs";
 
 export class CommandResult<T = any> implements ICommandResult<T> {
   public result: T | undefined;
@@ -29,7 +31,8 @@ export class CommandResult<T = any> implements ICommandResult<T> {
   }
 
   static FromResponse<T = any>(value: AxiosResponse<T>) {
-    return CommandResult.Ok<T>(value.data);
+    const size = formatBytes(tryJsonStringify(value.data, 0)?.length ?? 0);
+    return CommandResult.Ok<T>(value.data, `status = ${value.status}, size = ${size}`);
   }
 
   static AxiosError<T = any>(e: unknown, fallback: string = "Unknown error") {

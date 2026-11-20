@@ -14,7 +14,7 @@ import {
   type ExtendedStat,
   type FilesystemProgress,
   type FilesystemProgressCallback,
-  type FsProxyInfo,
+  type FilesystemProxyInfo,
   type RecursiveDirectoryReadReturn,
   type UploadReturn,
 } from "$types/system/fs";
@@ -178,7 +178,7 @@ export class FilesystemKernelModule extends KernelModule implements IFilesystemK
       throw new Error(`FilesystemValidateDriveLetter: Invalid drive letter or UUID "${letter}"`);
   }
 
-  getProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+  getProxyInfo(path: string, topLevel?: boolean): FilesystemProxyInfo | undefined {
     this.isKmod();
     Kernel.LogOperation("kmod", "fs", "getProxyInfo");
 
@@ -202,7 +202,7 @@ export class FilesystemKernelModule extends KernelModule implements IFilesystemK
     };
   }
 
-  tryGetProxyInfo(path: string, topLevel?: boolean): FsProxyInfo | undefined {
+  tryGetProxyInfo(path: string, topLevel?: boolean): FilesystemProxyInfo | undefined {
     Kernel.LogOperation("kmod", "fs", "tryGetProxyInfo");
 
     try {

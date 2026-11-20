@@ -1,4 +1,5 @@
 // !tpa
+
 export interface ILocale {
   name: string;
   weekdays?: string[];
@@ -32,4 +33,5 @@ export interface ILocale {
     yy: string;
   }>;
 }
+
 // !endtpa

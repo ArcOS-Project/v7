@@ -9,8 +9,11 @@ import type { ExpandedUserInfo } from "$types/user";
 export interface INewExecuteQueryRuntime extends IAppProcess {
   USER_COLUMNS: string[];
   users: ExpandedUserInfo[];
-  loading: BooleanStore;
+  refreshing: BooleanStore;
+  executing: BooleanStore;
+  selectSavedQuery: BooleanStore;
   allowSensitiveColumns: boolean;
+  savedQueryList: ReadableStore<Record<string, SavedQuery>>;
 
   // query data
   collections: ReadableStore<string[]>;
@@ -27,6 +30,7 @@ export interface INewExecuteQueryRuntime extends IAppProcess {
   RefreshCollections(): Promise<void>;
   SelectCollection(collection: string): Promise<ICommandResult>;
   ShowSelectColumns(): Promise<void>;
+  SelectAllColumns(): void;
 
   // clauses
   AddWhereClause(): void;

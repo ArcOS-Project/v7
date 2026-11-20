@@ -1,5 +1,5 @@
 import type { IProcess } from "$interfaces/IProcess";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import type { Component } from "svelte";
 
 // !tpa

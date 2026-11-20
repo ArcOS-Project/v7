@@ -2,7 +2,7 @@ import type { IWallpaperRuntime } from "$interfaces/runtimes/IWallpaperRuntime";
 import { Daemon, Env, Fs } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
 import { getParentDirectory } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/apps/app";
+import type { AppContextMenu } from "$types/apps";
 import type { FileEntry } from "$types/system/fs";
 
 export function WallpaperContextMenu(runtime: IWallpaperRuntime): AppContextMenu {
