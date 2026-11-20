@@ -25,14 +25,14 @@
   });
 </script>
 
-
-
-<p>Value of:  </p>
+<p>Value of:</p>
 
 <select bind:value={$whereClauses[$selectedCollection][i].valueFromColumn!.columnName}>
   <option value="" selected disabled>(select source column)</option>
   {#each $selectedColumns[$selectedCollection] as column (column.column)}
-    <option value={column.column} disabled={column.sensitive && !allowSensitiveColumns}>{column.column}</option>
+    <option value={column.column} disabled={column.sensitive && !allowSensitiveColumns}>
+      {column.column}{!column.required ? "?" : ""}
+    </option>
   {/each}
 </select>
 
