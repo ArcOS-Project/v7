@@ -6,7 +6,7 @@ import type {
   ExtendedStat,
   FilesystemProgress,
   FilesystemProgressCallback,
-  FsProxyInfo,
+  FilesystemProxyInfo,
   RecursiveDirectoryReadReturn,
   UploadReturn,
 } from "$types/system/fs";
@@ -34,8 +34,8 @@ export interface IFilesystemKernelModule extends IKernelModule {
   validatePath(p: string): void;
   removeDriveLetter(p: string): string;
   validateDriveLetter(letter: string): void;
-  getProxyInfo(p: string, topLevel?: boolean): FsProxyInfo | undefined;
-  tryGetProxyInfo(p: string, topLevel?: boolean): FsProxyInfo | undefined;
+  getProxyInfo(p: string, topLevel?: boolean): FilesystemProxyInfo | undefined;
+  tryGetProxyInfo(p: string, topLevel?: boolean): FilesystemProxyInfo | undefined;
   tryHandleProxyReadDir(p: string): Promise<DirectoryReadReturn | undefined>;
   tryHandleProxyReadFile(p: string): Promise<ArrayBuffer | undefined>;
   readDir(path: string): Promise<DirectoryReadReturn | undefined>;

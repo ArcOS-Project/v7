@@ -1,7 +1,7 @@
 import type { ISqeletonRuntime } from "$interfaces/runtimes/ISqeletonRuntime";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export function SqeletonAccelerators(runtime: ISqeletonRuntime): AppKeyCombinations {
+export function SqeletonAccelerators(runtime: ISqeletonRuntime): AppKeyboardCombinations {
   return [
     {
       alt: true,

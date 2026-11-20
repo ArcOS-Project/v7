@@ -13,10 +13,10 @@ export interface FileEntry {
   itemId: string;
   shortcut?: ArcShortcut;
   action?: () => void;
-  modifiers?: SummarizedFsModifiers;
+  modifiers?: SummarizedFilesystemModifiers;
 }
 
-export interface FsAccess {
+export interface FileAccessor {
   _id?: string;
   userId: string;
   shareId?: string;
@@ -36,7 +36,7 @@ export interface FolderEntry {
   dateCreated: Date;
   dateModified: Date;
   itemId: string;
-  modifiers?: SummarizedFsModifiers;
+  modifiers?: SummarizedFilesystemModifiers;
 }
 
 export interface DirectoryReadReturn {
@@ -125,40 +125,40 @@ export interface FilesystemStat {
   modified: number;
 }
 
-export interface FsModifier {
+export interface FilesystemModifier {
   _id?: string;
   userId: string;
   itemId: string;
-  kind: FsModifierKind;
+  kind: FilesystemModifierKind;
   isAdmin?: boolean;
   isDir?: boolean;
   createdAt?: string;
   modifiedAt?: string;
 }
 
-export interface ExtendedFsModifier extends FsModifier {
+export interface ExtendedFilesystemModifier extends FilesystemModifier {
   user?: PublicUserInfo;
 }
 
-export interface SummarizedFsModifiers {
+export interface SummarizedFilesystemModifiers {
   itemId: string;
-  lastWrite: ExtendedFsModifier | null;
-  createdBy: ExtendedFsModifier | null;
+  lastWrite: ExtendedFilesystemModifier | null;
+  createdBy: ExtendedFilesystemModifier | null;
 }
 
-export type FsModifierKind = "create" | "write";
+export type FilesystemModifierKind = "create" | "write";
 
-export interface FsModifierOptions {
-  kind: FsModifierKind;
+export interface FilesystemModifierOptions {
+  kind: FilesystemModifierKind;
   isAdmin?: boolean;
   isDir?: boolean;
 }
 
 export interface ExtendedStat extends FilesystemStat {
-  modifiers?: SummarizedFsModifiers;
+  modifiers?: SummarizedFilesystemModifiers;
 }
 
-export interface FsProxyInfo {
+export interface FilesystemProxyInfo {
   prefix: string;
   proxyUuid: string;
   proxyHandler: IFilesystemProxy;

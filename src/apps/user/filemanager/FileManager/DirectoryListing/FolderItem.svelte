@@ -5,7 +5,7 @@
   import { Fs } from "$ts/env";
   import { contextProps } from "$ts/ui/context/actions.svelte";
   import { join } from "$ts/util/fs";
-  import type { FolderEntry, FsProxyInfo } from "$types/system/fs";
+  import type { FolderEntry, FilesystemProxyInfo } from "$types/system/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
@@ -16,7 +16,7 @@
 
   let date = $state<string>();
   let thisPath = $state<string>("");
-  let proxy = $state<FsProxyInfo | undefined>();
+  let proxy = $state<FilesystemProxyInfo | undefined>();
 
   onMount(() => {
     dayjs.extend(relativeTime);

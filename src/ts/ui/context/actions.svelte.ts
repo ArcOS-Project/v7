@@ -2,7 +2,7 @@ import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
 import { Env, Stack } from "$ts/env";
 import { UUID } from "$ts/util/uuid";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 
 export function contextProps(node: HTMLElement, args: any[]) {
   const contextMenuPid = Env?.get("contextmenu_pid");

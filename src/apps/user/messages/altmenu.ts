@@ -1,5 +1,5 @@
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import { messagingPages } from "./store";
 
 export function MessagesAltMenu(runtime: IMessagingAppRuntime): ContextMenuItem[] {

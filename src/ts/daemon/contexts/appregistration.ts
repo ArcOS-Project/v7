@@ -1,6 +1,6 @@
 import type { IAppRegistrationUserContext } from "$interfaces/contexts/IAppRegistrationUserContext";
 import type { IUserDaemon } from "$interfaces/IUserDaemon";
-import type { IApplicationStorage } from "$interfaces/services/IApplicationStorage";
+import type { AppStorage, IApplicationStorage } from "$interfaces/services/IApplicationStorage";
 import type { IDistributionServiceProcess } from "$interfaces/services/IDistributionServiceProcess";
 import { Daemon, Env, Fs, SysDispatch } from "$ts/env";
 import { AppGroups, DefaultAppData, UserPaths } from "$ts/user/store";
@@ -8,7 +8,8 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory, join } from "$ts/util/fs";
 import { tryJsonParse, validateObject } from "$ts/util/json";
-import type { App, AppStorage, InstalledApp } from "$types/apps/app";
+import type { InstalledApp } from "$types/apps";
+import type { App } from "$types/apps/app";
 import { LogLevel } from "$types/shared/logging";
 import { UserContext } from "../context";
 

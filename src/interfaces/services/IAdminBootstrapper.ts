@@ -11,7 +11,7 @@ import type {
   BugReportSourceInformation,
   DbQuery,
   DbQueryCollectionColumn,
-  FSItem,
+  FilesystemIndexingItem,
   IpAddress,
   PartialUserTotp,
   ServerLogItem,
@@ -25,7 +25,7 @@ import type { Mailbroker } from "$types/server/mailbroker";
 import type { QueryResult } from "$types/server/query";
 import type { SharedDriveType } from "$types/server/shares";
 import type { BetaFeedback } from "$types/system/beta";
-import type { FilesystemProgressCallback, FsAccess, UserQuota } from "$types/system/fs";
+import type { FilesystemProgressCallback, FileAccessor, UserQuota } from "$types/system/fs";
 import type { StoreItem } from "$types/tpa/package";
 import type { ExpandedUserInfo, UserInfo, UserPreferences } from "$types/user";
 import type { AxiosInstance } from "axios";
@@ -80,12 +80,12 @@ export interface IAdminBootstrapper extends IBaseService {
   getTotpOf(username: string): Promise<UserTotp | undefined>;
   deActivateTotpOf(username: string): Promise<boolean>;
   deleteTotpOf(username: string): Promise<boolean>;
-  getAllFsAccessors(): Promise<FsAccess[]>;
-  getFsAccessorsOf(username: string): Promise<FsAccess[]>;
+  getAllFsAccessors(): Promise<FileAccessor[]>;
+  getFsAccessorsOf(username: string): Promise<FileAccessor[]>;
   deleteAllFsAccessors(): Promise<boolean>;
   deleteFsAccessorsOf(username: string): Promise<boolean>;
-  getAllIndexingNodes(): Promise<FSItem[]>;
-  getIndexingNodesOf(username: string): Promise<FSItem[]>;
+  getAllIndexingNodes(): Promise<FilesystemIndexingItem[]>;
+  getIndexingNodesOf(username: string): Promise<FilesystemIndexingItem[]>;
   forceIndexFor(username: string): Promise<string[]>;
   deleteIndexingOf(username: string): Promise<boolean>;
   canAccess(...scopes: string[]): boolean;
@@ -96,7 +96,7 @@ export interface IAdminBootstrapper extends IBaseService {
   deleteShare(shareId: string): Promise<boolean>;
   kickUserFromShare(shareId: string, userId: string): Promise<boolean>;
   addUserToShare(shareId: string, userId: string): Promise<boolean>;
-  getShareAccessors(shareId: string): Promise<FSItem[]>;
+  getShareAccessors(shareId: string): Promise<FilesystemIndexingItem[]>;
   deleteShareAccessors(shareId: string): Promise<boolean>;
   changeSharePassword(shareId: string, newPassword: string): Promise<boolean>;
   renameShare(shareId: string, newName: string): Promise<boolean>;

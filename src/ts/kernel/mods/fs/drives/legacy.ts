@@ -1,6 +1,6 @@
 import type { ILegacyServerDrive } from "$interfaces/drives/ILegacyServerDrive";
 import { toBase64 } from "$ts/util/base64";
-import type { FSQuota, LegacyConnectionInfo, UserDirectory } from "$types/external/legacy";
+import type { LegacyConnectionInfo, LegacyFilesystemQuota, LegacyUserDirectory } from "$types/external/legacy";
 import { type DirectoryReadReturn, type DriveCapabilities, type FolderEntry, type UserQuota } from "$types/system/fs";
 import axios, { type AxiosInstance } from "axios";
 import { FilesystemDrive } from "./generic";
@@ -25,14 +25,14 @@ export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerD
     [true, 3333],
   ];
 
-  DEFAULT_DIRECTORY: UserDirectory = {
+  DEFAULT_DIRECTORY: LegacyUserDirectory = {
     files: [],
     directories: [],
     name: "",
     scopedPath: "",
   };
 
-  DEFAULT_QUOTA: FSQuota = {
+  DEFAULT_QUOTA: LegacyFilesystemQuota = {
     used: 0,
     max: 0,
     free: 0,
@@ -86,7 +86,7 @@ export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerD
         headers: { Authorization: this.authorizationHeader },
       });
 
-      return (response.data.data as UserDirectory) ?? this.DEFAULT_DIRECTORY;
+      return (response.data.data as LegacyUserDirectory) ?? this.DEFAULT_DIRECTORY;
     } catch (e) {
       return this.DEFAULT_DIRECTORY;
     }
@@ -147,7 +147,7 @@ export class LegacyServerDrive extends FilesystemDrive implements ILegacyServerD
     }
   }
 
-  async legacy_quota(): Promise<FSQuota> {
+  async legacy_quota(): Promise<LegacyFilesystemQuota> {
     try {
       const response = await this.instance!.get("/fs/quota", { headers: { Authorization: this.authorizationHeader } });
 

@@ -6,8 +6,8 @@ import { getItemNameFromPath, join } from "$ts/util/fs";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
+  FileAccessor,
   FilesystemProgressCallback,
-  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
@@ -164,7 +164,7 @@ export class DevDrive extends FilesystemDrive implements IFilesystemDrive {
   async direct(path: string): Promise<string | undefined> {
     try {
       const response = await this.axios.post(`/fs/accessors/${path}`);
-      const data = response.data as FsAccess;
+      const data = response.data as FileAccessor;
 
       return `${this.url}/fs/direct/${data.accessor}`;
     } catch {

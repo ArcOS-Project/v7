@@ -1,7 +1,7 @@
 import type { IMessagingAppRuntime } from "$interfaces/runtimes/IMessagingAppRuntime";
 import { Daemon } from "$ts/env";
 import { UserPaths } from "$ts/user/store";
-import type { AppContextMenu, ContextMenuItem } from "$types/apps/app";
+import type { AppContextMenu, ContextMenuItem } from "$types/apps";
 import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
 import type { ReadableStore } from "$types/shared/writable";
 

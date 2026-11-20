@@ -1,3 +1,4 @@
+// !tpa
 export interface Notification {
   title: string;
   message: string;
@@ -15,3 +16,4 @@ export interface ErrorButton {
   action: () => void;
   suggested?: boolean;
 }
+// !endtpa

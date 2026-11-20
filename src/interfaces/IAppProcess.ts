@@ -1,5 +1,5 @@
-import type { AppKeyCombinations } from "$types/apps/accelerator";
-import type { AppContextMenu, AppProcessData, AppProcessSpawnOptions, ContextMenuItem, ToastMessage } from "$types/apps/app";
+import type { AppContextMenu, AppProcessData, AppProcessSpawnOptions, ContextMenuItem, ToastMessage } from "$types/apps";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 import type { MaybePromise } from "$types/shared/common";
 import type { ReadableStore } from "$types/shared/writable";
 import type { RenderArgs } from "$types/system/process";
@@ -7,9 +7,9 @@ import type { UserPreferences } from "$types/user";
 import type { Draggable } from "@neodrag/vanilla";
 import type { Constructs } from "./common";
 import type { IProcess } from "./IProcess";
-import type { IApplicationStorage } from "./services/IApplicationStorage";
 import type { ParsedPsaItem } from "./modules/IPsaKernelModule";
 import type { IShellRuntime } from "./runtimes/IShellRuntime";
+import type { IApplicationStorage } from "./services/IApplicationStorage";
 
 // !tpa
 export interface IAppProcess extends IProcess {
@@ -24,7 +24,7 @@ export interface IAppProcess extends IProcess {
   toastMessage: ReadableStore<ToastMessage | undefined>;
   safeMode: boolean;
   renderArgs: RenderArgs;
-  acceleratorStore: AppKeyCombinations;
+  acceleratorStore: AppKeyboardCombinations;
   readonly contextMenu: AppContextMenu;
   altMenu: ReadableStore<ContextMenuItem[]>;
   windowFullscreen: ReadableStore<boolean>;

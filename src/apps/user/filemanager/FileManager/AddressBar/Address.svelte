@@ -5,7 +5,7 @@
   import { Fs } from "$ts/env";
   import { contextMenu } from "$ts/ui/context/actions.svelte";
   import { getDriveLetter, getItemNameFromPath } from "$ts/util/fs";
-  import type { FsProxyInfo } from "$types/system/fs";
+  import type { FilesystemProxyInfo } from "$types/system/fs";
   import { onMount } from "svelte";
   import { DriveIcons } from "../../store";
 
@@ -18,7 +18,7 @@
   let driveLabel = $state<string>("");
   let drive = $state<IFilesystemDrive>();
   let name = $state<string>("");
-  let proxy = $state<FsProxyInfo | undefined>();
+  let proxy = $state<FilesystemProxyInfo | undefined>();
 
   onMount(() => {
     const sub = path.subscribe((v) => {

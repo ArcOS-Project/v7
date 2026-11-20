@@ -6,9 +6,9 @@ import { authcode, ToAxiosProgress } from "$ts/util";
 import type {
   DirectoryReadReturn,
   DriveCapabilities,
+  FileAccessor,
   FilesystemProgressCallback,
   FilesystemStat,
-  FsAccess,
   RecursiveDirectoryReadReturn,
   UserQuota,
 } from "$types/system/fs";
@@ -141,7 +141,7 @@ export class AdminServerDrive extends FilesystemDrive implements IFilesystemDriv
         { headers: { Authorization: `Bearer ${Daemon!.token}` } }
       );
 
-      const data = response.data as FsAccess;
+      const data = response.data as FileAccessor;
 
       return `${Server.url}/fs/direct/${data.userId}/${data.accessor}${authcode()}`;
     } catch {

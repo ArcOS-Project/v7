@@ -8,7 +8,7 @@ import { arrayBufferToText, textToBlob } from "$ts/util/convert";
 import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getItemNameFromPath, getParentDirectory } from "$ts/util/fs";
 import { Store } from "$ts/writable";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 import type { App, AppProcessData } from "$types/apps/app";
 import { WriterAccelerators } from "./accelerators";
 import { WriterAltMenu } from "./altmenu";
@@ -29,7 +29,7 @@ export class WriterRuntime extends AppProcess implements IWriterRuntime {
   protected overlayStore: Record<string, App> = {
     replace: ReplaceOverlay,
   };
-  public acceleratorStore: AppKeyCombinations = WriterAccelerators(this);
+  public acceleratorStore: AppKeyboardCombinations = WriterAccelerators(this);
 
   //#region LIFECYCLE
 

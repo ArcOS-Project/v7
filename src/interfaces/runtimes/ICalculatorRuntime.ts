@@ -1,6 +1,6 @@
 import type { CalculatorKeys, CalculatorOverrides } from "$apps/user/calculator/types";
 import type { IAppProcess } from "$interfaces/IAppProcess";
-import type { AppKeyCombination } from "$types/apps/accelerator";
+import type { AppKeyboardCombination } from "$types/apps/accelerator";
 import type { ReadableStore } from "$types/shared/writable";
 
 // !tpa
@@ -13,7 +13,7 @@ export interface ICalculatorRuntime extends IAppProcess {
   };
 
   evaluate(): string | false;
-  generateKeyboardShortcuts(): AppKeyCombination[];
+  generateKeyboardShortcuts(): AppKeyboardCombination[];
   processKey(key: string): false | undefined;
   validate(expr: string): boolean;
 }

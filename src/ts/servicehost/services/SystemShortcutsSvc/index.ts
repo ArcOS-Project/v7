@@ -2,12 +2,12 @@ import type { IBaseService, IServiceHost } from "$interfaces/IServiceHost";
 import { AppProcess, KEY_IGNORE_LIST } from "$ts/apps/process";
 import { Daemon, Env, Stack, State } from "$ts/env";
 import { BaseService } from "$ts/servicehost/base";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 import type { Service } from "$types/services/service";
 
 export class SystemShortcutsService extends BaseService implements IBaseService {
   closingFocused = false;
-  acceleratorStore: AppKeyCombinations = [
+  acceleratorStore: AppKeyboardCombinations = [
     {
       ctrl: true,
       key: "q",

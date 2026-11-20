@@ -4,7 +4,7 @@ import { UserPaths } from "$ts/user/store";
 import { textToBlob } from "$ts/util/convert";
 import { MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
-import type { AppContextMenu } from "$types/apps/app";
+import type { AppContextMenu } from "$types/apps";
 import type { UserTheme } from "$types/user/theme";
 
 export function SettingsContext(runtime: ISettingsRuntime): AppContextMenu {

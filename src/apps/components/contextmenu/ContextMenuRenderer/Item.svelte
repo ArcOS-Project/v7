@@ -3,7 +3,7 @@
   import type { IContextMenuRuntime } from "$interfaces/runtimes/IContextMenuRuntime";
   import Icon from "$lib/Icon.svelte";
   import { Sleep } from "$ts/sleep";
-  import type { ContextMenuItem } from "$types/apps/app";
+  import type { ContextMenuItem } from "$types/apps";
   import type { ReadableStore } from "$types/shared/writable";
   import { onMount } from "svelte";
   import SubItems from "./Item/SubItems.svelte";

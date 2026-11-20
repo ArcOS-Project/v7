@@ -1,7 +1,7 @@
 <script lang="ts">
   import { RelativeTimeMod } from "$ts/dayjs";
   import type { SharedDriveType } from "$types/server/shares";
-  import type { FsAccess } from "$types/system/fs";
+  import type { FileAccessor } from "$types/system/fs";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import updateLocale from "dayjs/plugin/updateLocale";
@@ -10,7 +10,7 @@
   dayjs.extend(updateLocale);
   dayjs.updateLocale("en", RelativeTimeMod);
 
-  const { accessors, share }: { accessors: FsAccess[]; share: SharedDriveType } = $props();
+  const { accessors, share }: { accessors: FileAccessor[]; share: SharedDriveType } = $props();
 
   const ONE_DAY = 24 * 60 * 60 * 1000;
 </script>

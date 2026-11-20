@@ -46,25 +46,6 @@ export interface App {
   loadCondition?: (daemon: IUserDaemon) => MaybePromise<boolean>;
 }
 
-export type RegisteredProcess = {
-  metadata: AppMetadata;
-  id: string;
-  assets: {
-    runtime: Constructs<IProcess>;
-  };
-  vital?: boolean;
-  _internalMinVer?: string;
-  hidden?: boolean;
-  core?: boolean;
-};
-
-export interface InstalledApp extends App {
-  metadata: AppMetadata;
-  tpaPath: string;
-}
-
-export type ScriptedApp = Omit<App, "assets">;
-
 export interface AppMetadata {
   name: string;
   version: string;
@@ -92,6 +73,10 @@ export interface AppAssets {
   component?: typeof SvelteComponent;
 }
 
+export type Size = { w: number; h: number };
+export type Position = { x: number; y: number };
+export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
+
 export interface AppComponentProps<T = IAppProcess> {
   process: T;
   pid: number;
@@ -100,38 +85,7 @@ export interface AppComponentProps<T = IAppProcess> {
   windowIcon: ReadableStore<string>;
 }
 
-export type Size = { w: number; h: number };
-export type Position = { x: number; y: number };
-export type MaybeCenteredPosition = Partial<Position> & { centered?: boolean };
-
 export type AppProcessData = { data: App; id: string; desktop?: string };
-
-export type AppStorage = (InstalledApp & { originId?: string })[];
-export type AppStoreCb = () => MaybePromise<AppStorage>;
-
-export interface ContextMenuItem {
-  sep?: boolean;
-  caption?: string;
-  icon?: string;
-  image?: string; // icon ID !!!
-  isActive?: ContextMenuCallback<boolean>;
-  action?: ContextMenuCallback;
-  subItems?: ContextMenuItem[];
-  disabled?: ContextMenuCallback<boolean>;
-  accelerator?: string;
-}
-
-export type ContextMenuCallback<T = any> = (...args: any[]) => MaybePromise<T>;
-
-export type AppContextMenu = { [key: string]: ContextMenuItem[] };
-export interface ContextMenuInstance {
-  x: number;
-  y: number;
-  items: ContextMenuItem[];
-  process?: IAppProcess;
-  artificial?: boolean;
-  props?: any[];
-}
 
 export interface WindowResizer {
   className: string;
@@ -155,9 +109,16 @@ export interface AppProcessSpawnOptions {
   renderTarget?: HTMLDivElement;
 }
 
-export interface TpaSpawnEntrypointResult<T = any> {
-  runtime?: Constructs<IProcess>;
-  returnValue?: T;
-}
+export type RegisteredProcess = {
+  metadata: AppMetadata;
+  id: string;
+  assets: {
+    runtime: Constructs<IProcess>;
+  };
+  vital?: boolean;
+  _internalMinVer?: string;
+  hidden?: boolean;
+  core?: boolean;
+};
 
 // !endtpa

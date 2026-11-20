@@ -3,7 +3,7 @@ import type { IShellRuntime } from "$interfaces/runtimes/IShellRuntime";
 import type { ITrayIconProcess } from "$interfaces/services/ITrayHostService";
 import { Env, Stack } from "$ts/env";
 import { Process } from "$ts/kernel/mods/stack/process/instance";
-import type { ContextMenuItem } from "$types/apps/app";
+import type { ContextMenuItem } from "$types/apps";
 import type { ShellTrayIcon, TrayPopup } from "$types/services/tray";
 import { mount, unmount } from "svelte";
 

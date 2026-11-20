@@ -11,7 +11,7 @@ import {
   type DirectoryReadReturn,
   type ExtendedStat,
   type FilesystemProgressCallback,
-  type FsAccess,
+  type FileAccessor,
   type RecursiveDirectoryReadReturn,
   type UserQuota,
 } from "$types/system/fs";
@@ -106,7 +106,7 @@ export class ShareConnector extends ServerConnector implements IShareConnector {
 
   async AccessorPost(shareId: string, path: string): Promise<ICommandResult<string>> {
     try {
-      const response = CommandResult.FromResponse(await this.server.post<FsAccess>(`/accessor/${shareId}/${path}`));
+      const response = CommandResult.FromResponse(await this.server.post<FileAccessor>(`/accessor/${shareId}/${path}`));
       if (!response.success) return response as ICommandResult<string>;
 
       return CommandResult.Ok(this.server.getUri({ url: `/direct/${shareId}/${response.result!.accessor}` }));

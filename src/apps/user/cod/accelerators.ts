@@ -1,7 +1,7 @@
 import type { ICodRuntime } from "$interfaces/runtimes/ICodRuntime";
-import type { AppKeyCombinations } from "$types/apps/accelerator";
+import type { AppKeyboardCombinations } from "$types/apps/accelerator";
 
-export function CodAccelerators(runtime: ICodRuntime): AppKeyCombinations {
+export function CodAccelerators(runtime: ICodRuntime): AppKeyboardCombinations {
   return [
     {
       alt: true,

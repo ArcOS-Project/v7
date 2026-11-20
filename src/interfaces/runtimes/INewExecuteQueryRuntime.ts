@@ -2,7 +2,6 @@ import type { NewExecuteQueryWhereClauses, SavedQuery } from "$apps/admin/newexe
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
-import { Store } from "$ts/writable";
 import type { DbQuery, DbQueryCollectionColumn, DbQueryOrderBy } from "$types/server/admin";
 import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 import type { ExpandedUserInfo } from "$types/user";

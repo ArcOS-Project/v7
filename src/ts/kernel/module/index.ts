@@ -6,6 +6,7 @@ import { LogLevel } from "$types/shared/logging";
 import { Log } from "../../logging";
 
 export class KernelModule implements IKernelModule {
+  public static readonly identifier: string = "";
   protected readonly IS_KMOD = true;
   public id: string;
   protected state?: IStateHandler;

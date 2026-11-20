@@ -13,7 +13,7 @@ import { BTN_OKAY_SUG, MessageBox } from "$ts/util/dialog";
 import { getParentDirectory } from "$ts/util/fs";
 import { tryJsonParse } from "$ts/util/json";
 import { Store } from "$ts/writable";
-import type { AppContextMenu, AppProcessData } from "$types/apps/app";
+import type { AppProcessData } from "$types/apps/app";
 import type { ExpandedMessage, MessageAttachment } from "$types/server/messaging";
 import type { PublicUserInfo } from "$types/user";
 import dayjs from "dayjs";
@@ -22,6 +22,7 @@ import { MessagesAltMenu } from "./altmenu";
 import { MessagesContextMenu } from "./context";
 import { messagingPages } from "./store";
 import type { MessagingPage } from "./types";
+import type { AppContextMenu } from "$types/apps";
 
 export class MessagingAppRuntime extends AppProcess implements IMessagingAppRuntime {
   service: IMessagingInterface;
