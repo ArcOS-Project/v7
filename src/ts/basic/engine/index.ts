@@ -322,23 +322,37 @@ export class ArcBasicEngine {
 
     if (!input) return input;
 
-    const matches = [...input.matchAll(REGEXES.FUNCTION)];
-
-    if (!matches.length) return input;
+    if (![...input.matchAll(REGEXES.FUNCTION)].length) return input;
     if (input.match(/^"(.+)"$/)) input = input.replace(/^"(.+)"$/, "$1");
+
+    input = await this.resolveFunctions(input);
+
+    this.Debug(`runFunctions RESULT >>${input}<<`);
+
+    return input;
+  }
+
+  private async resolveFunctions(input: string): Promise<string> {
+    const matches = [...input.matchAll(REGEXES.FUNCTION)];
 
     for (const match of matches) {
       const { name, val } = match?.groups ?? {};
-      const func = name ? this.functions[name.toLowerCase()] : undefined;
 
-      if (!func) continue;
+      if (!name) continue;
 
-      const newVal = await func(await this.replaceVariables(tryJsonParse(val)), this);
+      const func = this.functions[name.toLowerCase()];
+      const resolvedVal = await this.resolveFunctions(val);
 
-      input = input.replace(`${name}(${val})`, typeof newVal !== "string" ? tryJsonStringify(newVal, 0) : newVal);
+      if (!func) {
+        if (resolvedVal !== val) input = input.replace(`${name}(${val})`, () => `${name}(${resolvedVal})`);
+        continue;
+      }
+
+      const newVal = await func(await this.replaceVariables(tryJsonParse(resolvedVal)), this);
+      const replacement = typeof newVal !== "string" ? tryJsonStringify(newVal, 0) : newVal;
+
+      input = input.replace(`${name}(${val})`, () => replacement);
     }
-
-    this.Debug(`runFunctions RESULT >>${input}<<`);
 
     return input;
   }
@@ -392,8 +406,34 @@ export class ArcBasicEngine {
     this.Debug(`findNextEndling >>${endling}<< startIdx=${startIdx}`);
 
     const lookahead = this.source.slice(startIdx, this.source.length);
-    const endKeyword = `end${endling.toLowerCase()}`;
-    const idx = lookahead.findIndex((l) => l.toLowerCase().trim().startsWith(endKeyword));
+    const keyword = endling.toLowerCase();
+    const endKeyword = `end${keyword}`;
+    const opensBlock = (lower: string) => {
+      if (!lower.startsWith(`${keyword} `) && lower !== keyword) return false;
+      if (keyword === "if") return /\sthen$/.test(lower);
+      if (keyword === "while") return /\sdo$/.test(lower);
+      return true;
+    };
+
+    let depth = 0;
+    let idx = -1;
+
+    for (let i = 0; i < lookahead.length; i++) {
+      const lower = lookahead[i].toLowerCase().trim();
+
+      if (!lower || lower.startsWith("#")) continue;
+
+      if (opensBlock(lower)) {
+        depth++;
+      } else if (lower.startsWith(endKeyword)) {
+        depth--;
+
+        if (depth <= 0) {
+          idx = i;
+          break;
+        }
+      }
+    }
 
     if (idx <= 0) {
       await this.error(`Expected ${endKeyword.toUpperCase()}`, true);
@@ -433,7 +473,7 @@ export class ArcBasicEngine {
       this.HALT = true;
       const line = this.source[this.programCounter];
       const lineNumber = `${this.programCounter + 1}`;
-      const columnNumber = Math.max(columnIndexHint ? line?.indexOf(columnIndexHint) ?? 0 : 0, 0);
+      const columnNumber = Math.max(columnIndexHint ? (line?.indexOf(columnIndexHint) ?? 0) : 0, 0);
       const linePrefix = " ".repeat(lineNumber.length) + "  ║  ";
       const leftOffset = " ".repeat(columnNumber);
 
