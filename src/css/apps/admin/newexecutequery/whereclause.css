@@ -1,0 +1,61 @@
+#NewExecuteQuery > div.body div.where-clause {
+  align-items: center !important;
+
+  div.options {
+    display: flex;
+    align-items: center;
+    border: var(--win-border);
+    border-radius: 5px;
+    overflow: hidden;
+    height: 26px;
+
+    input,
+    select {
+      border-top: 0;
+      border-bottom: 0;
+
+      &:first-child {
+        border-left: 0;
+      }
+
+      &:last-child {
+        border-right: 0;
+      }
+
+      &:not([type="checkbox"]) {
+        background-color: var(--button-bg);
+        height: 26px;
+        padding: 0 5px;
+        border-radius: 0;
+      }
+
+      + select,
+      + input:not([type="checkbox"]) {
+        border-left: 0;
+      }
+    }
+
+    p,
+    label {
+      padding: 0 8px;
+      line-height: 26px;
+    }
+  }
+
+  div.actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    button {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 7px;
+    }
+  }
+}

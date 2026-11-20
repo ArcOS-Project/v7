@@ -26,6 +26,8 @@ import type {
   AuditLogQueryOptions,
   BugHuntGetResponse,
   BugReportSourceInformation,
+  DbQuery,
+  DbQueryCollectionColumn,
   FsAccess,
   FSItem,
   IpAddress,
@@ -1486,6 +1488,30 @@ export class AdminBootstrapper extends BaseService implements IAdminBootstrapper
 
     const instance = new job(job.name);
     return await instance._run(broadcast);
+  }
+
+  async DbQueryCollections(): Promise<ICommandResult<string[]>> {
+    try {
+      return CommandResult.FromResponse(await this.adminClient.get(`/dbquery/collections`));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async DbQueryColumns(collection: string): Promise<ICommandResult<DbQueryCollectionColumn[]>> {
+    try {
+      return CommandResult.FromResponse(await this.adminClient.get(`/dbquery/columns/${collection}`));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
+  }
+
+  async DbQueryExecute<T = any>(query: DbQuery): Promise<ICommandResult<T[]>> {
+    try {
+      return CommandResult.FromResponse(await this.adminClient.post(`/dbquery/execute`, query));
+    } catch (e) {
+      return CommandResult.AxiosError(e);
+    }
   }
 }
 

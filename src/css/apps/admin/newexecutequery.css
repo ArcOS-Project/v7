@@ -1,0 +1,113 @@
+@import url("./newexecutequery/overlays/selectcolumns.css");
+@import url("./newexecutequery/whereclause.css");
+#NewExecuteQuery > div.body {
+  padding: 0;
+  display: flex;
+
+  div.container {
+    width: 0;
+    flex-grow: 1;
+    background-color: var(--win-bg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    > p.no-collection {
+      height: 0;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0.5;
+      font-weight: bold;
+      border-top: var(--win-border);
+    }
+
+    div.bar {
+      display: flex;
+      align-items: start;
+      min-height: 30px;
+      border-top: var(--win-border);
+      padding: 10px;
+      padding-left: 15px;
+      gap: 10px;
+
+      h1 {
+        width: 100px;
+      }
+
+      h1,
+      p {
+        line-height: 30px;
+      }
+
+      button {
+        padding: 0 15px;
+        height: 30px;
+      }
+
+      p.empty {
+        opacity: 0.5;
+      }
+
+      span {
+        vertical-align: middle;
+      }
+    }
+
+    div.loading-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 0;
+      flex-grow: 1;
+    }
+
+    div.where-clauses {
+      height: 0;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    div.columns-bar div.columns {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      width: 0;
+      flex-grow: 1;
+      min-height: 30px;
+      height: fit-content;
+
+      div.column {
+        padding: 0 5px;
+        height: 20px;
+        background-color: var(--button-glass-bg);
+        border-radius: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: "Source Code Pro";
+      }
+    }
+
+    div.order-by {
+      align-items: center;
+      gap: 20px;
+
+      select {
+        border: var(--win-border);
+        border-radius: 5px;
+        height: 26px;
+        background-color: var(--button-bg);
+        padding: 0 8px;
+      }
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}

@@ -90,6 +90,8 @@ export const AdminScopes = {
   adminMailbrokerKeysRead: "admin.mailbroker.keys.read",
   adminMailbrokerKeysWrite: "admin.mailbroker.keys.write",
   adminMailbrokerSend: "admin.mailbroker.send",
+  adminDbQuery: "admin.dbquery",
+  adminDbQuerySensitive: "admin.dbquery.sensitive",
 } as const;
 
 export type AdminScopesType = (typeof AdminScopes)[keyof typeof AdminScopes];
