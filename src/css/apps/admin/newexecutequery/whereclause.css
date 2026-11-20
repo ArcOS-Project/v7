@@ -9,6 +9,15 @@
     overflow: hidden;
     height: 26px;
 
+    button.action-bar-icon-button {
+      width: 26px;
+      height: 24px;
+      border-radius: 0;
+      min-width: unset;
+      padding: 0;
+      outline: none !important;
+    }
+
     input,
     select {
       border-top: 0;

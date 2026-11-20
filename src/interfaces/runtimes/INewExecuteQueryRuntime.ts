@@ -2,6 +2,7 @@ import type { NewExecuteQueryWhereClauses, SavedQuery } from "$apps/admin/newexe
 import type { IAppProcess } from "$interfaces/IAppProcess";
 import type { ICommandResult } from "$interfaces/ICommandResult";
 import type { IAdminBootstrapper } from "$interfaces/services/IAdminBootstrapper";
+import { Store } from "$ts/writable";
 import type { DbQuery, DbQueryCollectionColumn, DbQueryOrderBy } from "$types/server/admin";
 import type { BooleanStore, ReadableStore, StringStore } from "$types/shared/writable";
 import type { ExpandedUserInfo } from "$types/user";
@@ -9,8 +10,11 @@ import type { ExpandedUserInfo } from "$types/user";
 export interface INewExecuteQueryRuntime extends IAppProcess {
   USER_COLUMNS: string[];
   users: ExpandedUserInfo[];
-  loading: BooleanStore;
+  refreshing: BooleanStore;
+  executing: BooleanStore;
+  selectSavedQuery: BooleanStore;
   allowSensitiveColumns: boolean;
+  savedQueryList: ReadableStore<Record<string, SavedQuery>>;
 
   // query data
   collections: ReadableStore<string[]>;
@@ -27,6 +31,7 @@ export interface INewExecuteQueryRuntime extends IAppProcess {
   RefreshCollections(): Promise<void>;
   SelectCollection(collection: string): Promise<ICommandResult>;
   ShowSelectColumns(): Promise<void>;
+  SelectAllColumns(): void;
 
   // clauses
   AddWhereClause(): void;

@@ -233,7 +233,7 @@ export class UserDrive extends FilesystemDrive implements IFilesystemDrive {
 
       if (response.status !== 200) return {};
 
-      const data = response.data as Record<string, any>;
+      const data = response.data as Record<string, T>;
 
       return data;
     } catch {

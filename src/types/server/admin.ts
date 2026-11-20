@@ -230,6 +230,12 @@ export const DB_QUERY_WHERE_MODES = [
   "isGreaterThanOrEqualTo",
   "isLessThan",
   "isLessThanOrEqualTo",
+  "lengthIsGreaterThan",
+  "lengthIsLessThan",
+  "lengthIsGreaterThanOrEqualTo",
+  "lengthIsLessThanOrEqualTo",
+  "lengthIsEqualTo",
+  "lengthIsNotEqualTo",
 ] as const;
 export type DbQueryWhereMode = (typeof DB_QUERY_WHERE_MODES)[number];
 
@@ -245,6 +251,12 @@ export const WhereModeCaptions: Record<DbQueryWhereMode, string> = {
   isGreaterThanOrEqualTo: "is greater than or equal to",
   isLessThan: "is less than",
   isLessThanOrEqualTo: "is less than or equal to",
+  lengthIsGreaterThan: "length is greater than",
+  lengthIsGreaterThanOrEqualTo: "length is greater than or equal to",
+  lengthIsLessThan: "length is less than",
+  lengthIsLessThanOrEqualTo: "length is less than or equal to",
+  lengthIsEqualTo: "length is equal to",
+  lengthIsNotEqualTo: "length is not equal to",
 };
 
 export interface DbQueryWhere {
@@ -253,6 +265,13 @@ export interface DbQueryWhere {
   value?: any;
   hierarchyKey?: string;
   uuid: string; // client-side each-key
+  relational?: boolean; // client-side relational bool
+  valueFromColumn?: DbQueryValueFromColumn;
+}
+
+export interface DbQueryValueFromColumn {
+  columnName?: string;
+  hierarchy?: string;
 }
 
 export interface DbQueryCollectionColumn {

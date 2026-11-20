@@ -9,7 +9,7 @@
   } = process;
 
   function selectAll() {
-    $selectedColumns[$selectedCollection] = $columns.filter((column) => !column.sensitive || allowSensitiveColumns);
+    process.parent.SelectAllColumns();
   }
 
   function selectNone() {

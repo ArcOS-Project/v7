@@ -15,3 +15,4 @@
     <option value={column.column} disabled={column.sensitive && !allowSensitiveColumns}>{column.column}</option>
   {/each}
 </select>
+
