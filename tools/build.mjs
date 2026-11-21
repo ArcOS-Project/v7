@@ -10,10 +10,10 @@ import { checkTypeOutblow } from "./typeoutblow.mjs";
 import { validateRegions } from "./validate-regions.mjs";
 
 export const ASCII_ART = [
-  "    _           ___  ___ ",
-  "   /_\\  _ _ __ / _ \\/ __|",
-  "  / _ \\| '_/ _| (_) \\__ \\",
-  " /_/ \\_\\_| \\__|\\___/|___/",
+  "  ___                      _      ",
+  " / __| __ _ __ _ _ _  _ __| |__ _ ",
+  " \\__ \\/ _` / _| '_| || / _` / _` |",
+  " |___/\\__,_\\__|_|  \\_,_\\__,_\\__,_|",
   "",
   `Sacruda build script for v${packageJson.version}`,
   "Copyright © 2026 Izaak Kuipers. All rights belong to their respective authors.",
