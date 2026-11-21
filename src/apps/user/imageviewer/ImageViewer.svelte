@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import { ImageViewer } from "svelte-image-viewer";
   const { process }: { process: IImageViewerRuntime } = $props();
-  const { imageUrl, openedFile, viewer, scale } = process;
+  const { imageUrl, openedFile, viewer, scale, height, width } = process;
 
   let minScale = $state<number>(0.25);
   let maxScale = $state<number>(16.0);
@@ -36,6 +36,9 @@
     {#snippet leftContent()}
       <ActionPill key="Zoom">
         {($scale * 100).toFixed(2)}%
+      </ActionPill>
+      <ActionPill key="Resolution">
+        {$width} x {$height}
       </ActionPill>
     {/snippet}
     {#snippet rightContent()}
